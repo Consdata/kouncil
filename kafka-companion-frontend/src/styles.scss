@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+//@import "~bootstrap/scss/bootstrap";
+//$primary-color: #ef6c00;
+$secondary-color: #ef6c00;
+@import '~materialize-css/sass/materialize';
+
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
+html, body {
+  height: 100%;
+}
+
+.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.kafka-badge {
+  display: inline-block;
+  padding: 0.2em 0.3em;
+  margin-left: 5px;
+  border-radius: 0.3em;
+  color: white;
+  min-width: 20px;
+  text-align: center;
+}
+
+.kafka-badge-primary {
+  @extend .kafka-badge;
+  background-color: #ef6c00;
+}
+
+.kafka-badge-secondary {
+  @extend .kafka-badge;
+  background-color: #404040;
+}

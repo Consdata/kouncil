@@ -1,0 +1,48 @@
+.topic {
+  height: 100%;
+}
+
+.topic-toolbar-area {
+  height: 40px;
+}
+
+.topic-table-area {
+  padding: 10px;
+  height: calc(100% - 48px);
+}
+
+.topic-table {
+  height: 100%;
+}
+
+::ng-deep .kafka-row-delta {
+  background-color: #f6f6f6;
+}
+
+.kafka-progress {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kafka-row-details {
+  height: 300px;
+  white-space: pre;
+  direction:rtl;
+  overflow: auto;
+}
+
+.kafka-row-details-inner {
+  direction:ltr;
+}
+
+.kafka-topic-footer {
+  display: flex;
+
+  .kafka-topic-footer-segment {
+    padding-left: 20px;
+  }
+
+}

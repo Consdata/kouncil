@@ -1,0 +1,55 @@
+.kafka-navbar {
+  display: flex;
+  height: 48px;
+  align-items: stretch;
+  padding-left: 10px;
+  padding-right: 30px;
+  background-color: #292B2C;
+
+  & > a {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 16px;
+    color: white;
+  }
+
+  & > * {
+    display: flex;
+    align-items: center;
+  }
+
+  a:hover {
+    background-color: #ef6c00;
+  }
+
+  .kafka-logo-image {
+    width: 30px;
+    height: 35px;
+    align-self: center;
+    margin-left: 15px;
+  }
+}
+
+.kafka-search {
+  padding-left: 20px;
+  i {
+    color: #ef6c00;
+  }
+
+  input.kafka-search-input {
+    margin-left: 10px;
+    height: 2rem;
+    font-size: 16px;
+    color: white;
+  }
+
+}
+
+.kafka-spring {
+  flex-grow: 1;
+}
+
+.kafka-logo {
+  font-size: 20px;
+  font-weight: bold;
+}

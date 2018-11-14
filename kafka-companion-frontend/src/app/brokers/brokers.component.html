@@ -1,0 +1,15 @@
+<div class="kafka-brokers">
+  <ngx-datatable *ngIf="filteredBrokers"
+                 class="brokers-table material"
+                 [rows]="filteredBrokers"
+                 [rowHeight]="40"
+                 [headerHeight]="40"
+                 [scrollbarH]="true"
+                 [scrollbarV]="true"
+                 [columnMode]="'force'"
+                 #table>
+    <ngx-datatable-column prop="id" name="Id"></ngx-datatable-column>
+    <ngx-datatable-column prop="host" name="Host"></ngx-datatable-column>
+    <ngx-datatable-column prop="port" name="port"></ngx-datatable-column>
+  </ngx-datatable>
+</div>

@@ -1,0 +1,22 @@
+<div class="kafka-send">
+  <form #heroForm="ngForm" (ngSubmit)="onSubmit()">
+
+    <div>
+      <label for="key">Key</label>
+      <input [(ngModel)]="message.key" type="text" id="key" name="key"/>
+    </div>
+
+    <div>
+      <label for="value">Value</label>
+      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value" required="true"></textarea>
+    </div>
+
+    <div>
+      <label for="count">Count</label>
+      <input [(ngModel)]="count" type="number" id="count" name="count"/>
+    </div>
+
+    <button type="submit" class="btn">Submit</button>
+
+  </form>
+</div>

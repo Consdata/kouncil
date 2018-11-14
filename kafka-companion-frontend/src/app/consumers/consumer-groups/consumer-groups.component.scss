@@ -1,0 +1,35 @@
+.kafka-consumer-groups {
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.consumer-groups-table {
+  width: 970px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kafka-consumer-groups-action {
+  margin-right: 10px;
+}
+
+.kafka-consumer-groups-action-secondary {
+  background-color: #404040;
+}
+
+.kafka-consumer-groups-name {
+  font-size: 15px;
+}
+
+.kafka-consumer-groups-group-header {
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+
+.kafka-consumer-groups-favourite {
+  color: #ef6c00;
+  cursor: pointer;
+}

@@ -1,0 +1,20 @@
+<div class="kafka-consumer-group">
+  <ngx-datatable *ngIf="filteredAssignments"
+                 class="brokers-table material"
+                 [rows]="filteredAssignments"
+                 [rowHeight]="40"
+                 [headerHeight]="40"
+                 [scrollbarH]="true"
+                 [scrollbarV]="true"
+                 [columnMode]="'force'"
+                 #table>
+    <ngx-datatable-column prop="clientId" name="clientId"></ngx-datatable-column>
+    <ngx-datatable-column prop="consumerId" name="consumerId"></ngx-datatable-column>
+    <ngx-datatable-column prop="host" name="host"></ngx-datatable-column>
+    <ngx-datatable-column prop="topic" name="topic"></ngx-datatable-column>
+    <ngx-datatable-column prop="partition" name="partition"></ngx-datatable-column>
+    <ngx-datatable-column prop="offset" name="offset"></ngx-datatable-column>
+    <ngx-datatable-column prop="endOffset" name="endOffset"></ngx-datatable-column>
+    <ngx-datatable-column prop="lag" name="lag"></ngx-datatable-column>
+  </ngx-datatable>
+</div>

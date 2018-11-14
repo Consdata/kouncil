@@ -1,0 +1,15 @@
+<div class="kafka-toolbar">
+  <div class="kafka-breadcrumb">
+    <div>Topic&nbsp;&nbsp;>&nbsp;&nbsp;{{name}}</div>
+  </div>
+  <div class="kafka-actionbar">
+    <div class="switch kafka-toolbar-switch">
+      <label>
+        LIVE
+        <input type="checkbox" (change)="onChange()" [(ngModel)]="online">
+        <span class="lever kafka-toolbar-lever"></span>
+      </label>
+    </div>
+    <a class="kafka-topic-action btn btn-small btn-flat waves-light" [routerLink]="['/topic/send', name]"><i class="material-icons left">add</i>Add</a>
+  </div>
+</div>

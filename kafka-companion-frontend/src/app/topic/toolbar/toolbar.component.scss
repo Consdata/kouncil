@@ -1,0 +1,45 @@
+.kafka-toolbar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 100px;
+    height: 48px;
+  }
+}
+
+.kafka-breadcrumb {
+  height: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  background-color: #027878;
+}
+
+.kafka-actionbar {
+  padding-left: 30px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.kafka-topic-action {
+  i {
+    margin-right: 5px;
+  }
+}
+
+.switch {
+  label {
+    color: initial;
+    display: flex;
+    align-items: center;
+    .kafka-toolbar-lever {
+      margin-left: 8px;
+    }
+  }
+}
+

@@ -1,0 +1,12 @@
+<div class="kafka-navbar">
+  <a [routerLink]="['/topics']">Topics</a>
+  <a [routerLink]="['/brokers']">Brokers</a>
+  <a [routerLink]="['/consumer-groups']">Consumers</a>
+  <div class="kafka-search">
+    <i class="material-icons">search</i>
+    <input class="kafka-search-input" type="text" placeholder="" (input)="onPhraseChange($event.target.value)" #searchInput>
+  </div>
+  <div class="kafka-spring"></div>
+  <a class="kafka-logo" [routerLink]="['/']"><span>Kafka Companion</span> <img class="kafka-logo-image" src="assets/apache-kafka.png"/></a>
+
+</div>

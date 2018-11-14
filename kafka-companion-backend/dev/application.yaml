@@ -1,0 +1,2 @@
+bootstrapServers: "uber.poczta.consdata.local:34092"
+zookeeperConnectString: "uber.poczta.consdata.local:28011"
