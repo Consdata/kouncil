@@ -1,1 +1,1 @@
-bootstrapServers: "uber.poczta:14092"
+bootstrapServers: "localhost:9092"

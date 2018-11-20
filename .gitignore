@@ -1,6 +1,6 @@
 target
 yarn-error.log
-kafka-companion.iml
+kafka-companion*.iml
 idea
 .idea
 local
