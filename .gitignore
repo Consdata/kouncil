@@ -4,3 +4,4 @@ kafka-companion*.iml
 idea
 .idea
 local
+*.exe
