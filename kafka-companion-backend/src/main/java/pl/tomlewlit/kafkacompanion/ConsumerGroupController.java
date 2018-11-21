@@ -1,22 +1,23 @@
 package pl.tomlewlit.kafkacompanion;
 
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import javax.annotation.PostConstruct;
-
-import org.apache.kafka.clients.admin.AdminClient;
-import kafka.coordinator.group.GroupOverview;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import scala.Option;
-import scala.collection.immutable.List;
-import scala.collection.immutable.Map;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class ConsumerGroupController {
@@ -60,30 +61,27 @@ public class ConsumerGroupController {
     }
 
     @GetMapping("/api/consumer-group/{groupId}")
-    public ConsumerGroupResponse getConsumerGroup(@PathVariable("groupId") String groupId) {
+    public ConsumerGroupResponse getConsumerGroup(@PathVariable("groupId") String groupId) throws ExecutionException, InterruptedException {
         ConsumerGroupResponse consumerGroup = ConsumerGroupResponse.builder().assignments(new ArrayList<>()).build();
-       /* Map<org.apache.kafka.common.TopicPartition, Object> offsets = adminClient.listConsumerGroupOffsets(groupId);
-        AdminClient.ConsumerGroupSummary consumerGroupSummary = adminClient.describeConsumerGroup(groupId, 5000);
+        Map<TopicPartition, OffsetAndMetadata> offsets = adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
+        ConsumerGroupDescription consumerGroupSummary = adminClient.describeConsumerGroups(Collections.singletonList(groupId)).describedGroups().get(groupId).get();
         java.util.List<org.apache.kafka.common.TopicPartition> allTopicPartitions = new java.util.ArrayList<>();
-        consumerGroupSummary.consumers().get().foreach(kafkaConsumer -> {
-            kafkaConsumer.assignment().foreach(kafkaTopicPartition -> {
-                allTopicPartitions.add(kafkaTopicPartition);
-                Option<Object> offsetOptional = offsets.get(kafkaTopicPartition);
-                consumerGroup
-                        .getAssignments()
-                        .add(Assignment
-                                .builder()
-                                .clientId(kafkaConsumer.clientId())
-                                .consumerId(kafkaConsumer.consumerId())
-                                .host(kafkaConsumer.host())
-                                .topic(kafkaTopicPartition.topic())
-                                .partition(kafkaTopicPartition.partition())
-                                .offset(offsetOptional.isEmpty() ? null : (Long) offsetOptional.get())
-                                .build());
-                return null;
-            });
-            return null;
-        });
+        consumerGroupSummary.members().forEach(kafkaConsumer ->
+                kafkaConsumer.assignment().topicPartitions().forEach((kafkaTopicPartition -> {
+                    allTopicPartitions.add(kafkaTopicPartition);
+                    OffsetAndMetadata offsetAndMetadata = offsets.get(kafkaTopicPartition);
+                    consumerGroup
+                            .getAssignments()
+                            .add(Assignment
+                                    .builder()
+                                    .clientId(kafkaConsumer.clientId())
+                                    .consumerId(kafkaConsumer.consumerId())
+                                    .host(kafkaConsumer.host())
+                                    .topic(kafkaTopicPartition.topic())
+                                    .partition(kafkaTopicPartition.partition())
+                                    .offset(offsetAndMetadata.offset())
+                                    .build());
+                })));
 
         KafkaConsumer<String, String> kafkaConsumer = createConsumer();
         try {
@@ -99,7 +97,7 @@ public class ConsumerGroupController {
         } finally {
             kafkaConsumer.close();
         }
-*/
+
 
         return consumerGroup;
     }
