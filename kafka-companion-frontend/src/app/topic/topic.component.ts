@@ -40,6 +40,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       this.topicName = params['topic'];
       this.getMessages();
       this.titleService.setTitle(this.topicName + " KafkaCompanion");
+      this.paused = true;
     });
 
     this.searchSubscription = this.searchService.getState().subscribe(
@@ -51,6 +52,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
+    this.paused = true;
   }
 
 

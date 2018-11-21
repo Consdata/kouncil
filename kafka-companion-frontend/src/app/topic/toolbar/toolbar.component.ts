@@ -10,7 +10,7 @@ export class ToolbarComponent implements OnInit {
   @Input() name: string;
   @Output() onAction: EventEmitter<any> = new EventEmitter();
 
-  online: boolean = true;
+  online: boolean = false;
 
   constructor() {
   }

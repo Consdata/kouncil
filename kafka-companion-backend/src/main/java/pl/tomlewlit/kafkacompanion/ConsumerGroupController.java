@@ -1,6 +1,5 @@
 package pl.tomlewlit.kafkacompanion;
 
-import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -22,24 +21,15 @@ import java.util.concurrent.ExecutionException;
 @RestController
 public class ConsumerGroupController {
 
-    public ConsumerGroupController(KafkaCompanionConfiguration kafkaCompanionConfiguration) {
-        this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
-    }
+    @NotNull
+    private AdminClient adminClient;
 
-    @PostConstruct
-    private void postConstruct() {
-        Properties props = new Properties();
-        props.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
-                kafkaCompanionConfiguration.getBootstrapServers());
-        props.setProperty("client.id", "kafkaCompanion");
-        props.setProperty("metadata.max.age.ms", "3000");
-        props.setProperty("group.id", "kafkaCompanion");
-        props.setProperty("enable.auto.commit", "true");
-        props.setProperty("auto.commit.interval.ms", "1000");
-        props.setProperty("session.timeout.ms", "30000");
-        props.setProperty("key.deserializer", StringDeserializer.class.getName());
-        props.setProperty("value.deserializer", StringDeserializer.class.getName());
-        adminClient = AdminClient.create(props);
+    @NotNull
+    private KafkaCompanionConfiguration kafkaCompanionConfiguration;
+
+    public ConsumerGroupController(AdminClient adminClient, KafkaCompanionConfiguration kafkaCompanionConfiguration) {
+        this.adminClient = adminClient;
+        this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
     }
 
     @GetMapping("/api/consumer-groups")
@@ -83,19 +73,16 @@ public class ConsumerGroupController {
                                     .build());
                 })));
 
-        KafkaConsumer<String, String> kafkaConsumer = createConsumer();
-        try {
-            java.util.Map<org.apache.kafka.common.TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(
+        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer()) {
+            Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(
                     allTopicPartitions);
             consumerGroup.getAssignments().forEach(assignment -> {
                 String topic = assignment.getTopic();
                 int partition = assignment.getPartition();
-                assignment.setEndOffset(endOffsets.getOrDefault(new org.apache.kafka.common.TopicPartition(
+                assignment.setEndOffset(endOffsets.getOrDefault(new TopicPartition(
                         topic,
                         partition), null));
             });
-        } finally {
-            kafkaConsumer.close();
         }
 
 
@@ -105,14 +92,10 @@ public class ConsumerGroupController {
     private KafkaConsumer<String, String> createConsumer() {
         Properties props = new Properties();
         props.put("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
-        props.put("group.id", "" + System.currentTimeMillis());
+        props.put("group.id", "kafka-companion-" + System.currentTimeMillis());
         props.put("key.deserializer", StringDeserializer.class.getName());
         props.put("value.deserializer", StringDeserializer.class.getName());
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        return consumer;
+        return new KafkaConsumer<>(props);
     }
-
-    private KafkaCompanionConfiguration kafkaCompanionConfiguration;
-    private AdminClient adminClient;
 }
