@@ -33,4 +33,8 @@ export class SendComponent implements OnInit {
     });
   }
 
+  cancel() {
+      this._location.back();
+  }
+
 }
