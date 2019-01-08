@@ -1,14 +1,5 @@
 package pl.tomlewlit.kafkacompanion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,6 +16,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+
 @Slf4j
 @RestController
 public class TopicController {
@@ -39,7 +39,7 @@ public class TopicController {
 	private KafkaConsumer<String, String> createConsumer(@PathVariable("topicName") String topicName,
 														 Properties props) {
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Arrays.asList(topicName));
+		consumer.subscribe(Collections.singletonList(topicName));
 		return consumer;
 	}
 
@@ -61,11 +61,11 @@ public class TopicController {
 			partitionOffsets.put(topicPartition.partition(), position);
 			log.info("topicPartition: {}, position: {}", topicPartition, position);
 			if (position > maxPartitionMessages) {
-				position -= maxPartitionMessages;
+				consumer.seek(topicPartition, position - maxPartitionMessages);
 			} else {
 				position = 0;
+				consumer.seekToBeginning(Collections.singletonList(topicPartition));
 			}
-			consumer.seek(topicPartition, position);
 		});
 
 		List<Message> messages = new ArrayList<>();
