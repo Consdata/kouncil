@@ -1,13 +1,38 @@
 <div class="kafka-brokers">
   <ngx-datatable *ngIf="filteredBrokers"
-                 class="brokers-table material"
+                 class="brokers-table material expandable"
                  [rows]="filteredBrokers"
                  [rowHeight]="40"
                  [headerHeight]="40"
-                 [scrollbarH]="true"
-                 [scrollbarV]="true"
+                 [scrollbarH]="false"
+                 [scrollbarV]="false"
                  [columnMode]="'force'"
                  #table>
+    <ngx-datatable-row-detail [rowHeight]="getRowHeight(row)" #myDetailRow (toggle)="onDetailToggle($event)">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+        <div style="padding-left:35px;overflow:scroll">
+          <li *ngFor="let item of row.config;">
+            <strong>{{item.name}}</strong>:{{item.value}}
+          </li>
+        </div>
+      </ng-template>
+    </ngx-datatable-row-detail>
+    <ngx-datatable-column
+      [width]="50"
+      [resizeable]="false"
+      [sortable]="false"
+      [draggable]="false"
+      [canAutoResize]="false">
+      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+        <a
+          href="javascript:void(0)"
+          [class.datatable-icon-right]="!expanded"
+          [class.datatable-icon-down]="expanded"
+          title="Expand/Collapse Row"
+          (click)="toggleExpandRow(row)">
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column prop="id" name="Id"></ngx-datatable-column>
     <ngx-datatable-column prop="host" name="Host"></ngx-datatable-column>
     <ngx-datatable-column prop="port" name="port"></ngx-datatable-column>
