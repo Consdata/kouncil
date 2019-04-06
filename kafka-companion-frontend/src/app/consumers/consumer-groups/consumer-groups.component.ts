@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Subscription } from "rxjs/Subscription";
 import { SearchService } from "app/search.service";
 import { ConsumerGroup, ConsumerGroupsResponse } from "app/consumers/consumer-groups/consumer-groups";
+import {GroupIdService} from "../../group-id.service";
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -10,12 +11,16 @@ import { ConsumerGroup, ConsumerGroupsResponse } from "app/consumers/consumer-gr
   styleUrls: ['./consumer-groups.component.scss']
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private groupIdService: GroupIdService
+  ) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
   grouped: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
+  groupId = this.groupIdService.getGroupId();
   @ViewChild('table') private table: ElementRef;
 
   private subscription: Subscription;

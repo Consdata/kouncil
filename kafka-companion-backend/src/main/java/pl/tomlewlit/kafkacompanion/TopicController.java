@@ -36,13 +36,6 @@ public class TopicController {
 		this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
 	}
 
-	private KafkaConsumer<String, String> createConsumer(@PathVariable("topicName") String topicName,
-														 Properties props) {
-		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Collections.singletonList(topicName));
-		return consumer;
-	}
-
 	@GetMapping("/api/topic/messages/{topicName}/{groupId}/{timeout}")
 	public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
 										  @PathVariable("groupId") String groupId,
@@ -112,6 +105,24 @@ public class TopicController {
 		return TopicMessages.builder().messages(messages).partitionOffsets(partitionOffsets).build();
 	}
 
+	@PostMapping("/api/topic/send/{topic}/{key}/{count}")
+	public void send(@PathVariable("topic") String topic,
+					 @PathVariable("key") String key,
+					 @PathVariable("count") int count,
+					 @RequestBody String data) {
+		log.info("sending");
+		for (int i = 0; i < count; i++) {
+			kafkaTemplate.send(topic, replaceTokens(key, i), replaceTokens(data, i));
+		}
+		kafkaTemplate.flush();
+	}
+
+	private KafkaConsumer<String, String> createConsumer(String topicName,
+														 Properties props) {
+		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+		consumer.subscribe(Collections.singletonList(topicName));
+		return consumer;
+	}
 
 	private void mapRecords(List<Message> messages,
 							ConsumerRecords<String, String> records,
@@ -131,32 +142,20 @@ public class TopicController {
 		}
 	}
 
-	private Properties createCommonProperties(@PathVariable("groupId") String groupId) {
+	private String replaceTokens(String data, int i) {
+		return data
+				.replace("{{count}}", String.valueOf(i))
+				.replace("{{timestamp}}", String.valueOf(System.currentTimeMillis()))
+				.replace("{{uuid}}", UUID.randomUUID().toString());
+	}
+
+	private Properties createCommonProperties(String groupId) {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
 		props.put("group.id", groupId);
 		props.put("key.deserializer", StringDeserializer.class.getName());
 		props.put("value.deserializer", StringDeserializer.class.getName());
 		return props;
-	}
-
-	@PostMapping("/api/topic/send/{topic}/{key}/{count}")
-	public void send(@PathVariable("topic") String topic,
-					 @PathVariable("key") String key,
-					 @PathVariable("count") int count,
-					 @RequestBody String data) {
-		log.info("sending");
-		for (int i = 0; i < count; i++) {
-			kafkaTemplate.send(topic, replaceTokens(key, i), replaceTokens(data, i));
-		}
-		kafkaTemplate.flush();
-	}
-
-	private String replaceTokens(String data, int i) {
-		return data
-				.replace("{{count}}", String.valueOf(i))
-				.replace("{{timestamp}}", String.valueOf(System.currentTimeMillis()))
-				.replace("{{uuid}}", UUID.randomUUID().toString());
 	}
 
 	private KafkaTemplate<String, String> kafkaTemplate;

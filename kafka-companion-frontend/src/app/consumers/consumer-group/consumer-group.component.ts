@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { SearchService } from "app/search.service";
 import { Subscription } from "rxjs/Subscription";
 import { ActivatedRoute } from "@angular/router";
 import { Assignment, ConsumerGroupResponse } from "app/consumers/consumer-group/consumer-group";
+import {GroupIdService} from "../../group-id.service";
 
 @Component({
   selector: 'kafka-consumer-group',
   templateUrl: './consumer-group.component.html',
   styleUrls: ['./consumer-group.component.scss']
 })
-export class ConsumerGroupComponent implements OnInit {
+export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
   groupId: string;
   allAssignments: Assignment[];
@@ -18,7 +19,10 @@ export class ConsumerGroupComponent implements OnInit {
   private subscription: Subscription;
   phrase: string;
 
-  constructor(private http: HttpClient, private searchService: SearchService, private route: ActivatedRoute) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private groupIdService: GroupIdService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -39,7 +43,7 @@ export class ConsumerGroupComponent implements OnInit {
   }
 
   private getConsumerGroup() {
-    this.http.get("/api/consumer-group/" + this.groupId)
+    this.http.get("/api/consumer-group/" + this.groupId + "/" + this.groupIdService.getGroupId())
         .subscribe(data => {
           this.allAssignments = (<ConsumerGroupResponse> data).assignments;
           this.calculateLags();

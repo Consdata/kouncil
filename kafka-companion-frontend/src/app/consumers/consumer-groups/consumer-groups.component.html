@@ -14,8 +14,8 @@
 
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
       <ng-template let-group="group" ngx-datatable-group-header-template>
-        <div class="kafka-consumer-groups-group-header">{{group.value[0].group === 'FAVOURITES' ? 'FAVOURITES' : 'ALL
-          CONSUMER GROUPS'}}
+        <div
+          class="kafka-consumer-groups-group-header">{{group.value[0].group === 'FAVOURITES' ? 'FAVOURITES' : 'ALL CONSUMER GROUPS (me=' + groupId + ')'}}
         </div>
       </ng-template>
     </ngx-datatable-group-header>

@@ -1,24 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Subject } from "rxjs/Subject";
-import { Observable } from "rxjs/Observable";
+import {Injectable} from '@angular/core';
 
 @Injectable()
-export class SearchService {
+export class GroupIdService {
 
-  private phrase = new Subject<string>();
-  private currentPhrase;
-
-  setState(state: string) {
-    this.phrase.next(state);
-    this.currentPhrase = state;
-  }
-
-  getState(): Observable<string> {
-    return this.phrase.asObservable();
-  }
-
-  getCurrentPhrase() {
-    return this.currentPhrase;
+  getGroupId(): string {
+    let groupId = localStorage.getItem('kafka-companion-group-id');
+    if (!groupId) {
+      groupId = 'kafka-companion-' + Math.floor(Math.random() * 1000000000);
+      localStorage.setItem('kafka-companion-group-id', groupId)
+    }
+    return groupId
   }
 
 }

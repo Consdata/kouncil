@@ -39,19 +39,16 @@ public class ConsumerGroupController {
                 .consumerGroups(new ArrayList<>())
                 .build();
         ListConsumerGroupsResult groups = adminClient.listConsumerGroups();
-        groups.all().get().forEach(g -> {
-            if (!g.groupId().startsWith("kafka-companion-")) {
-                consumerGroups
-                        .getConsumerGroups()
-                        .add(ConsumerGroup.builder().groupId(g.groupId()).protocolType("").build());
-            }
-
-        });
+        groups.all().get().forEach(g -> consumerGroups
+                .getConsumerGroups()
+                .add(ConsumerGroup.builder().groupId(g.groupId()).protocolType("").build()));
         return consumerGroups;
     }
 
-    @GetMapping("/api/consumer-group/{groupId}")
-    public ConsumerGroupResponse getConsumerGroup(@PathVariable("groupId") String groupId) throws ExecutionException, InterruptedException {
+    @GetMapping("/api/consumer-group/{groupId}/{companionGroupId}")
+    public ConsumerGroupResponse getConsumerGroup(
+            @PathVariable("groupId") String groupId,
+            @PathVariable("companionGroupId") String companionGroupId) throws ExecutionException, InterruptedException {
         ConsumerGroupResponse consumerGroup = ConsumerGroupResponse.builder().assignments(new ArrayList<>()).build();
         Map<TopicPartition, OffsetAndMetadata> offsets = adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
         ConsumerGroupDescription consumerGroupSummary = adminClient.describeConsumerGroups(Collections.singletonList(groupId)).describedGroups().get(groupId).get();
@@ -73,7 +70,7 @@ public class ConsumerGroupController {
                                     .build());
                 })));
 
-        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer()) {
+        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(companionGroupId)) {
             Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(
                     allTopicPartitions);
             consumerGroup.getAssignments().forEach(assignment -> {
@@ -89,10 +86,10 @@ public class ConsumerGroupController {
         return consumerGroup;
     }
 
-    private KafkaConsumer<String, String> createConsumer() {
+    private KafkaConsumer<String, String> createConsumer(String groupId) {
         Properties props = new Properties();
         props.put("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
-        props.put("group.id", "kafka-companion-" + System.currentTimeMillis());
+        props.put("group.id", groupId);
         props.put("key.deserializer", StringDeserializer.class.getName());
         props.put("value.deserializer", StringDeserializer.class.getName());
 
