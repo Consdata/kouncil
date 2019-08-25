@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 @Builder
 public class ConsumerGroupResponse {
-	private List<Assignment> assignments;
+	private List<ConsumerGroupOffset> consumerGroupOffset;
 }

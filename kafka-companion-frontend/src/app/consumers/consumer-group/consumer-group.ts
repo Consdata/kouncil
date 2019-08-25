@@ -1,4 +1,4 @@
-export class Assignment {
+export class ConsumerGroupOffset {
 
   clientId: string;
   consumerId: string;
@@ -13,5 +13,5 @@ export class Assignment {
 
 
 export class ConsumerGroupResponse {
-  assignments: Assignment[];
+  consumerGroupOffset: ConsumerGroupOffset[];
 }

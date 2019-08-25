@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { SearchService } from "app/search.service";
 import { Subscription } from "rxjs/Subscription";
 import { ActivatedRoute } from "@angular/router";
-import { Assignment, ConsumerGroupResponse } from "app/consumers/consumer-group/consumer-group";
+import { ConsumerGroupOffset, ConsumerGroupResponse } from "app/consumers/consumer-group/consumer-group";
 import {GroupIdService} from "../../group-id.service";
 
 @Component({
@@ -14,8 +14,8 @@ import {GroupIdService} from "../../group-id.service";
 export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
   groupId: string;
-  allAssignments: Assignment[];
-  filteredAssignments: Assignment[];
+  allAssignments: ConsumerGroupOffset[];
+  filteredAssignments: ConsumerGroupOffset[];
   private subscription: Subscription;
   phrase: string;
 
@@ -45,21 +45,21 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   private getConsumerGroup() {
     this.http.get("/api/consumer-group/" + this.groupId + "/" + this.groupIdService.getGroupId())
         .subscribe(data => {
-          this.allAssignments = (<ConsumerGroupResponse> data).assignments;
+          this.allAssignments = (<ConsumerGroupResponse> data).consumerGroupOffset;
           this.calculateLags();
           this.filter();
         });
   }
 
   private filter() {
-    this.filteredAssignments = this.allAssignments.filter((assignment) => {
-      return !this.phrase || JSON.stringify(assignment).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
+    this.filteredAssignments = this.allAssignments.filter((consumerGroupOffset) => {
+      return !this.phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
     });
   }
 
   private calculateLags() {
-    this.allAssignments.forEach(assignment => {
-      assignment.lag = !!assignment.offset ? assignment.endOffset - assignment.offset : null;
+    this.allAssignments.forEach(consumerGroupOffset => {
+      consumerGroupOffset.lag = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : null;
     })
   }
 }
