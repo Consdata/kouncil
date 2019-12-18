@@ -42,27 +42,27 @@ public class TopicController {
 										  @PathVariable("timeout") int timeout) {
 		Properties props = createCommonProperties(groupId);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-		KafkaConsumer<String, String> consumer = createConsumer(topicName, props);
-		consumer.poll(10); // just to trigger position assignment
-		int maxMessages = 100;
-		List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-		int maxPartitionMessages = maxMessages / partitionInfos.size();
-		Map<Integer, Long> partitionOffsets = new HashMap<>();
-		partitionInfos.forEach(partitionInfo -> {
-			TopicPartition topicPartition = new TopicPartition(topicName, partitionInfo.partition());
-			long position = consumer.position(topicPartition);
-			partitionOffsets.put(topicPartition.partition(), position);
-			log.info("topicPartition: {}, position: {}", topicPartition, position);
-			if (position > maxPartitionMessages) {
-				consumer.seek(topicPartition, position - maxPartitionMessages);
-			} else {
-				position = 0;
-				consumer.seekToBeginning(Collections.singletonList(topicPartition));
-			}
-		});
+		try (KafkaConsumer<String, String> consumer = createConsumer(topicName, props)) {
+			consumer.poll(10); // just to trigger position assignment
+			int maxMessages = 100;
+			List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
+			int maxPartitionMessages = maxMessages / partitionInfos.size();
+			Map<Integer, Long> partitionOffsets = new HashMap<>();
+			partitionInfos.forEach(partitionInfo -> {
+				TopicPartition topicPartition = new TopicPartition(topicName, partitionInfo.partition());
+				long position = consumer.position(topicPartition);
+				partitionOffsets.put(topicPartition.partition(), position);
+				log.info("topicPartition: {}, position: {}", topicPartition, position);
+				if (position > maxPartitionMessages) {
+					consumer.seek(topicPartition, position - maxPartitionMessages);
+				} else {
+					position = 0;
+					consumer.seekToBeginning(Collections.singletonList(topicPartition));
+				}
+			});
 
-		List<Message> messages = new ArrayList<>();
-		try {
+			List<Message> messages = new ArrayList<>();
+
 			long time = 0;
 			while (time < timeout) {
 				ConsumerRecords<String, String> records = consumer.poll(1000);
@@ -72,12 +72,11 @@ public class TopicController {
 					break;
 				}
 			}
-		} finally {
-			consumer.close();
-		}
 
-		messages.sort(Comparator.comparing(Message::getTimestamp));
-		return TopicMessages.builder().messages(messages).partitionOffsets(partitionOffsets).build();
+
+			messages.sort(Comparator.comparing(Message::getTimestamp));
+			return TopicMessages.builder().messages(messages).partitionOffsets(partitionOffsets).build();
+		}
 	}
 
 	@GetMapping("/api/topic/delta/{topicName}/{groupId}/{timeout}")

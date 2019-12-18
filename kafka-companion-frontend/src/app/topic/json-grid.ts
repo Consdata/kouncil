@@ -60,7 +60,7 @@ export class JsonGrid {
         row[prefix + propertyName] = this.escapeHtml(this.limitChars(propertyValue));
       } else if (typeof propertyValue === 'object' && Array.isArray(propertyValue)) {
         this.addColumn(prefix + propertyName, prefixShort + propertyName);
-        row[prefix + propertyName] = "[Table]";
+        row[prefix + propertyName] = propertyValue.toString();
       }
     });
     Object.keys(object).forEach(propertyName => {
