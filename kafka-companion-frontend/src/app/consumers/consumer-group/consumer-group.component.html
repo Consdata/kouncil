@@ -13,8 +13,25 @@
     <ngx-datatable-column prop="host" name="host"></ngx-datatable-column>
     <ngx-datatable-column prop="topic" name="topic"></ngx-datatable-column>
     <ngx-datatable-column prop="partition" name="partition"></ngx-datatable-column>
-    <ngx-datatable-column prop="offset" name="offset"></ngx-datatable-column>
-    <ngx-datatable-column prop="endOffset" name="endOffset"></ngx-datatable-column>
-    <ngx-datatable-column prop="lag" name="lag"></ngx-datatable-column>
+    <ngx-datatable-column prop="offset" name="offset">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value | number }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="endOffset" name="endOffset">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value | number }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="lag" name="lag">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value | number }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="pace" name="pace">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value | number }} per sec
+      </ng-template>
+    </ngx-datatable-column>
   </ngx-datatable>
 </div>
