@@ -16,7 +16,6 @@ import { AutosizeDirective } from "app/util/autosize.directive";
 import { ConsumerGroupsComponent } from "app/consumers/consumer-groups/consumer-groups.component";
 import { ConsumerGroupComponent } from "app/consumers/consumer-group/consumer-group.component";
 import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
-import {GroupIdService} from "./group-id.service";
 
 
 @NgModule({
@@ -39,7 +38,7 @@ import {GroupIdService} from "./group-id.service";
     FormsModule,
     NgxDatatableModule
   ],
-  providers: [SearchService, GroupIdService],
+  providers: [SearchService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

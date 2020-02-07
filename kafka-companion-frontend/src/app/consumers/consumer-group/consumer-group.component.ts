@@ -4,7 +4,6 @@ import { SearchService } from "app/search.service";
 import { Subscription } from "rxjs/Subscription";
 import { ActivatedRoute } from "@angular/router";
 import { ConsumerGroupOffset, ConsumerGroupResponse } from "app/consumers/consumer-group/consumer-group";
-import {GroupIdService} from "../../group-id.service";
 
 @Component({
   selector: 'kafka-consumer-group',
@@ -21,7 +20,6 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   paused: boolean;
   constructor(private http: HttpClient,
               private searchService: SearchService,
-              private groupIdService: GroupIdService,
               private route: ActivatedRoute) {
   }
 
@@ -48,7 +46,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get("/api/consumer-group/" + this.groupId + "/" + this.groupIdService.getGroupId())
+    this.http.get("/api/consumer-group/" + this.groupId)
         .subscribe(data => {
           this.allAssignments = (<ConsumerGroupResponse> data).consumerGroupOffset;
           this.calculateLags();
@@ -63,14 +61,13 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  lastLag : number = 0;
-
   private calculateLags() {
     this.allAssignments.forEach(consumerGroupOffset => {
       let lag = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : null;
       consumerGroupOffset.lag = lag;
-      consumerGroupOffset.pace = this.lastLag - lag;
-      this.lastLag = lag;
+      consumerGroupOffset.pace = consumerGroupOffset.lastLag - lag;
+      consumerGroupOffset.lastLag = lag;
+      console.log(consumerGroupOffset);
     })
   }
 }

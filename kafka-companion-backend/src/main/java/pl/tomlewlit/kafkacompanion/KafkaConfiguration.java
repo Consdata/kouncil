@@ -50,8 +50,7 @@ public class KafkaConfiguration {
         props.setProperty("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
         props.setProperty("client.id", "kafkaCompanion");
         props.setProperty("metadata.max.age.ms", "3000");
-        props.setProperty("group.id", "kafkaCompanion");
-        props.setProperty("enable.auto.commit", "true");
+        props.setProperty("enable.auto.commit", "false");
         props.setProperty("auto.commit.interval.ms", "1000");
         props.setProperty("session.timeout.ms", "30000");
         props.setProperty("key.deserializer", StringDeserializer.class.getName());

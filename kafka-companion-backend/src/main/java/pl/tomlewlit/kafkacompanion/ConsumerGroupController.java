@@ -4,6 +4,7 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
@@ -48,10 +49,9 @@ public class ConsumerGroupController {
         return result;
     }
 
-    @GetMapping("/api/consumer-group/{groupId}/{companionGroupId}")
+    @GetMapping("/api/consumer-group/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(
-            @PathVariable("groupId") String groupId,
-            @PathVariable("companionGroupId") String companionGroupId) throws ExecutionException, InterruptedException {
+            @PathVariable("groupId") String groupId) throws ExecutionException, InterruptedException {
 
         ConsumerGroupResponse result = ConsumerGroupResponse.builder().consumerGroupOffset(new ArrayList<>()).build();
         Map<TopicPartition, OffsetAndMetadata> offsets = adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
@@ -78,7 +78,7 @@ public class ConsumerGroupController {
                     });
                 })));
 
-        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(companionGroupId)) {
+        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer()) {
             Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList()));
             result.getConsumerGroupOffset().forEach(consumerGroupOffset -> {
                 String topic = consumerGroupOffset.getTopic();
@@ -93,12 +93,12 @@ public class ConsumerGroupController {
         return result;
     }
 
-    private KafkaConsumer<String, String> createConsumer(String groupId) {
+    private KafkaConsumer<String, String> createConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
-        props.put("group.id", groupId);
-        props.put("key.deserializer", StringDeserializer.class.getName());
-        props.put("value.deserializer", StringDeserializer.class.getName());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCompanionConfiguration.getBootstrapServers());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
         return new KafkaConsumer<>(props);
     }

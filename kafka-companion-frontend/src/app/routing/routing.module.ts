@@ -25,7 +25,7 @@ const routes: Routes = [
     component: ConsumerGroupComponent,
   },
   {
-    path: 'topic/messages/:topic',
+    path: 'topic/messages/:topic/:partitions',
     component: TopicComponent,
   },
   {

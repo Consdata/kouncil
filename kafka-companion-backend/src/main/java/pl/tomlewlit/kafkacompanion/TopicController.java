@@ -10,20 +10,9 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -36,13 +25,13 @@ public class TopicController {
 		this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
 	}
 
-	@GetMapping("/api/topic/messages/{topicName}/{groupId}/{timeout}")
+	@GetMapping("/api/topic/messages/{topicName}/{partitions}/{timeout}")
 	public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
-										  @PathVariable("groupId") String groupId,
+										  @PathVariable("partitions") int partitions,
 										  @PathVariable("timeout") int timeout) {
-		Properties props = createCommonProperties(groupId);
+		Properties props = createCommonProperties();
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-		try (KafkaConsumer<String, String> consumer = createConsumer(topicName, props)) {
+		try (KafkaConsumer<String, String> consumer = createConsumer(topicName, partitions, props)) {
 			consumer.poll(10); // just to trigger position assignment
 			int maxMessages = 100;
 			List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
@@ -79,12 +68,12 @@ public class TopicController {
 		}
 	}
 
-	@GetMapping("/api/topic/delta/{topicName}/{groupId}/{timeout}")
+	@GetMapping("/api/topic/delta/{topicName}/{partitions}/{timeout}")
 	public TopicMessages getDelta(@PathVariable("topicName") String topicName,
-								  @PathVariable("groupId") String groupId,
+								  @PathVariable("partitions") int partitions,
 								  @PathVariable("timeout") int timeout) {
-		Properties props = createCommonProperties(groupId);
-		KafkaConsumer<String, String> consumer = createConsumer(topicName, props);
+		Properties props = createCommonProperties();
+		KafkaConsumer<String, String> consumer = createConsumer(topicName, partitions, props);
 
 		List<Message> messages = new ArrayList<>();
 		Map<Integer, Long> partitionOffsets = new HashMap<>();
@@ -117,9 +106,14 @@ public class TopicController {
 	}
 
 	private KafkaConsumer<String, String> createConsumer(String topicName,
+														 int partitions,
 														 Properties props) {
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Collections.singletonList(topicName));
+		List<TopicPartition> topicPartitions = new ArrayList<>();
+		for (int i = 0; i < partitions; i++) {
+			topicPartitions.add(new TopicPartition(topicName, i));
+		}
+		consumer.assign(topicPartitions);
 		return consumer;
 	}
 
@@ -148,12 +142,12 @@ public class TopicController {
 				.replace("{{uuid}}", UUID.randomUUID().toString());
 	}
 
-	private Properties createCommonProperties(String groupId) {
+	private Properties createCommonProperties() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", kafkaCompanionConfiguration.getBootstrapServers());
-		props.put("group.id", groupId);
-		props.put("key.deserializer", StringDeserializer.class.getName());
-		props.put("value.deserializer", StringDeserializer.class.getName());
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCompanionConfiguration.getBootstrapServers());
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		return props;
 	}
 

@@ -7,7 +7,6 @@ import { Subscription } from "rxjs/Subscription";
 import { JsonGrid } from "app/topic/json-grid";
 import { DatePipe } from "@angular/common";
 import { Title } from "@angular/platform-browser";
-import {GroupIdService} from "../group-id.service";
 
 @Component({
   selector: 'app-topic',
@@ -20,13 +19,13 @@ export class TopicComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private http: HttpClient,
               private searchService: SearchService,
-              private groupIdService: GroupIdService,
               private jsonGrid: JsonGrid,
               private titleService: Title) {
   }
 
   partitionOffsets: {[key: number]: number} = {};
   topicName: string;
+  partitions: number;
   columns = [];
   allRows = [];
   filteredRows = [];
@@ -43,6 +42,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
+      this.partitions = params['partitions'];
       this.getMessages();
       this.titleService.setTitle(this.topicName + " KafkaCompanion");
       this.paused = true;
@@ -62,7 +62,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
 
   getMessages() {
-    this.http.get(`/api/topic/messages/${this.topicName}/${this.groupIdService.getGroupId()}/10000`).subscribe((data) => {
+    this.http.get(`/api/topic/messages/${this.topicName}/${this.partitions}/10000`).subscribe((data) => {
       this.partitionOffsets = ((<TopicMessages>data).partitionOffsets);
       this.jsonToGrid(<TopicMessages>data);
       this.progress = false;
@@ -74,7 +74,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get(`/api/topic/delta/${this.topicName}/${this.groupIdService.getGroupId()}/10000`).subscribe((data) => {
+    this.http.get(`/api/topic/delta/${this.topicName}/${this.partitions}/10000`).subscribe((data) => {
       let topicMessages = <TopicMessages>data;
       if (topicMessages.messages.length > 0) {
         this.jsonToGrid(<TopicMessages>data);
