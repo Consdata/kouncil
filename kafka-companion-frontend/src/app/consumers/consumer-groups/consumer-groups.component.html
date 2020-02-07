@@ -15,7 +15,7 @@
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
       <ng-template let-group="group" ngx-datatable-group-header-template>
         <div
-          class="kafka-consumer-groups-group-header">{{group.value[0].group === 'FAVOURITES' ? 'FAVOURITES' : 'ALL CONSUMER GROUPS (me=' + groupId + ')'}}
+          class="kafka-consumer-groups-group-header">{{group.value[0].group === 'FAVOURITES' ? 'FAVOURITES' : 'ALL CONSUMER GROUPS'}}
         </div>
       </ng-template>
     </ngx-datatable-group-header>
@@ -48,6 +48,8 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="kafka-consumer-groups-action btn"
            [routerLink]="['/consumer-group/', value]"><i class="material-icons left">search</i>BROWSE</a>
+        <a class="kafka-consumer-groups-action btn"
+           (click)="deleteConsumerGroup(value)"><i class="material-icons left btn-outline-warning">delete</i></a>
       </ng-template>
     </ngx-datatable-column>
 

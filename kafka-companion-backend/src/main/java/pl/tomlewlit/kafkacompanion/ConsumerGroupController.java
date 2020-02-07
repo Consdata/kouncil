@@ -10,6 +10,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -88,9 +89,13 @@ public class ConsumerGroupController {
                         partition), null));
             });
         }
-
-
         return result;
+    }
+
+    @DeleteMapping("/api/consumer-group/{groupId}")
+    public void deleteConsumerGroup(
+            @PathVariable("groupId") String groupId) {
+        adminClient.deleteConsumerGroups(Collections.singletonList(groupId));
     }
 
     private KafkaConsumer<String, String> createConsumer() {
@@ -99,7 +104,6 @@ public class ConsumerGroupController {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-
         return new KafkaConsumer<>(props);
     }
 }

@@ -21,7 +21,6 @@ export class JsonGrid {
         let row = {};
         if (object.valueJson) {
           this.handleObject(0, "", "", object.valueJson, row);
-          console.log(this.columns)
         }
         row['kafkaCompanionKey'] = object.key;
         row['kafkaCompanionOffset'] = object.offset;

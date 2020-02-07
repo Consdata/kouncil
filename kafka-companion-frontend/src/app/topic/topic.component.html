@@ -19,8 +19,11 @@
 
       <ngx-datatable-row-detail [rowHeight]="320">
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-          <div class="kafka-row-details"><div class="kafka-row-details-inner">{{row.kafkaCompanionValueJson ? formatJson(row.kafkaCompanionValueJson) :
-            row.kafkaCompanionValue}}</div></div>
+          <div class="kafka-row-details">
+            <div
+              class="kafka-row-details-inner">{{row.kafkaCompanionValueJson ? formatJson(row.kafkaCompanionValueJson) : row.kafkaCompanionValue}}
+            </div>
+          </div>
         </ng-template>
       </ngx-datatable-row-detail>
 

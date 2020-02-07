@@ -1,8 +1,8 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Subscription } from "rxjs/Subscription";
-import { SearchService } from "app/search.service";
-import { ConsumerGroup, ConsumerGroupsResponse } from "app/consumers/consumer-groups/consumer-groups";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {Subscription} from "rxjs/Subscription";
+import {SearchService} from "app/search.service";
+import {ConsumerGroup, ConsumerGroupsResponse} from "app/consumers/consumer-groups/consumer-groups";
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -23,16 +23,20 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   ngOnInit() {
-    this.http.get("/api/consumer-groups")
-        .subscribe(data => {
-          this.consumerGroups = (<ConsumerGroupsResponse> data).consumerGroups;
-          this.applyFavourites();
-          this.filter();
-        });
+    this.loadConsumerGroups();
 
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
+      });
+  }
+
+  private loadConsumerGroups() {
+    this.http.get("/api/consumer-groups")
+      .subscribe(data => {
+        this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
+        this.applyFavourites();
+        this.filter();
       });
   }
 
@@ -77,5 +81,14 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kafka-companion-consumer-groups-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  deleteConsumerGroup(value) {
+    console.log("delete ", value);
+    this.http.delete("/api/consumer-group/" + value).subscribe(data => {
+      this.loadConsumerGroups();
+    }, error => {
+      console.warn(error);
+    });
   }
 }

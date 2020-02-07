@@ -8,8 +8,7 @@ export class ConsumerGroupOffset {
   offset: number;
   endOffset: number;
   lag: number;
-  lastLag: number = 0;
-  pace:number;
+  pace: number;
 }
 
 
