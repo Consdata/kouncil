@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { TopicMessages } from "app/topic/topic";
-import { SearchService } from "app/search.service";
-import { Subscription } from "rxjs/Subscription";
-import { JsonGrid } from "app/topic/json-grid";
-import { DatePipe } from "@angular/common";
-import { Title } from "@angular/platform-browser";
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {TopicMessages} from "app/topic/topic";
+import {SearchService} from "app/search.service";
+import {Subscription} from "rxjs/Subscription";
+import {JsonGrid} from "app/topic/json-grid";
+import {DatePipe} from "@angular/common";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-topic',
@@ -23,17 +23,21 @@ export class TopicComponent implements OnInit, OnDestroy {
               private titleService: Title) {
   }
 
-  partitionOffsets: {[key: number]: number} = {};
+  partitionOffsets: { [key: number]: number } = {};
+  partitionEndOffsets: { [key: number]: number } = {};
   topicName: string;
-  partitions: number;
   columns = [];
   allRows = [];
   filteredRows = [];
   searchSubscription: Subscription;
   paused: boolean;
 
+  selectedPartition: number = 0;
+
   phrase: string;
   progress = true;
+
+  partitions: number[];
 
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate') expandColumnTemplate: any;
@@ -42,7 +46,6 @@ export class TopicComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
-      this.partitions = params['partitions'];
       this.getMessages();
       this.titleService.setTitle(this.topicName + " KafkaCompanion");
       this.paused = true;
@@ -62,11 +65,15 @@ export class TopicComponent implements OnInit, OnDestroy {
 
 
   getMessages() {
-    this.http.get(`/api/topic/messages/${this.topicName}/${this.partitions}/10000`).subscribe((data) => {
-      this.partitionOffsets = ((<TopicMessages>data).partitionOffsets);
-      this.jsonToGrid(<TopicMessages>data);
-      this.progress = false;
-      this.getMessagesDelta()
+    this.http.get(`/api/topic/messages/${this.topicName}/${this.selectedPartition}/latest`).subscribe((data) => {
+      let topicMessages = <TopicMessages>data;
+      if (topicMessages.messages.length > 0) {
+        this.partitionOffsets = ((<TopicMessages>data).partitionOffsets);
+        this.partitionEndOffsets = ((<TopicMessages>data).partitionEndOffsets);
+        this.jsonToGrid(<TopicMessages>data);
+        this.progress = false;
+        this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
+      }
     })
   }
 
@@ -74,13 +81,8 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get(`/api/topic/delta/${this.topicName}/${this.partitions}/10000`).subscribe((data) => {
-      let topicMessages = <TopicMessages>data;
-      if (topicMessages.messages.length > 0) {
-        this.jsonToGrid(<TopicMessages>data);
-      }
-      this.getMessagesDelta()
-    })
+    this.getMessages();
+    setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
   getRowClass = (row) => {
@@ -109,7 +111,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       key: message.key,
       timestamp: message.timestamp
     }));
-    this.jsonGrid.addObjects(values);
+    this.jsonGrid.replaceObjects(values);
 
     let columns = [];
     columns.push({
@@ -172,10 +174,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     return total;
   }
 
-  private getPartitionsCount() {
-    return Object.values(this.partitionOffsets).length;
-  }
-
   private tryParseJson(message) {
     try {
       return JSON.parse(message);
@@ -196,5 +194,10 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   private formatJson(object) {
     return JSON.stringify(object, null, 4);
+  }
+
+  togglePartition(i: any) {
+    this.selectedPartition = i;
+    this.getMessages();
   }
 }

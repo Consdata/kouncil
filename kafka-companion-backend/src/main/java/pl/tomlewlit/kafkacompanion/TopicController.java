@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -41,10 +42,10 @@ public class TopicController {
 				topicPartitions.add(new TopicPartition(topicName, i));
 			}
 			consumer.assign(topicPartitions);
-			Map<TopicPartition, Long> beginningOffsets = consumer.beginningOffsets(topicPartitions);
-			Long beginningOffsetForPartition = beginningOffsets.get(topicPartitions.get(partition));
+			Map<Integer, Long> beginningOffsets = consumer.beginningOffsets(topicPartitions).entrySet().stream().collect(Collectors.toMap(k -> k.getKey().partition(), e -> e.getValue()));
+			Long beginningOffsetForPartition = beginningOffsets.get(partition);
 			log.debug("TCM03 beginningOffsets={}, beginningOffsetForPartition={}", beginningOffsets, beginningOffsetForPartition);
-			Map<TopicPartition, Long> endOffsets = consumer.endOffsets(topicPartitions);
+			Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet().stream().collect(Collectors.toMap(k -> k.getKey().partition(), e -> e.getValue()));
 			log.debug("TCM04 endOffsets={}", endOffsets);
 
 			long position;
@@ -65,53 +66,20 @@ public class TopicController {
 			}
 
 			List<Message> messages = new ArrayList<>();
-
-			long time = 0;
-			while (time < 5) {
-				ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
-				time++;
-				mapRecords(messages, records);
-				if (records.isEmpty()) {
-					break;
+			int i = 0;
+			while (i < 5 && messages.size() < 25) {
+				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+				log.debug("TCM20 poll completed records.size={}", records.count());
+				if (!records.isEmpty()) {
+					mapRecords(messages, records);
 				}
+				i++;
 			}
-
-
 			messages.sort(Comparator.comparing(Message::getTimestamp));
 			TopicMessages topicMessages = TopicMessages.builder().messages(messages).partitionOffsets(beginningOffsets).partitionEndOffsets(endOffsets).build();
 			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partition, offset, topicMessages.getMessages().size());
 			return topicMessages;
 
-		}
-	}
-
-	@GetMapping("/api/topic/delta/{topicName}/{partitions}/{timeout}")
-	public TopicMessages getDelta(@PathVariable("topicName") String topicName,
-								  @PathVariable("partition") int partition,
-								  @PathVariable("timeout") int offset) {
-		Properties props = createCommonProperties();
-		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
-			List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-			log.debug("TCM02 partitionInfos.size={}, partitionInfos={}", partitionInfos.size(), partitionInfos);
-			List<TopicPartition> topicPartitions = new ArrayList<>();
-			for (int i = 0; i < partitionInfos.size(); i++) {
-				topicPartitions.add(new TopicPartition(topicName, i));
-			}
-			consumer.assign(topicPartitions);
-			Map<TopicPartition, Long> beginningOffsets = consumer.beginningOffsets(topicPartitions);
-			Long beginningOffsetForPartition = beginningOffsets.get(topicPartitions.get(partition));
-			log.debug("TCM03 beginningOffsets={}, beginningOffsetForPartition={}", beginningOffsets, beginningOffsetForPartition);
-			Map<TopicPartition, Long> endOffsets = consumer.endOffsets(topicPartitions);
-			log.debug("TCM04 endOffsets={}", endOffsets);
-			List<Message> messages = new ArrayList<>();
-			ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(100));
-			if (!records.isEmpty()) {
-				mapRecords(messages, records);
-			}
-
-			TopicMessages topicMessages = TopicMessages.builder().messages(messages).partitionOffsets(beginningOffsets).partitionEndOffsets(endOffsets).build();
-			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partition, offset, topicMessages.getMessages().size());
-			return topicMessages;
 		}
 	}
 
@@ -129,7 +97,6 @@ public class TopicController {
 
 	private void mapRecords(List<Message> messages,
 							ConsumerRecords<String, String> records) {
-		int i = 0;
 		for (ConsumerRecord<String, String> record : records) {
 			messages.add(Message
 					.builder()
@@ -139,7 +106,6 @@ public class TopicController {
 					.partition(record.partition())
 					.timestamp(record.timestamp())
 					.build());
-			if (i++ > 25) break;
 		}
 	}
 

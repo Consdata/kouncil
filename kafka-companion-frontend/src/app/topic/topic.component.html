@@ -38,10 +38,17 @@
           let-offset="offset">
           <div class="kafka-topic-footer">
             <div class="kafka-topic-footer-segment">
-              Total: <span class="kafka-badge-primary">{{getTotal() | number}}</span>
+              Partitions:
+              <span *ngFor="let i of partitions">
+              <span [ngClass]="(i==selectedPartition)?'kafka-badge-primary':'kafka-badge-secondary'"
+                    (click)="togglePartition(i)">{{i}}</span>
+                </span>
             </div>
             <div class="kafka-topic-footer-segment">
-              Partitions: <span class="kafka-badge-secondary">{{getPartitionsCount()}}</span>
+              Start offset: {{partitionOffsets[selectedPartition]}}
+            </div>
+            <div class="kafka-topic-footer-segment">
+              End offset: {{partitionEndOffsets[selectedPartition]}}
             </div>
           </div>
         </ng-template>
