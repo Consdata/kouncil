@@ -21,7 +21,7 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
-    "@swimlane/ngx-datatable": "11.2.0",
+    "@swimlane/ngx-datatable": "11.3.2",
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
     "jquery": "^3.3.1",
