@@ -6,7 +6,6 @@ import org.apache.kafka.common.Node;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +14,6 @@ import java.util.List;
 @RestController
 public class BrokersController {
 
-    @NotNull
     private AdminClient adminClient;
 
     public BrokersController(AdminClient adminClient) {

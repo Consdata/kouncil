@@ -5,13 +5,12 @@ During work on our latest messaging system which is based on Kafka, we needed a 
 * browse messages in a table format,
 * generate messages with auto-filled placeholders.
 
-# Developent
-For backend, run KafkaCompanionApplication passing parameter ```bootstrapServers=localhost:9092```.
+# Development
+For a backend, run KafkaCompanionApplication passing parameter ```bootstrapServers=localhost:9092```.
 
-For frontent, having ng-cli installed, run ```ng start``` preceeded by ```npm install```
+For a frontend, having ng-cli installed, run ```ng start``` proceeded by ```npm install```
 
 # Deployment
 ```
-mvn package -P dist
-docker run -d -p 64000:8080 -e bootstrapServers="localhost:9092" --name kafka-companion tomlewlit/kafka-companion
+docker run -d -p 64000:8080 -e bootstrapServers="localhost:9092" consdata/kafka-companion:latest
 ```

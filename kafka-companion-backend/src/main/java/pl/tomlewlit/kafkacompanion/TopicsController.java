@@ -7,7 +7,6 @@ import org.apache.kafka.clients.admin.TopicDescription;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 @RestController
 public class TopicsController {
 
-    @NotNull
     private AdminClient adminClient;
 
     public TopicsController(AdminClient adminClient) {
