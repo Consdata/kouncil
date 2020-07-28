@@ -24,11 +24,13 @@
     "@swimlane/ngx-datatable": "11.2.0",
     "bootstrap": "^4.4.1",
     "core-js": "^2.4.1",
+    "bootstrap": "^4.4.1",
+    "core-js": "^2.6.11",
     "jquery": "^3.3.1",
     "materialize-css": "^1.0.0-beta",
     "ngx-textarea-autosize": "^1.1.1",
     "rxjs": "^5.5.6",
-    "zone.js": "^0.8.19"
+    "zone.js": "^0.10.2"
   },
   "devDependencies": {
     "@angular/cli": "~1.7.3",

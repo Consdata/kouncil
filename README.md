@@ -1,5 +1,9 @@
 # Kafka Companion
-Simple frontend for browsing and adding messages to the Kafka topics.
+During work on our latest messaging system which is based on Kafka, we needed a simple tool for browsing and testing. We went on a search for an easy and free solution, but we didn't find anything that suits our needs. So we came up with our solution. If your payload is in JSON, you're in the right place. Kafka Companion lets you 
+* check cluster state, 
+* monitor consumers lag,
+* browse messages in a table format,
+* generate messages with auto-filled placeholders.
 
 # Developent
 For backend, run KafkaCompanionApplication passing parameter ```bootstrapServers=localhost:9092```.
