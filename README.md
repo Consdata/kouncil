@@ -6,9 +6,9 @@ During work on our latest messaging system which is based on Kafka, we needed a 
 * generate messages with auto-filled placeholders.
 
 # Development
-For a backend, run KafkaCompanionApplication passing parameter ```bootstrapServers=localhost:9092```.
+For a backend, run KafkaCompanionApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
 
-For a frontend, having ng-cli installed, run ```ng start``` proceeded by ```npm install```
+For a frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
 
 # Deployment
 ```
