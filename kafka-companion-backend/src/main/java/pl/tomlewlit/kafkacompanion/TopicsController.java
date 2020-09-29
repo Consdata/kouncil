@@ -6,6 +6,7 @@ import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,13 +17,14 @@ import java.util.stream.Collectors;
 @RestController
 public class TopicsController {
 
-    private AdminClient adminClient;
+    private final AdminClient adminClient;
 
     public TopicsController(AdminClient adminClient) {
         this.adminClient = adminClient;
     }
 
     @GetMapping("/api/topics")
+    @EntryExitLogger
     public Topics getTopics() {
         try {
             ListTopicsResult listTopicsResult = adminClient.listTopics();

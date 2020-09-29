@@ -10,6 +10,30 @@ For a backend, run KafkaCompanionApplication passing parameter ```bootstrapServe
 
 For a frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
 
+For a local Kafka with two test topics, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your docker host IP)
+```
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.76
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "TestTopic:4:1,TestTopicCompact:4:1:compact"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+run ```docker-compose up -d```
+
+more info: https://hub.docker.com/r/wurstmeister/kafka/
+
 # Deployment
 ```
 docker run -d -p 64000:8080 -e bootstrapServers="localhost:9092" consdata/kafka-companion:latest
