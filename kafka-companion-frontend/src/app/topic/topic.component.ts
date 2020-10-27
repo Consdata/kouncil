@@ -35,7 +35,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   phrase: string;
   progress = true;
 
-  @ViewChild('table', { static: false }) table: any;
+  @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', { static: true }) expandColumnTemplate: any;
   @ViewChild('headerTemplate', { static: true }) headerTemplate: TemplateRef<any>;
 

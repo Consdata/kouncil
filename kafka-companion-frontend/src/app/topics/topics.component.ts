@@ -17,7 +17,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   topics: TopicMetadata[] = [];
   grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
-  @ViewChild('table', { static: false }) private table: ElementRef;
+  @ViewChild('table') private table: ElementRef;
 
   private subscription: Subscription;
 
