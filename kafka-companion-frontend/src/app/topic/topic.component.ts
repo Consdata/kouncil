@@ -35,9 +35,9 @@ export class TopicComponent implements OnInit, OnDestroy {
   phrase: string;
   progress = true;
 
-  @ViewChild('table') table: any;
-  @ViewChild('expandColumnTemplate') expandColumnTemplate: any;
-  @ViewChild('headerTemplate') headerTemplate: TemplateRef<any>;
+  @ViewChild('table', { static: false }) table: any;
+  @ViewChild('expandColumnTemplate', { static: true }) expandColumnTemplate: any;
+  @ViewChild('headerTemplate', { static: true }) headerTemplate: TemplateRef<any>;
 
   ngOnInit() {
     this.route.params.subscribe(params => {

@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 })
 export class NavbarComponent implements OnInit {
 
-  @ViewChild('searchInput') private searchInputElementRef: ElementRef;
+  @ViewChild('searchInput', { static: true }) private searchInputElementRef: ElementRef;
 
   phrase: string;
 

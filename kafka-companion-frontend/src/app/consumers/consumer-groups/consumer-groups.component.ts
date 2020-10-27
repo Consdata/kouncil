@@ -18,7 +18,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   consumerGroups: ConsumerGroup[] = [];
   grouped: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table: ElementRef;
+  @ViewChild('table', { static: false }) private table: ElementRef;
 
   private subscription: Subscription;
 
