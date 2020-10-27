@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { SearchService } from "app/search.service";
 import { Brokers } from "app/brokers/brokers";
 import { Broker } from "app/brokers/broker";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'kafka-brokers',

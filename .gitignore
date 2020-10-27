@@ -5,3 +5,4 @@ idea
 .idea
 local
 *.exe
+/node_modules/

@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 import {SearchService} from "app/search.service";
 import {ConsumerGroup, ConsumerGroupsResponse} from "app/consumers/consumer-groups/consumer-groups";
 

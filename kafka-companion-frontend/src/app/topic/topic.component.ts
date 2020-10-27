@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { TopicMessages } from "app/topic/topic";
 import { SearchService } from "app/search.service";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import { JsonGrid } from "app/topic/json-grid";
 import { DatePipe } from "@angular/common";
 import { Title } from "@angular/platform-browser";
