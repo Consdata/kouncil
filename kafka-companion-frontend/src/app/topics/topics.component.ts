@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Topics } from "app/topics/topics";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
 
