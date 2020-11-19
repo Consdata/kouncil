@@ -65,15 +65,12 @@ export class TopicComponent implements OnInit, OnDestroy {
 
 
   getMessages() {
-    this.http.get(`/api/topic/messages/${this.topicName}/${this.selectedPartition}/latest`).subscribe((data) => {
-      let topicMessages = <TopicMessages>data;
-      if (topicMessages.messages.length > 0) {
-        this.partitionOffsets = ((<TopicMessages>data).partitionOffsets);
-        this.partitionEndOffsets = ((<TopicMessages>data).partitionEndOffsets);
-        this.jsonToGrid(<TopicMessages>data);
+    this.http.get(`/api/topic/messages/${this.topicName}/${this.selectedPartition}/latest`).subscribe((data :TopicMessages) => {
+        this.partitionOffsets = data.partitionOffsets;
+        this.partitionEndOffsets = data.partitionEndOffsets;
+        this.jsonToGrid(data);
         this.progress = false;
         this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
-      }
     })
   }
 
@@ -105,7 +102,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     let values = [];
     topicMessages.messages.forEach(message => values.push({
       value: message.value,
-      valueJson: this.tryParseJson(message.value),
+      valueJson: TopicComponent.tryParseJson(message.value),
       partition: message.partition,
       offset: message.offset,
       key: message.key,
@@ -121,15 +118,6 @@ export class TopicComponent implements OnInit, OnDestroy {
       draggable: false,
       canAutoResize: false,
       cellTemplate: this.expandColumnTemplate
-    });
-    columns.push({
-      width: 40,
-      resizable: true,
-      sortable: true,
-      draggable: true,
-      canAutoResize: true,
-      name: 'part',
-      prop: 'kafkaCompanionPartition'
     });
     columns.push({
       width: 100,
@@ -168,13 +156,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows();
   }
 
-  private getTotal() {
-    let total = 0;
-    Object.values(this.partitionOffsets).forEach(partitionOffset => total += <number> partitionOffset);
-    return total;
-  }
-
-  private tryParseJson(message) {
+  private static tryParseJson(message) {
     try {
       return JSON.parse(message);
     } catch (e) {
@@ -182,7 +164,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  private toggleExpandRow(row) {
+  toggleExpandRow(row) {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
@@ -192,7 +174,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
   }
 
-  private formatJson(object) {
+  formatJson(object) {
     return JSON.stringify(object, null, 4);
   }
 

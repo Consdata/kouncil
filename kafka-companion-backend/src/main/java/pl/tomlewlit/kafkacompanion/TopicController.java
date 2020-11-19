@@ -44,10 +44,14 @@ public class TopicController {
 				topicPartitions.add(new TopicPartition(topicName, i));
 			}
 			consumer.assign(topicPartitions);
-			Map<Integer, Long> beginningOffsets = consumer.beginningOffsets(topicPartitions).entrySet().stream().collect(Collectors.toMap(k -> k.getKey().partition(), e -> e.getValue()));
+
+			Map<Integer, Long> beginningOffsets = consumer
+					.beginningOffsets(topicPartitions).entrySet().stream()
+					.collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
 			Long beginningOffsetForPartition = beginningOffsets.get(partition);
 			log.debug("TCM03 beginningOffsets={}, beginningOffsetForPartition={}", beginningOffsets, beginningOffsetForPartition);
-			Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet().stream().collect(Collectors.toMap(k -> k.getKey().partition(), e -> e.getValue()));
+			Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet()
+					.stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
 			log.debug("TCM04 endOffsets={}", endOffsets);
 
 			long position;
@@ -78,7 +82,11 @@ public class TopicController {
 				i++;
 			}
 			messages.sort(Comparator.comparing(Message::getTimestamp));
-			TopicMessages topicMessages = TopicMessages.builder().messages(messages).partitionOffsets(beginningOffsets).partitionEndOffsets(endOffsets).build();
+			TopicMessages topicMessages = TopicMessages.builder()
+					.messages(messages)
+					.partitionOffsets(beginningOffsets)
+					.partitionEndOffsets(endOffsets)
+					.build();
 			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partition, offset, topicMessages.getMessages().size());
 			return topicMessages;
 
