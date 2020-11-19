@@ -14,7 +14,8 @@ export class JsonGrid {
   constructor(private datePipe: DatePipe) {
   }
 
-  addObjects(objects: any[]) {
+  replaceObjects(objects: any[]) {
+    this.rows.length = 0;
     let firstLoad = this.rows.length == 0;
     objects.forEach(object => {
       try {

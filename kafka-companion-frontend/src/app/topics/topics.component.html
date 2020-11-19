@@ -29,7 +29,7 @@
 
     <ngx-datatable-column prop="name" name="Name" [width]="500" [sortable]="false" [resizeable]="false">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="kafka-topics-name" [routerLink]="['/topic/messages', value, row.partitions]">{{value}}</a>
+        <a class="kafka-topics-name" [routerLink]="['/topic/messages', value]">{{value}}</a>
       </ng-template>
     </ngx-datatable-column>
 
@@ -42,9 +42,9 @@
     <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <a class="kafka-topic-action btn"
-           [routerLink]="['/topic/messages', value, row.partitions]"><i class="material-icons left">search</i>BROWSE</a>
+           [routerLink]="['/topic/messages', value]"><i class="material-icons left">search</i>BROWSE</a>
         <a class="kafka-topic-action kafka-topic-action-secondary btn btn-small"
-           [routerLink]="['/topic/send', value]"><i class="material-icons left">add</i>SEND</a>
+           [routerLink]="['/topic/send', {topicName: value}]"><i class="material-icons left">add</i>SEND</a>
       </ng-template>
     </ngx-datatable-column>
 

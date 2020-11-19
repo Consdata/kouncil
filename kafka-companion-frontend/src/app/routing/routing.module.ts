@@ -25,11 +25,11 @@ const routes: Routes = [
     component: ConsumerGroupComponent,
   },
   {
-    path: 'topic/messages/:topic/:partitions',
+    path: 'topic/messages/:topic',
     component: TopicComponent,
   },
   {
-    path: 'topic/send/:topic',
+    path: 'topic/send',
     component: SendComponent,
   },
   {

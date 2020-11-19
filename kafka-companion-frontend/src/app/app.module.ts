@@ -16,7 +16,8 @@ import { AutosizeDirective } from "app/util/autosize.directive";
 import { ConsumerGroupsComponent } from "app/consumers/consumer-groups/consumer-groups.component";
 import { ConsumerGroupComponent } from "app/consumers/consumer-group/consumer-group.component";
 import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
-
+import { ClipboardModule } from '@angular/cdk/clipboard'
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,9 @@ import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
     HttpClientModule,
     RoutingModule,
     FormsModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    ClipboardModule,
+    NgxJsonViewerModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]

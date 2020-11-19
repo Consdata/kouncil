@@ -12,7 +12,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 
+import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -27,75 +29,70 @@ public class TopicController {
         this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
     }
 
-    @GetMapping("/api/topic/messages/{topicName}/{partitions}/{timeout}")
-    @EntryExitLogger
-    public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
-                                          @PathVariable("partitions") int partitions,
-                                          @PathVariable("timeout") int timeout) {
-        Properties props = createCommonProperties();
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        try (KafkaConsumer<String, String> consumer = createConsumer(topicName, partitions, props)) {
-            consumer.poll(10); // just to trigger position assignment
-            int maxMessages = 100;
-            List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-            int maxPartitionMessages = maxMessages / partitionInfos.size();
-            Map<Integer, Long> partitionOffsets = new HashMap<>();
-            partitionInfos.forEach(partitionInfo -> {
-                TopicPartition topicPartition = new TopicPartition(topicName, partitionInfo.partition());
-                long position = consumer.position(topicPartition);
-                partitionOffsets.put(topicPartition.partition(), position);
-                log.info("topicPartition: {}, position: {}", topicPartition, position);
-                if (position > maxPartitionMessages) {
-                    consumer.seek(topicPartition, position - maxPartitionMessages);
-                } else {
-                    position = 0;
-                    consumer.seekToBeginning(Collections.singletonList(topicPartition));
-                }
-            });
+	@GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
+	public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
+										  @PathVariable("partition") int partition,
+										  @PathVariable("offset") String offset) {
+		log.debug("TCM01 topicName={}, partition={}, offset={}", topicName, partition, offset);
+		Properties props = createCommonProperties();
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
+			List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
+			log.debug("TCM02 partitionInfos.size={}, partitionInfos={}", partitionInfos.size(), partitionInfos);
+			List<TopicPartition> topicPartitions = new ArrayList<>();
+			for (int i = 0; i < partitionInfos.size(); i++) {
+				topicPartitions.add(new TopicPartition(topicName, i));
+			}
+			consumer.assign(topicPartitions);
 
-            List<Message> messages = new ArrayList<>();
+			Map<Integer, Long> beginningOffsets = consumer
+					.beginningOffsets(topicPartitions).entrySet().stream()
+					.collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
+			Long beginningOffsetForPartition = beginningOffsets.get(partition);
+			log.debug("TCM03 beginningOffsets={}, beginningOffsetForPartition={}", beginningOffsets, beginningOffsetForPartition);
+			Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet()
+					.stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
+			log.debug("TCM04 endOffsets={}", endOffsets);
 
-            long time = 0;
-            while (time < timeout) {
-                ConsumerRecords<String, String> records = consumer.poll(1000);
-                time += 1000;
-                mapRecords(messages, records, partitionOffsets);
-                if (records.isEmpty()) {
-                    break;
-                }
-            }
+			long position;
 
+			if ("latest".equals(offset)) {
+				position = consumer.position(topicPartitions.get(partition));
+			} else {
+				position = Long.parseLong(offset);
+			}
+			log.debug("TCM05 position={}", position);
+			long seekTo = position - 25;
+			if (seekTo > beginningOffsetForPartition) {
+				log.debug("TCM11 seekTo={}", seekTo);
+				consumer.seek(topicPartitions.get(partition), seekTo);
+			} else {
+				log.debug("TCM12 seekToBeginning");
+				consumer.seekToBeginning(Collections.singletonList(topicPartitions.get(partition)));
+			}
 
-            messages.sort(Comparator.comparing(Message::getTimestamp));
-            return TopicMessages.builder().messages(messages).partitionOffsets(partitionOffsets).build();
-        }
-    }
+			List<Message> messages = new ArrayList<>();
+			int i = 0;
+			// couple first polls after seek don't return eny records
+			while (i < 100 && messages.size() < 25) {
+				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
+				if (!records.isEmpty()) {
+					mapRecords(messages, records);
+				}
+				i++;
+			}
+			log.debug("TCM20 poll completed records.size={}", messages.size());
+			messages.sort(Comparator.comparing(Message::getTimestamp));
+			TopicMessages topicMessages = TopicMessages.builder()
+					.messages(messages)
+					.partitionOffsets(beginningOffsets)
+					.partitionEndOffsets(endOffsets)
+					.build();
+			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partition, offset, topicMessages.getMessages().size());
+			return topicMessages;
 
-    @GetMapping("/api/topic/delta/{topicName}/{partitions}/{timeout}")
-    @EntryExitLogger
-    public TopicMessages getDelta(@PathVariable("topicName") String topicName,
-                                  @PathVariable("partitions") int partitions,
-                                  @PathVariable("timeout") int timeout) {
-        Properties props = createCommonProperties();
-        KafkaConsumer<String, String> consumer = createConsumer(topicName, partitions, props);
-
-        List<Message> messages = new ArrayList<>();
-        Map<Integer, Long> partitionOffsets = new HashMap<>();
-        try {
-            long time = 0;
-            while (time < timeout) {
-                ConsumerRecords<String, String> records = consumer.poll(1000);
-                mapRecords(messages, records, partitionOffsets);
-                time += 1000;
-                if (!records.isEmpty()) {
-                    break;
-                }
-            }
-        } finally {
-            consumer.close();
-        }
-        return TopicMessages.builder().messages(messages).partitionOffsets(partitionOffsets).build();
-    }
+		}
+	}
 
     @PostMapping("/api/topic/send/{topic}/{count}")
     @EntryExitLogger
@@ -108,35 +105,19 @@ public class TopicController {
         kafkaTemplate.flush();
     }
 
-    private KafkaConsumer<String, String> createConsumer(String topicName,
-                                                         int partitions,
-                                                         Properties props) {
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        List<TopicPartition> topicPartitions = new ArrayList<>();
-        for (int i = 0; i < partitions; i++) {
-            topicPartitions.add(new TopicPartition(topicName, i));
-        }
-        consumer.assign(topicPartitions);
-        return consumer;
-    }
-
-    private void mapRecords(List<Message> messages,
-                            ConsumerRecords<String, String> records,
-                            Map<Integer, Long> partitionOffsets) {
-        for (ConsumerRecord<String, String> record : records) {
-            if (partitionOffsets.getOrDefault(record.partition(), -1L) < record.offset()) {
-                partitionOffsets.put(record.partition(), record.offset());
-            }
-            messages.add(Message
-                    .builder()
-                    .key(record.key())
-                    .value(record.value())
-                    .offset(record.offset())
-                    .partition(record.partition())
-                    .timestamp(record.timestamp())
-                    .build());
-        }
-    }
+	private void mapRecords(List<Message> messages,
+							ConsumerRecords<String, String> records) {
+		for (ConsumerRecord<String, String> record : records) {
+			messages.add(Message
+					.builder()
+					.key(record.key())
+					.value(record.value())
+					.offset(record.offset())
+					.partition(record.partition())
+					.timestamp(record.timestamp())
+					.build());
+		}
+	}
 
     private String replaceTokens(String data, int i) {
         return data
