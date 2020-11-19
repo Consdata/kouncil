@@ -26,7 +26,7 @@
                 <button [cdkCopyToClipboard]="formatJson(row.kafkaCompanionValueJson)">Copy to clipboard</button>
                 <button [routerLink]="['/topic/send', {topicName: topicName, key:row.kafkaCompanionKey,value:formatJson(row.kafkaCompanionValueJson)}]">Reply</button>
               </div>
-              {{row.kafkaCompanionValueJson ? formatJson(row.kafkaCompanionValueJson) : row.kafkaCompanionValue}}
+              <ngx-json-viewer [json]="row.kafkaCompanionValueJson"></ngx-json-viewer>
             </div>
           </div>
         </ng-template>

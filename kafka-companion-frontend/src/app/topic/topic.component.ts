@@ -175,7 +175,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   formatJson(object) {
-    return JSON.stringify(object, null, 4);
+    return JSON.stringify(object, null, 2);
   }
 
   togglePartition(i: any) {

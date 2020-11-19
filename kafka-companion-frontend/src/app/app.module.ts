@@ -17,6 +17,7 @@ import { ConsumerGroupsComponent } from "app/consumers/consumer-groups/consumer-
 import { ConsumerGroupComponent } from "app/consumers/consumer-group/consumer-group.component";
 import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
 import { ClipboardModule } from '@angular/cdk/clipboard'
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
     RoutingModule,
     FormsModule,
     NgxDatatableModule,
-    ClipboardModule
+    ClipboardModule,
+    NgxJsonViewerModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]
