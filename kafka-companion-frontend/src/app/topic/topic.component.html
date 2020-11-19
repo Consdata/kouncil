@@ -2,9 +2,9 @@
   <div class="topic-toolbar-area">
     <kafka-toolbar [name]="topicName" (onAction)="onAction($event)"></kafka-toolbar>
   </div>
-  <div *ngIf="progress" class="kafka-progress">Loading data...</div>
+  <div *ngIf="progress" class="kafka-progress"></div>
   <div class="topic-table-area">
-    <ngx-datatable *ngIf="!progress"
+    <ngx-datatable
                    class="topic-table material expandable"
                    [rows]="filteredRows"
                    [columns]="columns"
@@ -18,27 +18,26 @@
                    #table>
 
       <ngx-datatable-row-detail [rowHeight]="320">
-        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+        <ng-template let-row="row" ngx-datatable-row-detail-template>
           <div class="kafka-row-details">
             <div
-              class="kafka-row-details-inner">{{row.kafkaCompanionValueJson ? formatJson(row.kafkaCompanionValueJson) : row.kafkaCompanionValue}}
+              class="kafka-row-details-inner">
+              <div>
+                <button [cdkCopyToClipboard]="formatJson(row.kafkaCompanionValueJson)">Copy to clipboard</button>
+                <button [routerLink]="['/topic/send', {topicName: topicName, key:row.kafkaCompanionKey,value:formatJson(row.kafkaCompanionValueJson)}]">Reply</button>
+              </div>
+              {{row.kafkaCompanionValueJson ? formatJson(row.kafkaCompanionValueJson) : row.kafkaCompanionValue}}
             </div>
           </div>
         </ng-template>
       </ngx-datatable-row-detail>
 
-
       <ngx-datatable-footer>
         <ng-template
-          ngx-datatable-footer-template
-          let-rowCount="rowCount"
-          let-pageSize="pageSize"
-          let-selectedCount="selectedCount"
-          let-curPage="curPage"
-          let-offset="offset">
+          ngx-datatable-footer-template>
           <div class="kafka-topic-footer">
             <div class="kafka-topic-footer-segment">
-              Partitions:
+              Choose partition:
               <span *ngFor="let i of partitions">
               <span [ngClass]="(i==selectedPartition)?'kafka-badge-primary':'kafka-badge-secondary'"
                     (click)="togglePartition(i)">{{i}}</span>

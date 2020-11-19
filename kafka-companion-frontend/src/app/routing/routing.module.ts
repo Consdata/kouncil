@@ -29,7 +29,7 @@ const routes: Routes = [
     component: TopicComponent,
   },
   {
-    path: 'topic/send/:topic',
+    path: 'topic/send',
     component: SendComponent,
   },
   {

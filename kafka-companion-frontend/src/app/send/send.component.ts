@@ -21,7 +21,9 @@ export class SendComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.topicName = params['topic'];
+      this.topicName = params['topicName'];
+      this.message.key = params['key'];
+      this.message.value = params['value'];
       this.returnUrl = params.returnUrl;
     });
   }

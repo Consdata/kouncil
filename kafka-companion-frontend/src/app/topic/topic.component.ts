@@ -180,6 +180,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   togglePartition(i: any) {
     this.selectedPartition = i;
+    this.progress = true;
     this.getMessages();
   }
 }

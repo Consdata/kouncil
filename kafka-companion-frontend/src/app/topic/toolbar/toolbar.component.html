@@ -10,6 +10,6 @@
         <span class="lever kafka-toolbar-lever"></span>
       </label>
     </div>
-    <a class="kafka-topic-action btn btn-small btn-flat waves-light" [routerLink]="['/topic/send', name]"><i class="material-icons left">add</i>Add</a>
+    <a class="kafka-topic-action btn btn-small btn-flat waves-light" [routerLink]="['/topic/send', {topicName: name}]"><i class="material-icons left">add</i>Add</a>
   </div>
 </div>
