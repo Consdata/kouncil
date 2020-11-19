@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -23,10 +22,8 @@ import java.util.stream.Collectors;
 @RestController
 public class ConsumerGroupController {
 
-    @NotNull
     private AdminClient adminClient;
 
-    @NotNull
     private KafkaCompanionConfiguration kafkaCompanionConfiguration;
 
     public ConsumerGroupController(AdminClient adminClient, KafkaCompanionConfiguration kafkaCompanionConfiguration) {

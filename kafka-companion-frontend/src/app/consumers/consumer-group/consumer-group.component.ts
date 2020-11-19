@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {ConsumerGroupOffset, ConsumerGroupResponse} from "app/consumers/consumer-group/consumer-group";
 

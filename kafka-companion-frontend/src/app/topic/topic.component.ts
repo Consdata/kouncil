@@ -1,12 +1,12 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {TopicMessages} from "app/topic/topic";
-import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs/Subscription";
-import {JsonGrid} from "app/topic/json-grid";
-import {DatePipe} from "@angular/common";
-import {Title} from "@angular/platform-browser";
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { TopicMessages } from "app/topic/topic";
+import { SearchService } from "app/search.service";
+import { Subscription } from "rxjs";
+import { JsonGrid } from "app/topic/json-grid";
+import { DatePipe } from "@angular/common";
+import { Title } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-topic',
@@ -40,8 +40,8 @@ export class TopicComponent implements OnInit, OnDestroy {
   partitions: number[];
 
   @ViewChild('table') table: any;
-  @ViewChild('expandColumnTemplate') expandColumnTemplate: any;
-  @ViewChild('headerTemplate') headerTemplate: TemplateRef<any>;
+  @ViewChild('expandColumnTemplate', { static: true }) expandColumnTemplate: any;
+  @ViewChild('headerTemplate', { static: true }) headerTemplate: TemplateRef<any>;
 
   ngOnInit() {
     this.route.params.subscribe(params => {

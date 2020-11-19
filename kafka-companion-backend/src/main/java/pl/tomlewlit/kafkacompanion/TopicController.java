@@ -8,9 +8,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,12 +20,14 @@ import java.util.stream.Collectors;
 @RestController
 public class TopicController {
 
-	@Autowired
-	public TopicController(KafkaTemplate<String, String> kafkaTemplate,
-						   KafkaCompanionConfiguration kafkaCompanionConfiguration) {
-		this.kafkaTemplate = kafkaTemplate;
-		this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
-	}
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaCompanionConfiguration kafkaCompanionConfiguration;
+
+    public TopicController(KafkaTemplate<String, String> kafkaTemplate,
+                           KafkaCompanionConfiguration kafkaCompanionConfiguration) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.kafkaCompanionConfiguration = kafkaCompanionConfiguration;
+    }
 
 	@GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
 	public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
@@ -83,17 +85,16 @@ public class TopicController {
 		}
 	}
 
-	@PostMapping("/api/topic/send/{topic}/{key}/{count}")
-	public void send(@PathVariable("topic") String topic,
-					 @PathVariable("key") String key,
-					 @PathVariable("count") int count,
-					 @RequestBody String data) {
-		log.info("sending");
-		for (int i = 0; i < count; i++) {
-			kafkaTemplate.send(topic, replaceTokens(key, i), replaceTokens(data, i));
-		}
-		kafkaTemplate.flush();
-	}
+    @PostMapping("/api/topic/send/{topic}/{count}")
+    @EntryExitLogger
+    public void send(@PathVariable("topic") String topic,
+                     @PathVariable("count") int count,
+                     @RequestBody Message message) {
+        for (int i = 0; i < count; i++) {
+            kafkaTemplate.send(topic, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
+        }
+        kafkaTemplate.flush();
+    }
 
 	private void mapRecords(List<Message> messages,
 							ConsumerRecords<String, String> records) {
@@ -109,22 +110,19 @@ public class TopicController {
 		}
 	}
 
-	private String replaceTokens(String data, int i) {
-		return data
-				.replace("{{count}}", String.valueOf(i))
-				.replace("{{timestamp}}", String.valueOf(System.currentTimeMillis()))
-				.replace("{{uuid}}", UUID.randomUUID().toString());
-	}
+    private String replaceTokens(String data, int i) {
+        return data
+                .replace("{{count}}", String.valueOf(i))
+                .replace("{{timestamp}}", String.valueOf(System.currentTimeMillis()))
+                .replace("{{uuid}}", UUID.randomUUID().toString());
+    }
 
-	private Properties createCommonProperties() {
-		Properties props = new Properties();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCompanionConfiguration.getBootstrapServers());
-		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		return props;
-	}
-
-	private KafkaTemplate<String, String> kafkaTemplate;
-	private KafkaCompanionConfiguration kafkaCompanionConfiguration;
+    private Properties createCommonProperties() {
+        Properties props = new Properties();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCompanionConfiguration.getBootstrapServers());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        return props;
+    }
 }

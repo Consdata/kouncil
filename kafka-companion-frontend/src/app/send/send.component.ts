@@ -27,8 +27,7 @@ export class SendComponent implements OnInit {
   }
 
   onSubmit() {
-    this.http.post(`/api/topic/send/${this.topicName}/${this.message.key}/${this.count}`, this.message.value).subscribe(data => {
-      console.log("done");
+    this.http.post(`/api/topic/send/${this.topicName}/${this.count}`, this.message).subscribe(data => {
       this._location.back();
     });
   }
