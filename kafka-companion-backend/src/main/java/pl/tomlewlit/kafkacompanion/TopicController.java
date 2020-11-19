@@ -73,14 +73,15 @@ public class TopicController {
 
 			List<Message> messages = new ArrayList<>();
 			int i = 0;
-			while (i < 5 && messages.size() < 25) {
-				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-				log.debug("TCM20 poll completed records.size={}", records.count());
+			// couple first polls after seek don't return eny records
+			while (i < 100 && messages.size() < 25) {
+				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
 				if (!records.isEmpty()) {
 					mapRecords(messages, records);
 				}
 				i++;
 			}
+			log.debug("TCM20 poll completed records.size={}", messages.size());
 			messages.sort(Comparator.comparing(Message::getTimestamp));
 			TopicMessages topicMessages = TopicMessages.builder()
 					.messages(messages)
