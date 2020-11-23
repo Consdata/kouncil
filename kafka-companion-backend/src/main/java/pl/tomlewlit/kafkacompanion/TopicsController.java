@@ -25,16 +25,16 @@ public class TopicsController {
 
     @GetMapping("/api/topics")
     @EntryExitLogger
-    public Topics getTopics() {
+    public TopicsDto getTopics() {
         try {
             ListTopicsResult listTopicsResult = adminClient.listTopics();
             List<String> children = new ArrayList<>(listTopicsResult.names().get());
             Collections.sort(children);
             // XXX: optimization possiblity: describe all topics in one call
             List<TopicMetadata> topics = children.stream().map(this::getTopicMetadata).collect(Collectors.toList());
-            return Topics.builder().topics(topics).build();
+            return TopicsDto.builder().topics(topics).build();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new KafkaCompanionRuntimeException(e);
         }
     }
 
@@ -49,7 +49,7 @@ public class TopicsController {
             }
             return TopicMetadata.builder().name(name).partitions(partitions).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KafkaCompanionRuntimeException(e);
         }
     }
 

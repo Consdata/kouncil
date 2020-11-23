@@ -23,7 +23,7 @@ public class BrokersController {
 
     @GetMapping("/api/brokers")
     @EntryExitLogger
-    public Brokers getBrokers() {
+    public BrokersDto getBrokers() {
         try {
             DescribeClusterResult describeClusterResult = adminClient.describeCluster();
             Collection<Node> nodes = describeClusterResult.nodes().get();
@@ -36,9 +36,9 @@ public class BrokersController {
                     .rack(node.rack())
                     .build()));
             Collections.sort(brokers);
-            return Brokers.builder().brokers(brokers).build();
+            return BrokersDto.builder().brokers(brokers).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KafkaCompanionRuntimeException(e);
         }
     }
 }

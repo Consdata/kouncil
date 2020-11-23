@@ -9,6 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Brokers {
+public class BrokersDto {
 	private List<Broker> brokers;
 }
