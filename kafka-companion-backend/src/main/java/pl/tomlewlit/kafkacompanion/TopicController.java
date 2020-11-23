@@ -15,6 +15,7 @@ import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @RestController
@@ -31,9 +32,9 @@ public class TopicController {
 
 	@GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
 	public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
-										  @PathVariable("partition") int partition,
+										  @PathVariable("partition") String partitions,
 										  @PathVariable("offset") String offset) {
-		log.debug("TCM01 topicName={}, partition={}, offset={}", topicName, partition, offset);
+		log.debug("TCM01 topicName={}, partition={}, offset={}", topicName, partitions, offset);
 		Properties props = createCommonProperties();
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
@@ -45,36 +46,48 @@ public class TopicController {
 			}
 			consumer.assign(topicPartitions);
 
+			int[] partitionsArray;
+			if(partitions.equalsIgnoreCase("all")){
+				partitionsArray = IntStream.rangeClosed(0, topicPartitions.size() - 1).toArray();
+			}else {
+				partitionsArray =  Arrays.stream(partitions.split(",")).mapToInt(Integer::parseInt).toArray();
+			}
+
 			Map<Integer, Long> beginningOffsets = consumer
 					.beginningOffsets(topicPartitions).entrySet().stream()
 					.collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-			Long beginningOffsetForPartition = beginningOffsets.get(partition);
-			log.debug("TCM03 beginningOffsets={}, beginningOffsetForPartition={}", beginningOffsets, beginningOffsetForPartition);
 			Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet()
 					.stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
+			log.debug("TCM03 beginningOffsets={}", beginningOffsets);
 			log.debug("TCM04 endOffsets={}", endOffsets);
 
-			long position;
+			for (int j : partitionsArray) {
 
-			if ("latest".equals(offset)) {
-				position = consumer.position(topicPartitions.get(partition));
-			} else {
-				position = Long.parseLong(offset);
-			}
-			log.debug("TCM05 position={}", position);
-			long seekTo = position - 25;
-			if (seekTo > beginningOffsetForPartition) {
-				log.debug("TCM11 seekTo={}", seekTo);
-				consumer.seek(topicPartitions.get(partition), seekTo);
-			} else {
-				log.debug("TCM12 seekToBeginning");
-				consumer.seekToBeginning(Collections.singletonList(topicPartitions.get(partition)));
+				Long beginningOffsetForPartition = beginningOffsets.get(j);
+				log.debug("TCM05 beginningOffsetForPartition={}", beginningOffsetForPartition);
+
+				long position;
+
+				if ("latest".equals(offset)) {
+					position = consumer.position(topicPartitions.get(j));
+				} else {
+					position = Long.parseLong(offset);
+				}
+				log.debug("TCM06 position={}", position);
+				long seekTo = position - (100/partitionsArray.length);
+				if (seekTo > beginningOffsetForPartition) {
+					log.debug("TCM11 seekTo={}", seekTo);
+					consumer.seek(topicPartitions.get(j), seekTo);
+				} else {
+					log.debug("TCM12 seekToBeginning");
+					consumer.seekToBeginning(Collections.singletonList(topicPartitions.get(j)));
+				}
 			}
 
 			List<Message> messages = new ArrayList<>();
 			int i = 0;
 			// couple first polls after seek don't return eny records
-			while (i < 100 && messages.size() < 25) {
+			while (i < 100 && messages.size() < 100) {
 				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
 				if (!records.isEmpty()) {
 					mapRecords(messages, records);
@@ -88,7 +101,7 @@ public class TopicController {
 					.partitionOffsets(beginningOffsets)
 					.partitionEndOffsets(endOffsets)
 					.build();
-			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partition, offset, topicMessages.getMessages().size());
+			log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessages.getMessages().size());
 			return topicMessages;
 
 		}

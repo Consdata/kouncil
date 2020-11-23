@@ -39,15 +39,15 @@
             <div class="kafka-topic-footer-segment">
               Choose partition:
               <span *ngFor="let i of partitions">
-              <span [ngClass]="(i==selectedPartition)?'kafka-badge-primary':'kafka-badge-secondary'"
+              <span [ngClass]="(selectedPartitions[i] === 1)?'kafka-badge-primary':'kafka-badge-secondary'"
                     (click)="togglePartition(i)">{{i}}</span>
                 </span>
             </div>
             <div class="kafka-topic-footer-segment">
-              Start offset: {{partitionOffsets[selectedPartition]}}
+              Start offsets: {{formatJson(partitionOffsets)}}
             </div>
             <div class="kafka-topic-footer-segment">
-              End offset: {{partitionEndOffsets[selectedPartition]}}
+              End offsets: {{formatJson(partitionEndOffsets)}}
             </div>
           </div>
         </ng-template>
