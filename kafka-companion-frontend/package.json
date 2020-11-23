@@ -31,7 +31,7 @@
     "rxjs-compat": "^6.0.0-rc.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.1",
-    "ngx-json-viewer": "2.2.0"
+    "ngx-json-viewer": "2.4.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1002.0",
