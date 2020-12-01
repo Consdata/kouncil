@@ -2,6 +2,7 @@
 //@import "~bootstrap/scss/bootstrap";
 //$primary-color: #ef6c00;
 $secondary-color: #ef6c00;
+@import 'palette';
 @import '~materialize-css/sass/materialize';
 
 @import '~@swimlane/ngx-datatable/index.css';
