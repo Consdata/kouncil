@@ -1,3 +1,5 @@
+@import 'palette';
+
 .topic {
   height: 100%;
 }
@@ -24,8 +26,8 @@
   left: 50%;
   top: 50%;
   z-index: 1;
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
+  border: 16px solid $palette-very-light-gray;
+  border-top: 16px solid $primary-red-color;
   border-radius: 50%;
   width: 120px;
   height: 120px;

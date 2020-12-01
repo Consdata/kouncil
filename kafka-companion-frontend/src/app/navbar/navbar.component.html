@@ -1,7 +1,7 @@
 <div class="kafka-navbar">
-  <a [routerLink]="['/topics']">Topics</a>
-  <a [routerLink]="['/brokers']">Brokers</a>
-  <a [routerLink]="['/consumer-groups']">Consumers</a>
+  <a routerLinkActive="active" [routerLink]="['/topics']">Topics</a>
+  <a routerLinkActive="active" [routerLink]="['/brokers']">Brokers</a>
+  <a routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumers</a>
   <div class="kafka-search">
     <i class="material-icons">search</i>
     <input class="kafka-search-input" type="text" placeholder="" (input)="onPhraseChange($event.target.value)" #searchInput>

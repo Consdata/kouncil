@@ -3,11 +3,11 @@
 //$primary-color: #ef6c00;
 $secondary-color: #ef6c00;
 @import 'palette';
-@import '~materialize-css/sass/materialize';
+@import 'node_modules/materialize-css/sass/materialize';
 
-@import '~@swimlane/ngx-datatable/index.css';
-@import '~@swimlane/ngx-datatable/themes/material.css';
-@import '~@swimlane/ngx-datatable/assets/icons.css';
+@import '../../node_modules/@swimlane/ngx-datatable/index.css';
+@import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
+@import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
 html, body {
   height: 100%;
@@ -39,3 +39,27 @@ html, body {
   @extend .kafka-badge;
   background-color: #404040;
 }
+
+.kafka-primary-action {
+  border: 2px solid $primary-red-color;
+  background-color: $primary-red-color;
+  font-weight: bold;
+  box-shadow: none;
+  text-align: center;
+  &:hover {
+    background-color: $color-dark-red;
+    border: 2px solid $primary-red-color;
+  }
+}
+
+.kafka-secondary-action {
+  background-color: white;
+  border: 2px solid $primary-red-color;
+  color: $primary-red-color;
+  box-shadow: none;
+  font-weight: bold;
+  &:hover {
+    background-color: $palette-very-light-gray;
+  }
+}
+

@@ -1,0 +1,18 @@
+$primary-base-color: #b31536;
+$secondary-base-color: #343434;
+$tile-background-color: #f7f6f6;
+$font-color: $secondary-base-color;
+
+// generic palette
+$palette-white: #ffffff;
+$palette-black: #000000;
+$palette-very-light-gray: #f7f6f6;
+
+$primary-red-color: mix($palette-black, $primary-base-color, 13%);
+$primary-gray-color: mix($palette-black, $secondary-base-color, 13%);
+
+$color-dark-red:  mix($palette-black, $primary-base-color, 31%);
+$color-gray-5: mix($palette-black, $secondary-base-color, 31%);
+$color-gray-3: mix($secondary-base-color, $palette-white, 31%);
+$color-gray-1: mix($palette-white, $secondary-base-color, 13%);
+

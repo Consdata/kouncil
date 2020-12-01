@@ -1,3 +1,5 @@
+@import 'palette';
+
 .kafka-toolbar {
   height: 100%;
   display: flex;
@@ -16,7 +18,7 @@
   color: white;
   display: flex;
   align-items: center;
-  background-color: #027878;
+  background-color: $color-gray-1;
 }
 
 .kafka-actionbar {
@@ -26,12 +28,6 @@
   align-items: center;
 }
 
-.kafka-topic-action {
-  i {
-    margin-right: 5px;
-  }
-}
-
 .switch {
   label {
     color: initial;
@@ -39,6 +35,15 @@
     align-items: center;
     .kafka-toolbar-lever {
       margin-left: 8px;
+      background-color: $color-gray-3;
+    }
+    input[type=checkbox]:checked + .lever:after {
+      background-color: $primary-red-color;
+    }
+
+    .lever:before {
+      background-color: $primary-red-color;
+      opacity: 0.15;
     }
   }
 }

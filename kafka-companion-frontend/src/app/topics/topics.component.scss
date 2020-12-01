@@ -1,3 +1,5 @@
+@import 'palette';
+
 .kafka-topics {
   padding: 10px;
   height: 100%;
@@ -14,12 +16,9 @@
   margin-right: 10px;
 }
 
-.kafka-topic-action-secondary {
-  background-color: #404040;
-}
-
 .kafka-topics-name {
   font-size: 15px;
+  color: $primary-gray-color;
 }
 
 .kafka-topics-group-header {
@@ -27,9 +26,10 @@
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: bold;
+  color: $primary-gray-color
 }
 
 .kafka-topics-favourite {
-  color: #ef6c00;
+  color: $primary-red-color;
   cursor: pointer;
 }
