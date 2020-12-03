@@ -7,6 +7,7 @@ import {Subscription} from "rxjs";
 import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
+import {ProgressBarService} from "../util/progress-bar.service";
 
 @Component({
   selector: 'app-topic',
@@ -20,7 +21,8 @@ export class TopicComponent implements OnInit, OnDestroy {
               private http: HttpClient,
               private searchService: SearchService,
               private jsonGrid: JsonGrid,
-              private titleService: Title) {
+              private titleService: Title,
+              private progressBarService: ProgressBarService) {
   }
 
   partitionOffsets: { [key: number]: number } = {};
@@ -34,7 +36,6 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   phrase: string;
 
-  progress = true;
   partitions: number[];
 
   selectedPartitions: number[];
@@ -44,6 +45,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
 
   ngOnInit() {
+    this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
       this.getMessages();
@@ -84,7 +86,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       this.partitionOffsets = data.partitionOffsets;
       this.partitionEndOffsets = data.partitionEndOffsets;
       this.jsonToGrid(data);
-      this.progress = false;
+      this.progressBarService.setProgress(false);
       this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
       if (typeof this.selectedPartitions === 'undefined') {
         this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
@@ -212,7 +214,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   togglePartition(i: any) {
     this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
-    this.progress = true;
+    this.progressBarService.setProgress(true);
     this.getMessages();
   }
 }
