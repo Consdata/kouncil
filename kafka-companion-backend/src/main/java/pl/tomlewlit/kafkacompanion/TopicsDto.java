@@ -7,6 +7,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Topics {
+public class TopicsDto {
 	private List<TopicMetadata> topics;
 }
