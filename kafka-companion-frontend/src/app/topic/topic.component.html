@@ -2,7 +2,6 @@
   <div class="topic-toolbar-area">
     <kafka-toolbar [name]="topicName" (onAction)="onAction($event)"></kafka-toolbar>
   </div>
-  <div *ngIf="progress" class="kafka-progress"></div>
   <div class="topic-table-area">
     <ngx-datatable
                    class="topic-table material expandable"
