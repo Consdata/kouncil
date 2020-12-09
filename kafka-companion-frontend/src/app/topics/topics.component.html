@@ -1,5 +1,8 @@
 <div class="kafka-topics" *ngIf="topics">
-  <ngx-datatable *ngIf="!progress && topics && topics.length > 0"
+  <ng-template #noDataPlaceholder>
+    <app-no-data-placeholder></app-no-data-placeholder>
+  </ng-template>
+  <ngx-datatable *ngIf="!progress && topics && topics.length > 0; else noDataPlaceholder"
                  class="topics-table material"
                  [rows]="filtered"
                  [rowHeight]="50"
