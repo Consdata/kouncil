@@ -18,7 +18,7 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="group" name="group" [width]="45">
+    <ngx-datatable-column prop="group" name="group" [width]="45" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
@@ -39,7 +39,7 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false">
+    <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <a class="kafka-topic-action btn"
            [routerLink]="['/topic/messages', value]"><i class="material-icons left">search</i>BROWSE</a>
