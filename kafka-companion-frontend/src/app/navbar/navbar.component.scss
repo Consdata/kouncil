@@ -48,6 +48,12 @@
     height: 2rem;
     font-size: 16px;
     color: $palette-white;
+    box-shadow: none;
+    &:focus,
+    &:active,
+    &:hover {
+      border-bottom-color: $palette-white;
+    }
   }
 }
 
