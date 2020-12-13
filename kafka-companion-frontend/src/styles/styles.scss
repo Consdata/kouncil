@@ -28,16 +28,17 @@ html, body {
   color: white;
   min-width: 20px;
   text-align: center;
+  cursor: pointer;
 }
 
 .kafka-badge-primary {
   @extend .kafka-badge;
-  background-color: #ef6c00;
+  background-color: $primary-red-color;
 }
 
 .kafka-badge-secondary {
   @extend .kafka-badge;
-  background-color: #404040;
+  background-color: $color-gray-1;
 }
 
 .kafka-primary-action {
@@ -46,6 +47,8 @@ html, body {
   font-weight: bold;
   box-shadow: none;
   text-align: center;
+  &:focus,
+  &:active,
   &:hover {
     background-color: $color-dark-red;
     border: 2px solid $primary-red-color;
@@ -53,13 +56,30 @@ html, body {
 }
 
 .kafka-secondary-action {
-  background-color: white;
+  background-color: $palette-white;
   border: 2px solid $primary-red-color;
   color: $primary-red-color;
   box-shadow: none;
   font-weight: bold;
+  &:focus,
+  &:active,
   &:hover {
     background-color: $palette-very-light-gray;
+  }
+}
+
+
+.kafka-small-btn-action {
+  background-color: $palette-white;
+  border: 1px solid $primary-red-color;
+  color: $primary-red-color;
+  margin-right: 10px;
+  cursor: pointer;
+  &:focus,
+  &:active,
+  &:hover {
+    border: 1px solid $color-dark-red;
+    color: $color-dark-red;
   }
 }
 
