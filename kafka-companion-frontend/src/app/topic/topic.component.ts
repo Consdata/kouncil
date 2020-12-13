@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { TopicMessages } from "app/topic/topic";
-import { SearchService } from "app/search.service";
-import { Subscription } from "rxjs/Subscription";
-import { JsonGrid } from "app/topic/json-grid";
-import { DatePipe } from "@angular/common";
-import { Title } from "@angular/platform-browser";
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {TopicMessages} from "app/topic/topic";
+import {SearchService} from "app/search.service";
+import {Subscription} from "rxjs";
+import {JsonGrid} from "app/topic/json-grid";
+import {DatePipe} from "@angular/common";
+import {Title} from "@angular/platform-browser";
+import {ProgressBarService} from "../util/progress-bar.service";
 
 @Component({
   selector: 'app-topic',
@@ -16,10 +17,16 @@ import { Title } from "@angular/platform-browser";
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private searchService: SearchService, private jsonGrid: JsonGrid, private titleService: Title) {
+  constructor(private route: ActivatedRoute,
+              private http: HttpClient,
+              private searchService: SearchService,
+              private jsonGrid: JsonGrid,
+              private titleService: Title,
+              private progressBarService: ProgressBarService) {
   }
 
-  partitionOffsets: {[key: number]: number} = {};
+  partitionOffsets: { [key: number]: number } = {};
+  partitionEndOffsets: { [key: number]: number } = {};
   topicName: string;
   columns = [];
   allRows = [];
@@ -27,15 +34,18 @@ export class TopicComponent implements OnInit, OnDestroy {
   searchSubscription: Subscription;
   paused: boolean;
 
-  groupId = 'kafka-companion-' + Math.floor(Math.random() * 1000000000);
   phrase: string;
-  progress = true;
+
+  partitions: number[];
+
+  selectedPartitions: number[];
 
   @ViewChild('table') table: any;
-  @ViewChild('expandColumnTemplate') expandColumnTemplate: any;
-  @ViewChild('headerTemplate') headerTemplate: TemplateRef<any>;
+  @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
+  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
 
   ngOnInit() {
+    this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
       this.getMessages();
@@ -57,11 +67,30 @@ export class TopicComponent implements OnInit, OnDestroy {
 
 
   getMessages() {
-    this.http.get(`/api/topic/messages/${this.topicName}/${this.groupId}/10000`).subscribe((data) => {
-      this.partitionOffsets = ((<TopicMessages>data).partitionOffsets);
-      this.jsonToGrid(<TopicMessages>data);
-      this.progress = false;
-      this.getMessagesDelta()
+    let url;
+    if (typeof this.selectedPartitions != 'undefined') {
+      let partitionsParam = '';
+      for (let i = 0; i < this.selectedPartitions.length; i++) {
+        if (this.selectedPartitions[i] === 1) {
+          partitionsParam += i + ','
+        }
+      }
+      if(partitionsParam === ''){
+        return;
+      }
+      url = `/api/topic/messages/${this.topicName}/${partitionsParam}/latest`;
+    } else {
+      url = `/api/topic/messages/${this.topicName}/all/latest`;
+    }
+    this.http.get(url).subscribe((data: TopicMessages) => {
+      this.partitionOffsets = data.partitionOffsets;
+      this.partitionEndOffsets = data.partitionEndOffsets;
+      this.jsonToGrid(data);
+      this.progressBarService.setProgress(false);
+      this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
+      if (typeof this.selectedPartitions === 'undefined') {
+        this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
+      }
     })
   }
 
@@ -69,13 +98,8 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get(`/api/topic/delta/${this.topicName}/${this.groupId}/10000`).subscribe((data) => {
-      let topicMessages = <TopicMessages>data;
-      if (topicMessages.messages.length > 0) {
-        this.jsonToGrid(<TopicMessages>data);
-      }
-      this.getMessagesDelta()
-    })
+    this.getMessages();
+    setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
   getRowClass = (row) => {
@@ -86,9 +110,9 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   onAction(action: string) {
     console.log("Toolbar action: " + action);
-    if('pause' === action) {
+    if ('pause' === action) {
       this.paused = true;
-    } else if('play' === action) {
+    } else if ('play' === action) {
       this.paused = false;
       this.getMessagesDelta();
     }
@@ -98,13 +122,13 @@ export class TopicComponent implements OnInit, OnDestroy {
     let values = [];
     topicMessages.messages.forEach(message => values.push({
       value: message.value,
-      valueJson: this.tryParseJson(message.value),
+      valueJson: TopicComponent.tryParseJson(message.value),
       partition: message.partition,
       offset: message.offset,
       key: message.key,
       timestamp: message.timestamp
     }));
-    this.jsonGrid.addObjects(values);
+    this.jsonGrid.replaceObjects(values);
 
     let columns = [];
     columns.push({
@@ -116,12 +140,12 @@ export class TopicComponent implements OnInit, OnDestroy {
       cellTemplate: this.expandColumnTemplate
     });
     columns.push({
-      width: 40,
+      width: 100,
       resizable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
-      name: 'part',
+      name: 'partition',
       prop: 'kafkaCompanionPartition'
     });
     columns.push({
@@ -152,7 +176,12 @@ export class TopicComponent implements OnInit, OnDestroy {
       prop: 'kafkaCompanionTimestamp'
     });
     Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
-        columns.push({prop: column.name, name: column.name, nameShort: column.nameShort, headerTemplate: this.headerTemplate});
+        columns.push({
+          prop: column.name,
+          name: column.name,
+          nameShort: column.nameShort,
+          headerTemplate: this.headerTemplate
+        });
       }
     );
 
@@ -161,17 +190,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows();
   }
 
-  private getTotal() {
-    let total = 0;
-    Object.values(this.partitionOffsets).forEach(partitionOffset => total += <number> partitionOffset);
-    return total;
-  }
-
-  private getPartitionsCount() {
-    return Object.values(this.partitionOffsets).length;
-  }
-
-  private tryParseJson(message) {
+  private static tryParseJson(message) {
     try {
       return JSON.parse(message);
     } catch (e) {
@@ -179,7 +198,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  private toggleExpandRow(row) {
+  toggleExpandRow(row) {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
@@ -189,7 +208,13 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
   }
 
-  private formatJson(object) {
-    return JSON.stringify(object, null, 4);
+  formatJson(object) {
+    return JSON.stringify(object, null, 2);
+  }
+
+  togglePartition(i: any) {
+    this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
+    this.progressBarService.setProgress(true);
+    this.getMessages();
   }
 }

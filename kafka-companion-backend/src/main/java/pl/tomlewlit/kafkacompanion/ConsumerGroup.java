@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class ConsumerGroup {
 	private String groupId;
-	private String protocolType;
+	private String status;
 }

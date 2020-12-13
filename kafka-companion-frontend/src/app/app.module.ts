@@ -16,7 +16,10 @@ import { AutosizeDirective } from "app/util/autosize.directive";
 import { ConsumerGroupsComponent } from "app/consumers/consumer-groups/consumer-groups.component";
 import { ConsumerGroupComponent } from "app/consumers/consumer-group/consumer-group.component";
 import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
-
+import { ClipboardModule } from '@angular/cdk/clipboard'
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { ProgressBarComponent } from "./util/progress-bar.component";
+import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeholder.component';
 
 @NgModule({
   declarations: [
@@ -29,14 +32,18 @@ import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
     ToolbarComponent,
     BrokersComponent,
     AutosizeDirective,
-    ConsumerGroupComponent
+    ConsumerGroupComponent,
+    ProgressBarComponent,
+    NoDataPlaceholderComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     RoutingModule,
     FormsModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+    ClipboardModule,
+    NgxJsonViewerModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]

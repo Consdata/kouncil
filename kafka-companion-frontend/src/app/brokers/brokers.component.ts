@@ -3,7 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { SearchService } from "app/search.service";
 import { Brokers } from "app/brokers/brokers";
 import {Broker, BrokerConfig} from "app/brokers/broker";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
+import {ProgressBarService} from "app/util/progress-bar.service";
 
 @Component({
   selector: 'kafka-brokers',
@@ -12,7 +13,7 @@ import { Subscription } from "rxjs/Subscription";
 })
 export class BrokersComponent implements OnInit {
 
-  constructor(private http: HttpClient, private searchService: SearchService) {
+  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
   }
   @ViewChild('table') table: any;
   allBrokers: Broker[];
@@ -22,10 +23,12 @@ export class BrokersComponent implements OnInit {
   phrase: string;
 
   ngOnInit() {
+    this.progressBarService.setProgress(true);
     this.http.get("/api/brokers")
         .subscribe(data => {
           this.allBrokers = (<Brokers> data).brokers;
           this.filterRows();
+          this.progressBarService.setProgress(false);
         });
 
     this.subscription = this.searchService.getState().subscribe(

@@ -1,0 +1,10 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: httptrace,health
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    pl.tomlewlit.kafkacompanion: DEBUG
+    org.apache.kafka.clients.consumer.ConsumerConfig: ERROR

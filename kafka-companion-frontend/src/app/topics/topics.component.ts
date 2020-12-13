@@ -1,9 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Topics } from "app/topics/topics";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from "rxjs";
 import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
+import { ProgressBarService } from "../util/progress-bar.service";
 
 @Component({
   selector: 'app-topics',
@@ -11,7 +12,7 @@ import { TopicMetadata } from "app/topics/topic-metadata";
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService) {
+  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
   }
 
   topics: TopicMetadata[] = [];
@@ -22,11 +23,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   ngOnInit() {
+    this.progressBarService.setProgress(true);
     this.http.get("/api/topics")
         .subscribe(data => {
           this.topics = (<Topics> data).topics;
           this.applyFavourites();
           this.filter();
+          this.progressBarService.setProgress(false);
         });
 
     this.subscription = this.searchService.getState().subscribe(

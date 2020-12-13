@@ -21,14 +21,15 @@ export class SendComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.topicName = params['topic'];
+      this.topicName = params['topicName'];
+      this.message.key = params['key'];
+      this.message.value = params['value'];
       this.returnUrl = params.returnUrl;
     });
   }
 
   onSubmit() {
-    this.http.post(`/api/topic/send/${this.topicName}/${this.message.key}/${this.count}`, this.message.value).subscribe(data => {
-      console.log("done");
+    this.http.post(`/api/topic/send/${this.topicName}/${this.count}`, this.message).subscribe(data => {
       this._location.back();
     });
   }

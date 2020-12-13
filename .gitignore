@@ -5,3 +5,5 @@ idea
 .idea
 local
 *.exe
+/node_modules/
+docker-compose.yml

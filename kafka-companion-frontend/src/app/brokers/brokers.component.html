@@ -1,5 +1,8 @@
 <div class="kafka-brokers">
-  <ngx-datatable *ngIf="filteredBrokers"
+  <ng-template #noDataPlaceholder>
+    <app-no-data-placeholder></app-no-data-placeholder>
+  </ng-template>
+  <ngx-datatable *ngIf="filteredBrokers; else noDataPlaceholder"
                  class="brokers-table material expandable"
                  [rows]="filteredBrokers"
                  [rowHeight]="40"

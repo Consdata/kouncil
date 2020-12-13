@@ -11,6 +11,7 @@ import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 
 import javax.validation.constraints.NotNull;
 import javax.websocket.server.PathParam;
@@ -23,15 +24,15 @@ import java.util.stream.Collectors;
 @RestController
 public class BrokersController {
 
-    @NotNull
-    private AdminClient adminClient;
+    private final AdminClient adminClient;
 
     public BrokersController(AdminClient adminClient) {
         this.adminClient = adminClient;
     }
 
     @GetMapping("/api/brokers")
-    public Brokers getBrokers() {
+    @EntryExitLogger
+    public BrokersDto getBrokers() {
         try {
             DescribeClusterResult describeClusterResult = adminClient.describeCluster();
             Collection<Node> nodes = describeClusterResult.nodes().get();
@@ -39,13 +40,14 @@ public class BrokersController {
             nodes.forEach(node -> brokers.add(Broker.builder()
                     .host(node.host())
                     .port(node.port())
+                    .port(node.port())
                     .id(node.idString())
                     .rack(node.rack())
                     .build()));
             Collections.sort(brokers);
-            return Brokers.builder().brokers(brokers).build();
+            return BrokersDto.builder().brokers(brokers).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KafkaCompanionRuntimeException(e);
         }
     }
 

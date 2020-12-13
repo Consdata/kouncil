@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Subscription } from "rxjs/Subscription";
-import { SearchService } from "app/search.service";
-import { ConsumerGroup, ConsumerGroupsResponse } from "app/consumers/consumer-groups/consumer-groups";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {Subscription} from "rxjs";
+import {SearchService} from "app/search.service";
+import {ConsumerGroup, ConsumerGroupsResponse} from "app/consumers/consumer-groups/consumer-groups";
+import {ProgressBarService} from "app/util/progress-bar.service";
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -10,7 +11,10 @@ import { ConsumerGroup, ConsumerGroupsResponse } from "app/consumers/consumer-gr
   styleUrls: ['./consumer-groups.component.scss']
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private progressBarService: ProgressBarService
+  ) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -21,16 +25,22 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   ngOnInit() {
-    this.http.get("/api/consumer-groups")
-        .subscribe(data => {
-          this.consumerGroups = (<ConsumerGroupsResponse> data).consumerGroups;
-          this.applyFavourites();
-          this.filter();
-        });
+    this.progressBarService.setProgress(true);
+    this.loadConsumerGroups();
 
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
+      });
+  }
+
+  private loadConsumerGroups() {
+    this.http.get("/api/consumer-groups")
+      .subscribe(data => {
+        this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
+        this.applyFavourites();
+        this.filter();
+        this.progressBarService.setProgress(false);
       });
   }
 
@@ -75,5 +85,16 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kafka-companion-consumer-groups-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  deleteConsumerGroup(value) {
+    console.log("delete ", value);
+    this.progressBarService.setProgress(true);
+    this.http.delete("/api/consumer-group/" + value).subscribe(data => {
+      this.loadConsumerGroups();
+    }, error => {
+      console.warn(error);
+      this.progressBarService.setProgress(false);
+    });
   }
 }

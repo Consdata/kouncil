@@ -1,2 +1,0 @@
-bootstrapServers: "localhost:9092"
-zookeeperConnectString: "localhost:2181"

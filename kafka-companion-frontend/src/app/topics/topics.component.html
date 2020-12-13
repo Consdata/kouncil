@@ -1,12 +1,15 @@
 <div class="kafka-topics" *ngIf="topics">
-  <ngx-datatable *ngIf="!progress && topics && topics.length > 0"
+  <ng-template #noDataPlaceholder>
+    <app-no-data-placeholder></app-no-data-placeholder>
+  </ng-template>
+  <ngx-datatable *ngIf="!progress && topics && topics.length > 0; else noDataPlaceholder"
                  class="topics-table material"
                  [rows]="filtered"
                  [rowHeight]="50"
                  [headerHeight]="40"
                  [scrollbarH]="false"
                  [scrollbarV]="false"
-                 [columnMode]="'standard'"
+                 [columnMode]="'force'"
                  [groupRowsBy]="'group'"
                  [groupExpansionDefault]="true"
                  [limit]="4"
@@ -18,7 +21,7 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="group" name="group" [width]="45">
+    <ngx-datatable-column prop="group" name="group" [width]="45" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
@@ -27,24 +30,24 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="name" name="Name" [width]="500" [sortable]="false" [resizeable]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
+    <ngx-datatable-column prop="name" name="Name" [width]="500" [sortable]="false">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <a class="kafka-topics-name" [routerLink]="['/topic/messages', value]">{{value}}</a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="partitions" name="Partitions" [width]="150" [sortable]="false" [resizeable]="false">
+    <ngx-datatable-column prop="partitions" name="Partitions" [width]="150" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         {{value}}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="kafka-topic-action btn"
-           [routerLink]="['/topic/messages', value]"><i class="material-icons left">search</i>BROWSE</a>
-        <a class="kafka-topic-action kafka-topic-action-secondary btn btn-small"
-           [routerLink]="['/topic/send', value]"><i class="material-icons left">add</i>SEND</a>
+    <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a class="kafka-primary-action kafka-topic-action btn btn-small"
+           [routerLink]="['/topic/messages', value]">BROWSE</a>
+        <a class="kafka-secondary-action btn btn-small"
+           [routerLink]="['/topic/send', {topicName: value}]">SEND</a>
       </ng-template>
     </ngx-datatable-column>
 
