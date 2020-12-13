@@ -9,7 +9,7 @@
                  [headerHeight]="40"
                  [scrollbarH]="false"
                  [scrollbarV]="false"
-                 [columnMode]="'standard'"
+                 [columnMode]="'force'"
                  [groupRowsBy]="'group'"
                  [groupExpansionDefault]="true"
                  [limit]="4"
@@ -23,7 +23,7 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="group" name="group" [width]="45">
+    <ngx-datatable-column prop="group" name="group" [width]="45" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
@@ -34,25 +34,25 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="groupId" name="Group id" [width]="500" [sortable]="false" [resizeable]="false">
+    <ngx-datatable-column prop="groupId" name="Group id" [width]="500" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="kafka-consumer-groups-name" [routerLink]="['/consumer-group/', value]">{{value}}</a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="status" name="Status" [width]="150" [sortable]="false"
-                          [resizeable]="false">
+    <ngx-datatable-column prop="status" name="Status" [width]="190" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         {{value}}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Actions" prop="groupId" [width]="280" [sortable]="false" [resizeable]="false">
+    <ngx-datatable-column name="Actions" prop="groupId" [width]="240" [sortable]="false"
+                          [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="kafka-consumer-groups-action btn"
-           [routerLink]="['/consumer-group/', value]"><i class="material-icons left">search</i>BROWSE</a>
-        <a class="kafka-consumer-groups-action btn"
-           (click)="deleteConsumerGroup(value)"><i class="material-icons left btn-outline-warning">delete</i></a>
+        <a class="kafka-primary-action btn btn-small"
+           [routerLink]="['/consumer-group/', value]">BROWSE</a>
+        <a class="kafka-secondary-action btn btn-small"
+           (click)="deleteConsumerGroup(value)">DELETE</a>
       </ng-template>
     </ngx-datatable-column>
 

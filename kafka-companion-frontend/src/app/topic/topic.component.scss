@@ -1,3 +1,5 @@
+@import 'palette';
+
 .topic {
   height: 100%;
 }
@@ -19,6 +21,24 @@
   background-color: #f6f6f6;
 }
 
+.kafka-progress {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  border: 16px solid $palette-very-light-gray;
+  border-top: 16px solid $primary-red-color;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .kafka-row-details {
   height: 300px;
   white-space: pre;
@@ -36,5 +56,8 @@
   .kafka-topic-footer-segment {
     padding-left: 20px;
   }
+}
 
+.kafka-arrow {
+  color: $primary-red-color;
 }
