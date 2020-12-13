@@ -1,3 +1,5 @@
+@import 'palette';
+
 .kafka-consumer-groups {
   padding: 10px;
   height: 100%;
@@ -10,16 +12,9 @@
   margin-right: auto;
 }
 
-.kafka-consumer-groups-action {
-  margin-right: 10px;
-}
-
-.kafka-consumer-groups-action-secondary {
-  background-color: #404040;
-}
-
 .kafka-consumer-groups-name {
   font-size: 15px;
+  color: $primary-gray-color;
 }
 
 .kafka-consumer-groups-group-header {
@@ -30,6 +25,10 @@
 }
 
 .kafka-consumer-groups-favourite {
-  color: #ef6c00;
+  color: $primary-red-color;
   cursor: pointer;
+}
+
+.kafka-primary-action {
+  margin-right: 10px;
 }
