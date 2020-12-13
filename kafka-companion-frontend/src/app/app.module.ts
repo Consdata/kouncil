@@ -18,6 +18,7 @@ import { ConsumerGroupComponent } from "app/consumers/consumer-group/consumer-gr
 import { ToolbarComponent } from "app/topic/toolbar/toolbar.component";
 import { ClipboardModule } from '@angular/cdk/clipboard'
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { ProgressBarComponent } from "./util/progress-bar.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
     ToolbarComponent,
     BrokersComponent,
     AutosizeDirective,
-    ConsumerGroupComponent
+    ConsumerGroupComponent,
+    ProgressBarComponent
   ],
   imports: [
     BrowserModule,
