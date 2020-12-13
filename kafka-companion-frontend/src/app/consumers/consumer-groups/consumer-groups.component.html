@@ -1,12 +1,12 @@
 <div class="kafka-consumer-groups" *ngIf="consumerGroups">
-  <ngx-datatable *ngIf="!progress && consumerGroups && consumerGroups.length > 0"
+  <ngx-datatable *ngIf="consumerGroups && consumerGroups.length > 0"
                  class="consumer-groups-table material"
                  [rows]="filtered"
                  [rowHeight]="50"
                  [headerHeight]="40"
                  [scrollbarH]="false"
                  [scrollbarV]="false"
-                 [columnMode]="'standard'"
+                 [columnMode]="'force'"
                  [groupRowsBy]="'group'"
                  [groupExpansionDefault]="true"
                  [limit]="4"
@@ -20,7 +20,7 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="group" name="group" [width]="45">
+    <ngx-datatable-column prop="group" name="group" [width]="45" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
@@ -31,20 +31,20 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="groupId" name="Group id" [width]="500" [sortable]="false" [resizeable]="false">
+    <ngx-datatable-column prop="groupId" name="Group id" [width]="500" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="kafka-consumer-groups-name" [routerLink]="['/consumer-group/', value]">{{value}}</a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="status" name="Status" [width]="150" [sortable]="false"
-                          [resizeable]="false">
+    <ngx-datatable-column prop="status" name="Status" [width]="190" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         {{value}}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Actions" prop="groupId" [width]="280" [sortable]="false" [resizeable]="false">
+    <ngx-datatable-column name="Actions" prop="groupId" [width]="240" [sortable]="false"
+                          [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="kafka-primary-action btn btn-small"
            [routerLink]="['/consumer-group/', value]">BROWSE</a>
