@@ -46,10 +46,10 @@
     <ngx-datatable-column name="Actions" prop="groupId" [width]="240" [sortable]="false"
                           [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="kafka-consumer-groups-action btn"
-           [routerLink]="['/consumer-group/', value]"><i class="material-icons left">search</i>BROWSE</a>
-        <a class="kafka-consumer-groups-action btn"
-           (click)="deleteConsumerGroup(value)"><i class="material-icons left btn-outline-warning">delete</i></a>
+        <a class="kafka-primary-action btn btn-small"
+           [routerLink]="['/consumer-group/', value]">BROWSE</a>
+        <a class="kafka-secondary-action btn btn-small"
+           (click)="deleteConsumerGroup(value)">DELETE</a>
       </ng-template>
     </ngx-datatable-column>
 

@@ -41,10 +41,10 @@
 
     <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="kafka-topic-action btn"
-           [routerLink]="['/topic/messages', value]"><i class="material-icons left">search</i>BROWSE</a>
-        <a class="kafka-topic-action kafka-topic-action-secondary btn btn-small"
-           [routerLink]="['/topic/send', {topicName: value}]"><i class="material-icons left">add</i>SEND</a>
+        <a class="kafka-primary-action kafka-topic-action btn btn-small"
+           [routerLink]="['/topic/messages', value]">BROWSE</a>
+        <a class="kafka-secondary-action btn btn-small"
+           [routerLink]="['/topic/send', {topicName: value}]">SEND</a>
       </ng-template>
     </ngx-datatable-column>
 

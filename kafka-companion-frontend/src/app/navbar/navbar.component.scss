@@ -1,16 +1,18 @@
+@import 'palette';
+
 .kafka-navbar {
   display: flex;
   height: 48px;
   align-items: stretch;
   padding-left: 10px;
   padding-right: 30px;
-  background-color: #292B2C;
+  background-color: $primary-gray-color;
 
   & > a {
     padding-left: 20px;
     padding-right: 20px;
     font-size: 16px;
-    color: white;
+    color: $palette-white;
   }
 
   & > * {
@@ -18,8 +20,13 @@
     align-items: center;
   }
 
-  a:hover {
-    background-color: #ef6c00;
+  a {
+    &.active {
+      background-color: $primary-red-color;
+    }
+    &:hover {
+      background-color: $color-dark-red;
+    }
   }
 
   .kafka-logo-image {
@@ -33,16 +40,21 @@
 .kafka-search {
   padding-left: 20px;
   i {
-    color: #ef6c00;
+    color: $palette-white;
   }
 
   input.kafka-search-input {
     margin-left: 10px;
     height: 2rem;
     font-size: 16px;
-    color: white;
+    color: $palette-white;
+    box-shadow: none;
+    &:focus,
+    &:active,
+    &:hover {
+      border-bottom-color: $palette-white;
+    }
   }
-
 }
 
 .kafka-spring {
