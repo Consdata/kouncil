@@ -23,7 +23,7 @@
     "@angular/cdk": "^10.2.0",
     "@swimlane/ngx-datatable": "^18.0.0",
     "bootstrap": "^4.5.3",
-    "core-js": "^2.6.11",
+    "core-js": "^2.6.12",
     "jquery": "^3.5.1",
     "materialize-css": "^1.0.0-beta",
     "ngx-textarea-autosize": "^1.1.1",
