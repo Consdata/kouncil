@@ -1,5 +1,12 @@
 .kafka-brokers {
   padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .brokers-table {
+    width: 50%;
+  }
 }
 
 
