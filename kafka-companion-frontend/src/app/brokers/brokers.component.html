@@ -9,11 +9,10 @@
                  [headerHeight]="40"
                  [scrollbarH]="true"
                  [scrollbarV]="true"
-                 [columnMode]="'force'"
                  #table>
-    <ngx-datatable-column prop="id" name="Id"></ngx-datatable-column>
-    <ngx-datatable-column prop="host" name="Host"></ngx-datatable-column>
-    <ngx-datatable-column prop="port" name="port"></ngx-datatable-column>
-    <ngx-datatable-column prop="rack" name="rack"></ngx-datatable-column>
+    <ngx-datatable-column [width]="150" prop="id" name="Id"></ngx-datatable-column>
+    <ngx-datatable-column [width]="200" prop="host" name="Host"></ngx-datatable-column>
+    <ngx-datatable-column [width]="150" prop="port" name="Port"></ngx-datatable-column>
+    <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
   </ngx-datatable>
 </div>
