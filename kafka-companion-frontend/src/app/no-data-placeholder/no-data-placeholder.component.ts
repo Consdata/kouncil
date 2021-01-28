@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ProgressBarService} from "../util/progress-bar.service";
 
 @Component({
   selector: 'app-no-data-placeholder',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NoDataPlaceholderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private progressBarService: ProgressBarService) { }
 
   ngOnInit(): void {
   }
