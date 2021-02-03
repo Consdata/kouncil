@@ -29,7 +29,7 @@
     "ngx-textarea-autosize": "^1.1.1",
     "rxjs": "^6.6.3",
     "rxjs-compat": "^6.0.0-rc.0",
-    "tslib": "^2.0.0",
+    "tslib": "^2.1.0",
     "zone.js": "~0.11.1",
     "ngx-json-viewer": "2.4.0"
   },
