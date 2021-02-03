@@ -2,7 +2,7 @@
   <ng-template #noDataPlaceholder>
     <app-no-data-placeholder></app-no-data-placeholder>
   </ng-template>
-  <ngx-datatable *ngIf="!progress && consumerGroups && consumerGroups.length > 0; else noDataPlaceholder"
+  <ngx-datatable *ngIf="consumerGroups && consumerGroups.length > 0; else noDataPlaceholder"
                  class="consumer-groups-table material"
                  [rows]="filtered"
                  [rowHeight]="50"
@@ -13,6 +13,7 @@
                  [groupRowsBy]="'group'"
                  [groupExpansionDefault]="true"
                  [limit]="4"
+                 (sort)="customSort($event)"
                  #table>
 
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
@@ -34,13 +35,13 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="groupId" name="Group id" [width]="500" [sortable]="false">
+    <ngx-datatable-column prop="groupId" name="Group id" [width]="500">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="kafka-consumer-groups-name" [routerLink]="['/consumer-group/', value]">{{value}}</a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="status" name="Status" [width]="190" [sortable]="false">
+    <ngx-datatable-column prop="status" name="Status" [width]="190">
       <ng-template let-value="value" ngx-datatable-cell-template>
         {{value}}
       </ng-template>
