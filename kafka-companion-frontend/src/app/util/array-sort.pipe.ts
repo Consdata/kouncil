@@ -1,4 +1,5 @@
 import {Injectable, Pipe, PipeTransform} from "@angular/core";
+import {TopicMetadata} from "../topics/topic-metadata";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,16 @@ export class ArraySortPipe implements PipeTransform {
     const varA = this.getValue(a, key);
     const varB = this.getValue(b, key);
 
+    if (a.group === b.group) {
+      return this.compareWithOrder(varA, varB, order);
+    } else if (a.group === TopicMetadata.GROUP_FAVOURITES) {
+      return -1;
+    } else if (b.group === TopicMetadata.GROUP_FAVOURITES) {
+      return 1;
+    }
+  }
+
+  private compareWithOrder(varA: any, varB: any, order: string) {
     let comparison = 0;
     if (varA > varB) {
       comparison = 1;
