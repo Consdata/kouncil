@@ -227,6 +227,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   togglePartition(i: any) {
     this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
     this.progressBarService.setProgress(true);
+    this.paging.pageNumber = 1;
     this.getMessages();
   }
 
