@@ -14,6 +14,8 @@
                    [scrollbarV]="true"
                    [columnMode]="'force'"
                    [rowClass]="getRowClass"
+                   [externalSorting]="true"
+                   (sort)="sortMessages($event)"
                    #table>
 
       <ngx-datatable-row-detail [rowHeight]="320">
@@ -47,6 +49,27 @@
             </div>
             <div class="kafka-topic-footer-segment">
               End offsets: {{formatJson(partitionEndOffsets)}}
+            </div>
+            <div class="kafka-topic-footer-pager">
+              <div class="kafka-topic-footer-pager-item">
+                <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [pagerPreviousIcon]="'datatable-icon-prev'"
+                  [pagerNextIcon]="'datatable-icon-skip'"
+                  [page]="paging.pageNumber"
+                  [size]="paging.size"
+                  [count]="paging.totalElements"
+                  (change)="paginateMessages($event)">
+                </datatable-pager>
+              </div>
+              <div class="kafka-topic-footer-pager-item">
+                <span>Items per page:</span>
+                <select class="kafka-topic-footer-pager-select-limit" [(ngModel)]="paging.size"
+                        (change)="getMessages()">
+                  <option *ngFor="let limit of pageLimits">{{limit}}</option>
+                </select>
+              </div>
             </div>
           </div>
         </ng-template>

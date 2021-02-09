@@ -8,6 +8,8 @@ import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {ProgressBarService} from "../util/progress-bar.service";
+import {Page} from './page';
+import {Sort} from "./sort";
 
 @Component({
   selector: 'app-topic',
@@ -39,6 +41,9 @@ export class TopicComponent implements OnInit, OnDestroy {
   partitions: number[];
 
   selectedPartitions: number[];
+  paging: Page = new Page();
+  sorting: Sort = new Sort();
+  pageLimits = [10, 20, 50, 100];
 
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
@@ -46,6 +51,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
+    this.initPagingAndSorting();
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
       this.getMessages();
@@ -82,9 +88,11 @@ export class TopicComponent implements OnInit, OnDestroy {
     } else {
       url = `/api/topic/messages/${this.topicName}/all/latest`;
     }
+    url += this.addPagingAndSorting();
     this.http.get(url).subscribe((data: TopicMessages) => {
       this.partitionOffsets = data.partitionOffsets;
       this.partitionEndOffsets = data.partitionEndOffsets;
+      this.paging.totalElements = data.totalResults;
       this.jsonToGrid(data);
       this.progressBarService.setProgress(false);
       this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
@@ -92,6 +100,10 @@ export class TopicComponent implements OnInit, OnDestroy {
         this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
       }
     })
+  }
+
+  private addPagingAndSorting(): string {
+    return `?sort=${this.sorting.field}&order=${this.sorting.order}&offset=${(this.paging.pageNumber - 1) * this.paging.size}&limit=${this.paging.size}`;
   }
 
   getMessagesDelta() {
@@ -216,5 +228,23 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
     this.progressBarService.setProgress(true);
     this.getMessages();
+  }
+
+  paginateMessages(event: any): void {
+    this.paging.pageNumber = event.page;
+    this.getMessages();
+  }
+
+  sortMessages(event: any): void {
+    this.sorting.field = event.column.prop;
+    this.sorting.order = event.newValue;
+    this.getMessages();
+  }
+
+  initPagingAndSorting(): void {
+    this.paging.pageNumber = 1;
+    this.paging.size = 20;
+    this.sorting.field = 'kafkaCompanionTimestamp';
+    this.sorting.order = 'asc';
   }
 }
