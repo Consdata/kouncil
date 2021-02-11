@@ -30,12 +30,7 @@ export class ArraySortPipe implements PipeTransform {
   }
 
   private compareWithOrder(varA: any, varB: any, order: string) {
-    let comparison = 0;
-    if (varA > varB) {
-      comparison = 1;
-    } else if (varA < varB) {
-      comparison = -1;
-    }
+    const comparison = varA.localeCompare(varB);
     return ((order === 'desc') ? (comparison * -1) : comparison);
   }
 
