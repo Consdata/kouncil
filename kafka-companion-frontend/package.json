@@ -22,7 +22,7 @@
     "@angular/router": "^11.1.0",
     "@angular/cdk": "^11.1.0",
     "@swimlane/ngx-datatable": "^18.0.0",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^4.6.0",
     "core-js": "^2.6.12",
     "jquery": "^3.5.1",
     "materialize-css": "^1.0.0-beta",
