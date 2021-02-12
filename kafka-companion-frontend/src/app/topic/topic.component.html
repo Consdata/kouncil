@@ -54,8 +54,8 @@
     </ngx-datatable>
   </div>
 
-  <ng-template #headerTemplate let-column="column">
-    <div title="{{column.name}}">{{column.nameShort}}</div>
+  <ng-template #headerTemplate let-column="column" let-sort="sortFn">
+    <span class="datatable-header-cell-wrapper" title="{{column.name}}" (click)="sort()">{{column.nameShort}}</span>
   </ng-template>
 
   <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template #expandColumnTemplate>
