@@ -14,8 +14,6 @@
                    [scrollbarV]="true"
                    [columnMode]="'force'"
                    [rowClass]="getRowClass"
-                   [externalSorting]="true"
-                   (sort)="sortMessages($event)"
                    #table>
 
       <ngx-datatable-row-detail [rowHeight]="320">
@@ -53,6 +51,7 @@
             <div class="kafka-topic-footer-pager">
               <div class="kafka-topic-footer-pager-item">
                 <datatable-pager
+                  *ngIf="isOnePartitionSelected"
                   [pagerLeftArrowIcon]="'datatable-icon-left'"
                   [pagerRightArrowIcon]="'datatable-icon-right'"
                   [pagerPreviousIcon]="'datatable-icon-prev'"
@@ -67,7 +66,7 @@
                 <span>Items per page:</span>
                 <select class="kafka-topic-footer-pager-select-limit" [(ngModel)]="paging.size"
                         (change)="getMessages()">
-                  <option *ngFor="let limit of pageLimits">{{limit}}</option>
+                  <option *ngFor="let limit of pageLimits" [ngValue]="limit">{{limit}}</option>
                 </select>
               </div>
             </div>
