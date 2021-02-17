@@ -17,14 +17,7 @@ import {ProgressBarService} from "../util/progress-bar.service";
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-  constructor(private route: ActivatedRoute,
-              private http: HttpClient,
-              private searchService: SearchService,
-              private jsonGrid: JsonGrid,
-              private titleService: Title,
-              private progressBarService: ProgressBarService) {
-  }
-
+  readonly VISIBLE_PARTITION_QUANTITY: number = 10;
   partitionOffsets: { [key: number]: number } = {};
   partitionEndOffsets: { [key: number]: number } = {};
   topicName: string;
@@ -40,9 +33,19 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   selectedPartitions: number[];
 
+  visiblePartitions: number[];
+
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+
+  constructor(private route: ActivatedRoute,
+              private http: HttpClient,
+              private searchService: SearchService,
+              private jsonGrid: JsonGrid,
+              private titleService: Title,
+              private progressBarService: ProgressBarService) {
+  }
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
@@ -64,7 +67,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.searchSubscription.unsubscribe();
     this.paused = true;
   }
-
 
   getMessages() {
     let url;
@@ -90,6 +92,9 @@ export class TopicComponent implements OnInit, OnDestroy {
       this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
       if (typeof this.selectedPartitions === 'undefined') {
         this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
+      }
+      if (typeof this.visiblePartitions  === 'undefined') {
+        this.visiblePartitions = this.partitions.slice(0, this.VISIBLE_PARTITION_QUANTITY);
       }
     })
   }
@@ -213,8 +218,41 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   togglePartition(i: any) {
-    this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
+    const index = this.partitions.findIndex(e => e === i);
+    this.selectedPartitions[index] = -1 * this.selectedPartitions[index];
     this.progressBarService.setProgress(true);
     this.getMessages();
+  }
+
+  getPartitionOffset(partitionNr: number): string {
+    return this.partitionOffsets[partitionNr] + ' - ' + this.partitionEndOffsets[partitionNr];
+  }
+
+  previous() {
+    if (this.partitions.length > this.VISIBLE_PARTITION_QUANTITY) {
+      const firstElement = this.visiblePartitions[0];
+      const index = this.partitions.findIndex(e => e === firstElement);
+      const subPartitions = this.partitions.slice(index - 1, index + (this.VISIBLE_PARTITION_QUANTITY - 1));
+      if (subPartitions.length === this.VISIBLE_PARTITION_QUANTITY) {
+        this.visiblePartitions = subPartitions;
+      }
+    }
+  }
+
+  next() {
+    const firstElement = this.visiblePartitions[0];
+    const index = this.partitions.findIndex(e => e === firstElement);
+    const subPartitions = this.partitions.slice(index + 1, index + (this.VISIBLE_PARTITION_QUANTITY + 1));
+    if (subPartitions.length === this.VISIBLE_PARTITION_QUANTITY) {
+      this.visiblePartitions = subPartitions;
+    }
+  }
+
+  hasNoMorePrevValues() {
+    return this.visiblePartitions[0] === this.partitions[0];
+  }
+
+  hasNoMoreNextValues() {
+    return this.visiblePartitions[this.visiblePartitions.length - 1] === this.partitions[this.partitions.length - 1];
   }
 }
