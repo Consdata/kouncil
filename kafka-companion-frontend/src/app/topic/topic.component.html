@@ -2,22 +2,7 @@
   <div class="topic-toolbar-area">
     <kafka-toolbar [name]="topicName" (onAction)="onAction($event)">
     </kafka-toolbar>
-    <div class="kafka-topic">
-      <div class="kafka-topic-segment">
-        Choose partition:
-        <span *ngIf="partitions?.length > VISIBLE_PARTITION_QUANTITY" class="kafka-badge-secondary"
-              [ngClass]="{'kafka-badge-secondary-disabled': hasNoMorePrevValues()}" (click)="previous()">&#60;</span>
-        <span *ngFor="let i of visiblePartitions">
-              <span [ngClass]="(selectedPartitions[i] === 1)?'kafka-badge-primary':'kafka-badge-secondary'"
-                    class="partition"
-                    (click)="togglePartition(i)"
-                    [title]="getPartitionOffset(i)">{{i}}</span>
-                </span>
-        <span *ngIf="partitions?.length > VISIBLE_PARTITION_QUANTITY" class="kafka-badge-secondary"
-              [ngClass]="{'kafka-badge-secondary-disabled': hasNoMoreNextValues()}"
-              (click)="next()">&#62;</span>
-      </div>
-    </div>
+    <topic-partitions [topicName]="topicName"></topic-partitions>
   </div>
   <div class="topic-table-area">
 
