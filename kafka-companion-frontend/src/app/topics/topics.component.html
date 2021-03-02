@@ -46,10 +46,10 @@
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <a class="kafka-primary-action kafka-topic-action btn btn-small"
            [routerLink]="['/topic/messages', value]">BROWSE</a>
-        <a class="kafka-secondary-action btn btn-small"
-           [routerLink]="['/topic/send', {topicName: value}]">SEND</a>
+        <a class="kafka-secondary-action btn btn-small" (click)="openSendPopup(value)">SEND</a>
       </ng-template>
     </ngx-datatable-column>
 
   </ngx-datatable>
+  <app-send-popup></app-send-popup>
 </div>

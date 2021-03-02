@@ -31,7 +31,10 @@
               "includePaths": [
                 "src/styles"
               ]
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "materialize-css"
+            ]
           },
           "configurations": {
             "production": {

@@ -20,6 +20,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { ProgressBarComponent } from "./util/progress-bar.component";
 import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeholder.component';
+import { SendPopupComponent } from './send/send-popup.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeh
     AutosizeDirective,
     ConsumerGroupComponent,
     ProgressBarComponent,
-    NoDataPlaceholderComponent
+    NoDataPlaceholderComponent,
+    SendPopupComponent
   ],
   imports: [
     BrowserModule,

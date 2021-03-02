@@ -8,6 +8,7 @@ import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {ProgressBarService} from "../util/progress-bar.service";
+import {SendPopupComponent} from "../send/send-popup.component";
 
 @Component({
   selector: 'app-topic',
@@ -43,6 +44,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+  @ViewChild(SendPopupComponent) popup;
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
@@ -115,6 +117,21 @@ export class TopicComponent implements OnInit, OnDestroy {
     } else if ('play' === action) {
       this.paused = false;
       this.getMessagesDelta();
+    }
+  }
+
+  openSendPopup() {
+    this.popup.openPopup(this.topicName);
+  }
+
+  openResendPopup(key: string, value: string) {
+    this.popup.openPopup(this.topicName, key, this.formatJson(value));
+  }
+
+  onPopupClose(event: boolean) {
+    if (event) {
+      this.progressBarService.setProgress(true);
+      this.getMessages();
     }
   }
 
