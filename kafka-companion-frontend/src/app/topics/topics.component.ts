@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
 import { ProgressBarService } from "../util/progress-bar.service";
+import { ArraySortPipe } from "../util/array-sort.pipe";
 
 @Component({
   selector: 'app-topics',
@@ -12,7 +13,10 @@ import { ProgressBarService } from "../util/progress-bar.service";
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private progressBarService: ProgressBarService,
+              private arraySortPipe: ArraySortPipe) {
   }
 
   topics: TopicMetadata[] = [];
@@ -78,5 +82,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kafka-companion-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  customSort(event) {
+    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 }
