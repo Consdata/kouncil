@@ -6,6 +6,7 @@ import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
 import { ProgressBarService } from "../util/progress-bar.service";
 import {SendPopupComponent} from "../send/send-popup.component";
+import { ArraySortPipe } from "../util/array-sort.pipe";
 
 @Component({
   selector: 'app-topics',
@@ -13,7 +14,10 @@ import {SendPopupComponent} from "../send/send-popup.component";
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private progressBarService: ProgressBarService,
+              private arraySortPipe: ArraySortPipe) {
   }
 
   topics: TopicMetadata[] = [];
@@ -84,5 +88,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   openSendPopup(topicName) {
     this.popup.openPopup(topicName);
+  }
+
+  customSort(event) {
+    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 }

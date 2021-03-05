@@ -48,14 +48,36 @@
             <div class="kafka-topic-footer-segment">
               End offsets: {{formatJson(partitionEndOffsets)}}
             </div>
+            <div class="kafka-topic-footer-pager">
+              <div class="kafka-topic-footer-pager-item">
+                <datatable-pager
+                  *ngIf="isOnePartitionSelected"
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [pagerPreviousIcon]="'datatable-icon-prev'"
+                  [pagerNextIcon]="'datatable-icon-skip'"
+                  [page]="paging.pageNumber"
+                  [size]="paging.size"
+                  [count]="paging.totalElements"
+                  (change)="paginateMessages($event)">
+                </datatable-pager>
+              </div>
+              <div class="kafka-topic-footer-pager-item">
+                <span>Items per page:</span>
+                <select class="kafka-topic-footer-pager-select-limit" [(ngModel)]="paging.size"
+                        (change)="getMessages()">
+                  <option *ngFor="let limit of pageLimits" [ngValue]="limit">{{limit}}</option>
+                </select>
+              </div>
+            </div>
           </div>
         </ng-template>
       </ngx-datatable-footer>
     </ngx-datatable>
   </div>
 
-  <ng-template #headerTemplate let-column="column">
-    <div title="{{column.name}}">{{column.nameShort}}</div>
+  <ng-template #headerTemplate let-column="column" let-sort="sortFn">
+    <span class="datatable-header-cell-wrapper" title="{{column.name}}" (click)="sort()">{{column.nameShort}}</span>
   </ng-template>
 
   <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template #expandColumnTemplate>
