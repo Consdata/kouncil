@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {SearchService} from "app/search.service";
 import {ConsumerGroup, ConsumerGroupsResponse} from "app/consumers/consumer-groups/consumer-groups";
 import {ProgressBarService} from "app/util/progress-bar.service";
+import {ArraySortPipe} from "../../util/array-sort.pipe";
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -13,8 +14,8 @@ import {ProgressBarService} from "app/util/progress-bar.service";
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient,
               private searchService: SearchService,
-              private progressBarService: ProgressBarService
-  ) {
+              private progressBarService: ProgressBarService,
+              private arraySortPipe: ArraySortPipe) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -96,5 +97,9 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       console.warn(error);
       this.progressBarService.setProgress(false);
     });
+  }
+
+  customSort(event) {
+    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 }
