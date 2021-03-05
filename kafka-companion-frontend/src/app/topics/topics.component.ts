@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
 import { ProgressBarService } from "../util/progress-bar.service";
+import {SendPopupComponent} from "../send/send-popup.component";
 import { ArraySortPipe } from "../util/array-sort.pipe";
 
 @Component({
@@ -23,6 +24,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
+  @ViewChild(SendPopupComponent) popup;
 
   private subscription: Subscription;
 
@@ -82,6 +84,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kafka-companion-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  openSendPopup(topicName) {
+    this.popup.openPopup(topicName);
   }
 
   customSort(event) {
