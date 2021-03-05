@@ -34,11 +34,9 @@ public class TopicController {
     public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
                                           @PathVariable("partition") String partitions,
                                           @Deprecated @PathVariable("offset") String offset,
-                                          @RequestParam("sort") String sort,
-                                          @RequestParam("order") String order,
                                           @RequestParam("offset") String offsetShiftParam,
                                           @RequestParam("limit") String limitParam) {
-        log.debug("TCM01 topicName={}, partition={}, offset={}, sort={}, order={}, offsetParam={}, limit={}", topicName, partitions, offset, sort, order, offsetShiftParam, limitParam);
+        log.debug("TCM01 topicName={}, partition={}, offset={}, order={}, offsetParam={}, limit={}", topicName, partitions, offset, offsetShiftParam, limitParam);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
         Properties props = createCommonProperties();
