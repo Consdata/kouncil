@@ -30,7 +30,7 @@
     "rxjs": "^6.6.3",
     "rxjs-compat": "^6.0.0-rc.0",
     "tslib": "^2.1.0",
-    "zone.js": "~0.11.1",
+    "zone.js": "~0.11.4",
     "ngx-json-viewer": "2.4.0"
   },
   "devDependencies": {
