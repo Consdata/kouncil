@@ -20,7 +20,9 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { ProgressBarComponent } from "./util/progress-bar.component";
 import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeholder.component';
-import {TopicPartitionsComponent} from './topic/topic-partitions.component';
+import { TopicPartitionsComponent} from './topic/topic-partitions.component';
+import { SendPopupComponent } from './send/send-popup.component';
+import {TopicPaginationComponent} from './topic/topic-pagination.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,10 @@ import {TopicPartitionsComponent} from './topic/topic-partitions.component';
     ConsumerGroupComponent,
     ProgressBarComponent,
     NoDataPlaceholderComponent,
-    TopicPartitionsComponent
+    TopicPartitionsComponent,
+    NoDataPlaceholderComponent,
+    SendPopupComponent,
+    TopicPaginationComponent
   ],
   imports: [
     BrowserModule,

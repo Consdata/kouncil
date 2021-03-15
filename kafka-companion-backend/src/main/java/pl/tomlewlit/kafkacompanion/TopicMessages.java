@@ -17,4 +17,6 @@ public class TopicMessages {
 	private Map<Integer, Long> partitionOffsets;
 
 	private Map<Integer, Long> partitionEndOffsets;
+
+	private Long totalResults;
 }

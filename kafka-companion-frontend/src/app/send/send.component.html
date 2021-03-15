@@ -1,5 +1,5 @@
 <div class="kafka-send">
-  <form #heroForm="ngForm" (ngSubmit)="onSubmit()">
+  <form #heroForm="ngForm" (ngSubmit)="onSubmit(); heroForm.reset({count: 1})">
 
     <div>
       <label for="key">Key</label>
@@ -17,7 +17,7 @@
     </div>
 
     <button type="submit" class="kafka-primary-action btn btn-small">Submit</button>
-    <button type="reset" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>
+    <button type="button" class="kafka-secondary-action btn btn-small" (click)="cancel(); heroForm.reset({count: 1})">Cancel</button>
 
   </form>
 </div>

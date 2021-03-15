@@ -5,6 +5,8 @@ import { Subscription } from "rxjs";
 import { SearchService } from "app/search.service";
 import { TopicMetadata } from "app/topics/topic-metadata";
 import { ProgressBarService } from "../util/progress-bar.service";
+import {SendPopupComponent} from "../send/send-popup.component";
+import { ArraySortPipe } from "../util/array-sort.pipe";
 
 @Component({
   selector: 'app-topics',
@@ -12,13 +14,17 @@ import { ProgressBarService } from "../util/progress-bar.service";
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
+  constructor(private http: HttpClient,
+              private searchService: SearchService,
+              private progressBarService: ProgressBarService,
+              private arraySortPipe: ArraySortPipe) {
   }
 
   topics: TopicMetadata[] = [];
   grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
+  @ViewChild(SendPopupComponent) popup;
 
   private subscription: Subscription;
 
@@ -78,5 +84,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kafka-companion-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  openSendPopup(topicName) {
+    this.popup.openPopup(topicName);
+  }
+
+  customSort(event) {
+    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 }

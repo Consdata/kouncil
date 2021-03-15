@@ -2,12 +2,14 @@ import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/cor
 import {ActivatedRoute} from "@angular/router";
 import {TopicMessages} from "app/topic/topic";
 import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {ProgressBarService} from "../util/progress-bar.service";
 import {TopicService} from './topic.service';
+import {SendPopupComponent} from "../send/send-popup.component";
+import {Page} from './page';
 
 @Component({
   selector: 'app-topic',
@@ -16,18 +18,24 @@ import {TopicService} from './topic.service';
   providers: [JsonGrid, DatePipe, TopicService]
 })
 export class TopicComponent implements OnInit, OnDestroy {
+
   topicName: string;
-  searchSubscription: Subscription;
-  jsonToGridSubscription: Subscription;
-  paused: boolean;
-  phrase: string;
   columns = [];
   allRows = [];
   filteredRows = [];
+  searchSubscription: Subscription;
+  paused: boolean;
+
+  phrase: string;
+
+  jsonToGridSubscription: Subscription;
+  onePartitionSelected$: Observable<boolean>;
+  paging$: Observable<Page>;
 
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+  @ViewChild(SendPopupComponent) popup;
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -37,7 +45,9 @@ export class TopicComponent implements OnInit, OnDestroy {
               private topicService: TopicService) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
-    })
+    });
+    this.onePartitionSelected$ = this.topicService.isOnePartitionSelected$();
+    this.paging$ = this.topicService.getPagination$();
   }
 
   ngOnInit() {
@@ -86,10 +96,20 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleExpandRow(row) {
-    this.table.rowDetail.toggleExpandRow(row);
+  openSendPopup() {
+    this.popup.openPopup(this.topicName);
   }
 
+  openResendPopup(key: string, value: string) {
+    this.popup.openPopup(this.topicName, key, this.formatJson(value));
+  }
+
+  onPopupClose(event: boolean) {
+    if (event) {
+      this.progressBarService.setProgress(true);
+      this.topicService.getMessages(this.topicName);
+    }
+  }
 
   private jsonToGrid(topicMessages: TopicMessages) {
     let values = [];
@@ -163,6 +183,18 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows();
   }
 
+  private static tryParseJson(message) {
+    try {
+      return JSON.parse(message);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  toggleExpandRow(row) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
   private filterRows() {
     this.filteredRows = this.allRows.filter((row) => {
       return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
@@ -172,13 +204,4 @@ export class TopicComponent implements OnInit, OnDestroy {
   formatJson(object) {
     return JSON.stringify(object, null, 2);
   }
-
-  private static tryParseJson(message) {
-    try {
-      return JSON.parse(message);
-    } catch (e) {
-      return null;
-    }
-  }
-
 }

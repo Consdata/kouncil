@@ -1,8 +1,9 @@
 import {TopicMessages} from './topic';
 import {HttpClient} from '@angular/common/http';
 import {ProgressBarService} from '../util/progress-bar.service';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Injectable} from '@angular/core';
+import {Page} from './page';
 
 @Injectable()
 export class TopicService {
@@ -16,9 +17,12 @@ export class TopicService {
   convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
   selectedPartitionsChanged$: Subject<number[]> = new Subject<number[]>();
   visiblePartitionsChanged$: Subject<number[]> = new Subject<number[]>();
+  private onePartitionSelected$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  paginationChanged$: BehaviorSubject<Page>;
 
   constructor(private http: HttpClient,
               private progressBarService: ProgressBarService) {
+    this.initPaging();
 
   }
 
@@ -41,6 +45,8 @@ export class TopicService {
     this.http.get(url).subscribe((data: TopicMessages) => {
       this.partitionOffsets = data.partitionOffsets;
       this.partitionEndOffsets = data.partitionEndOffsets;
+      const paging = this.paginationChanged$.getValue()
+      paging.totalElements = data.totalResults;
       this.convertTopicMessagesJsonToGrid$.next(data);
       this.progressBarService.setProgress(false);
       this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
@@ -52,7 +58,8 @@ export class TopicService {
         this.visiblePartitions = this.partitions.slice(0, this.VISIBLE_PARTITION_QUANTITY);
         this.visiblePartitionsChanged$.next(this.visiblePartitions);
       }
-    })
+    });
+    this.onePartitionSelected();
   }
 
   togglePartition(nr: any, topicName: string) {
@@ -88,6 +95,11 @@ export class TopicService {
     return this.partitions.findIndex(e => e === firstElement);;
   }
 
+  private onePartitionSelected(): void {
+    console.log('onePartitionSelected: ', this.selectedPartitions , this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1)
+    this.onePartitionSelected$.next(this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1);
+  }
+
   hasNoMorePrevValues() {
     return this.visiblePartitions[0] === this.partitions[0];
   }
@@ -95,7 +107,6 @@ export class TopicService {
   hasNoMoreNextValues() {
     return this.visiblePartitions[this.visiblePartitions.length - 1] === this.partitions[this.partitions.length - 1];
   }
-
 
   getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {
     return this.convertTopicMessagesJsonToGrid$.asObservable();
@@ -117,4 +128,25 @@ export class TopicService {
     return this.visiblePartitionsChanged$.asObservable();
   }
 
+  isOnePartitionSelected$(): Observable<boolean> {
+    return this.onePartitionSelected$.asObservable();
+  }
+
+  paginateMessages(event: any, topicName: string) {
+    const paging = this.paginationChanged$.getValue();
+    paging.pageNumber = event.page;
+    this.paginationChanged$ = new BehaviorSubject<Page>(paging);
+    this.getMessages(topicName);
+  }
+
+  private initPaging(): void {
+    const paging = new Page()
+    paging.pageNumber = 1;
+    paging.size = 20;
+    this.paginationChanged$ = new BehaviorSubject<Page>(paging);
+  }
+
+  getPagination$(): Observable<Page> {
+    return this.paginationChanged$.asObservable();
+  }
 }
