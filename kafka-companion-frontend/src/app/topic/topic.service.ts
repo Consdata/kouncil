@@ -96,7 +96,6 @@ export class TopicService {
   }
 
   private onePartitionSelected(): void {
-    console.log('onePartitionSelected: ', this.selectedPartitions , this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1)
     this.onePartitionSelected$.next(this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1);
   }
 
