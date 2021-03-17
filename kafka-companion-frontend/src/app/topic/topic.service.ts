@@ -42,6 +42,7 @@ export class TopicService {
     } else {
       url = `/api/topic/messages/${topicName}/all/latest`;
     }
+    url += this.addPagingToUrl();
     this.http.get(url).subscribe((data: TopicMessages) => {
       this.partitionOffsets = data.partitionOffsets;
       this.partitionEndOffsets = data.partitionEndOffsets;
@@ -88,6 +89,11 @@ export class TopicService {
       this.visiblePartitions = subPartitions;
       this.visiblePartitionsChanged$.next(this.visiblePartitions);
     }
+  }
+
+  private addPagingToUrl(): string {
+    const paging = this.paginationChanged$.getValue();
+    return `?offset=${(paging.pageNumber - 1) * paging.size}&limit=${paging.size}`;
   }
 
   private getFirstElementIndex(): number {
