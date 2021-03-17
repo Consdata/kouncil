@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from "@angular/common/http";
 import { TopicComponent } from './topic/topic.component';
 import { RoutingModule } from "./routing/routing.module";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TopicsComponent } from './topics/topics.component';
 import { SendComponent } from './send/send.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -45,7 +45,8 @@ import { SendPopupComponent } from './send/send-popup.component';
     FormsModule,
     NgxDatatableModule,
     ClipboardModule,
-    NgxJsonViewerModule
+    NgxJsonViewerModule,
+    ReactiveFormsModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]
