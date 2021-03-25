@@ -1,6 +1,7 @@
 <div class="topic">
   <div class="topic-toolbar-area">
     <kafka-toolbar [name]="topicName" (onAction)="onAction($event)" (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
+    <topic-partitions [topicName]="topicName"></topic-partitions>
   </div>
   <div class="topic-table-area">
     <ngx-datatable
@@ -34,43 +35,7 @@
       <ngx-datatable-footer>
         <ng-template
           ngx-datatable-footer-template>
-          <div class="kafka-topic-footer">
-            <div class="kafka-topic-footer-segment">
-              Choose partition:
-              <span *ngFor="let i of partitions">
-              <span [ngClass]="(selectedPartitions[i] === 1)?'kafka-badge-primary':'kafka-badge-secondary'"
-                    (click)="togglePartition(i)">{{i}}</span>
-                </span>
-            </div>
-            <div class="kafka-topic-footer-segment">
-              Start offsets: {{formatJson(partitionOffsets)}}
-            </div>
-            <div class="kafka-topic-footer-segment">
-              End offsets: {{formatJson(partitionEndOffsets)}}
-            </div>
-            <div class="kafka-topic-footer-pager">
-              <div class="kafka-topic-footer-pager-item">
-                <datatable-pager
-                  *ngIf="isOnePartitionSelected"
-                  [pagerLeftArrowIcon]="'datatable-icon-left'"
-                  [pagerRightArrowIcon]="'datatable-icon-right'"
-                  [pagerPreviousIcon]="'datatable-icon-prev'"
-                  [pagerNextIcon]="'datatable-icon-skip'"
-                  [page]="paging.pageNumber"
-                  [size]="paging.size"
-                  [count]="paging.totalElements"
-                  (change)="paginateMessages($event)">
-                </datatable-pager>
-              </div>
-              <div class="kafka-topic-footer-pager-item">
-                <span>Items per page:</span>
-                <select class="kafka-topic-footer-pager-select-limit" [(ngModel)]="paging.size"
-                        (change)="getMessages()">
-                  <option *ngFor="let limit of pageLimits" [ngValue]="limit">{{limit}}</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <topic-pagination class="topic-pagination" [onePartitionSelected]="onePartitionSelected$ | async" [paging]="paging$ | async" [topicName]="topicName"></topic-pagination>
         </ng-template>
       </ngx-datatable-footer>
     </ngx-datatable>
