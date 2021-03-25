@@ -2,7 +2,7 @@
   <ng-template #noDataPlaceholder>
     <app-no-data-placeholder></app-no-data-placeholder>
   </ng-template>
-  <ngx-datatable *ngIf="filteredBrokers; else noDataPlaceholder"
+  <ngx-datatable *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder"
                  class="brokers-table material"
                  [rows]="filteredBrokers"
                  [rowHeight]="40"
