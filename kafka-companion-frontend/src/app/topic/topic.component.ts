@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
 import {TopicMessages} from "app/topic/topic";
 import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {ProgressBarService} from "../util/progress-bar.service";
+import {TopicService} from './topic.service';
 import {SendPopupComponent} from "../send/send-popup.component";
 import {Page} from './page';
 
@@ -15,20 +15,10 @@ import {Page} from './page';
   selector: 'app-topic',
   templateUrl: './topic.component.html',
   styleUrls: ['./topic.component.scss'],
-  providers: [JsonGrid, DatePipe]
+  providers: [JsonGrid, DatePipe, TopicService]
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-  constructor(private route: ActivatedRoute,
-              private http: HttpClient,
-              private searchService: SearchService,
-              private jsonGrid: JsonGrid,
-              private titleService: Title,
-              private progressBarService: ProgressBarService) {
-  }
-
-  partitionOffsets: { [key: number]: number } = {};
-  partitionEndOffsets: { [key: number]: number } = {};
   topicName: string;
   columns = [];
   allRows = [];
@@ -38,24 +28,33 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   phrase: string;
 
-  partitions: number[];
-
-  selectedPartitions: number[];
-  isOnePartitionSelected: boolean = false;
-  paging: Page = new Page();
-  pageLimits = [10, 20, 50, 100];
+  jsonToGridSubscription: Subscription;
+  onePartitionSelected$: Observable<boolean>;
+  paging$: Observable<Page>;
 
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
   @ViewChild(SendPopupComponent) popup;
 
+  constructor(private route: ActivatedRoute,
+              private searchService: SearchService,
+              private jsonGrid: JsonGrid,
+              private titleService: Title,
+              private progressBarService: ProgressBarService,
+              private topicService: TopicService) {
+    this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
+      this.jsonToGrid(value);
+    });
+    this.onePartitionSelected$ = this.topicService.isOnePartitionSelected$();
+    this.paging$ = this.topicService.getPagination$();
+  }
+
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.initPaging();
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
-      this.getMessages();
+      this.topicService.getMessages(this.topicName);
       this.titleService.setTitle(this.topicName + " KafkaCompanion");
       this.paused = true;
     });
@@ -69,50 +68,15 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
+    this.jsonToGridSubscription.unsubscribe();
     this.paused = true;
-  }
-
-
-  getMessages() {
-    let url;
-    if (typeof this.selectedPartitions != 'undefined') {
-      let partitionsParam = '';
-      for (let i = 0; i < this.selectedPartitions.length; i++) {
-        if (this.selectedPartitions[i] === 1) {
-          partitionsParam += i + ','
-        }
-      }
-      if(partitionsParam === ''){
-        return;
-      }
-      url = `/api/topic/messages/${this.topicName}/${partitionsParam}/latest`;
-    } else {
-      url = `/api/topic/messages/${this.topicName}/all/latest`;
-    }
-    url += this.addPagingToUrl();
-    this.http.get(url).subscribe((data: TopicMessages) => {
-      this.partitionOffsets = data.partitionOffsets;
-      this.partitionEndOffsets = data.partitionEndOffsets;
-      this.paging.totalElements = data.totalResults;
-      this.jsonToGrid(data);
-      this.progressBarService.setProgress(false);
-      this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
-      if (typeof this.selectedPartitions === 'undefined') {
-        this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
-        this.onePartitionSelected();
-      }
-    })
-  }
-
-  private addPagingToUrl(): string {
-    return `?offset=${(this.paging.pageNumber - 1) * this.paging.size}&limit=${this.paging.size}`;
   }
 
   getMessagesDelta() {
     if (this.paused) {
       return;
     }
-    this.getMessages();
+    this.topicService.getMessages(this.topicName);
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
@@ -143,7 +107,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   onPopupClose(event: boolean) {
     if (event) {
       this.progressBarService.setProgress(true);
-      this.getMessages();
+      this.topicService.getMessages(this.topicName);
     }
   }
 
@@ -239,27 +203,5 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   formatJson(object) {
     return JSON.stringify(object, null, 2);
-  }
-
-  togglePartition(i: any) {
-    this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
-    this.progressBarService.setProgress(true);
-    this.paging.pageNumber = 1;
-    this.onePartitionSelected();
-    this.getMessages();
-  }
-
-  private onePartitionSelected(): void {
-    this.isOnePartitionSelected = this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1;
-  }
-
-  paginateMessages(event: any): void {
-    this.paging.pageNumber = event.page;
-    this.getMessages();
-  }
-
-  private initPaging(): void {
-    this.paging.pageNumber = 1;
-    this.paging.size = 20;
   }
 }
