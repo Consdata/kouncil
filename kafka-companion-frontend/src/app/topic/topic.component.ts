@@ -8,6 +8,8 @@ import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {ProgressBarService} from "../util/progress-bar.service";
+import {SendPopupComponent} from "../send/send-popup.component";
+import {Page} from './page';
 
 @Component({
   selector: 'app-topic',
@@ -39,13 +41,18 @@ export class TopicComponent implements OnInit, OnDestroy {
   partitions: number[];
 
   selectedPartitions: number[];
+  isOnePartitionSelected: boolean = false;
+  paging: Page = new Page();
+  pageLimits = [10, 20, 50, 100];
 
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+  @ViewChild(SendPopupComponent) popup;
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
+    this.initPaging();
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
       this.getMessages();
@@ -82,16 +89,23 @@ export class TopicComponent implements OnInit, OnDestroy {
     } else {
       url = `/api/topic/messages/${this.topicName}/all/latest`;
     }
+    url += this.addPagingToUrl();
     this.http.get(url).subscribe((data: TopicMessages) => {
       this.partitionOffsets = data.partitionOffsets;
       this.partitionEndOffsets = data.partitionEndOffsets;
+      this.paging.totalElements = data.totalResults;
       this.jsonToGrid(data);
       this.progressBarService.setProgress(false);
       this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
       if (typeof this.selectedPartitions === 'undefined') {
         this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
+        this.onePartitionSelected();
       }
     })
+  }
+
+  private addPagingToUrl(): string {
+    return `?offset=${(this.paging.pageNumber - 1) * this.paging.size}&limit=${this.paging.size}`;
   }
 
   getMessagesDelta() {
@@ -115,6 +129,21 @@ export class TopicComponent implements OnInit, OnDestroy {
     } else if ('play' === action) {
       this.paused = false;
       this.getMessagesDelta();
+    }
+  }
+
+  openSendPopup() {
+    this.popup.openPopup(this.topicName);
+  }
+
+  openResendPopup(key: string, value: string) {
+    this.popup.openPopup(this.topicName, key, this.formatJson(value));
+  }
+
+  onPopupClose(event: boolean) {
+    if (event) {
+      this.progressBarService.setProgress(true);
+      this.getMessages();
     }
   }
 
@@ -215,6 +244,22 @@ export class TopicComponent implements OnInit, OnDestroy {
   togglePartition(i: any) {
     this.selectedPartitions[i] = -1 * this.selectedPartitions[i];
     this.progressBarService.setProgress(true);
+    this.paging.pageNumber = 1;
+    this.onePartitionSelected();
     this.getMessages();
+  }
+
+  private onePartitionSelected(): void {
+    this.isOnePartitionSelected = this.selectedPartitions && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1;
+  }
+
+  paginateMessages(event: any): void {
+    this.paging.pageNumber = event.page;
+    this.getMessages();
+  }
+
+  private initPaging(): void {
+    this.paging.pageNumber = 1;
+    this.paging.size = 20;
   }
 }
