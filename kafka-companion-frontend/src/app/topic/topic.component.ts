@@ -262,4 +262,8 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.paging.pageNumber = 1;
     this.paging.size = 20;
   }
+
+  isLoading(): boolean {
+    return this.progressBarService.progressSub.getValue();
+  }
 }
