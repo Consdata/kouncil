@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/cor
 import {ActivatedRoute} from "@angular/router";
 import {TopicMessages} from "app/topic/topic";
 import {SearchService} from "app/search.service";
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {JsonGrid} from "app/topic/json-grid";
 import {DatePipe} from "@angular/common";
 import {Title} from "@angular/platform-browser";
