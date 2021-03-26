@@ -6,6 +6,7 @@
 
 .topic-toolbar-area {
   height: 40px;
+  display: flex;
 }
 
 .topic-table-area {
@@ -50,44 +51,13 @@
   direction:ltr;
 }
 
-.kafka-topic-footer {
+.kafka-topic {
+  margin-left: 50px;
   display: flex;
   font-size: 15px;
-  width: 100%;
-  .kafka-topic-footer-segment {
-    padding-left: 20px;
-    height: 34px;
-    line-height: 34px;
-    span {
-      display: inline-block;
-      vertical-align: middle;
-      line-height: normal;
-    }
+  .kafka-topic-segment {
+    padding: 10px 0 20px 20px;
   }
-  .kafka-topic-footer-pager {
-    margin-left: auto;
-  }
-}
-
-.kafka-topic-footer-pager-item {
-  display: inline-block;
-  margin-right: 5px;
-}
-
-.kafka-topic-footer-pager-select-limit {
-  display: inline-block;
-  height: 22px;
-  width: 50px;
-  line-height: 22px;
-  padding: 0 6px;
-  border-radius: 3px;
-  margin: 0 10px;
-  text-align: center;
-  color: rgba(0, 0, 0, 0.54);
-  appearance: none;
-  background-color: rgba(158, 158, 158, 0.2);
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .kafka-arrow {
@@ -95,4 +65,8 @@
 }
 .json-details {
   white-space: normal;
+}
+
+.topic-pagination {
+  width: 100%;
 }

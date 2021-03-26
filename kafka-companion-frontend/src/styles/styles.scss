@@ -48,11 +48,18 @@ html, body {
 .kafka-badge-primary {
   @extend .kafka-badge;
   background-color: $primary-red-color;
+  width: 25px;
+}
+
+.kafka-badge-secondary-disabled {
+  cursor: default;
+  opacity: 50%;
 }
 
 .kafka-badge-secondary {
   @extend .kafka-badge;
   background-color: $color-gray-1;
+  width: 25px;
 }
 
 .kafka-primary-action {
