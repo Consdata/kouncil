@@ -24,7 +24,7 @@
     "@swimlane/ngx-datatable": "^18.0.0",
     "bootstrap": "^4.6.0",
     "core-js": "^2.6.12",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "materialize-css": "^1.0.0-beta",
     "ngx-textarea-autosize": "^1.1.1",
     "rxjs": "^6.6.3",
