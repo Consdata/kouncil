@@ -27,7 +27,7 @@
     "jquery": "^3.6.0",
     "materialize-css": "^1.0.0-beta",
     "ngx-textarea-autosize": "^1.1.1",
-    "rxjs": "^6.6.3",
+    "rxjs": "^6.6.6",
     "rxjs-compat": "^6.0.0-rc.0",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4",
