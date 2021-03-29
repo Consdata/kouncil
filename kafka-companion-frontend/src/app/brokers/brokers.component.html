@@ -11,13 +11,19 @@
                  [scrollbarV]="false"
                  [columnMode]="'force'"
                  #table>
-    <ngx-datatable-row-detail [rowHeight]="getRowHeight(row)" #myDetailRow (toggle)="onDetailToggle($event)">
-      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <div style="padding-left:35px;overflow:scroll">
-          <li *ngFor="let item of row.config;">
-            <strong>{{item.name}}</strong>:{{item.value}}
-          </li>
-        </div>
+    <ngx-datatable-row-detail [rowHeight]="320">
+      <ng-template let-row="row" ngx-datatable-row-detail-template>
+        <ngx-datatable class="config-table-detail material"
+                       [rows]="row.config"
+                       [rowHeight]="30"
+                       [headerHeight]="30"
+                       [scrollbarH]="false"
+                       [scrollbarV]="false"
+                       [columnMode]="'force'">
+          <ngx-datatable-column [width]="150" prop="name" name="name"></ngx-datatable-column>
+          <ngx-datatable-column [width]="200" prop="value" name="value"></ngx-datatable-column>
+          <ngx-datatable-column prop="source" name="source"></ngx-datatable-column>
+        </ngx-datatable>
       </ng-template>
     </ngx-datatable-row-detail>
     <ngx-datatable-column

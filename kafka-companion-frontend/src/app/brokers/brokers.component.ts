@@ -18,7 +18,6 @@ export class BrokersComponent implements OnInit {
   @ViewChild('table') table: any;
   allBrokers: Broker[];
   filteredBrokers: Broker[];
-  brokerConfigs: BrokerConfig[];
   private subscription: Subscription;
   phrase: string;
 
@@ -45,25 +44,11 @@ export class BrokersComponent implements OnInit {
   }
 
   toggleExpandRow(row) {
-    console.log('Toggled Expand Row!', row.id);
     this.http.get("/api/configs/" + row.id)
       .subscribe(data => {
-        console.log('Detail Toggled', data);
         row.config = <BrokerConfig[]> data;
         this.table.rowDetail.toggleExpandRow(row);
       });
 
   }
-
-  getRowHeight(row) {
-    console.log('getRowHeight', row);
-    if(!row) return 50;
-    if(row.config === undefined) return 50;
-    return row.config.size * 10;
-  }
-
-  onDetailToggle(event) {
-    console.log('Detail Toggled', event);
-  }
-
 }
