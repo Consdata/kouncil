@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from "@angular/common/http";
 import { TopicComponent } from './topic/topic.component';
 import { RoutingModule } from "./routing/routing.module";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TopicsComponent } from './topics/topics.component';
 import { SendComponent } from './send/send.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -20,6 +20,9 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { ProgressBarComponent } from "./util/progress-bar.component";
 import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeholder.component';
+import { TopicPartitionsComponent} from './topic/topic-partitions.component';
+import { SendPopupComponent } from './send/send-popup.component';
+import {TopicPaginationComponent} from './topic/topic-pagination.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,11 @@ import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeh
     AutosizeDirective,
     ConsumerGroupComponent,
     ProgressBarComponent,
-    NoDataPlaceholderComponent
+    NoDataPlaceholderComponent,
+    TopicPartitionsComponent,
+    NoDataPlaceholderComponent,
+    SendPopupComponent,
+    TopicPaginationComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +50,8 @@ import { NoDataPlaceholderComponent } from './no-data-placeholder/no-data-placeh
     FormsModule,
     NgxDatatableModule,
     ClipboardModule,
-    NgxJsonViewerModule
+    NgxJsonViewerModule,
+    ReactiveFormsModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]

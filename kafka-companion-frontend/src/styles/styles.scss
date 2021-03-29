@@ -20,6 +20,20 @@ html, body {
   align-items: center;
 }
 
+.ngx-datatable.material datatable-progress {
+  display: none;
+}
+
+.ngx-datatable.material .empty-row, .no-data-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: $primary-red-color;
+  font-size: large;
+}
+
 .kafka-badge {
   display: inline-block;
   padding: 0.2em 0.3em;
@@ -34,11 +48,18 @@ html, body {
 .kafka-badge-primary {
   @extend .kafka-badge;
   background-color: $primary-red-color;
+  width: 25px;
+}
+
+.kafka-badge-secondary-disabled {
+  cursor: default;
+  opacity: 50%;
 }
 
 .kafka-badge-secondary {
   @extend .kafka-badge;
   background-color: $color-gray-1;
+  width: 25px;
 }
 
 .kafka-primary-action {

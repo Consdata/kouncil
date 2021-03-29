@@ -2,7 +2,7 @@
   <ng-template #noDataPlaceholder>
     <app-no-data-placeholder></app-no-data-placeholder>
   </ng-template>
-  <ngx-datatable *ngIf="filteredBrokers; else noDataPlaceholder"
+  <ngx-datatable *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder"
                  class="brokers-table material expandable"
                  [rows]="filteredBrokers"
                  [rowHeight]="40"
@@ -36,9 +36,9 @@
         </a>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column prop="id" name="Id"></ngx-datatable-column>
-    <ngx-datatable-column prop="host" name="Host"></ngx-datatable-column>
-    <ngx-datatable-column prop="port" name="port"></ngx-datatable-column>
-    <ngx-datatable-column prop="rack" name="rack"></ngx-datatable-column>
+    <ngx-datatable-column [width]="150" prop="id" name="Id"></ngx-datatable-column>
+    <ngx-datatable-column [width]="200" prop="host" name="Host"></ngx-datatable-column>
+    <ngx-datatable-column [width]="150" prop="port" name="Port"></ngx-datatable-column>
+    <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
   </ngx-datatable>
 </div>

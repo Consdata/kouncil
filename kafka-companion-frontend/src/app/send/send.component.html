@@ -8,16 +8,16 @@
 
     <div>
       <label for="value">Value (available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->})</label>
-      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value" required="true"></textarea>
+      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value"></textarea>
     </div>
 
     <div>
       <label for="count">Count</label>
-      <input [(ngModel)]="count" type="number" id="count" name="count"/>
+      <input type="number" id="count" name="count" min="1" [formControl]="countControl"/>
     </div>
 
-    <button type="submit" class="kafka-primary-action btn btn-small">Submit</button>
-    <button type="reset" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>
+    <button type="submit" [disabled]="countControl.invalid" class="kafka-primary-action btn btn-small">Submit</button>
+    <button type="button" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>
 
   </form>
 </div>

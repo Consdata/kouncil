@@ -6,6 +6,7 @@
 
 .topic-toolbar-area {
   height: 40px;
+  display: flex;
 }
 
 .topic-table-area {
@@ -50,14 +51,22 @@
   direction:ltr;
 }
 
-.kafka-topic-footer {
+.kafka-topic {
+  margin-left: 50px;
   display: flex;
   font-size: 15px;
-  .kafka-topic-footer-segment {
-    padding-left: 20px;
+  .kafka-topic-segment {
+    padding: 10px 0 20px 20px;
   }
 }
 
 .kafka-arrow {
   color: $primary-red-color;
+}
+.json-details {
+  white-space: normal;
+}
+
+.topic-pagination {
+  width: 100%;
 }

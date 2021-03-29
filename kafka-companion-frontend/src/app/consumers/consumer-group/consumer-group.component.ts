@@ -4,6 +4,7 @@ import {SearchService} from "app/search.service";
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {ConsumerGroupOffset, ConsumerGroupResponse} from "app/consumers/consumer-group/consumer-group";
+import {ProgressBarService} from "../../util/progress-bar.service";
 
 @Component({
   selector: 'kafka-consumer-group',
@@ -21,11 +22,13 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   lastLags: IHash = {};
   constructor(private http: HttpClient,
               private searchService: SearchService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private progressBarService: ProgressBarService) {
   }
 
   ngOnInit() {
     this.paused = false;
+    this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.groupId = params['groupId'];
       this.getConsumerGroup();
@@ -43,6 +46,10 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  isLoading(): boolean {
+    return this.progressBarService.progressSub.getValue();
+  }
+
   private getConsumerGroup() {
     if (this.paused) {
       return;
@@ -52,6 +59,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
           this.allAssignments = (<ConsumerGroupResponse> data).consumerGroupOffset;
           this.calculateLags();
           this.filter();
+          this.progressBarService.setProgress(false);
           setTimeout(() => this.getConsumerGroup(), 1000);
         });
   }

@@ -9,6 +9,7 @@ export class ToolbarComponent implements OnInit {
 
   @Input() name: string;
   @Output() onAction: EventEmitter<any> = new EventEmitter();
+  @Output() onOpenSendPopup: EventEmitter<any> = new EventEmitter();
 
   online: boolean = false;
 
@@ -32,5 +33,9 @@ export class ToolbarComponent implements OnInit {
 
   onPlay() {
     this.onAction.emit("play");
+  }
+
+  openSendPopup() {
+    this.onOpenSendPopup.emit();
   }
 }

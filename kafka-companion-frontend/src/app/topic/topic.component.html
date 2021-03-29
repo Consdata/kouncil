@@ -1,6 +1,7 @@
 <div class="topic">
   <div class="topic-toolbar-area">
-    <kafka-toolbar [name]="topicName" (onAction)="onAction($event)"></kafka-toolbar>
+    <kafka-toolbar [name]="topicName" (onAction)="onAction($event)" (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
+    <topic-partitions [topicName]="topicName"></topic-partitions>
   </div>
   <div class="topic-table-area">
     <ngx-datatable
@@ -14,6 +15,7 @@
                    [scrollbarV]="true"
                    [columnMode]="'force'"
                    [rowClass]="getRowClass"
+                   [loadingIndicator]="isLoading()"
                    #table>
 
       <ngx-datatable-row-detail [rowHeight]="320">
@@ -23,9 +25,9 @@
               class="kafka-row-details-inner">
               <div>
                 <button class="kafka-small-btn-action " [cdkCopyToClipboard]="formatJson(row.kafkaCompanionValueJson)">Copy to clipboard</button>
-                <button class="kafka-small-btn-action" [routerLink]="['/topic/send', {topicName: topicName, key:row.kafkaCompanionKey,value:formatJson(row.kafkaCompanionValueJson)}]">Resend</button>
+                <button class="kafka-small-btn-action" (click)="openResendPopup(row.kafkaCompanionKey, row.kafkaCompanionValueJson)">Resend</button>
               </div>
-              <ngx-json-viewer [json]="row.kafkaCompanionValueJson"></ngx-json-viewer>
+              <ngx-json-viewer [json]="row.kafkaCompanionValueJson" class="json-details"></ngx-json-viewer>
             </div>
           </div>
         </ng-template>
@@ -34,28 +36,14 @@
       <ngx-datatable-footer>
         <ng-template
           ngx-datatable-footer-template>
-          <div class="kafka-topic-footer">
-            <div class="kafka-topic-footer-segment">
-              Choose partition:
-              <span *ngFor="let i of partitions">
-              <span [ngClass]="(selectedPartitions[i] === 1)?'kafka-badge-primary':'kafka-badge-secondary'"
-                    (click)="togglePartition(i)">{{i}}</span>
-                </span>
-            </div>
-            <div class="kafka-topic-footer-segment">
-              Start offsets: {{formatJson(partitionOffsets)}}
-            </div>
-            <div class="kafka-topic-footer-segment">
-              End offsets: {{formatJson(partitionEndOffsets)}}
-            </div>
-          </div>
+          <topic-pagination class="topic-pagination" [onePartitionSelected]="onePartitionSelected$ | async" [paging]="paging$ | async" [topicName]="topicName"></topic-pagination>
         </ng-template>
       </ngx-datatable-footer>
     </ngx-datatable>
   </div>
 
-  <ng-template #headerTemplate let-column="column">
-    <div title="{{column.name}}">{{column.nameShort}}</div>
+  <ng-template #headerTemplate let-column="column" let-sort="sortFn">
+    <span class="datatable-header-cell-wrapper" title="{{column.name}}" (click)="sort()">{{column.nameShort}}</span>
   </ng-template>
 
   <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template #expandColumnTemplate>
@@ -68,5 +56,5 @@
       (click)="toggleExpandRow(row)">
     </a>
   </ng-template>
-
+  <app-send-popup (onClose)="onPopupClose($event)"></app-send-popup>
 </div>
