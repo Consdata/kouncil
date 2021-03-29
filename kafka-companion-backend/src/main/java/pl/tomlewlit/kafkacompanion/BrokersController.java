@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.tomlewlit.kafkacompanion.logging.EntryExitLogger;
 
-import javax.validation.constraints.NotNull;
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +67,7 @@ public class BrokersController {
                     .build()));
             return configs.stream().sorted().collect(Collectors.toList());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KafkaCompanionRuntimeException(e);
         }
     }
 }
