@@ -1,6 +1,7 @@
 package com.consdata.kouncil.topic;
 
 import com.consdata.kouncil.KouncilConfiguration;
+import com.consdata.kouncil.logging.EntryExitLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,7 +12,6 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
-import com.consdata.kouncil.logging.EntryExitLogger;
 
 import java.time.Duration;
 import java.util.*;

@@ -1,18 +1,14 @@
 package com.consdata.kouncil.broker;
 
 import com.consdata.kouncil.KouncilRuntimeException;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.Config;
-import org.apache.kafka.clients.admin.ConfigEntry;
-import org.apache.kafka.clients.admin.DescribeClusterResult;
-import org.apache.kafka.clients.admin.DescribeConfigsResult;
+import com.consdata.kouncil.logging.EntryExitLogger;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Node;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import com.consdata.kouncil.logging.EntryExitLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;

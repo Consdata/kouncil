@@ -11,12 +11,12 @@ import java.util.Map;
 @Builder
 public class TopicMessagesDto {
 
-	@Singular
-	private List<TopicMessage> messages;
+    @Singular
+    private List<TopicMessage> messages;
 
-	private Map<Integer, Long> partitionOffsets;
+    private Map<Integer, Long> partitionOffsets;
 
-	private Map<Integer, Long> partitionEndOffsets;
+    private Map<Integer, Long> partitionEndOffsets;
 
-	private Long totalResults;
+    private Long totalResults;
 }

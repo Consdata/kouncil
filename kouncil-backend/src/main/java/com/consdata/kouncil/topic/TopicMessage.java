@@ -7,9 +7,9 @@ import lombok.Data;
 @Builder
 public class TopicMessage {
 
-	private String key;
-	private String value;
-	private long timestamp;
-	private int partition;
-	private long offset;
+    private String key;
+    private String value;
+    private long timestamp;
+    private int partition;
+    private long offset;
 }
