@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs";
-import {ActivatedRoute} from "@angular/router";
-import {ConsumerGroupOffset, ConsumerGroupResponse} from "app/consumers/consumer-group/consumer-group";
-import {ProgressBarService} from "../../util/progress-bar.service";
+import {SearchService} from 'app/search.service';
+import {Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {ConsumerGroupOffset, ConsumerGroupResponse} from 'app/consumers/consumer-group/consumer-group';
+import {ProgressBarService} from '../../util/progress-bar.service';
+import {ConsumerGroupService} from './consumer-group.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'kafka-consumer-group',
@@ -20,10 +21,11 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   phrase: string;
   paused: boolean;
   lastLags: IHash = {};
-  constructor(private http: HttpClient,
-              private searchService: SearchService,
+
+  constructor(private searchService: SearchService,
               private route: ActivatedRoute,
-              private progressBarService: ProgressBarService) {
+              private progressBarService: ProgressBarService,
+              private consumerGroupService: ConsumerGroupService) {
   }
 
   ngOnInit() {
@@ -54,14 +56,16 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get("/api/consumer-group/" + this.groupId)
-        .subscribe(data => {
-          this.allAssignments = (<ConsumerGroupResponse> data).consumerGroupOffset;
-          this.calculateLags();
-          this.filter();
-          this.progressBarService.setProgress(false);
-          setTimeout(() => this.getConsumerGroup(), 1000);
-        });
+
+    this.consumerGroupService.getConsumerGroup(this.groupId)
+      .pipe(first())
+      .subscribe(data => {
+        this.allAssignments = (<ConsumerGroupResponse>data).consumerGroupOffset;
+        this.calculateLags();
+        this.filter();
+        this.progressBarService.setProgress(false);
+        setTimeout(() => this.getConsumerGroup(), 1000);
+      });
   }
 
   private filter() {
@@ -72,11 +76,11 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
   private calculateLags() {
     this.allAssignments.forEach(consumerGroupOffset => {
-      let lag: number = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : 0;
+      const lag: number = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : 0;
       consumerGroupOffset.lag = lag;
       consumerGroupOffset.pace = lag - this.lastLags[consumerGroupOffset.clientId];
       this.lastLags[consumerGroupOffset.clientId] = lag;
-    })
+    });
   }
 }
 

@@ -25,6 +25,7 @@ import {SendPopupComponent} from './send/send-popup.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
+import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,10 @@ import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/c
     }, {
       provide: ConsumerGroupsService,
       useFactory: consumerGroupsServiceFactory,
+      deps: [HttpClient]
+    }, {
+      provide: ConsumerGroupService,
+      useFactory: consumerGroupServiceFactory,
       deps: [HttpClient]
     }
   ],
