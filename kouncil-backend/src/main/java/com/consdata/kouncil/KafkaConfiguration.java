@@ -18,9 +18,8 @@ import java.util.Properties;
 @Configuration
 public class KafkaConfiguration {
 
-    private KouncilConfiguration kouncilConfiguration;
+    private final KouncilConfiguration kouncilConfiguration;
 
-    @Autowired
     public KafkaConfiguration(KouncilConfiguration kouncilConfiguration) {
         this.kouncilConfiguration = kouncilConfiguration;
     }

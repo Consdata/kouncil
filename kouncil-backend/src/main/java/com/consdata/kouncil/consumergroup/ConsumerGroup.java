@@ -1,4 +1,4 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.consumergroup;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,5 +1,6 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.KouncilConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -31,11 +32,11 @@ public class TopicController {
     }
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
-    public TopicMessages getTopicMessages(@PathVariable("topicName") String topicName,
-                                          @PathVariable("partition") String partitions,
-                                          @Deprecated @PathVariable("offset") String offset,
-                                          @RequestParam("offset") String offsetShiftParam,
-                                          @RequestParam("limit") String limitParam) {
+    public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
+                                             @PathVariable("partition") String partitions,
+                                             @PathVariable("offset") String offset,
+                                             @RequestParam("offset") String offsetShiftParam,
+                                             @RequestParam("limit") String limitParam) {
         log.debug("TCM01 topicName={}, partition={}, offset={}, order={}, offsetParam={}, limit={}", topicName, partitions, offset, offsetShiftParam, limitParam);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
@@ -81,14 +82,14 @@ public class TopicController {
                 }
             }
 
-            List<Message> messages = new ArrayList<>();
+            List<TopicMessage> messages = new ArrayList<>();
             int i = 0;
             // couple first polls after seek don't return eny records
             while (i < 100 && messages.size() < limit) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
                 for (ConsumerRecord<String, String> record : records) {
                     if (messages.size() < limit) {
-                        messages.add(Message
+                        messages.add(TopicMessage
                                 .builder()
                                 .key(record.key())
                                 .value(record.value())
@@ -101,16 +102,16 @@ public class TopicController {
                 i++;
             }
             log.debug("TCM20 poll completed records.size={}", messages.size());
-            messages.sort(Comparator.comparing(Message::getTimestamp));
-            TopicMessages topicMessages = TopicMessages.builder()
+            messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
+            TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
                     .messages(messages)
                     .partitionOffsets(beginningOffsets)
                     .partitionEndOffsets(endOffsets)
                     // pagination works only for single selected partition
                     .totalResults(partitionsArray.length == 1 ? endOffsets.get(partitionsArray[0]) : null)
                     .build();
-            log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessages.getMessages().size());
-            return topicMessages;
+            log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessagesDto.getMessages().size());
+            return topicMessagesDto;
 
         }
     }
@@ -119,7 +120,7 @@ public class TopicController {
     @EntryExitLogger
     public void send(@PathVariable("topic") String topic,
                      @PathVariable("count") int count,
-                     @RequestBody Message message) {
+                     @RequestBody TopicMessage message) {
         for (int i = 0; i < count; i++) {
             kafkaTemplate.send(topic, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
         }

@@ -1,4 +1,4 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.topic;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,10 +9,10 @@ import java.util.Map;
 
 @Data
 @Builder
-public class TopicMessages {
+public class TopicMessagesDto {
 
 	@Singular
-	private List<Message> messages;
+	private List<TopicMessage> messages;
 
 	private Map<Integer, Long> partitionOffsets;
 

@@ -1,4 +1,4 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.broker;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

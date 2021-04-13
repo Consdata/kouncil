@@ -1,12 +1,13 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.KouncilRuntimeException;
+import com.consdata.kouncil.logging.EntryExitLogger;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.consdata.kouncil.logging.EntryExitLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;

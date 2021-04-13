@@ -1,4 +1,4 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.topic;
 
 import java.util.List;
 

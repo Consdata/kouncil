@@ -1,5 +1,6 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.broker;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.Config;
 import org.apache.kafka.clients.admin.ConfigEntry;
@@ -50,6 +51,7 @@ public class BrokersController {
     }
 
     @GetMapping("/api/configs/{name}")
+    @EntryExitLogger
     public Collection<BrokerConfig> getConfigs(@PathVariable("name") String name) {
         try {
             ConfigResource o = new ConfigResource(ConfigResource.Type.BROKER, name);

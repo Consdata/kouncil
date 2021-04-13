@@ -1,5 +1,6 @@
-package com.consdata.kouncil;
+package com.consdata.kouncil.consumergroup;
 
+import com.consdata.kouncil.KouncilConfiguration;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
