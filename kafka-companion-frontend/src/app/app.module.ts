@@ -24,6 +24,7 @@ import {TopicPartitionsComponent} from './topic/topic-partitions.component';
 import {SendPopupComponent} from './send/send-popup.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
+import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,10 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
     {
       provide: BrokerService,
       useFactory: brokerServiceFactory,
+      deps: [HttpClient]
+    }, {
+      provide: ConsumerGroupsService,
+      useFactory: consumerGroupsServiceFactory,
       deps: [HttpClient]
     }
   ],
