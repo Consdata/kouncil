@@ -4,5 +4,5 @@ export class TopicMetadata {
 
   constructor(public partitions: number, public group: string, public name: string) {
 
-  };
+  }
 }

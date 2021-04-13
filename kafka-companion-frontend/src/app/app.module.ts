@@ -26,6 +26,7 @@ import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
+import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,10 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
     }, {
       provide: ConsumerGroupService,
       useFactory: consumerGroupServiceFactory,
+      deps: [HttpClient]
+    }, {
+      provide: TopicsService,
+      useFactory: topicsServiceFactory,
       deps: [HttpClient]
     }
   ],
