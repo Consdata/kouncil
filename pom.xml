@@ -3,12 +3,12 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>pl.tomlewlit</groupId>
-	<artifactId>kafka-companion</artifactId>
+	<groupId>com.consdata</groupId>
+	<artifactId>kouncil</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>kafka-companion</name>
+	<name>kouncil</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -25,8 +25,8 @@
 	</properties>
 
 	<modules>
-		<module>kafka-companion-frontend</module>
-		<module>kafka-companion-backend</module>
+		<module>kouncil-frontend</module>
+		<module>kouncil-backend</module>
 	</modules>
 
 </project>
