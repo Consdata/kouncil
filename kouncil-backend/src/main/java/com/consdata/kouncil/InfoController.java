@@ -20,7 +20,8 @@ public class InfoController {
     @GetMapping(path = "/version")
     public String getVersion() {
         return Optional.ofNullable(buildProperties)
-                .map(BuildProperties::getVersion).orElse(null);
+                .map(t -> t.getVersion() + " " + t.getTime())
+                .orElse(null);
     }
 
 }

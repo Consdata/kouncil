@@ -28,13 +28,6 @@
       background-color: $color-dark-red;
     }
   }
-
-  .kafka-logo-image {
-    width: 30px;
-    height: 35px;
-    align-self: center;
-    margin-left: 15px;
-  }
 }
 
 .kafka-search {
@@ -64,4 +57,9 @@
 .kafka-logo {
   font-size: 20px;
   font-weight: bold;
+}
+
+.kouncil-version {
+  font-size: 10px;
+  font-weight: normal;
 }

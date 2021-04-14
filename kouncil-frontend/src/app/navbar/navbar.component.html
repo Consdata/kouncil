@@ -12,7 +12,7 @@
                                                                src="assets/consdata-logo.png"/></a>
   <a class="kafka-logo" href="https://github.com/Consdata/kouncil">
     <span>Kouncil&nbsp;&nbsp;</span>
-    <span *ngIf="backendVersion$ | async as backendVersion">{{backendVersion}}</span>
+    <span class="kouncil-version" *ngIf="backendVersion$ | async as backendVersion">{{backendVersion}}</span>
   </a>
 
 </div>
