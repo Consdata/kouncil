@@ -153,7 +153,7 @@ export class TopicBackendService implements TopicService {
     this.getMessages(topicName);
   }
 
-  private initPaging(): void {
+  initPaging(): void {
     const paging = new Page();
     paging.pageNumber = 1;
     paging.size = 20;

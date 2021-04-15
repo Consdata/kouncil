@@ -1,5 +1,0 @@
-const demoTopicData = {
-  'bank-transactions': {
-
-  }
-};

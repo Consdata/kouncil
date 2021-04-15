@@ -2,34 +2,48 @@ import {Injectable} from '@angular/core';
 import {TopicMessages} from './topic';
 import {Message} from './message';
 import {TopicBackendService} from './topic.backend.service';
+import {demoTopics} from '../topics/topics.demo.data';
+import {HttpClient} from '@angular/common/http';
+import {ProgressBarService} from '../util/progress-bar.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TopicDemoService extends TopicBackendService {
 
+  constructor(public http: HttpClient, public progressBarService: ProgressBarService) {
+    super(http, progressBarService);
+  }
+
   getMessages(topicName: string) {
-    const messages = [] as Message[];
-    for (let i = 0; i < 400; i++) {
-      messages.push(this.createRandomMessage(i));
+    const partitionOffsets = {};
+    let totalResults = 0;
+    const partitions = demoTopics.filter(t => t.name === topicName)[0].partitions;
+    for (let i = 0; i < partitions; i++) {
+      const randomOffset = this.randomInt(100000000, 200000000);
+      partitionOffsets[i] = randomOffset;
+      totalResults += randomOffset;
     }
-    const partitionOffsets = {
-      0: this.randomInt(100000000, 200000000),
-      2: this.randomInt(100000000, 200000000),
-      3: this.randomInt(100000000, 200000000),
-      4: this.randomInt(100000000, 200000000)
-    };
-    const data = new TopicMessages(messages, partitionOffsets, partitionOffsets, 1049990230);
+
+    const size = this.paginationChanged$.getValue().size;
+    const messages = [] as Message[];
+    for (let i = 0; i < size; i++) {
+      messages.push(this.createRandomMessage(i, partitions, partitionOffsets));
+    }
+
+    const data = new TopicMessages(messages, partitionOffsets, partitionOffsets, totalResults);
     this.processMessagesData(data);
     this.onePartitionSelected();
   }
 
-  private createRandomMessage(i: number): Message {
+  private createRandomMessage(i: number, partitions: number, partitionOffsets: {}): Message {
+    const partition = this.randomInt(0, partitions - 1);
+    const pagination = this.paginationChanged$.getValue();
     return new Message(
       this.uuidv4(),
       this.createRandomEvent(),
-      243532543 - i,
-      this.randomInt(0, 3),
+      partitionOffsets[partition] - (pagination.size * pagination.pageNumber) - i,
+      partition,
       new Date().getTime()
     );
   }
