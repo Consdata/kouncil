@@ -27,6 +27,9 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
+import {TopicService, topicServiceFactory} from './topic/topic.service';
+import {ProgressBarService} from './util/progress-bar.service';
+import {SendService, sendServiceFactory} from './send/send.service';
 
 @NgModule({
   declarations: [
@@ -74,6 +77,14 @@ import {TopicsService, topicsServiceFactory} from './topics/topics.service';
     }, {
       provide: TopicsService,
       useFactory: topicsServiceFactory,
+      deps: [HttpClient]
+    }, {
+      provide: TopicService,
+      useFactory: topicServiceFactory,
+      deps: [HttpClient, ProgressBarService]
+    }, {
+      provide: SendService,
+      useFactory: sendServiceFactory,
       deps: [HttpClient]
     }
   ],

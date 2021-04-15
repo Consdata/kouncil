@@ -1,23 +1,36 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {TopicMessages} from "app/topic/topic";
-import {SearchService} from "app/search.service";
-import {Observable, Subscription} from "rxjs";
-import {JsonGrid} from "app/topic/json-grid";
-import {DatePipe} from "@angular/common";
-import {Title} from "@angular/platform-browser";
-import {ProgressBarService} from "../util/progress-bar.service";
+import {ActivatedRoute} from '@angular/router';
+import {TopicMessages} from 'app/topic/topic';
+import {SearchService} from 'app/search.service';
+import {Observable, Subscription} from 'rxjs';
+import {JsonGrid} from 'app/topic/json-grid';
+import {DatePipe} from '@angular/common';
+import {Title} from '@angular/platform-browser';
+import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicService} from './topic.service';
-import {SendPopupComponent} from "../send/send-popup.component";
+import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
 
 @Component({
   selector: 'app-topic',
   templateUrl: './topic.component.html',
   styleUrls: ['./topic.component.scss'],
-  providers: [JsonGrid, DatePipe, TopicService]
+  providers: [JsonGrid, DatePipe]
 })
 export class TopicComponent implements OnInit, OnDestroy {
+
+  constructor(private route: ActivatedRoute,
+              private searchService: SearchService,
+              private jsonGrid: JsonGrid,
+              private titleService: Title,
+              private progressBarService: ProgressBarService,
+              private topicService: TopicService) {
+    this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
+      this.jsonToGrid(value);
+    });
+    this.onePartitionSelected$ = this.topicService.isOnePartitionSelected$();
+    this.paging$ = this.topicService.getPagination$();
+  }
 
   topicName: string;
   columns = [];
@@ -37,17 +50,12 @@ export class TopicComponent implements OnInit, OnDestroy {
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
   @ViewChild(SendPopupComponent) popup;
 
-  constructor(private route: ActivatedRoute,
-              private searchService: SearchService,
-              private jsonGrid: JsonGrid,
-              private titleService: Title,
-              private progressBarService: ProgressBarService,
-              private topicService: TopicService) {
-    this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
-      this.jsonToGrid(value);
-    });
-    this.onePartitionSelected$ = this.topicService.isOnePartitionSelected$();
-    this.paging$ = this.topicService.getPagination$();
+  private static tryParseJson(message) {
+    try {
+      return JSON.parse(message);
+    } catch (e) {
+      return null;
+    }
   }
 
   ngOnInit() {
@@ -55,7 +63,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
       this.topicService.getMessages(this.topicName);
-      this.titleService.setTitle(this.topicName + " Kouncil");
+      this.titleService.setTitle(this.topicName + ' Kouncil');
       this.paused = true;
     });
 
@@ -83,11 +91,11 @@ export class TopicComponent implements OnInit, OnDestroy {
   getRowClass = (row) => {
     return {
       'kafka-row-delta': row['fresh']
-    }
-  };
+    };
+  }
 
   onAction(action: string) {
-    console.log("Toolbar action: " + action);
+    console.log('Toolbar action: ' + action);
     if ('pause' === action) {
       this.paused = true;
     } else if ('play' === action) {
@@ -112,7 +120,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   private jsonToGrid(topicMessages: TopicMessages) {
-    let values = [];
+    const values = [];
     topicMessages.messages.forEach(message => values.push({
       value: message.value,
       valueJson: TopicComponent.tryParseJson(message.value),
@@ -123,7 +131,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     }));
     this.jsonGrid.replaceObjects(values);
 
-    let columns = [];
+    const columns = [];
     columns.push({
       width: 20,
       resizable: false,
@@ -181,14 +189,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.columns = columns;
     this.allRows = [...this.jsonGrid.getRows()];
     this.filterRows();
-  }
-
-  private static tryParseJson(message) {
-    try {
-      return JSON.parse(message);
-    } catch (e) {
-      return null;
-    }
   }
 
   toggleExpandRow(row) {
