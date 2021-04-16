@@ -7,7 +7,7 @@ import {JsonGrid} from 'app/topic/json-grid';
 import {DatePipe} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ProgressBarService} from '../util/progress-bar.service';
-import {TopicService} from './topic.service';
+import {TopicService, topicServiceProvider} from './topic.service';
 import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
 
@@ -15,7 +15,7 @@ import {Page} from './page';
   selector: 'app-topic',
   templateUrl: './topic.component.html',
   styleUrls: ['./topic.component.scss'],
-  providers: [JsonGrid, DatePipe]
+  providers: [JsonGrid, DatePipe, topicServiceProvider]
 })
 export class TopicComponent implements OnInit, OnDestroy {
 

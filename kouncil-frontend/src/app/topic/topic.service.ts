@@ -76,3 +76,9 @@ export function topicServiceFactory(http: HttpClient, progressBarService: Progre
     }
   }
 }
+
+export const topicServiceProvider = {
+  provide: TopicService,
+  useFactory: topicServiceFactory,
+  deps: [HttpClient, ProgressBarService]
+};
