@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {SearchService} from "app/search.service";
-import {Subscription} from "rxjs";
-import {ActivatedRoute} from "@angular/router";
-import {ConsumerGroupOffset, ConsumerGroupResponse} from "app/consumers/consumer-group/consumer-group";
-import {ProgressBarService} from "../../util/progress-bar.service";
+import {HttpClient} from '@angular/common/http';
+import {SearchService} from 'app/search.service';
+import {Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {ConsumerGroupOffset, ConsumerGroupResponse} from 'app/consumers/consumer-group/consumer-group';
+import {ProgressBarService} from '../../util/progress-bar.service';
 
 @Component({
   selector: 'kafka-consumer-group',
@@ -54,7 +54,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.http.get("/api/consumer-group/" + this.groupId)
+    this.http.get('/api/consumer-group/' + this.groupId)
         .subscribe(data => {
           this.allAssignments = (<ConsumerGroupResponse> data).consumerGroupOffset;
           this.calculateLags();
@@ -71,12 +71,17 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   private calculateLags() {
-    this.allAssignments.forEach(consumerGroupOffset => {
-      let lag: number = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : 0;
-      consumerGroupOffset.lag = lag;
-      consumerGroupOffset.pace = lag - this.lastLags[consumerGroupOffset.clientId];
-      this.lastLags[consumerGroupOffset.clientId] = lag;
-    })
+    console.log(this.allAssignments);
+    this.allAssignments.forEach(assignment => {
+      const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
+      assignment.lag = lag;
+      assignment.pace = lag - this.lastLags[ConsumerGroupComponent.getKey(assignment)];
+      this.lastLags[ConsumerGroupComponent.getKey(assignment)] = lag;
+    });
+  }
+
+  private static getKey(assignment: ConsumerGroupOffset) {
+    return assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
   }
 }
 
