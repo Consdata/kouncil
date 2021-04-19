@@ -1,21 +1,24 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { SearchService } from "app/search.service";
-import { Router } from "@angular/router";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {SearchService} from 'app/search.service';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'kafka-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('searchInput', { static: true }) private searchInputElementRef: ElementRef;
+  @ViewChild('searchInput', {static: true}) private searchInputElementRef: ElementRef;
 
   phrase: string;
+  backendVersion$: Observable<string>;
 
-  constructor(private searchService: SearchService, private router: Router) {
+  constructor(private searchService: SearchService, private router: Router, private http: HttpClient) {
     router.events.subscribe((val) => {
-      this.searchInputElementRef.nativeElement.value = "";
+      this.searchInputElementRef.nativeElement.value = '';
       this.searchInputElementRef.nativeElement.focus();
     });
   }
@@ -25,6 +28,7 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
   }
 
   onPhraseChange(phrase: string) {

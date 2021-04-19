@@ -56,7 +56,6 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-
     this.consumerGroupService.getConsumerGroup(this.groupId)
       .pipe(first())
       .subscribe(data => {
@@ -75,12 +74,17 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   private calculateLags() {
-    this.allAssignments.forEach(consumerGroupOffset => {
-      const lag: number = !!consumerGroupOffset.offset ? consumerGroupOffset.endOffset - consumerGroupOffset.offset : 0;
-      consumerGroupOffset.lag = lag;
-      consumerGroupOffset.pace = lag - this.lastLags[consumerGroupOffset.clientId];
-      this.lastLags[consumerGroupOffset.clientId] = lag;
+    console.log(this.allAssignments);
+    this.allAssignments.forEach(assignment => {
+      const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
+      assignment.lag = lag;
+      assignment.pace = lag - this.lastLags[ConsumerGroupComponent.getKey(assignment)];
+      this.lastLags[ConsumerGroupComponent.getKey(assignment)] = lag;
     });
+  }
+
+  private static getKey(assignment: ConsumerGroupOffset) {
+    return assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
   }
 }
 
