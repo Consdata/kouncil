@@ -1,12 +1,13 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Topics } from "app/topics/topics";
-import { Subscription } from "rxjs";
-import { SearchService } from "app/search.service";
-import { TopicMetadata } from "app/topics/topic-metadata";
-import { ProgressBarService } from "../util/progress-bar.service";
-import {SendPopupComponent} from "../send/send-popup.component";
-import { ArraySortPipe } from "../util/array-sort.pipe";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Topics} from 'app/topics/topics';
+import {Subscription} from 'rxjs';
+import {SearchService} from 'app/search.service';
+import {TopicMetadata} from 'app/topics/topic-metadata';
+import {ProgressBarService} from '../util/progress-bar.service';
+import {SendPopupComponent} from '../send/send-popup.component';
+import {ArraySortPipe} from '../util/array-sort.pipe';
+import {TopicsService} from './topics.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-topics',
@@ -14,10 +15,10 @@ import { ArraySortPipe } from "../util/array-sort.pipe";
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient,
-              private searchService: SearchService,
+  constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private arraySortPipe: ArraySortPipe) {
+              private arraySortPipe: ArraySortPipe,
+              private topicsService: TopicsService) {
   }
 
   topics: TopicMetadata[] = [];
@@ -30,13 +31,14 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.http.get("/api/topics")
-        .subscribe(data => {
-          this.topics = (<Topics> data).topics;
-          this.applyFavourites();
-          this.filter();
-          this.progressBarService.setProgress(false);
-        });
+    this.topicsService.getTopics()
+      .pipe(first())
+      .subscribe(data => {
+        this.topics = (<Topics>data).topics;
+        this.applyFavourites();
+        this.filter();
+        this.progressBarService.setProgress(false);
+      });
 
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
@@ -50,12 +52,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   private filter(phrase?) {
     this.filtered = this.topics.filter((topicsMetadata) => {
-      return !phrase || topicsMetadata.name.indexOf(phrase) > -1
+      return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
   }
 
   private applyFavourites() {
-    let favouritesStr = localStorage.getItem('kouncil-topics-favourites');
+    const favouritesStr = localStorage.getItem('kouncil-topics-favourites');
     let favourites = [];
     if (favouritesStr) {
       favourites = favouritesStr.split(',');
@@ -71,7 +73,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
       } else if (b.group === TopicMetadata.GROUP_FAVOURITES) {
         return 1;
       }
-    })
+    });
   }
 
   onFavouriteClick(row) {
@@ -80,7 +82,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     } else {
       row.group = TopicMetadata.GROUP_FAVOURITES;
     }
-    let favourites = this.topics.filter(topic => topic.group === TopicMetadata.GROUP_FAVOURITES).map(topic => topic.name);
+    const favourites = this.topics.filter(topic => topic.group === TopicMetadata.GROUP_FAVOURITES).map(topic => topic.name);
     localStorage.setItem('kouncil-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());

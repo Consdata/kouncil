@@ -1,7 +1,9 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Message} from "app/topic/message";
-import {FormControl, Validators} from "@angular/forms";
+import {HttpClient} from '@angular/common/http';
+import {Message} from 'app/topic/message';
+import {FormControl, Validators} from '@angular/forms';
+import {SendService} from './send.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-send',
@@ -15,10 +17,10 @@ export class SendComponent implements OnChanges {
   @Input('value') value: string;
   @Output() onClose: EventEmitter<any> = new EventEmitter();
   @ViewChild('heroForm') sendForm: any;
-  message: Message = new Message("", "", null, null, null);
+  message: Message = new Message('', '', null, null, null);
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private sendService: SendService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,10 +33,12 @@ export class SendComponent implements OnChanges {
   }
 
   onSubmit() {
-    this.http.post(`/api/topic/send/${this.topicName}/${this.countControl.value}`, this.message).subscribe(data => {
-      this.onClose.emit(true);
-      this.resetForm();
-    });
+    this.sendService.send(this.topicName, this.countControl.value, this.message)
+      .pipe(first())
+      .subscribe(data => {
+        this.onClose.emit(true);
+        this.resetForm();
+      });
   }
 
   cancel() {

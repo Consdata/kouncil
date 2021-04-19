@@ -1,10 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { SearchService } from "app/search.service";
-import { Brokers } from "app/brokers/brokers";
-import {Broker, BrokerConfig} from "app/brokers/broker";
-import { Subscription } from "rxjs";
-import {ProgressBarService} from "app/util/progress-bar.service";
+import {SearchService} from 'app/search.service';
+import {Brokers} from 'app/brokers/brokers';
+import {Broker, BrokerConfig} from 'app/brokers/broker';
+import {Subscription} from 'rxjs';
+import {ProgressBarService} from 'app/util/progress-bar.service';
+import {BrokerService} from './broker.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'kafka-brokers',
@@ -13,8 +14,11 @@ import {ProgressBarService} from "app/util/progress-bar.service";
 })
 export class BrokersComponent implements OnInit {
 
-  constructor(private http: HttpClient, private searchService: SearchService, private progressBarService: ProgressBarService) {
+  constructor(private searchService: SearchService,
+              private progressBarService: ProgressBarService,
+              private brokerService: BrokerService) {
   }
+
   @ViewChild('table') table: any;
   allBrokers: Broker[];
   filteredBrokers: Broker[];
@@ -23,12 +27,13 @@ export class BrokersComponent implements OnInit {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.http.get("/api/brokers")
-        .subscribe(data => {
-          this.allBrokers = (<Brokers> data).brokers;
-          this.filterRows();
-          this.progressBarService.setProgress(false);
-        });
+    this.brokerService.getBrokers()
+      .pipe(first())
+      .subscribe(data => {
+        this.allBrokers = (<Brokers>data).brokers;
+        this.filterRows();
+        this.progressBarService.setProgress(false);
+      });
 
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
@@ -44,9 +49,10 @@ export class BrokersComponent implements OnInit {
   }
 
   toggleExpandRow(row) {
-    this.http.get("/api/configs/" + row.id)
+    this.brokerService.getBrokerConfig(row.id)
+      .pipe(first())
       .subscribe(data => {
-        row.config = <BrokerConfig[]> data;
+        row.config = <BrokerConfig[]>data;
         this.table.rowDetail.toggleExpandRow(row);
       });
 

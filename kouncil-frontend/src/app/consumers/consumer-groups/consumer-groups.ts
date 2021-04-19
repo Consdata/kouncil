@@ -4,7 +4,7 @@ export class ConsumerGroup {
 
   constructor(public groupId: string, public status: string, public group: string) {
 
-  };
+  }
 }
 
 

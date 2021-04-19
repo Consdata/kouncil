@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Subscription} from "rxjs";
-import {SearchService} from "app/search.service";
-import {ConsumerGroup, ConsumerGroupsResponse} from "app/consumers/consumer-groups/consumer-groups";
-import {ProgressBarService} from "app/util/progress-bar.service";
-import {ArraySortPipe} from "../../util/array-sort.pipe";
+import {Subscription} from 'rxjs';
+import {SearchService} from 'app/search.service';
+import {ConsumerGroup, ConsumerGroupsResponse} from 'app/consumers/consumer-groups/consumer-groups';
+import {ProgressBarService} from 'app/util/progress-bar.service';
+import {ArraySortPipe} from '../../util/array-sort.pipe';
+import {ConsumerGroupsService} from './consumer-groups.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -12,10 +13,10 @@ import {ArraySortPipe} from "../../util/array-sort.pipe";
   styleUrls: ['./consumer-groups.component.scss']
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
-  constructor(private http: HttpClient,
-              private searchService: SearchService,
+  constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private arraySortPipe: ArraySortPipe) {
+              private arraySortPipe: ArraySortPipe,
+              private consumerGroupsService: ConsumerGroupsService) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -36,7 +37,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   private loadConsumerGroups() {
-    this.http.get("/api/consumer-groups")
+    this.consumerGroupsService.getConsumerGroups()
+      .pipe(first())
       .subscribe(data => {
         this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
         this.applyFavourites();
@@ -51,12 +53,12 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   private filter(phrase?) {
     this.filtered = this.consumerGroups.filter((consumerGroup) => {
-      return !phrase || consumerGroup.groupId.indexOf(phrase) > -1
+      return !phrase || consumerGroup.groupId.indexOf(phrase) > -1;
     });
   }
 
   private applyFavourites() {
-    let favouritesStr = localStorage.getItem('kouncil-consumer-groups-favourites');
+    const favouritesStr = localStorage.getItem('kouncil-consumer-groups-favourites');
     let favourites = [];
     if (favouritesStr) {
       favourites = favouritesStr.split(',');
@@ -72,7 +74,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       } else if (b.group === ConsumerGroup.GROUP_FAVOURITES) {
         return 1;
       }
-    })
+    });
   }
 
   onFavouriteClick(row) {
@@ -81,7 +83,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     } else {
       row.group = ConsumerGroup.GROUP_FAVOURITES;
     }
-    let favourites = this.consumerGroups.filter(consumerGroup => consumerGroup.group === ConsumerGroup.GROUP_FAVOURITES).map(
+    const favourites = this.consumerGroups.filter(consumerGroup => consumerGroup.group === ConsumerGroup.GROUP_FAVOURITES).map(
       consumerGroup => consumerGroup.groupId);
     localStorage.setItem('kouncil-consumer-groups-favourites', favourites.join());
     this.applyFavourites();
@@ -89,14 +91,15 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   deleteConsumerGroup(value) {
-    console.log("delete ", value);
     this.progressBarService.setProgress(true);
-    this.http.delete("/api/consumer-group/" + value).subscribe(data => {
-      this.loadConsumerGroups();
-    }, error => {
-      console.warn(error);
-      this.progressBarService.setProgress(false);
-    });
+    this.consumerGroupsService.deleteConsumerGroup(value)
+      .pipe(first())
+      .subscribe(data => {
+        this.loadConsumerGroups();
+      }, error => {
+        console.warn(error);
+        this.progressBarService.setProgress(false);
+      });
   }
 
   customSort(event) {
