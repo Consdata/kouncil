@@ -37,7 +37,16 @@ export class TopicDemoService extends TopicBackendService {
   }
 
   private createRandomMessage(i: number, partitions: number, partitionOffsets: {}): Message {
-    const partition = this.randomInt(0, partitions - 1);
+    let partition = this.randomInt(0, partitions - 1);
+    if (this.selectedPartitions !== undefined) {
+      const selectedPartitionNumbers = [];
+      this.selectedPartitions.forEach((value: number, index: number) => {
+        if (value !== -1) {
+          selectedPartitionNumbers.push(index);
+        }
+      });
+      partition = selectedPartitionNumbers[this.randomInt(0, selectedPartitionNumbers.length - 1)];
+    }
     const pagination = this.paginationChanged$.getValue();
     return new Message(
       this.uuidv4(),
