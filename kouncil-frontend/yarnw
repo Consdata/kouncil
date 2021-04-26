@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ ! -f "./target/node/node" ] || [ ! -f "./target/node/yarn/dist/bin/yarn" ]; then
+  mkdir -p ./target/logs > /dev/null
+  {
+    echo "[$(date --rfc-3339=ns)] Downloading node and/or yarn"
+    mvn "com.github.eirslett:frontend-maven-plugin:install-node-and-yarn@install node and yarn"
+  } >> ./target/logs/yarnw.log 2>&1
+fi
+export PATH="$(pwd)/target/node:$(pwd)/target/node/yarn/dist/bin:$PATH"
+
+exec yarn $@
+#EOF

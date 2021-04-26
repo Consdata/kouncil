@@ -14,6 +14,8 @@ public class TopicMessagesDto {
     @Singular
     private List<TopicMessage> messages;
 
+    private Map<Integer, Long> partitionBeginningOffsets;
+
     private Map<Integer, Long> partitionOffsets;
 
     private Map<Integer, Long> partitionEndOffsets;
