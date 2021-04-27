@@ -95,17 +95,20 @@ public class TopicController {
             log.debug("TCM03 beginningOffsets={}", beginningOffsets);
             log.debug("TCM04 endOffsets={}", endOffsets);
 
+            long availablePartitions = Arrays.stream(partitionsArray).filter(p -> beginningOffsets.get(p) >= 0).count();
             for (int j : partitionsArray) {
                 Long startOffsetForPartition = beginningOffsets.get(j);
-
                 log.debug("TCM05 startOffsetForPartition={}", startOffsetForPartition);
-                long position = endOffsets.get(j) - offsetShift;
-                log.debug("TCM06 position={}", position);
-                long seekTo = position - (limit / partitionsArray.length);
                 if (startOffsetForPartition < 0) {
                     log.debug("TCM10 startOffsetForPartition is -1, seekToEnd");
                     consumer.seekToEnd(Collections.singletonList(topicPartitions.get(j)));
-                } else if (seekTo > startOffsetForPartition) {
+                    continue;
+                }
+
+                long position = endOffsets.get(j) - offsetShift;
+                log.debug("TCM06 position={}", position);
+                long seekTo = position - (limit / availablePartitions);
+                if (seekTo > startOffsetForPartition) {
                     log.debug("TCM11 seekTo={}", seekTo);
                     consumer.seek(topicPartitions.get(j), seekTo);
                 } else {
