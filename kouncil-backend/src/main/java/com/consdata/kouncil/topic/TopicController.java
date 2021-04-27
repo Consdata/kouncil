@@ -38,8 +38,10 @@ public class TopicController {
                                              @PathVariable("offset") String offset,
                                              @RequestParam("offset") String offsetShiftParam,
                                              @RequestParam("limit") String limitParam,
-                                             @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis) {
-        log.debug("TCM01 topicName={}, partition={}, offset={}, offsetParam={}, limit={}, beginningTimestampMillis={}", topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis);
+                                             @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
+                                             @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis) {
+        log.debug("TCM01 topicName={}, partition={}, offset={}, offsetParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
+                topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis, endTimestampMillis);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
         Properties props = createCommonProperties();
@@ -60,34 +62,50 @@ public class TopicController {
                 partitionsArray = Arrays.stream(partitions.split(",")).mapToInt(Integer::parseInt).toArray();
             }
 
-            Map<Integer, Long> beginningOffsets = consumer
-                    .beginningOffsets(topicPartitions).entrySet().stream()
-                    .collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-            Map<Integer, Long> startOffsets = beginningOffsets;
+            Map<Integer, Long> beginningOffsets;
             if (beginningTimestampMillis != null) {
                 Map<TopicPartition, Long> beginningTimestamps = topicPartitions.stream()
                         .collect(Collectors.toMap(Function.identity(), ignore -> beginningTimestampMillis));
-                startOffsets = consumer.offsetsForTimes(beginningTimestamps).entrySet().stream()
+                beginningOffsets = consumer.offsetsForTimes(beginningTimestamps).entrySet().stream()
                         .collect(Collectors.toMap(
                                 k -> k.getKey().partition(),
-                                v -> v.getValue() == null ? beginningOffsets.get(v.getKey().partition()) : v.getValue().offset()
+                                v -> v.getValue() == null ? -1 : v.getValue().offset()
                         ));
+            } else {
+                beginningOffsets = consumer
+                        .beginningOffsets(topicPartitions).entrySet().stream()
+                        .collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
             }
 
-            Map<Integer, Long> endOffsets = consumer.endOffsets(topicPartitions).entrySet()
+            final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
                     .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
+            final Map<Integer, Long> endOffsets;
+            if(endTimestampMillis != null) {
+                Map<TopicPartition, Long> endTimestamps = topicPartitions.stream()
+                        .collect(Collectors.toMap(Function.identity(), ignore -> endTimestampMillis + 1));
+                endOffsets = consumer.offsetsForTimes(endTimestamps).entrySet().stream()
+                        .collect(Collectors.toMap(
+                                k -> k.getKey().partition(),
+                                v -> v.getValue() == null ? globalEndOffsets.get(v.getKey().partition()) : v.getValue().offset()
+                        ));
+            } else {
+                endOffsets = globalEndOffsets;
+            }
+
             log.debug("TCM03 beginningOffsets={}", beginningOffsets);
-            log.debug("TCM03 startOffsets={}", startOffsets);
             log.debug("TCM04 endOffsets={}", endOffsets);
 
             for (int j : partitionsArray) {
+                Long startOffsetForPartition = beginningOffsets.get(j);
 
-                Long startOffsetForPartition = startOffsets.get(j);
                 log.debug("TCM05 startOffsetForPartition={}", startOffsetForPartition);
-                long position = consumer.position(topicPartitions.get(j)) - offsetShift;
+                long position = endOffsets.get(j) - offsetShift;
                 log.debug("TCM06 position={}", position);
                 long seekTo = position - (limit / partitionsArray.length);
-                if (seekTo > startOffsetForPartition) {
+                if (startOffsetForPartition < 0) {
+                    log.debug("TCM10 startOffsetForPartition is -1, seekToEnd");
+                    consumer.seekToEnd(Collections.singletonList(topicPartitions.get(j)));
+                } else if (seekTo > startOffsetForPartition) {
                     log.debug("TCM11 seekTo={}", seekTo);
                     consumer.seek(topicPartitions.get(j), seekTo);
                 } else {
@@ -102,6 +120,9 @@ public class TopicController {
             while (i < 100 && messages.size() < limit) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
                 for (ConsumerRecord<String, String> record : records) {
+                    if (record.offset() >= endOffsets.get(record.partition())) {
+                        continue;
+                    }
                     if (messages.size() < limit) {
                         messages.add(TopicMessage
                                 .builder()
@@ -119,12 +140,11 @@ public class TopicController {
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
             TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
                     .messages(messages)
-                    .partitionOffsets(startOffsets)
-                    .partitionBeginningOffsets(beginningOffsets)
+                    .partitionOffsets(beginningOffsets)
                     .partitionEndOffsets(endOffsets)
                     // pagination works only for single selected partition
                     .totalResults(partitionsArray.length == 1
-                            ? endOffsets.get(partitionsArray[0]) - startOffsets.get(partitionsArray[0])
+                            ? endOffsets.get(partitionsArray[0]) - beginningOffsets.get(partitionsArray[0])
                             : null)
                     .build();
             log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessagesDto.getMessages().size());
