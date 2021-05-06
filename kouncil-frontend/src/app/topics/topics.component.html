@@ -1,8 +1,8 @@
-<div class="kafka-topics" *ngIf="topics">
+<div class="kafka-topics" *ngIf="filtered">
   <ng-template #noDataPlaceholder>
     <app-no-data-placeholder></app-no-data-placeholder>
   </ng-template>
-  <ngx-datatable *ngIf="topics && topics.length > 0; else noDataPlaceholder"
+  <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                  class="topics-table material"
                  [rows]="filtered"
                  [rowHeight]="50"

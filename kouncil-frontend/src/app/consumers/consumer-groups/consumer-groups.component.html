@@ -1,8 +1,8 @@
-<div class="kafka-consumer-groups" *ngIf="consumerGroups">
+<div class="kafka-consumer-groups" *ngIf="filtered">
   <ng-template #noDataPlaceholder>
     <app-no-data-placeholder></app-no-data-placeholder>
   </ng-template>
-  <ngx-datatable *ngIf="consumerGroups && consumerGroups.length > 0; else noDataPlaceholder"
+  <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                  class="consumer-groups-table material"
                  [rows]="filtered"
                  [rowHeight]="50"
