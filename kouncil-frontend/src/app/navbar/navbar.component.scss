@@ -1,65 +1,105 @@
 @import 'palette';
 
-.kafka-navbar {
-  display: flex;
-  height: 48px;
-  align-items: stretch;
-  padding-left: 10px;
-  padding-right: 30px;
-  background-color: $primary-gray-color;
+mat-toolbar {
+  height: 72px;
+  border-bottom: 1px solid $main-20;
+}
 
-  & > a {
-    padding-left: 20px;
-    padding-right: 20px;
-    font-size: 16px;
-    color: $palette-white;
+.kouncil-logo {
+  margin-left: 8px;
+  margin-right: 40px;
+  color: $main-100;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+mat-toolbar {
+  background: $main-0;
+}
+
+::ng-deep .mat-divider-vertical {
+  border-right-color: $main-20;
+  height: $default-line-height;
+}
+
+mat-divider {
+  margin: 0 16px;
+}
+
+.menu-button {
+  height: 100%;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 16px;
+  min-width: 32px;
+  color: $main-60;
+
+  &:focus {
+    background: transparent;
   }
 
-  & > * {
-    display: flex;
-    align-items: center;
-  }
-
-  a {
-    &.active {
-      background-color: $primary-red-color;
-    }
-    &:hover {
-      background-color: $color-dark-red;
-    }
+  &.active {
+    border-bottom: 2px solid $main-text-color;
+    color: $main-100;
   }
 }
 
-.kafka-search {
-  padding-left: 20px;
-  i {
-    color: $palette-white;
-  }
-
-  input.kafka-search-input {
-    margin-left: 10px;
-    height: 2rem;
-    font-size: 16px;
-    color: $palette-white;
-    box-shadow: none;
-    &:focus,
-    &:active,
-    &:hover {
-      border-bottom-color: $palette-white;
-    }
-  }
+::ng-deep .mat-button-focus-overlay {
+  background: transparent;
 }
 
-.kafka-spring {
-  flex-grow: 1;
+.spacer {
+  flex: 1 1 auto;
 }
 
-.kafka-logo {
-  font-size: 20px;
-  font-weight: bold;
+.search-input {
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: 4px;
+  padding: 8px 8px 8px 40px;
+  font-size: 14px;
+  line-height: $default-line-height;
+  min-width: 400px;
 }
 
-.kouncil-version {
-  font-size: 10px;
-  font-weight: normal;
+.search-input:hover {
+  border: 1px solid $main-40;
+  transition: all $default-transition-time;
+}
+
+.search-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 3px 1px $blue-60;
+  transition: all $default-transition-time;
+}
+
+.search {
+  display: inline-block;
+  position: relative;
+}
+
+.search::after {
+  content: '/';
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  background-color: $main-10;
+  border: 1px solid $main-20;
+  border-radius: 4px;
+  color: $main-50;
+  padding: 0 9px;
+  font-size: 14px;
+  line-height: $default-line-height;
+}
+
+.search::before {
+  content: '\26B2';
+  transform: rotate(-45deg);
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  color: $main-50;
+  padding: 0 6px;
+  font-size: 24px;
+  line-height: $default-line-height;
 }

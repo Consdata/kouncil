@@ -1,9 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
-//@import "~bootstrap/scss/bootstrap";
-//$primary-color: #ef6c00;
-$secondary-color: #ef6c00;
 @import 'palette';
-@import 'node_modules/materialize-css/sass/materialize';
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$kouncil-primary: mat-palette($palette-main);
+$kouncil-accent: mat-palette($palette-accent);
+$kouncil-warn: mat-palette($palette-warn);
+
+$kouncil-theme: mat-light-theme((
+  color: (
+    primary: $kouncil-primary,
+    accent: $kouncil-accent,
+    warn: $kouncil-warn,
+  )
+));
+
+@include angular-material-theme($kouncil-theme);
+
+$custom-typography: mat-typography-config(
+  $font-family: 'Inter, normal'
+);
+@include mat-base-typography($custom-typography);
+@include mat-core($custom-typography);
+
+$secondary-color: #ef6c00;
+//@import 'node_modules/materialize-css/sass/materialize';
 
 @import '../../node_modules/@swimlane/ngx-datatable/index.css';
 @import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
@@ -11,6 +32,7 @@ $secondary-color: #ef6c00;
 
 html, body {
   height: 100%;
+  margin: 0;
 }
 
 .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
@@ -104,3 +126,10 @@ html, body {
   }
 }
 
+.mat-icon {
+  color: $main-50;
+  width: 15px;
+  height: 15px;
+  font-size: 20px;
+  margin: 0 8px;
+}

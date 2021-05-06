@@ -1,18 +1,20 @@
-<div class="kafka-navbar">
-  <a routerLinkActive="active" [routerLink]="['/topics']">Topics</a>
-  <a routerLinkActive="active" [routerLink]="['/brokers']">Brokers</a>
-  <a routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumers</a>
-  <div class="kafka-search">
-    <i class="material-icons">search</i>
-    <input class="kafka-search-input" type="text" placeholder="" (input)="onPhraseChange($event.target.value)"
-           #searchInput>
-  </div>
-  <div class="kafka-spring"></div>
-  <a class="kafka-logo" href="https://www.consdata.com/"> <img class="consdata-logo-image"
-                                                               src="assets/consdata-logo.png"/></a>
-  <a class="kafka-logo" href="https://github.com/Consdata/kouncil">
-    <span>Kouncil&nbsp;&nbsp;</span>
-    <span class="kouncil-version" *ngIf="backendVersion$ | async as backendVersion">{{backendVersion}}</span>
-  </a>
+<mat-toolbar>
+  <span class="kouncil-logo">Kouncil</span>
+  <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/topics']">Topics</button>
+  <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/brokers']">Brokers</button>
+  <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumer Groups</button>
 
-</div>
+  <mat-divider [vertical]="true"></mat-divider>
+
+  <button class="menu-button" mat-button disableRipple onClick="window.open('//github.com/consdata/kouncil')">
+      Documentation
+      <mat-icon aria-hidden="false" aria-label="Example home icon">open_in_new</mat-icon>
+  </button>
+
+  <span class="spacer"></span>
+
+  <div class="search">
+    <input class="search-input" type="text" placeholder="Search" (input)="onPhraseChange($event.target.value)" #searchInput>
+  </div>
+
+</mat-toolbar>

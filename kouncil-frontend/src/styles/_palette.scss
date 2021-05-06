@@ -1,9 +1,155 @@
+$main-text-color: #141414;
+$main-text-dark-color: $main-text-color;
+$main-text-light-color: white;
+
+$default-line-height: 24px;
+$default-transition-time: 0.3s;
+
+// main palette
+$main-0: #FFFFFF;
+$main-10: #F9F9F9;
+$main-20: #EAEAEA;
+$main-30: #D2D2D2;
+$main-40: #B0B0B0;
+$main-50: #898989;
+$main-60: #626262;
+$main-70: #414141;
+$main-80: #292929;
+$main-90: #1B1B1B;
+$main-100: #141414;
+
+$palette-main: (
+  50: $main-0,
+  100: $main-10,
+  200: $main-20,
+  300: $main-30,
+  400: $main-40,
+  500: $main-50,
+  600: $main-60,
+  700: $main-70,
+  800: $main-80,
+  900: $main-100,
+  A100: $main-10,
+  A200: $main-20,
+  A400: $main-40,
+  A700: $main-70,
+  contrast: (
+    50: $main-text-dark-color,
+    100: $main-text-dark-color,
+    200: $main-text-dark-color,
+    300: $main-text-light-color,
+    400: $main-text-light-color,
+    500: $main-text-light-color,
+    600: $main-text-light-color,
+    700: $main-text-light-color,
+    800: $main-text-light-color,
+    900: $main-text-light-color,
+    A100: $main-text-dark-color,
+    A200: $main-text-dark-color,
+    A400: $main-text-dark-color,
+    A700: $main-text-dark-color,
+  )
+);
+
+// accent palette
+$blue-0: #F1F6FF;
+$blue-10: #D8E5FE;
+$blue-20: #AFC9FD;
+$blue-30: #87ADFA;
+$blue-40: #6193F7;
+$blue-50: #407BF1;
+$blue-60: #2566E8;
+$blue-70: #1253D5;
+$blue-80: #063CA8;
+$blue-90: #012162;
+$blue-100: #000D26;
+
+$palette-accent: (
+  50: $blue-0,
+  100: $blue-10,
+  200: $blue-20,
+  300: $blue-30,
+  400: $blue-40,
+  500: $blue-50,
+  600: $blue-60,
+  700: $blue-70,
+  800: $blue-90,
+  900: $blue-100,
+  A100: $blue-10,
+  A200: $blue-20,
+  A400: $blue-40,
+  A700: $blue-70,
+  contrast: (
+    50: $main-text-dark-color,
+    100: $main-text-dark-color,
+    200: $main-text-dark-color,
+    300: $main-text-light-color,
+    400: $main-text-light-color,
+    500: $main-text-light-color,
+    600: $main-text-light-color,
+    700: $main-text-light-color,
+    800: $main-text-light-color,
+    900: $main-text-light-color,
+    A100: $main-text-dark-color,
+    A200: $main-text-dark-color,
+    A400: $main-text-dark-color,
+    A700: $main-text-dark-color,
+  )
+);
+
+// warn palette
+$red-0: #FFF0F2;
+$red-10: #FED8DE;
+$red-20: #FDAFBC;
+$red-30: #FA879A;
+$red-40: #F7617A;
+$red-50: #F1405D;
+$red-60: #E82546;
+$red-70: #D51232;
+$red-80: #A80621;
+$red-90: #620111;
+$red-100: #260006;
+
+$palette-warn: (
+  50: $red-0,
+  100: $red-10,
+  200: $red-20,
+  300: $red-30,
+  400: $red-40,
+  500: $red-50,
+  600: $red-60,
+  700: $red-80,
+  800: $red-90,
+  900: $red-100,
+  A100: $red-10,
+  A200: $red-20,
+  A400: $red-40,
+  A700: $red-70,
+  contrast: (
+    50: $main-text-dark-color,
+    100: $main-text-dark-color,
+    200: $main-text-dark-color,
+    300: $main-text-light-color,
+    400: $main-text-light-color,
+    500: $main-text-light-color,
+    600: $main-text-light-color,
+    700: $main-text-light-color,
+    800: $main-text-light-color,
+    900: $main-text-light-color,
+    A100: $main-text-dark-color,
+    A200: $main-text-dark-color,
+    A400: $main-text-dark-color,
+    A700: $main-text-dark-color,
+  )
+);
+
+// TODO delete after completing new frontend
+// generic palette
 $primary-base-color: #b31536;
 $secondary-base-color: #343434;
 $tile-background-color: #f7f6f6;
 $font-color: $secondary-base-color;
 
-// generic palette
 $palette-white: #ffffff;
 $palette-black: #000000;
 $palette-very-light-gray: #f7f6f6;
