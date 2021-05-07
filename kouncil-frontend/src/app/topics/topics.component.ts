@@ -8,6 +8,7 @@ import {SendPopupComponent} from '../send/send-popup.component';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-topics',
@@ -18,7 +19,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
-              private topicsService: TopicsService) {
+              private topicsService: TopicsService,
+              private router: Router) {
   }
 
   topics: TopicMetadata[] = [];
@@ -86,6 +88,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
     localStorage.setItem('kouncil-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  navigateToTopic(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON') {
+      this.router.navigate(['/topic/messages', event.row.name]);
+    }
   }
 
   openSendPopup(topicName) {

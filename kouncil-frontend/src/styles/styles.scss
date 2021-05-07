@@ -1,4 +1,5 @@
 @import 'palette';
+@import 'ngx';
 @import '~@angular/material/theming';
 
 @include mat-core();
@@ -26,13 +27,14 @@ $custom-typography: mat-typography-config(
 $secondary-color: #ef6c00;
 //@import 'node_modules/materialize-css/sass/materialize';
 
-@import '../../node_modules/@swimlane/ngx-datatable/index.css';
-@import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
+// @import '../../node_modules/@swimlane/ngx-datatable/index.css';
+// @import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
 @import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
 html, body {
   height: 100%;
   margin: 0;
+  background-color: $main-10;
 }
 
 .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {

@@ -1,13 +1,11 @@
 @import 'palette';
 
 .kafka-topics {
-  padding: 10px;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .topics-table {
-  width: 970px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -22,7 +20,6 @@
 }
 
 .kafka-topics-group-header {
-  padding-left: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: bold;
