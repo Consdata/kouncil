@@ -1,10 +1,10 @@
+@import 'palette';
+
 .kafka-consumer-group {
-  padding: 10px;
+  overflow-y: scroll;
   height: 100%;
+
+  .brokers-table {
+    width: 100%;
+  }
 }
-
-.brokers-table {
-  height: 100%;
-}
-
-

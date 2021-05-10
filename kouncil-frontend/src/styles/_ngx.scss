@@ -58,7 +58,9 @@ ngx-datatable.ngx-datatable {
 .datatable-body-row {
   cursor: pointer;
   background: $main-0;
+  border-top: 1px solid $main-20;
   border-bottom: 1px solid $main-20;
+  margin-bottom: -1px;
 
   .ngx-action-button {
     visibility: hidden;
@@ -77,10 +79,6 @@ ngx-datatable.ngx-datatable {
     .ngx-action-button {
       visibility: visible;
     }
-  }
-
-  &:first-of-type {
-    border-top: 1px solid $main-20;
   }
 }
 

@@ -7,11 +7,3 @@
   }
 
 }
-
-::ng-deep .datatable-body-row {
-  border: none;
-}
-
-::ng-deep .datatable-row-wrapper:last-of-type {
-  border-bottom: 1px solid $main-20;
-}
