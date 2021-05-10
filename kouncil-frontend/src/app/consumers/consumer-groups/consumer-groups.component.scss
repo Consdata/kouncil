@@ -1,34 +1,8 @@
 @import 'palette';
 
 .kafka-consumer-groups {
-  padding: 10px;
   height: 100%;
-  overflow-y: auto;
+  width: 100%;
+  overflow-y: scroll;
 }
 
-.consumer-groups-table {
-  width: 970px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.kafka-consumer-groups-name {
-  font-size: 15px;
-  color: $primary-gray-color;
-}
-
-.kafka-consumer-groups-group-header {
-  padding-left: 20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-weight: bold;
-}
-
-.kafka-consumer-groups-favourite {
-  color: $primary-red-color;
-  cursor: pointer;
-}
-
-.kafka-primary-action {
-  margin-right: 10px;
-}

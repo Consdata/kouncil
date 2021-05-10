@@ -6,6 +6,7 @@ import {ProgressBarService} from 'app/util/progress-bar.service';
 import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -16,7 +17,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
-              private consumerGroupsService: ConsumerGroupsService) {
+              private consumerGroupsService: ConsumerGroupsService,
+              private router: Router) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -100,6 +102,13 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
         console.warn(error);
         this.progressBarService.setProgress(false);
       });
+  }
+
+  navigateToConsumerGroup(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON') {
+      this.router.navigate(['/topic/messages', event.row.name]);
+    }
   }
 
   customSort(event) {
