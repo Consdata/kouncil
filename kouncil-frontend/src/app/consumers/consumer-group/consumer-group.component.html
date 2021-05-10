@@ -1,4 +1,5 @@
 <div class="kafka-consumer-group">
+  <app-breadcrumb [parentLink]="'/consumer-groups'" [name]="groupId" [parentName]="'Consumer Groups'"></app-breadcrumb>
   <ngx-datatable *ngIf="filteredAssignments"
                  class="brokers-table material"
                  [rows]="filteredAssignments"
