@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message} from 'app/topic/message';
 import {FormControl, Validators} from '@angular/forms';
 import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-send',
@@ -20,7 +21,9 @@ export class SendComponent implements OnChanges {
   message: Message = new Message('', '', null, null, null);
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
-  constructor(private http: HttpClient, private sendService: SendService) {
+  constructor(private http: HttpClient,
+              private sendService: SendService,
+              @Inject(MAT_DIALOG_DATA) public data: {topicName: string}) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

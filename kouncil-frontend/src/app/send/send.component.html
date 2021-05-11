@@ -1,23 +1,41 @@
-<div class="kafka-send">
-  <form #heroForm="ngForm" (ngSubmit)="onSubmit()">
+<mat-dialog-content>
+  <div class="drawer-title">Send event</div>
+  <div class="drawer-subtitle">Send event to {{data.topicName}}</div>
 
-    <div>
-      <label for="key">Key</label>
-      <input [(ngModel)]="message.key" type="text" id="key" name="key"/>
-    </div>
+  <div class="drawer-section-title">Key</div>
+  <input matInput type="text" [(ngModel)]="value" />
 
-    <div>
-      <label for="value">Value (available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->})</label>
-      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value"></textarea>
-    </div>
+  <div class="drawer-section-title">Value</div>
+  <div class="drawer-section-subtitle">Available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->}</div>
+  <textarea rows="10" autosize [(ngModel)]="message.value" ></textarea>
 
-    <div>
-      <label for="count">Count</label>
-      <input type="number" id="count" name="count" min="1" [formControl]="countControl"/>
-    </div>
+  <div class="drawer-section-title">Count</div>
+  <div class="drawer-section-subtitle">How many times you want to send this event?</div>
+  <div class="count">
+    <input matInput type="text" [(ngModel)]="value" />
+    <button mat-button>-</button>
+    <button mat-button>+</button>
+  </div>
 
-    <button type="submit" [disabled]="countControl.invalid" class="kafka-primary-action btn btn-small">Submit</button>
-    <button type="button" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>
+<!--  <form #heroForm="ngForm" (ngSubmit)="onSubmit()">-->
 
-  </form>
-</div>
+<!--    <div>-->
+<!--      <label for="key">Key</label>-->
+<!--      <input [(ngModel)]="message.key" type="text" id="key" name="key"/>-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--      <label for="value">Value (available placeholders: {{uuid}&lt;!&ndash;&ndash;&gt;}, {{count}&lt;!&ndash;&ndash;&gt;}, {{timestamp}&lt;!&ndash;&ndash;&gt;})</label>-->
+<!--      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value"></textarea>-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--      <label for="count">Count</label>-->
+<!--      <input type="number" id="count" name="count" min="1" [formControl]="countControl"/>-->
+<!--    </div>-->
+
+<!--    <button type="submit" [disabled]="countControl.invalid" class="kafka-primary-action btn btn-small">Submit</button>-->
+<!--    <button type="button" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>-->
+
+<!--  </form>-->
+</mat-dialog-content>

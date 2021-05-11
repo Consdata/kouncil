@@ -9,6 +9,7 @@ import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-topics',
@@ -20,14 +21,14 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
               private topicsService: TopicsService,
-              private router: Router) {
+              private router: Router,
+              private dialog: MatDialog) {
   }
 
   topics: TopicMetadata[] = [];
   grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
-  @ViewChild(SendPopupComponent) popup;
 
   private subscription: Subscription;
 
@@ -92,13 +93,23 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   navigateToTopic(event): void {
     const element = event.event.target as HTMLElement;
-    if (event.type === 'click' && element.nodeName !== 'MAT-ICON') {
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.router.navigate(['/topics/messages', event.row.name]);
     }
   }
 
-  openSendPopup(topicName) {
-    this.popup.openPopup(topicName);
+  openSendPopup(name: string) {
+    this.dialog.open(SendPopupComponent, {
+      data: {
+        topicName: name
+      },
+      height: '100%',
+      width: '787px',
+      position: {
+        right: '0px'
+      },
+      panelClass: 'app-drawer'
+    });
   }
 
   customSort(event) {

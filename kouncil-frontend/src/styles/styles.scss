@@ -1,5 +1,6 @@
 @import 'palette';
 @import 'ngx';
+@import 'material';
 @import '~@angular/material/theming';
 
 @include mat-core();
@@ -117,12 +118,4 @@ html, body {
     border: 1px solid $color-dark-red;
     color: $color-dark-red;
   }
-}
-
-.mat-icon {
-  color: $main-50;
-  width: 15px;
-  height: 15px;
-  font-size: 20px;
-  margin: 0 8px;
 }

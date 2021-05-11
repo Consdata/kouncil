@@ -29,14 +29,15 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     MatDividerModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   providers: [
     SearchService,
