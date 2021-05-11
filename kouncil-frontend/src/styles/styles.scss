@@ -35,6 +35,7 @@ html, body {
   height: 100%;
   margin: 0;
   background-color: $main-10;
+  font-family: 'Inter';
 }
 
 .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
@@ -46,16 +47,6 @@ html, body {
 
 .ngx-datatable.material datatable-progress {
   display: none;
-}
-
-.ngx-datatable.material .empty-row, .no-data-message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  color: $primary-red-color;
-  font-size: large;
 }
 
 .kafka-badge {
