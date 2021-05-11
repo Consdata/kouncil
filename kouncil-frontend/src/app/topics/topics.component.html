@@ -18,10 +18,13 @@
                  #table>
 
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-      <ng-template let-group="group" ngx-datatable-group-header-template class="datatable-group-header-wrapper">
+      <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template class="datatable-group-header-wrapper">
         <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All topics'}}</div>
         <span class="datatable-header-divider"></span>
-        <span class="datatable-header-hide">HIDE</span>
+        <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
+          <span *ngIf="expanded">HIDE</span>
+          <span *ngIf="!expanded">SHOW</span>
+        </span>
       </ng-template>
     </ngx-datatable-group-header>
 
