@@ -1,6 +1,6 @@
 <div class="kafka-consumer-group">
   <ng-template #noDataPlaceholder>
-    <app-no-data-placeholder [objectTypeName]="'Consumer group'"></app-no-data-placeholder>
+    <app-no-data-placeholder [objectTypeName]="'Consumer'"></app-no-data-placeholder>
   </ng-template>
   <app-breadcrumb [parentLink]="'/consumer-groups'" [name]="groupId" [parentName]="'Consumer Groups'"></app-breadcrumb>
   <ngx-datatable *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder"
