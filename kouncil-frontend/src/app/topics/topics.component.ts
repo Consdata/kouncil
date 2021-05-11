@@ -93,7 +93,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   navigateToTopic(event): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON') {
-      this.router.navigate(['/topic/messages', event.row.name]);
+      this.router.navigate(['/topics/messages', event.row.name]);
     }
   }
 

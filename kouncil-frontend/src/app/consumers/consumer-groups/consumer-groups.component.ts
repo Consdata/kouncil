@@ -107,7 +107,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   navigateToConsumerGroup(event): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON') {
-      this.router.navigate(['/topic/messages', event.row.name]);
+      this.router.navigate(['/consumer-groups/', event.row.groupId]);
     }
   }
 

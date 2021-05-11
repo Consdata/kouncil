@@ -16,16 +16,16 @@ const routes: Routes = [
     component: TopicsComponent,
   },
   {
+    path: 'topics/messages/:topic',
+    component: TopicComponent,
+  },
+  {
     path: 'consumer-groups',
     component: ConsumerGroupsComponent,
   },
   {
-    path: 'consumer-group/:groupId',
+    path: 'consumer-groups/:groupId',
     component: ConsumerGroupComponent,
-  },
-  {
-    path: 'topic/messages/:topic',
-    component: TopicComponent,
   },
   {
     path: '',

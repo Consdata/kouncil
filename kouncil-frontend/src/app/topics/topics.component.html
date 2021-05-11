@@ -29,7 +29,7 @@
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <mat-icon class="ngx-star-favourite" *ngIf="row.group === 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
         <mat-icon class="ngx-star-favourite gray" *ngIf="row.group !== 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
-        <span [routerLink]="['/topic/messages', value]">{{value}}</span>
+        <span [routerLink]="['/topics/messages', value]">{{value}}</span>
       </ng-template>
     </ngx-datatable-column>
 
