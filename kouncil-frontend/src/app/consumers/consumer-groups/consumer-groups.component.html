@@ -45,8 +45,6 @@
     <ngx-datatable-column cellClass="ngx-actions-column" name="" prop="groupId"
                           [width]="240" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-<!--        <a class="kafka-primary-action btn btn-small"-->
-<!--           [routerLink]="['/consumer-group/', value]">BROWSE</a>-->
         <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
       </ng-template>
     </ngx-datatable-column>

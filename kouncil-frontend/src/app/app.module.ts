@@ -38,6 +38,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { ConfirmComponent } from './confirm/confirm.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     NoDataPlaceholderComponent,
     SendPopupComponent,
     TopicPaginationComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
