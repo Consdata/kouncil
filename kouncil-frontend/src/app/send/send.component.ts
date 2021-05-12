@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Inject, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Inject, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message} from 'app/topic/message';
 import {FormControl, Validators} from '@angular/forms';
 import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-send',
@@ -13,17 +13,16 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class SendComponent implements OnChanges {
 
-  @Input('topicName') topicName: string;
-  @Input('key') key: string;
-  @Input('value') value: string;
-  @Output() onClose: EventEmitter<any> = new EventEmitter();
-  @ViewChild('heroForm') sendForm: any;
+  @ViewChild('sendForm') sendForm: any;
+
   message: Message = new Message('', '', null, null, null);
+
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
   constructor(private http: HttpClient,
               private sendService: SendService,
-              @Inject(MAT_DIALOG_DATA) public data: {topicName: string}) {
+              private dialog: MatDialog,
+              @Inject(MAT_DIALOG_DATA) public data: { topicName: string }) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -36,16 +35,26 @@ export class SendComponent implements OnChanges {
   }
 
   onSubmit() {
-    this.sendService.send(this.topicName, this.countControl.value, this.message)
+    this.sendService.send(this.data.topicName, this.countControl.value, this.message)
       .pipe(first())
       .subscribe(data => {
-        this.onClose.emit(true);
+        this.dialog.closeAll();
         this.resetForm();
       });
   }
 
+  increaseCount() {
+    this.countControl.setValue(this.countControl.value + 1);
+  }
+
+  decreaseCount() {
+    if (this.countControl.value > 1) {
+      this.countControl.setValue(this.countControl.value - 1);
+    }
+  }
+
   cancel() {
-    this.onClose.emit(false);
+    this.dialog.closeAll();
     this.resetForm();
   }
 
