@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {TopicService} from './topic.service';
 import {Page} from './page';
+import {Globals} from '../globals';
 
 @Component({
   selector: 'topic-pagination',
@@ -38,14 +39,14 @@ export class TopicPaginationComponent {
   @Input() topicName: string;
   pageLimits = [10, 20, 50, 100];
 
-  constructor(private topicService: TopicService) {
+  constructor(private topicService: TopicService, private globals: Globals) {
   }
 
   paginateMessages($event: any) {
-    this.topicService.paginateMessages($event, this.topicName);
+    this.topicService.paginateMessages(this.globals.selectedServer.serverId, $event, this.topicName);
   }
 
   getMessages() {
-    this.topicService.getMessages(this.topicName);
+    this.topicService.getMessages(this.globals.selectedServer.serverId, this.topicName);
   }
 }

@@ -13,10 +13,10 @@ export class TopicService {
   constructor() {
   }
 
-  getMessages(topicName: string) {
+  getMessages(serverId: string, topicName: string) {
   }
 
-  togglePartition(nr: any, topicName: string) {
+  togglePartition(serverId: string, nr: any, topicName: string) {
   }
 
   previous() {
@@ -57,7 +57,7 @@ export class TopicService {
     return undefined;
   }
 
-  paginateMessages(event: any, topicName: string) {
+  paginateMessages(serverId: string, event: any, topicName: string) {
     return undefined;
   }
 

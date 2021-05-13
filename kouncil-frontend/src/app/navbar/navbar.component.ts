@@ -3,6 +3,12 @@ import {SearchService} from 'app/search.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import {Globals} from '../globals';
+
+export class Server {
+  serverId: string;
+  label: string;
+}
 
 @Component({
   selector: 'kafka-navbar',
@@ -15,8 +21,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   phrase: string;
   backendVersion$: Observable<string>;
+  servers: Server[] = [];
 
-  constructor(private searchService: SearchService, private router: Router, private http: HttpClient) {
+  constructor(private searchService: SearchService, private router: Router, private http: HttpClient, public globals: Globals) {
     router.events.subscribe((val) => {
       this.searchInputElementRef.nativeElement.value = '';
       this.searchInputElementRef.nativeElement.focus();
@@ -29,6 +36,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
+
+    this.http.get(`/api/connection`).subscribe(
+      value => {
+        if (value != null) {
+          for (const key in value) {
+            const server = new Server();
+            server.label = value[key];
+            server.serverId = key;
+            this.servers.push(server);
+          }
+          this.globals.selectedServer = this.servers[0];
+        }
+      }
+    );
+
   }
 
   onPhraseChange(phrase: string) {

@@ -12,7 +12,7 @@ export class ConsumerGroupBackendService implements ConsumerGroupService {
   constructor(private http: HttpClient) {
   }
 
-  getConsumerGroup(groupId: string): Observable<ConsumerGroupResponse> {
-    return this.http.get<ConsumerGroupResponse>('/api/consumer-group/' + groupId);
+  getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
+    return this.http.get<ConsumerGroupResponse>(`/api/consumer-group/${groupId}?serverId=${serverId}`);
   }
 }

@@ -12,8 +12,8 @@ export class TopicsBackendService implements TopicsService {
   constructor(private http: HttpClient) {
   }
 
-  getTopics(): Observable<Topics> {
-    return this.http.get<Topics>('/api/topics');
+  getTopics(serverId: string): Observable<Topics> {
+    return this.http.get<Topics>(`/api/topics?serverId=${serverId}`);
   }
 
 }

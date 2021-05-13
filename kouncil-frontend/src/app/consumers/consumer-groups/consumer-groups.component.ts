@@ -6,6 +6,7 @@ import {ProgressBarService} from 'app/util/progress-bar.service';
 import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
+import {Globals} from '../../globals';
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -16,7 +17,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
-              private consumerGroupsService: ConsumerGroupsService) {
+              private consumerGroupsService: ConsumerGroupsService,
+              private globals: Globals) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -37,7 +39,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   private loadConsumerGroups() {
-    this.consumerGroupsService.getConsumerGroups()
+    this.consumerGroupsService.getConsumerGroups(this.globals.selectedServer.serverId)
       .pipe(first())
       .subscribe(data => {
         this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
@@ -92,7 +94,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   deleteConsumerGroup(value) {
     this.progressBarService.setProgress(true);
-    this.consumerGroupsService.deleteConsumerGroup(value)
+    this.consumerGroupsService.deleteConsumerGroup(this.globals.selectedServer.serverId, value)
       .pipe(first())
       .subscribe(data => {
         this.loadConsumerGroups();

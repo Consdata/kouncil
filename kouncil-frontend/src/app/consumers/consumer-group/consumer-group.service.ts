@@ -15,7 +15,7 @@ export class ConsumerGroupService {
   constructor() {
   }
 
-  getConsumerGroup(groupId: string): Observable<ConsumerGroupResponse> {
+  getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
     return null;
   }
 }

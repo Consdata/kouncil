@@ -12,11 +12,11 @@ export class BrokerBackendService implements BrokerService {
 
   constructor(private http: HttpClient) { }
 
-  getBrokerConfig(id: string): Observable<BrokerConfig[]> {
-    return this.http.get<BrokerConfig[]>('/api/configs/' + id);
+  getBrokerConfig(serverId: string, id: string): Observable<BrokerConfig[]> {
+    return this.http.get<BrokerConfig[]>(`/api/configs/${id}?serverId=${serverId}`);
   }
 
-  getBrokers(): Observable<Brokers> {
-    return this.http.get<Brokers>('/api/brokers');
+  getBrokers(serverId: string): Observable<Brokers> {
+    return this.http.get<Brokers>(`/api/brokers?serverId=${serverId}`);
   }
 }

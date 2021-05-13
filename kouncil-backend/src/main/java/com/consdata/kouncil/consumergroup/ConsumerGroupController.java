@@ -12,10 +12,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -30,13 +27,11 @@ public class ConsumerGroupController {
     private final KouncilConfiguration kouncilConfiguration;
 
     @GetMapping("/api/consumer-groups")
-    public ConsumerGroupsResponse getConsumerGroups() throws ExecutionException, InterruptedException {
+    public ConsumerGroupsResponse getConsumerGroups(@RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
         ConsumerGroupsResponse result = ConsumerGroupsResponse
                 .builder()
                 .consumerGroups(new ArrayList<>())
                 .build();
-        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
-
         ListConsumerGroupsResult groups = kafkaConnectionService.getAdminClient(serverId).listConsumerGroups();
         List<String> groupIds = groups.all().get().stream().map(ConsumerGroupListing::groupId).collect(Collectors.toList());
         Map<String, KafkaFuture<ConsumerGroupDescription>> consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(groupIds).describedGroups();
@@ -48,10 +43,10 @@ public class ConsumerGroupController {
 
     @GetMapping("/api/consumer-group/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(
-            @PathVariable("groupId") String groupId) throws ExecutionException, InterruptedException {
+            @PathVariable("groupId") String groupId,
+            @RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
 
         ConsumerGroupResponse result = ConsumerGroupResponse.builder().consumerGroupOffset(new ArrayList<>()).build();
-        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
         Map<TopicPartition, OffsetAndMetadata> offsets = kafkaConnectionService.getAdminClient(serverId).listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
         offsets.forEach((tp, omd) -> result
                 .getConsumerGroupOffset()
@@ -91,8 +86,8 @@ public class ConsumerGroupController {
 
     @DeleteMapping("/api/consumer-group/{groupId}")
     public void deleteConsumerGroup(
-            @PathVariable("groupId") String groupId) {
-        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+            @PathVariable("groupId") String groupId,
+            @RequestParam("serverId") String serverId) {
         kafkaConnectionService.getAdminClient(serverId).deleteConsumerGroups(Collections.singletonList(groupId));
     }
 

@@ -12,11 +12,11 @@ export class ConsumerGroupsBackendService implements ConsumerGroupsService {
   constructor(private http: HttpClient) {
   }
 
-  deleteConsumerGroup(value: string): Observable<Object> {
-    return this.http.delete('/api/consumer-group/' + value);
+  deleteConsumerGroup(serverId: string, value: string): Observable<Object> {
+    return this.http.delete(`/api/consumer-group/${value}?serverId=${serverId}`);
   }
 
-  getConsumerGroups(): Observable<ConsumerGroupsResponse> {
-    return this.http.get<ConsumerGroupsResponse>('/api/consumer-groups');
+  getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse> {
+    return this.http.get<ConsumerGroupsResponse>(`/api/consumer-groups?serverId=${serverId}`);
   }
 }

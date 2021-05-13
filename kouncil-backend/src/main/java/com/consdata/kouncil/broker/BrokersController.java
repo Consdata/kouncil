@@ -13,6 +13,7 @@ import org.apache.kafka.common.Node;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -29,9 +30,8 @@ public class BrokersController {
 
     @GetMapping("/api/brokers")
     @EntryExitLogger
-    public BrokersDto getBrokers() {
+    public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
         try {
-            String serverId = "kouncil_consdata_local_8001"; //TODO: JG
             DescribeClusterResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeCluster();
             Collection<Node> nodes = describeClusterResult.nodes().get();
             List<Broker> brokers = new ArrayList<>();
@@ -51,9 +51,8 @@ public class BrokersController {
 
     @GetMapping("/api/configs/{name}")
     @EntryExitLogger
-    public Collection<BrokerConfig> getConfigs(@PathVariable("name") String name) {
+    public Collection<BrokerConfig> getConfigs(@PathVariable("name") String name, @RequestParam("serverId") String serverId) {
         try {
-            String serverId = "kouncil_consdata_local_8001"; //TODO: JG
             ConfigResource o = new ConfigResource(ConfigResource.Type.BROKER, name);
             Collection<ConfigResource> resources = Collections.singletonList(o);
             DescribeConfigsResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeConfigs(resources);

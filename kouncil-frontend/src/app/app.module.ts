@@ -29,15 +29,16 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
+import {Globals} from './globals';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavbarComponent,
     TopicComponent,
     TopicsComponent,
     ConsumerGroupsComponent,
     SendComponent,
-    NavbarComponent,
     ToolbarComponent,
     BrokersComponent,
     AutosizeDirective,
@@ -60,6 +61,7 @@ import {SendService, sendServiceFactory} from './send/send.service';
     ReactiveFormsModule
   ],
   providers: [
+    Globals,
     SearchService,
     topicServiceProvider,
     {

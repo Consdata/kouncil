@@ -32,12 +32,12 @@ public class TopicController {
                                              @RequestParam("offset") String offsetShiftParam,
                                              @RequestParam("limit") String limitParam,
                                              @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
-                                             @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis) {
+                                             @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
+                                             @RequestParam("serverId") String serverId) {
         log.debug("TCM01 topicName={}, partition={}, offset={}, offsetParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
                 topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis, endTimestampMillis);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
-        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId)) {
             List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
             log.debug("TCM02 partitionInfos={}", partitionInfos);
@@ -152,8 +152,8 @@ public class TopicController {
     @EntryExitLogger
     public void send(@PathVariable("topic") String topic,
                      @PathVariable("count") int count,
-                     @RequestBody TopicMessage message) {
-        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+                     @RequestBody TopicMessage message,
+                     @RequestParam("serverId") String serverId) {
         KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         for (int i = 0; i < count; i++) {
             kafkaTemplate.send(topic, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));

@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {TopicService} from './topic.service';
+import {Globals} from '../globals';
 
 @Component({
   selector: 'topic-partitions',
@@ -28,7 +29,7 @@ export class TopicPartitionsComponent {
   selectedPartitions: number[];
   visiblePartitions: number[];
 
-  constructor(private topicService: TopicService) {
+  constructor(private topicService: TopicService, private globals: Globals) {
     this.topicService.getSelectedPartitionsObservable().subscribe(value => {
       this.selectedPartitions = value;
     });
@@ -55,7 +56,7 @@ export class TopicPartitionsComponent {
   }
 
   togglePartition(nr: number): void {
-    this.topicService.togglePartition(nr, this.topicName);
+    this.topicService.togglePartition(this.globals.selectedServer.serverId, nr, this.topicName);
   }
 
   getPartitionOffset(partitionNr: number): string {

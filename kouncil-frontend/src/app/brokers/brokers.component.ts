@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {ProgressBarService} from 'app/util/progress-bar.service';
 import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
+import {Globals} from '../globals';
 
 @Component({
   selector: 'kafka-brokers',
@@ -16,7 +17,8 @@ export class BrokersComponent implements OnInit {
 
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private brokerService: BrokerService) {
+              private brokerService: BrokerService,
+              private globals: Globals) {
   }
 
   @ViewChild('table') table: any;
@@ -27,7 +29,7 @@ export class BrokersComponent implements OnInit {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.brokerService.getBrokers()
+    this.brokerService.getBrokers(this.globals.selectedServer.serverId)
       .pipe(first())
       .subscribe(data => {
         this.allBrokers = (<Brokers>data).brokers;
@@ -49,7 +51,7 @@ export class BrokersComponent implements OnInit {
   }
 
   toggleExpandRow(row) {
-    this.brokerService.getBrokerConfig(row.id)
+    this.brokerService.getBrokerConfig(this.globals.selectedServer.serverId, row.id)
       .pipe(first())
       .subscribe(data => {
         row.config = <BrokerConfig[]>data;

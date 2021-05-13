@@ -28,7 +28,7 @@ export class TopicBackendService implements TopicService {
     this.initPaging();
   }
 
-  getMessages(topicName: string) {
+  getMessages(serverId: string, topicName: string) {
     let url;
     if (typeof this.selectedPartitions !== 'undefined') {
       let partitionsParam = '';
@@ -45,6 +45,7 @@ export class TopicBackendService implements TopicService {
       url = `/api/topic/messages/${topicName}/all/latest`;
     }
     url += this.addPagingToUrl();
+    url += `&serverId=${serverId}`;
     this.http.get(url).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
     });
@@ -69,11 +70,11 @@ export class TopicBackendService implements TopicService {
     }
   }
 
-  togglePartition(nr: any, topicName: string) {
+  togglePartition(serverId: string, nr: any, topicName: string) {
     const index = this.partitions.findIndex(e => e === nr);
     this.selectedPartitions[index] = -1 * this.selectedPartitions[index];
     this.progressBarService.setProgress(true);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
   previous() {
@@ -146,11 +147,11 @@ export class TopicBackendService implements TopicService {
     return this.onePartitionSelected$.asObservable();
   }
 
-  paginateMessages(event: any, topicName: string) {
+  paginateMessages(serverId: string, event: any, topicName: string) {
     const paging = this.paginationChanged$.getValue();
     paging.pageNumber = event.page;
     this.paginationChanged$ = new BehaviorSubject<Page>(paging);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
   initPaging(): void {

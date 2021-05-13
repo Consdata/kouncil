@@ -9,6 +9,7 @@ import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -25,9 +26,8 @@ public class TopicsController {
 
     @GetMapping("/api/topics")
     @EntryExitLogger
-    public TopicsDto getTopics() {
+    public TopicsDto getTopics(@RequestParam("serverId") String serverId) {
         try {
-            String serverId = "kouncil_consdata_local_8001"; //TODO: JG
             AdminClient adminClient = kafkaConnectionService.getAdminClient(serverId);
             ListTopicsResult listTopicsResult = adminClient.listTopics();
             List<String> children = new ArrayList<>(listTopicsResult.names().get());

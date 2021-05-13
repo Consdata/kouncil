@@ -15,6 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,7 +29,12 @@ public class KouncilConfiguration {
     private Map<String, String> servers;
 
     public String getServerById(String serverId) {
-        return servers.get(serverId);
+        String server = servers.get(serverId);
+        if (Objects.isNull(server)) {
+            throw new KouncilRuntimeException("Unknown serverId");
+        } else {
+            return server;
+        }
     }
 
     public void addServer(String boostrapAddress){
