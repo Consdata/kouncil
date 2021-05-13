@@ -39,6 +39,24 @@ html, body {
   font-family: 'Inter';
 }
 
+.kafka-progress {
+  position: absolute;
+  left: calc(50% - 60px);
+  top: calc(50% - 60px);
+  z-index: 1;
+  border: 16px solid $main-20;
+  border-top: 16px solid $main-60;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
   padding-top: 0;
   padding-bottom: 0;

@@ -108,7 +108,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
       position: {
         right: '0px'
       },
-      panelClass: 'app-drawer'
+      panelClass: ['app-drawer', 'dialog-with-padding']
     });
   }
 

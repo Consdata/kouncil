@@ -10,6 +10,7 @@
                  [scrollbarH]="false"
                  [scrollbarV]="false"
                  [columnMode]="'force'"
+                 (activate)="showBrokerDetails($event)"
                  #table>
 
     <ngx-datatable-column [width]="150" prop="id" name="ID"></ngx-datatable-column>

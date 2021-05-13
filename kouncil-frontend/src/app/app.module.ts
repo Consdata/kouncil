@@ -40,6 +40,7 @@ import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmComponent } from './confirm/confirm.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { BrokerComponent } from './broker/broker.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     SendPopupComponent,
     TopicPaginationComponent,
     BreadcrumbComponent,
-    ConfirmComponent
+    ConfirmComponent,
+    BrokerComponent
   ],
   imports: [
     BrowserModule,
