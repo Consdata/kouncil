@@ -31,8 +31,16 @@ public class KouncilConfiguration {
         return servers.get(serverId);
     }
 
+    public void addServer(String boostrapAddress){
+        servers.put(boostrapAddress.replaceAll("[^a-zA-Z0-9\\s]", "_"), boostrapAddress);
+    }
+
+    public void removeServer(String serverId){
+        servers.remove(serverId);
+    }
+
     @PostConstruct
-    public void log() {
+    public void initialize() {
         servers = initialBootstrapServers.stream()
                 .collect(Collectors.toMap(s -> s.replaceAll("[^a-zA-Z0-9\\s]", "_"), s -> s));
         log.info(toString());
