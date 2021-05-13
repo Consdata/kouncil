@@ -14,7 +14,7 @@ export class ConfirmService {
   openConfirmDialog(objectType: string, objectName: string): Observable<any> {
     return this.dialog.open(ConfirmComponent, {
       width: '600px',
-      panelClass: 'confirm',
+      panelClass: ['confirm', 'dialog-with-padding'],
       data: {
         objectName: objectName,
         objectType: objectType
