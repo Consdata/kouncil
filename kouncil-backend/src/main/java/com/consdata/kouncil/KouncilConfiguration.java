@@ -13,6 +13,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -20,10 +23,18 @@ import javax.annotation.PostConstruct;
 public class KouncilConfiguration {
 
     @Value("${bootstrapServers}")
-    private String bootstrapServers;
+    private List<String> initialBootstrapServers;
+
+    private Map<String, String> servers;
+
+    public String getServerById(String serverId) {
+        return servers.get(serverId);
+    }
 
     @PostConstruct
     public void log() {
+        servers = initialBootstrapServers.stream()
+                .collect(Collectors.toMap(s -> s.replaceAll("[^a-zA-Z0-9\\s]", "_"), s -> s));
         log.info(toString());
     }
 

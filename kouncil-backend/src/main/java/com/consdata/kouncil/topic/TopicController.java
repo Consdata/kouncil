@@ -1,15 +1,14 @@
 package com.consdata.kouncil.topic;
 
-import com.consdata.kouncil.KouncilConfiguration;
+import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,16 +20,10 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class TopicController {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KouncilConfiguration kouncilConfiguration;
-
-    public TopicController(KafkaTemplate<String, String> kafkaTemplate,
-                           KouncilConfiguration kouncilConfiguration) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.kouncilConfiguration = kouncilConfiguration;
-    }
+    private final KafkaConnectionService kafkaConnectionService;
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
     public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
@@ -44,11 +37,10 @@ public class TopicController {
                 topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis, endTimestampMillis);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
-        Properties props = createCommonProperties();
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
+        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId)) {
             List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-            log.debug("TCM02 partitionInfos.size={}, partitionInfos={}", partitionInfos.size(), partitionInfos);
+            log.debug("TCM02 partitionInfos={}", partitionInfos);
             List<TopicPartition> topicPartitions = new ArrayList<>();
             for (int i = 0; i < partitionInfos.size(); i++) {
                 topicPartitions.add(new TopicPartition(topicName, i));
@@ -161,6 +153,8 @@ public class TopicController {
     public void send(@PathVariable("topic") String topic,
                      @PathVariable("count") int count,
                      @RequestBody TopicMessage message) {
+        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+        KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         for (int i = 0; i < count; i++) {
             kafkaTemplate.send(topic, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
         }
@@ -174,12 +168,5 @@ public class TopicController {
                 .replace("{{uuid}}", UUID.randomUUID().toString());
     }
 
-    private Properties createCommonProperties() {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getBootstrapServers());
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        return props;
-    }
+
 }

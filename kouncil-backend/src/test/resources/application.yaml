@@ -1,1 +1,1 @@
-bootstrapServers: "localhost:9092"
+bootstrapServers: "kouncil.consdata.local:8001"

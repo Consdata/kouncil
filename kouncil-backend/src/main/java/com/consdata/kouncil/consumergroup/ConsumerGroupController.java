@@ -1,7 +1,8 @@
 package com.consdata.kouncil.consumergroup;
 
+import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilConfiguration;
-import org.apache.kafka.clients.admin.AdminClient;
+import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
@@ -21,16 +22,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
 public class ConsumerGroupController {
 
-    private AdminClient adminClient;
+    private final KafkaConnectionService kafkaConnectionService;
 
-    private KouncilConfiguration kouncilConfiguration;
-
-    public ConsumerGroupController(AdminClient adminClient, KouncilConfiguration kouncilConfiguration) {
-        this.adminClient = adminClient;
-        this.kouncilConfiguration = kouncilConfiguration;
-    }
+    private final KouncilConfiguration kouncilConfiguration;
 
     @GetMapping("/api/consumer-groups")
     public ConsumerGroupsResponse getConsumerGroups() throws ExecutionException, InterruptedException {
@@ -38,10 +35,11 @@ public class ConsumerGroupController {
                 .builder()
                 .consumerGroups(new ArrayList<>())
                 .build();
+        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
 
-        ListConsumerGroupsResult groups = adminClient.listConsumerGroups();
+        ListConsumerGroupsResult groups = kafkaConnectionService.getAdminClient(serverId).listConsumerGroups();
         List<String> groupIds = groups.all().get().stream().map(ConsumerGroupListing::groupId).collect(Collectors.toList());
-        Map<String, KafkaFuture<ConsumerGroupDescription>> consumerGroupSummary = adminClient.describeConsumerGroups(groupIds).describedGroups();
+        Map<String, KafkaFuture<ConsumerGroupDescription>> consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(groupIds).describedGroups();
         for (Map.Entry<String, KafkaFuture<ConsumerGroupDescription>> entry : consumerGroupSummary.entrySet()) {
             result.getConsumerGroups().add(ConsumerGroup.builder().groupId(entry.getKey()).status(entry.getValue().get().state().toString()).build());
         }
@@ -53,7 +51,8 @@ public class ConsumerGroupController {
             @PathVariable("groupId") String groupId) throws ExecutionException, InterruptedException {
 
         ConsumerGroupResponse result = ConsumerGroupResponse.builder().consumerGroupOffset(new ArrayList<>()).build();
-        Map<TopicPartition, OffsetAndMetadata> offsets = adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
+        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+        Map<TopicPartition, OffsetAndMetadata> offsets = kafkaConnectionService.getAdminClient(serverId).listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
         offsets.forEach((tp, omd) -> result
                 .getConsumerGroupOffset()
                 .add(ConsumerGroupOffset
@@ -64,7 +63,7 @@ public class ConsumerGroupController {
                         .offset(omd.offset())
                         .build()));
 
-        ConsumerGroupDescription consumerGroupSummary = adminClient.describeConsumerGroups(Collections.singletonList(groupId)).describedGroups().get(groupId).get();
+        ConsumerGroupDescription consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(Collections.singletonList(groupId)).describedGroups().get(groupId).get();
 
         consumerGroupSummary.members().forEach(member ->
                 member.assignment().topicPartitions().forEach((assignment -> {
@@ -93,12 +92,13 @@ public class ConsumerGroupController {
     @DeleteMapping("/api/consumer-group/{groupId}")
     public void deleteConsumerGroup(
             @PathVariable("groupId") String groupId) {
-        adminClient.deleteConsumerGroups(Collections.singletonList(groupId));
+        String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+        kafkaConnectionService.getAdminClient(serverId).deleteConsumerGroups(Collections.singletonList(groupId));
     }
 
     private KafkaConsumer<String, String> createConsumer() {
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getBootstrapServers());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getInitialBootstrapServers());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());

@@ -1,7 +1,9 @@
 package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
@@ -16,30 +18,29 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
 public class TopicsController {
 
-    private final AdminClient adminClient;
-
-    public TopicsController(AdminClient adminClient) {
-        this.adminClient = adminClient;
-    }
+    private final KafkaConnectionService kafkaConnectionService;
 
     @GetMapping("/api/topics")
     @EntryExitLogger
     public TopicsDto getTopics() {
         try {
+            String serverId = "kouncil_consdata_local_8001"; //TODO: JG
+            AdminClient adminClient = kafkaConnectionService.getAdminClient(serverId);
             ListTopicsResult listTopicsResult = adminClient.listTopics();
             List<String> children = new ArrayList<>(listTopicsResult.names().get());
             Collections.sort(children);
-            // XXX: optimization possiblity: describe all topics in one call
-            List<TopicMetadata> topics = children.stream().map(this::getTopicMetadata).collect(Collectors.toList());
+            // XXX: optimization: describe all topics in one call
+            List<TopicMetadata> topics = children.stream().map(name -> getTopicMetadata(name, adminClient)).collect(Collectors.toList());
             return TopicsDto.builder().topics(topics).build();
         } catch (Exception e) {
             throw new KouncilRuntimeException(e);
         }
     }
 
-    private TopicMetadata getTopicMetadata(String name) {
+    private TopicMetadata getTopicMetadata(String name, AdminClient adminClient) {
         try {
             DescribeTopicsResult describeTopicsResult = adminClient.describeTopics(Collections.singletonList(name));
             Map<String, TopicDescription> topics = describeTopicsResult.all().get();
