@@ -5,6 +5,7 @@ import {FormControl, Validators} from '@angular/forms';
 import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-send',
@@ -22,6 +23,7 @@ export class SendComponent implements OnChanges {
   constructor(private http: HttpClient,
               private sendService: SendService,
               private dialog: MatDialog,
+              private snackbar: MatSnackBar,
               @Inject(MAT_DIALOG_DATA) public data: { topicName: string }) {
   }
 
@@ -40,6 +42,10 @@ export class SendComponent implements OnChanges {
       .subscribe(data => {
         this.dialog.closeAll();
         this.resetForm();
+        this.snackbar.open(`Successfully sent to ${this.data.topicName}`, '', {
+          duration: 3000,
+          panelClass: ['snackbar-success', 'snackbar']
+        });
       });
   }
 

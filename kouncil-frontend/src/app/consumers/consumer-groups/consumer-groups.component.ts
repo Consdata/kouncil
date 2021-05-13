@@ -8,6 +8,7 @@ import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {ConfirmService} from '../../confirm/confirm.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -20,6 +21,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private arraySortPipe: ArraySortPipe,
               private consumerGroupsService: ConsumerGroupsService,
               private confirmService: ConfirmService,
+              private snackbar: MatSnackBar,
               private router: Router) {
   }
 
@@ -104,8 +106,16 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
             .pipe(first())
             .subscribe(data => {
               this.loadConsumerGroups();
+              this.snackbar.open(`Consumer group ${value} deleted`, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success', 'snackbar']
+              });
             }, error => {
               console.warn(error);
+              this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error', 'snackbar']
+              });
               this.progressBarService.setProgress(false);
             });
         }

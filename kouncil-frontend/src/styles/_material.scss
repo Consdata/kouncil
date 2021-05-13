@@ -149,3 +149,28 @@ mat-dialog-container.mat-dialog-container {
   }
 }
 
+snack-bar-container.snackbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: $main-0;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 16px 24px;
+}
+
+.snackbar-success::before {
+  font-family: 'Material Icons';
+  content: '\ef76';
+  margin-right: 16px;
+  color: $blue-50;
+  font-size: 24px;
+}
+
+.snackbar-error::before {
+  font-family: 'Material Icons';
+  content: '\e000';
+  margin-right: 16px;
+  color: $red-50;
+  font-size: 24px;
+}

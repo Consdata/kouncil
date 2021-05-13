@@ -39,6 +39,7 @@ import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmComponent } from './confirm/confirm.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { ConfirmComponent } from './confirm/confirm.component';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [
     SearchService,
