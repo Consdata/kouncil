@@ -4,12 +4,12 @@ import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
 import {TopicMetadata} from 'app/topics/topic-metadata';
 import {ProgressBarService} from '../util/progress-bar.service';
-import {SendPopupComponent} from '../send/send-popup.component';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
+import {SendComponent} from '../send/send.component';
 
 @Component({
   selector: 'app-topics',
@@ -99,7 +99,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   openSendPopup(name: string) {
-    this.dialog.open(SendPopupComponent, {
+    this.dialog.open(SendComponent, {
       data: {
         topicName: name
       },
