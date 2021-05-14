@@ -2,6 +2,6 @@ language: java
 jdk:
   - openjdk11
 script:
-  - mvn clean install sonar:sonar -Dsonar.projectKey=Consdata_kouncil
+  - mvn clean package -P dist
 before_install:
   - chmod +x mvnw
