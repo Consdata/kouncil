@@ -133,14 +133,6 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     const columns = [];
     columns.push({
-      width: 20,
-      resizable: false,
-      sortable: false,
-      draggable: false,
-      canAutoResize: false,
-      cellTemplate: this.expandColumnTemplate
-    });
-    columns.push({
       width: 100,
       resizable: true,
       sortable: true,
@@ -178,6 +170,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
         columns.push({
+          canAutoResize: true,
           prop: column.name,
           name: column.name,
           nameShort: column.nameShort,

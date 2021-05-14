@@ -1,15 +1,10 @@
 <div class="kafka-toolbar">
-  <div class="kafka-breadcrumb">
-    <div>Topic&nbsp;&nbsp;>&nbsp;&nbsp;{{name}}</div>
-  </div>
-  <div class="kafka-actionbar">
-    <div class="switch kafka-toolbar-switch">
-      <label>
-        LIVE
-        <input type="checkbox" (change)="onChange()" [(ngModel)]="online">
-        <span class="lever kafka-toolbar-lever"></span>
-      </label>
-    </div>
-    <a class="kafka-primary-action btn btn-small waves-light" (click)="openSendPopup()">add</a>
-  </div>
+  <app-breadcrumb [parentName]="'Topics'" [parentLink]="'/topics'" [name]="name"></app-breadcrumb>
+  <div class="spacer"></div>
+  <mat-slide-toggle [class.active]="online === true" disableRipple class="switch" (change)="onChange()" [(ngModel)]="online">
+    Live update
+    <div class="circle"></div>
+  </mat-slide-toggle>
+  <button mat-button class="action" (click)="openSendPopup()">Send event</button>
+<!--  <topic-partitions [topicName]="name"></topic-partitions>-->
 </div>

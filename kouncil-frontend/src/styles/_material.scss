@@ -101,10 +101,6 @@ mat-dialog-container.mat-dialog-container {
     transition: all $default-transition-time;
   }
 
-  .spacer {
-    flex: 1 1 auto;
-  }
-
   .actions {
     display: flex;
     flex-direction: row;

@@ -39,6 +39,10 @@ html, body {
   font-family: 'Inter';
 }
 
+.spacer {
+  flex: 1 1 auto;
+}
+
 .kafka-progress {
   position: absolute;
   left: calc(50% - 60px);

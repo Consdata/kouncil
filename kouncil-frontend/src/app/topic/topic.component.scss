@@ -5,66 +5,37 @@
 }
 
 .topic-toolbar-area {
-  height: 40px;
   display: flex;
 }
 
 .topic-table-area {
-  padding: 10px;
-  height: calc(100% - 48px);
+  height: calc(100% - 110px);
 }
 
 .topic-table {
   height: 100%;
-}
 
-::ng-deep .kafka-row-delta {
-  background-color: #f6f6f6;
-}
-
-.kafka-progress {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  border: 16px solid $palette-very-light-gray;
-  border-top: 16px solid $primary-red-color;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.kafka-row-details {
-  height: 300px;
-  white-space: pre;
-  direction:rtl;
-  overflow: auto;
-}
-
-.kafka-row-details-inner {
-  direction:ltr;
-}
-
-.kafka-topic {
-  margin-left: 50px;
-  display: flex;
-  font-size: 15px;
-  .kafka-topic-segment {
-    padding: 10px 0 20px 20px;
+  ::ng-deep .datatable-body-row {
+    border-bottom: none;
   }
-}
 
-.kafka-arrow {
-  color: $primary-red-color;
-}
-.json-details {
-  white-space: normal;
+  ::ng-deep .datatable-header-cell-template-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    min-height: 26px;
+
+    .datatable-header-cell-label {
+      max-width: calc(100% - 30px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: rtl;
+      text-align: left;
+    }
+
+  }
+
 }
 
 .topic-pagination {
