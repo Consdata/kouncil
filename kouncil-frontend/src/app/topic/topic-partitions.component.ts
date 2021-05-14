@@ -56,7 +56,7 @@ export class TopicPartitionsComponent {
   }
 
   togglePartition(nr: number): void {
-    this.topicService.togglePartition(this.globals.selectedServer.serverId, nr, this.topicName);
+    this.topicService.togglePartition(this.globals.getSelectedServerId(), nr, this.topicName);
   }
 
   getPartitionOffset(partitionNr: number): string {

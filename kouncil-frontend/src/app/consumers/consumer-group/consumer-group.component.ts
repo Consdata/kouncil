@@ -58,7 +58,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.consumerGroupService.getConsumerGroup(this.globals.selectedServer.serverId, this.groupId)
+    this.consumerGroupService.getConsumerGroup(this.globals.getSelectedServerId(), this.groupId)
       .pipe(first())
       .subscribe(data => {
         this.allAssignments = (<ConsumerGroupResponse>data).consumerGroupOffset;

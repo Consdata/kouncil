@@ -39,7 +39,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   private loadConsumerGroups() {
-    this.consumerGroupsService.getConsumerGroups(this.globals.selectedServer.serverId)
+    this.consumerGroupsService.getConsumerGroups(this.globals.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
@@ -94,7 +94,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   deleteConsumerGroup(value) {
     this.progressBarService.setProgress(true);
-    this.consumerGroupsService.deleteConsumerGroup(this.globals.selectedServer.serverId, value)
+    this.consumerGroupsService.deleteConsumerGroup(this.globals.getSelectedServerId(), value)
       .pipe(first())
       .subscribe(data => {
         this.loadConsumerGroups();

@@ -10,7 +10,7 @@ export class SendDemoService implements SendService {
 
   constructor() { }
 
-  send(topic: string, count: number, message: Message): Observable<Object> {
+  send(serverId: string, topic: string, count: number, message: Message): Observable<Object> {
     return from([{}]);
   }
 }

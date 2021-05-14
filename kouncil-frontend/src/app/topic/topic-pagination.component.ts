@@ -43,10 +43,10 @@ export class TopicPaginationComponent {
   }
 
   paginateMessages($event: any) {
-    this.topicService.paginateMessages(this.globals.selectedServer.serverId, $event, this.topicName);
+    this.topicService.paginateMessages(this.globals.getSelectedServerId(), $event, this.topicName);
   }
 
   getMessages() {
-    this.topicService.getMessages(this.globals.selectedServer.serverId, this.topicName);
+    this.topicService.getMessages(this.globals.getSelectedServerId(), this.topicName);
   }
 }

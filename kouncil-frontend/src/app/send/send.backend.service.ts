@@ -11,7 +11,7 @@ export class SendBackendService implements SendService {
 
   constructor(private http: HttpClient) { }
 
-  send(topic: string, count: number, message: Message): Observable<Object> {
-    return this.http.post(`/api/topic/send/${topic}/${count}`, message);
+  send(serverId: string, topic: string, count: number, message: Message): Observable<Object> {
+    return this.http.post(`/api/topic/send/${topic}/${count}?serverId=${serverId}`, message);
   }
 }

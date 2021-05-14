@@ -33,7 +33,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.topicsService.getTopics(this.globals.selectedServer.serverId)
+    this.topicsService.getTopics(this.globals.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.topics = (<Topics>data).topics;

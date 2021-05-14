@@ -15,6 +15,6 @@
     <span class="kouncil-version" *ngIf="backendVersion$ | async as backendVersion">{{backendVersion}}</span>
   </a>
   <select class="server-select" [(ngModel)]="globals.selectedServer">
-    <option *ngFor="let s of servers" [ngValue]="s">{{s.label}}</option>
+    <option *ngFor="let s of globals.servers" [ngValue]="s">{{s.label}}</option>
   </select>
 </div>

@@ -29,7 +29,7 @@ export class BrokersComponent implements OnInit {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.brokerService.getBrokers(this.globals.selectedServer.serverId)
+    this.brokerService.getBrokers(this.globals.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.allBrokers = (<Brokers>data).brokers;
@@ -51,7 +51,7 @@ export class BrokersComponent implements OnInit {
   }
 
   toggleExpandRow(row) {
-    this.brokerService.getBrokerConfig(this.globals.selectedServer.serverId, row.id)
+    this.brokerService.getBrokerConfig(this.globals.getSelectedServerId(), row.id)
       .pipe(first())
       .subscribe(data => {
         row.config = <BrokerConfig[]>data;

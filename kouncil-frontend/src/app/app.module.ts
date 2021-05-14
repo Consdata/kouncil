@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 import {AppComponent} from './app.component';
@@ -62,6 +62,7 @@ import {Globals} from './globals';
   ],
   providers: [
     Globals,
+    { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [Globals], multi: true },
     SearchService,
     topicServiceProvider,
     {
@@ -89,4 +90,8 @@ import {Globals} from './globals';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+}
+
+export function configProviderFactory(provider: Globals) {
+  return () => provider.load();
 }

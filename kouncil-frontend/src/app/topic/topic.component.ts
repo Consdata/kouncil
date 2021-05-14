@@ -64,7 +64,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
-      this.topicService.getMessages(this.globals.selectedServer.serverId, this.topicName);
+      this.topicService.getMessages(this.globals.getSelectedServerId(), this.topicName);
       this.titleService.setTitle(this.topicName + ' Kouncil');
       this.paused = true;
     });
@@ -86,7 +86,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.topicService.getMessages(this.globals.selectedServer.serverId, this.topicName);
+    this.topicService.getMessages(this.globals.getSelectedServerId(), this.topicName);
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
@@ -117,7 +117,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   onPopupClose(event: boolean) {
     if (event) {
       this.progressBarService.setProgress(true);
-      this.topicService.getMessages(this.globals.selectedServer.serverId, this.topicName);
+      this.topicService.getMessages(this.globals.getSelectedServerId(), this.topicName);
     }
   }
 

@@ -4,6 +4,7 @@ import {Message} from 'app/topic/message';
 import {FormControl, Validators} from '@angular/forms';
 import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
+import {Globals} from '../globals';
 
 @Component({
   selector: 'app-send',
@@ -20,7 +21,7 @@ export class SendComponent implements OnChanges {
   message: Message = new Message('', '', null, null, null);
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
-  constructor(private http: HttpClient, private sendService: SendService) {
+  constructor(private http: HttpClient, private sendService: SendService, private globals: Globals) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -33,7 +34,7 @@ export class SendComponent implements OnChanges {
   }
 
   onSubmit() {
-    this.sendService.send(this.topicName, this.countControl.value, this.message)
+    this.sendService.send(this.globals.getSelectedServerId(), this.topicName, this.countControl.value, this.message)
       .pipe(first())
       .subscribe(data => {
         this.onClose.emit(true);
