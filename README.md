@@ -1,6 +1,6 @@
 # Kouncil
 
-[![Build Status](https://travis-ci.org/Consdata/kouncil.svg?branch=master)](https://travis-ci.org/Consdata/kouncil)
+[![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
 During work on our latest messaging system which is based on Kafka, we needed a simple tool for browsing and testing. We went on a search for an easy and free solution, but we didn't find anything that suits our needs. So we came up with our solution. If your payload is in JSON, you're in the right place. Kouncil lets you 
