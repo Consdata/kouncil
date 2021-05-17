@@ -170,3 +170,19 @@ snack-bar-container.snackbar {
   color: $red-50;
   font-size: 24px;
 }
+
+div.mat-select-panel[role="listbox"] {
+  // angular material styles select panel through 'style' attribute, hence the 'importants'
+  min-width: 100% !important;
+  transform: translate(0px, 40px) !important;;
+}
+
+.mat-select-panel .mat-active.mat-option.mat-selected:not(.mat-option-multiple) {
+  background: $blue-0;
+  color: $blue-60;
+  font-weight: 500;
+}
+
+.mat-option-text {
+  font-weight: 500;
+}

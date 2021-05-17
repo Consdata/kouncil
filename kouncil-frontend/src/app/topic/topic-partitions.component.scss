@@ -1,10 +1,40 @@
 @import 'palette';
 
-.kafka-topic-partitions-wrapper {
-  margin-left: 50px;
-  display: flex;
-  font-size: 15px;
-  .kafka-topic-partitions {
-    padding: 10px 0 20px 20px;
+.select {
+  height: 40px;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label-wrapper {
+  padding: 0;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+  padding: 0;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-infix {
+  border: 0;
+  padding: 0;
+}
+
+::ng-deep .mat-select-trigger {
+  padding: 8px 12px;
+}
+
+.select {
+  height: 40px;
+  border: 1px solid $main-20;
+  border-radius: 4px;
+  background: $main-0;
+  color: $main-100;
+  font-size: 14px;
+  line-height: 24px;
+
+  &:hover {
+    border: 1px solid $main-40;
   }
 }

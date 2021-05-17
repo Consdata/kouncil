@@ -42,6 +42,7 @@ import { ConfirmComponent } from './confirm/confirm.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { BrokerComponent } from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatInputModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSelectModule
   ],
   providers: [
     SearchService,
