@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TopicService} from './topic.service';
 import {MatSelectChange} from '@angular/material/select';
 
@@ -8,7 +8,7 @@ import {MatSelectChange} from '@angular/material/select';
     <mat-form-field>
       <mat-select class="select" [(value)]="selectedPartition" (selectionChange)="togglePartition($event)">
         <mat-option value="all">All partitions</mat-option>
-        <mat-option *ngFor="let i of ['0','1','2','3']" value="{{i}}">{{i}}</mat-option>
+        <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
       </mat-select>
     </mat-form-field>
   `,
@@ -22,7 +22,12 @@ export class TopicPartitionsComponent {
 
   selectedPartition = this.ALL_PARTITIONS;
 
+  partitions = [];
+
   constructor(private topicService: TopicService) {
+    this.topicService.getSelectedPartitionsObservable().subscribe(value => {
+      this.partitions = Array.from(Array(value.length).keys());
+    });
   }
 
   togglePartition(partition: MatSelectChange): void {
