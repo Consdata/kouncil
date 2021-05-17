@@ -40,5 +40,5 @@ more info: https://hub.docker.com/r/wurstmeister/kafka/
 
 # Deployment
 ```
-docker run -d -p 64000:8080 -e bootstrapServers="localhost:9092" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:8001" consdata/kouncil:latest
 ```
