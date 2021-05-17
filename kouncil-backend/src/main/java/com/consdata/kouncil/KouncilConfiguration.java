@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Data
 public class KouncilConfiguration {
 
+    protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
     @Value("${bootstrapServers}")
     private List<String> initialBootstrapServers;
 
@@ -38,7 +39,7 @@ public class KouncilConfiguration {
     }
 
     public void addServer(String boostrapAddress){
-        servers.put(boostrapAddress.replaceAll("[^a-zA-Z0-9\\s]", "_"), boostrapAddress);
+        servers.put(boostrapAddress.replaceAll(SPECIAL_CHARS, "_"), boostrapAddress);
     }
 
     public void removeServer(String serverId){
@@ -48,7 +49,7 @@ public class KouncilConfiguration {
     @PostConstruct
     public void initialize() {
         servers = initialBootstrapServers.stream()
-                .collect(Collectors.toMap(s -> s.replaceAll("[^a-zA-Z0-9\\s]", "_"), s -> s));
+                .collect(Collectors.toMap(s -> s.replaceAll(SPECIAL_CHARS, "_"), s -> s));
         log.info(toString());
     }
 
