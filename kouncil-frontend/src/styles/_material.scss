@@ -171,10 +171,14 @@ snack-bar-container.snackbar {
   font-size: 24px;
 }
 
-div.mat-select-panel[role="listbox"] {
+.mat-select-panel {
   // angular material styles select panel through 'style' attribute, hence the 'importants'
   min-width: 100% !important;
-  transform: translate(0px, 40px) !important;;
+  transform: translate(0px, 40px) !important;
+}
+
+.select-limit-panel {
+  transform: translate(0px, -40px) !important;
 }
 
 .mat-select-panel .mat-active.mat-option.mat-selected:not(.mat-option-multiple) {
@@ -185,4 +189,43 @@ div.mat-select-panel[role="listbox"] {
 
 .mat-option-text {
   font-weight: 500;
+}
+
+.select {
+  height: 40px;
+}
+
+.mat-form-field-underline {
+  display: none;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-label-wrapper {
+  padding: 0;
+}
+
+.mat-form-field-appearance-legacy div.mat-form-field-wrapper {
+  padding: 0;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-infix {
+  border: 0;
+  padding: 0;
+}
+
+.mat-select-trigger {
+  padding: 8px 12px;
+}
+
+.select {
+  height: 40px;
+  border: 1px solid $main-20;
+  border-radius: 4px;
+  background: $main-0;
+  color: $main-100;
+  font-size: 14px;
+  line-height: 24px;
+
+  &:hover {
+    border: 1px solid $main-40;
+  }
 }

@@ -1,29 +1,89 @@
 @import 'palette';
 
+:host {
+  height: 100%;
+}
+
 .kafka-topic-footer {
   display: flex;
-  font-size: 15px;
+  align-items: center;
+  flex-direction: row;
   width: 100%;
-  justify-content: center;
+  height: 100%;
+  padding: 0 16px;
 }
 
 .kafka-topic-footer-pager-item {
-  display: inline-block;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+}
+
+.limit {
+  justify-content: flex-end;
+}
+
+.pages {
   justify-content: center;
 }
 
-.kafka-topic-footer-pager-select-limit {
-  display: inline-block;
-  height: 22px;
-  width: 50px;
-  line-height: 22px;
-  padding: 0 6px;
-  border-radius: 3px;
-  margin: 0 10px;
-  text-align: center;
-  color: rgba(0, 0, 0, 0.54);
-  appearance: none;
-  background-color: rgba(158, 158, 158, 0.2);
-  font-weight: bold;
-  cursor: pointer;
+::ng-deep .datatable-pager {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+}
+
+::ng-deep .ngx-datatable .datatable-footer .datatable-pager {
+  flex: 0;
+}
+
+::ng-deep .ngx-datatable .datatable-footer .datatable-pager .pager {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  li {
+    border: 1px solid $main-20;
+    border-radius: 4px;
+    background: $main-0;
+    margin: 0 4px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+    &.active {
+      border: 1px solid $main-100;
+
+      a {
+        color: $main-100;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: $main-50;
+
+      i {
+        font-size: 20px;
+        height: 20px;
+        display: flex;
+      }
+    }
+  }
+}
+
+.select-form-field {
+  width: 80px;
+  margin-left: 16px;
+}
+
+.limit-label {
+  font-size: 14px;
+  color: $main-60;
 }

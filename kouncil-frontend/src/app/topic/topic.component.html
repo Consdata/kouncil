@@ -1,8 +1,9 @@
 <div class="topic">
-  <div class="topic-toolbar-area">
-    <kafka-toolbar [name]="topicName" (onAction)="onAction($event)" (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
-  </div>
   <div class="topic-table-area">
+    <div class="topic-toolbar-area">
+      <kafka-toolbar [name]="topicName" (onAction)="onAction($event)" (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
+    </div>
+
     <ngx-datatable
                    class="topic-table material expandable"
                    [rows]="filteredRows"

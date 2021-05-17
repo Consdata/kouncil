@@ -9,11 +9,11 @@
 }
 
 .topic-table-area {
-  height: calc(100% - 110px);
+  height: 100% ;
 }
 
 .topic-table {
-  height: 100%;
+  height: calc(100% - 88px);
 
   ::ng-deep .datatable-body-row {
     border-bottom: none;
