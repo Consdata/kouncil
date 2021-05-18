@@ -31,7 +31,7 @@ export class SendComponent implements OnChanges {
               }) {
     console.log(this.data);
     this.message.key = this.data.key;
-    this.message.value = JSON.stringify(this.data.source);
+    this.message.value = JSON.stringify(this.data.source, null, 2);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

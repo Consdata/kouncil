@@ -8,6 +8,7 @@
   margin: 24px 0;
   background: $main-10;
   overflow: scroll;
+  height: 100%;
 }
 
 button {
@@ -16,6 +17,8 @@ button {
 ::ng-deep .json-details > section.ngx-json-viewer {
   overflow: initial;
   padding: 24px 32px;
+  height: calc(100% - 48px);
+  width: calc(100% - 64px);
 }
 
 $green: #127D48;
