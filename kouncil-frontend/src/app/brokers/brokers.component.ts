@@ -6,8 +6,8 @@ import {Subscription} from 'rxjs';
 import {ProgressBarService} from 'app/util/progress-bar.service';
 import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
-import {MatDialog} from '@angular/material/dialog';
 import {BrokerComponent} from '../broker/broker.component';
+import {DrawerService} from '../util/drawer.service';
 
 @Component({
   selector: 'kafka-brokers',
@@ -19,7 +19,7 @@ export class BrokersComponent implements OnInit {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
-              private dialog: MatDialog) {
+              private drawerService: DrawerService) {
   }
 
   @ViewChild('table') table: any;
@@ -57,16 +57,8 @@ export class BrokersComponent implements OnInit {
         .pipe(first())
         .subscribe(data => {
           const brokerConfig = <BrokerConfig[]>data;
-          this.dialog.open(BrokerComponent, {
-            data: {
-              config: brokerConfig
-            },
-            height: '100%',
-            width: '787px',
-            position: {
-              right: '0px'
-            },
-            panelClass: 'app-drawer'
+          this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
+            config: brokerConfig
           });
         });
     }

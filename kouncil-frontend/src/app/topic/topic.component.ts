@@ -10,9 +10,9 @@ import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicService, topicServiceProvider} from './topic.service';
 import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
-import {MatDialog} from '@angular/material/dialog';
 import {SendComponent} from '../send/send.component';
 import {MessageViewComponent} from './message/message-view.component';
+import {DrawerService} from '../util/drawer.service';
 
 @Component({
   selector: 'app-topic',
@@ -28,7 +28,7 @@ export class TopicComponent implements OnInit, OnDestroy {
               private titleService: Title,
               private progressBarService: ProgressBarService,
               private topicService: TopicService,
-              private dialog: MatDialog) {
+              private drawerService: DrawerService) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
@@ -110,33 +110,17 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   showMessage(event): void {
     if (event.type === 'click') {
-      this.dialog.open(MessageViewComponent, {
-        data: {
-          source: event.row.kouncilValueJson,
-          key: event.row.kouncilKey,
-          topicName: this.topicName
-        },
-        height: '100%',
-        width: '787px',
-        position: {
-          right: '0px'
-        },
-        panelClass: ['app-drawer', 'dialog-with-padding']
+      this.drawerService.openDrawerWithPadding(MessageViewComponent, {
+        source: event.row.kouncilValueJson,
+        key: event.row.kouncilKey,
+        topicName: this.topicName
       });
     }
   }
 
   openSendPopup() {
-    this.dialog.open(SendComponent, {
-      data: {
-        topicName: this.topicName
-      },
-      height: '100%',
-      width: '787px',
-      position: {
-        right: '0px'
-      },
-      panelClass: ['app-drawer', 'dialog-with-padding']
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: this.topicName
     });
   }
 

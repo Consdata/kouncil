@@ -8,8 +8,8 @@ import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
 import {SendComponent} from '../send/send.component';
+import {DrawerService} from '../util/drawer.service';
 
 @Component({
   selector: 'app-topics',
@@ -22,7 +22,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private arraySortPipe: ArraySortPipe,
               private topicsService: TopicsService,
               private router: Router,
-              private dialog: MatDialog) {
+              private drawerService: DrawerService) {
   }
 
   topics: TopicMetadata[] = [];
@@ -99,16 +99,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   openSendPopup(name: string) {
-    this.dialog.open(SendComponent, {
-      data: {
-        topicName: name
-      },
-      height: '100%',
-      width: '787px',
-      position: {
-        right: '0px'
-      },
-      panelClass: ['app-drawer', 'dialog-with-padding']
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: name
     });
   }
 

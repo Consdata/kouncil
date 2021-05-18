@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {SendComponent} from '../../send/send.component';
+import {DrawerService} from '../../util/drawer.service';
 
 @Component({
   selector: 'app-message-view',
@@ -10,13 +11,13 @@ import {SendComponent} from '../../send/send.component';
 export class MessageViewComponent implements OnInit {
 
   constructor(
-    private dialog: MatDialog,
+    private drawerService: DrawerService,
     private dialogRef: MatDialogRef<MessageViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       topicName: string,
       key: string,
       source: string
-  }) {
+    }) {
   }
 
   formatJson(object) {
@@ -25,18 +26,10 @@ export class MessageViewComponent implements OnInit {
 
   resend() {
     this.dialogRef.close();
-    this.dialog.open(SendComponent, {
-      data: {
-        topicName: this.data.topicName,
-        key: this.data.key,
-        source: this.data.source
-      },
-      height: '100%',
-      width: '787px',
-      position: {
-        right: '0px'
-      },
-      panelClass: ['app-drawer', 'dialog-with-padding']
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: this.data.topicName,
+      key: this.data.key,
+      source: this.data.source
     });
   }
 
