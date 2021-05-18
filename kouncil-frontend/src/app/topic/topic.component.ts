@@ -127,18 +127,17 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   openSendPopup() {
-    this.popup.openPopup(this.topicName);
-  }
-
-  openResendPopup(key: string, value: string) {
-    this.popup.openPopup(this.topicName, key, this.formatJson(value));
-  }
-
-  onPopupClose(event: boolean) {
-    if (event) {
-      this.progressBarService.setProgress(true);
-      this.topicService.getMessages(this.topicName);
-    }
+    this.dialog.open(SendComponent, {
+      data: {
+        topicName: this.topicName
+      },
+      height: '100%',
+      width: '787px',
+      position: {
+        right: '0px'
+      },
+      panelClass: ['app-drawer', 'dialog-with-padding']
+    });
   }
 
   private jsonToGrid(topicMessages: TopicMessages) {
@@ -210,10 +209,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filteredRows = this.allRows.filter((row) => {
       return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
     });
-  }
-
-  formatJson(object) {
-    return JSON.stringify(object, null, 2);
   }
 
   isLoading(): boolean {
