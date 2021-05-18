@@ -10,6 +10,10 @@
   margin: 0 8px;
 }
 
+.mat-button .mat-button-focus-overlay {
+  background: transparent;
+}
+
 @Keyframes slideFromRight {
   from {
     transform: none;
