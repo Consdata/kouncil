@@ -23,7 +23,7 @@
   color: $main-60;
   font-size: 14px;
   font-weight: 500;
-  border-radius: 4px;
+  border-radius: $default-border-radius;
   height: 40px;
   padding: 0 12px;
 
@@ -99,6 +99,6 @@
 .action {
   background: $main-100;
   color: $main-0;
-  border-radius: 4px;
+  border-radius: $default-border-radius;
   height: 40px;
 }

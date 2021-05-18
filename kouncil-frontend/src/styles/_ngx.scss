@@ -68,7 +68,7 @@ ngx-datatable.ngx-datatable {
     background: $main-100;
     color: $main-text-light-color;
     font-size: 14px;
-    border-radius: 4px;
+    border-radius: $default-border-radius;
     height: 32px;
     border: none;
     padding: 4px 10px;
