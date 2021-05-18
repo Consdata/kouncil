@@ -10,6 +10,9 @@ import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicService, topicServiceProvider} from './topic.service';
 import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
+import {MatDialog} from '@angular/material/dialog';
+import {SendComponent} from '../send/send.component';
+import {MessageViewComponent} from './message/message-view.component';
 
 @Component({
   selector: 'app-topic',
@@ -24,7 +27,8 @@ export class TopicComponent implements OnInit, OnDestroy {
               private jsonGrid: JsonGrid,
               private titleService: Title,
               private progressBarService: ProgressBarService,
-              private topicService: TopicService) {
+              private topicService: TopicService,
+              private dialog: MatDialog) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
@@ -101,6 +105,22 @@ export class TopicComponent implements OnInit, OnDestroy {
     } else if ('play' === action) {
       this.paused = false;
       this.getMessagesDelta();
+    }
+  }
+
+  showMessage(event): void {
+    if (event.type === 'click') {
+      this.dialog.open(MessageViewComponent, {
+        data: {
+          source: event.row.kouncilValueJson
+        },
+        height: '100%',
+        width: '787px',
+        position: {
+          right: '0px'
+        },
+        panelClass: ['app-drawer', 'dialog-with-padding']
+      });
     }
   }
 
@@ -182,10 +202,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.columns = columns;
     this.allRows = [...this.jsonGrid.getRows()];
     this.filterRows();
-  }
-
-  toggleExpandRow(row) {
-    this.table.rowDetail.toggleExpandRow(row);
   }
 
   private filterRows() {

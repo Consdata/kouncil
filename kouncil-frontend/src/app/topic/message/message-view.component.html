@@ -1,0 +1,14 @@
+<mat-dialog-content>
+  <mat-icon mat-dialog-close class="close">close</mat-icon>
+  <div class="drawer-title">Event view</div>
+
+  <ngx-json-viewer [json]="data.source" class="json-details"></ngx-json-viewer>
+
+  <div class="actions">
+    <button type="button" mat-dialog-close mat-button disableRipple class="cancel">Cancel</button>
+    <span class="spacer"></span>
+    <button mat-button disableRipple class="cancel" [cdkCopyToClipboard]="formatJson(data.source)">Copy to clipboard</button>
+    <button mat-button disableRipple class="action">Resend event</button>
+  </div>
+
+</mat-dialog-content>

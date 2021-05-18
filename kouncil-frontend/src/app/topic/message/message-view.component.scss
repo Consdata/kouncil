@@ -1,0 +1,49 @@
+@import 'palette';
+
+.mat-dialog-content {
+  height: 100%;
+}
+
+.json-details {
+  margin: 24px 0;
+  background: $main-10;
+  overflow: scroll;
+}
+
+button {
+}
+
+::ng-deep .json-details > section.ngx-json-viewer {
+  overflow: initial;
+  padding: 24px 32px;
+}
+
+$green: #127D48;
+
+$type-colors: (
+  string: $green,
+  number: $green,
+  boolean: $green,
+  date: $green,
+
+  array: #999,
+  object: #999,
+  function: #999,
+
+  'null': #fff,
+  undefined: #fff
+);
+
+@each $type, $color in $type-colors {
+  ::ng-deep .segment-type-#{$type} > .segment-main > .segment-value {
+    color: $color !important;
+  }
+}
+
+::ng-deep .segment-key {
+  color: $blue-60 !important;
+}
+
+.actions {
+  gap: 16px;
+}

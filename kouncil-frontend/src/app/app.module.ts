@@ -43,6 +43,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { BrokerComponent } from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
+import { MessageViewComponent } from './topic/message/message-view.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import {MatSelectModule} from '@angular/material/select';
     TopicPaginationComponent,
     BreadcrumbComponent,
     ConfirmComponent,
-    BrokerComponent
+    BrokerComponent,
+    MessageViewComponent
   ],
   imports: [
     BrowserModule,
