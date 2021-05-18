@@ -1,7 +1,9 @@
 <div class="broker-details">
-  <mat-icon mat-dialog-close class="close">close</mat-icon>
-
-  <div class="drawer-title">Broker details</div>
+  <div class="drawer-header">
+    <div class="drawer-title">Broker details</div>
+    <div class="spacer"></div>
+    <mat-icon mat-dialog-close class="close">close</mat-icon>
+  </div>
 
   <div class="broker-details-table">
     <ngx-datatable *ngIf="isAnimationDone" class="config-table-detail material"

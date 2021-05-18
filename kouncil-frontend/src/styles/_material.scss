@@ -55,6 +55,12 @@ mat-dialog-container.mat-dialog-container {
 
   }
 
+  .drawer-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
   .drawer-title {
     font-size: 18px;
     font-weight: 500;
@@ -130,10 +136,7 @@ mat-dialog-container.mat-dialog-container {
   }
 
   .close {
-    position: absolute;
     font-size: 28px;
-    top: 32px;
-    right: 32px;
     margin: 0;
     cursor: pointer;
   }

@@ -1,8 +1,11 @@
 <mat-dialog-content>
-  <mat-icon mat-dialog-close class="close">close</mat-icon>
-
   <form #sendForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="drawer-title">Send event</div>
+    <div class="drawer-header">
+      <div class="drawer-title">Send event</div>
+      <div class="spacer"></div>
+      <mat-icon mat-dialog-close class="close">close</mat-icon>
+    </div>
+
     <div class="drawer-subtitle">Send event to {{data.topicName}}</div>
 
     <div class="drawer-section-title">Key</div>

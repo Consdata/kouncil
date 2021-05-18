@@ -1,6 +1,9 @@
 <mat-dialog-content>
-  <mat-icon mat-dialog-close class="close">close</mat-icon>
-  <div class="drawer-title">Event view</div>
+  <div class="drawer-header">
+    <div class="drawer-title">Event preview</div>
+    <div class="spacer"></div>
+    <mat-icon mat-dialog-close class="close">close</mat-icon>
+  </div>
 
   <ngx-json-viewer [json]="data.source" class="json-details"></ngx-json-viewer>
 
