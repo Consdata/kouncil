@@ -2,7 +2,7 @@
 
 .kafka-consumer-group {
   overflow-y: scroll;
-  height: 100%;
+  height: calc(100% - 22px);
   padding-top: 22px;
 
   .brokers-table {

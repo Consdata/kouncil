@@ -36,6 +36,10 @@ html, body {
   font-family: 'Inter';
 }
 
+.cdk-global-scrollblock {
+  overflow-y: auto;
+}
+
 .spacer {
   flex: 1 1 auto;
 }
