@@ -25,8 +25,6 @@ $custom-typography: mat-typography-config(
 @include mat-base-typography($custom-typography);
 @include mat-core($custom-typography);
 
-$secondary-color: #ef6c00;
-
 @import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
 html, body {
@@ -60,85 +58,4 @@ html, body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
-  padding-top: 0;
-  padding-bottom: 0;
-  display: flex;
-  align-items: center;
-}
-
-.ngx-datatable.material datatable-progress {
-  display: none;
-}
-
-.kafka-badge {
-  display: inline-block;
-  padding: 0.2em 0.3em;
-  margin-left: 5px;
-  border-radius: 0.3em;
-  color: white;
-  min-width: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.kafka-badge-primary {
-  @extend .kafka-badge;
-  background-color: $primary-red-color;
-  width: 25px;
-}
-
-.kafka-badge-secondary-disabled {
-  cursor: default;
-  opacity: 50%;
-}
-
-.kafka-badge-secondary {
-  @extend .kafka-badge;
-  background-color: $color-gray-1;
-  width: 25px;
-}
-
-.kafka-primary-action {
-  border: 2px solid $primary-red-color;
-  background-color: $primary-red-color;
-  font-weight: bold;
-  box-shadow: none;
-  text-align: center;
-  &:focus,
-  &:active,
-  &:hover {
-    background-color: $color-dark-red;
-    border: 2px solid $primary-red-color;
-  }
-}
-
-.kafka-secondary-action {
-  background-color: $palette-white;
-  border: 2px solid $primary-red-color;
-  color: $primary-red-color;
-  box-shadow: none;
-  font-weight: bold;
-  &:focus,
-  &:active,
-  &:hover {
-    background-color: $palette-very-light-gray;
-  }
-}
-
-
-.kafka-small-btn-action {
-  background-color: $palette-white;
-  border: 1px solid $primary-red-color;
-  color: $primary-red-color;
-  margin-right: 10px;
-  cursor: pointer;
-  &:focus,
-  &:active,
-  &:hover {
-    border: 1px solid $color-dark-red;
-    color: $color-dark-red;
-  }
 }

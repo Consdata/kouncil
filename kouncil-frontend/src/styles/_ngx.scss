@@ -105,6 +105,17 @@ ngx-datatable.ngx-datatable {
   }
 }
 
+.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ngx-datatable.material datatable-progress {
+  display: none;
+}
+
 mat-icon.ngx-star-favourite {
   color: $blue-60;
   font-size: 24px;
