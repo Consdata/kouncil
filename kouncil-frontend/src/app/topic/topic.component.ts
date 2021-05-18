@@ -112,7 +112,9 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (event.type === 'click') {
       this.dialog.open(MessageViewComponent, {
         data: {
-          source: event.row.kouncilValueJson
+          source: event.row.kouncilValueJson,
+          key: event.row.kouncilKey,
+          topicName: this.topicName
         },
         height: '100%',
         width: '787px',

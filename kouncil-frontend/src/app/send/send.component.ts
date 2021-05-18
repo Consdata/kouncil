@@ -24,7 +24,14 @@ export class SendComponent implements OnChanges {
               private sendService: SendService,
               private dialog: MatDialog,
               private snackbar: MatSnackBar,
-              @Inject(MAT_DIALOG_DATA) public data: { topicName: string }) {
+              @Inject(MAT_DIALOG_DATA) public data: {
+                topicName: string,
+                key: string,
+                source: string
+              }) {
+    console.log(this.data);
+    this.message.key = this.data.key;
+    this.message.value = JSON.stringify(this.data.source);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
