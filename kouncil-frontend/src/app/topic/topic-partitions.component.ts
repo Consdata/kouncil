@@ -1,69 +1,43 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TopicService} from './topic.service';
+import {MatSelectChange} from '@angular/material/select';
 
 @Component({
   selector: 'topic-partitions',
   template: `
-    <div class="kafka-topic-partitions-wrapper">
-      <div class="kafka-topic-partitions">
-        Choose partition:
-        <span *ngIf="showMorePartitions()" class="kafka-badge-secondary"
-              [ngClass]="{'kafka-badge-secondary-disabled': hasNoMorePrevValues()}" (click)="previous()">&#60;</span>
-        <span *ngFor="let i of visiblePartitions">
-              <span [ngClass]="(selectedPartitions[i] === 1)?'kafka-badge-primary':'kafka-badge-secondary'"
-                    class="partition"
-                    (click)="togglePartition(i)"
-                    [title]="getPartitionOffset(i)">{{i}}</span>
-                </span>
-        <span *ngIf="showMorePartitions()" class="kafka-badge-secondary"
-              [ngClass]="{'kafka-badge-secondary-disabled': hasNoMoreNextValues()}"
-              (click)="next()">&#62;</span>
-      </div>
-    </div>`,
+    <mat-form-field>
+      <mat-select class="select" [(value)]="selectedPartition" (selectionChange)="togglePartition($event)">
+        <mat-option value="all">All partitions</mat-option>
+        <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  `,
   styleUrls: ['./topic-partitions.component.scss']
 })
-
 export class TopicPartitionsComponent {
+
+  private ALL_PARTITIONS = 'all';
+
   @Input() topicName: string;
-  selectedPartitions: number[];
-  visiblePartitions: number[];
+
+  selectedPartition = this.ALL_PARTITIONS;
+
+  partitions = [];
 
   constructor(private topicService: TopicService) {
     this.topicService.getSelectedPartitionsObservable().subscribe(value => {
-      this.selectedPartitions = value;
-    });
-
-    this.topicService.getVisiblePartitionsObservable().subscribe(value => {
-      this.visiblePartitions = value;
+      this.partitions = Array.from(Array(value.length).keys());
     });
   }
 
-  hasNoMorePrevValues(): boolean {
-    return this.topicService.hasNoMorePrevValues();
+  togglePartition(partition: MatSelectChange): void {
+    const value = partition.value;
+    this.selectedPartition = value;
+    if (value === this.ALL_PARTITIONS) {
+      this.topicService.selectAllPartitions(this.topicName);
+    } else {
+      this.topicService.selectPartition(parseInt(value, 10), this.topicName);
+    }
   }
-
-  hasNoMoreNextValues(): boolean {
-    return this.topicService.hasNoMoreNextValues();
-  }
-
-  previous(): void {
-    this.topicService.previous();
-  }
-
-  next(): void {
-    this.topicService.next();
-  }
-
-  togglePartition(nr: number): void {
-    this.topicService.togglePartition(nr, this.topicName);
-  }
-
-  getPartitionOffset(partitionNr: number): string {
-    return this.topicService.getPartitionOffset(partitionNr);
-  }
-
- showMorePartitions(): boolean {
-    return this.topicService.showMorePartitions();
- }
 
 }

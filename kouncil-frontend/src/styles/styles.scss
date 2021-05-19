@@ -1,106 +1,61 @@
-/* You can add global styles to this file, and also import other style files */
-//@import "~bootstrap/scss/bootstrap";
-//$primary-color: #ef6c00;
-$secondary-color: #ef6c00;
 @import 'palette';
-@import 'node_modules/materialize-css/sass/materialize';
+@import 'ngx';
+@import 'material';
+@import '~@angular/material/theming';
 
-@import '../../node_modules/@swimlane/ngx-datatable/index.css';
-@import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
+@include mat-core();
+
+$kouncil-primary: mat-palette($palette-main);
+$kouncil-accent: mat-palette($palette-accent);
+$kouncil-warn: mat-palette($palette-warn);
+
+$kouncil-theme: mat-light-theme((
+  color: (
+    primary: $kouncil-primary,
+    accent: $kouncil-accent,
+    warn: $kouncil-warn,
+  )
+));
+
+@include angular-material-theme($kouncil-theme);
+
+$custom-typography: mat-typography-config(
+  $font-family: 'Inter, normal'
+);
+@include mat-base-typography($custom-typography);
+@include mat-core($custom-typography);
+
 @import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
 html, body {
   height: 100%;
+  margin: 0;
+  background-color: $main-10;
+  font-family: 'Inter';
 }
 
-.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
-  padding-top: 0;
-  padding-bottom: 0;
-  display: flex;
-  align-items: center;
+.cdk-global-scrollblock {
+  overflow-y: auto;
 }
 
-.ngx-datatable.material datatable-progress {
-  display: none;
+.spacer {
+  flex: 1 1 auto;
 }
 
-.ngx-datatable.material .empty-row, .no-data-message {
+.kafka-progress {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: calc(50% - 60px);
+  top: calc(50% - 60px);
   z-index: 1;
-  color: $primary-red-color;
-  font-size: large;
+  border: 16px solid $main-20;
+  border-top: 16px solid $main-60;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
 }
 
-.kafka-badge {
-  display: inline-block;
-  padding: 0.2em 0.3em;
-  margin-left: 5px;
-  border-radius: 0.3em;
-  color: white;
-  min-width: 20px;
-  text-align: center;
-  cursor: pointer;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-
-.kafka-badge-primary {
-  @extend .kafka-badge;
-  background-color: $primary-red-color;
-  width: 25px;
-}
-
-.kafka-badge-secondary-disabled {
-  cursor: default;
-  opacity: 50%;
-}
-
-.kafka-badge-secondary {
-  @extend .kafka-badge;
-  background-color: $color-gray-1;
-  width: 25px;
-}
-
-.kafka-primary-action {
-  border: 2px solid $primary-red-color;
-  background-color: $primary-red-color;
-  font-weight: bold;
-  box-shadow: none;
-  text-align: center;
-  &:focus,
-  &:active,
-  &:hover {
-    background-color: $color-dark-red;
-    border: 2px solid $primary-red-color;
-  }
-}
-
-.kafka-secondary-action {
-  background-color: $palette-white;
-  border: 2px solid $primary-red-color;
-  color: $primary-red-color;
-  box-shadow: none;
-  font-weight: bold;
-  &:focus,
-  &:active,
-  &:hover {
-    background-color: $palette-very-light-gray;
-  }
-}
-
-
-.kafka-small-btn-action {
-  background-color: $palette-white;
-  border: 1px solid $primary-red-color;
-  color: $primary-red-color;
-  margin-right: 10px;
-  cursor: pointer;
-  &:focus,
-  &:active,
-  &:hover {
-    border: 1px solid $color-dark-red;
-    color: $color-dark-red;
-  }
-}
-

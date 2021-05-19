@@ -1,60 +1,40 @@
 <div class="topic">
-  <div class="topic-toolbar-area">
-    <kafka-toolbar [name]="topicName" (onAction)="onAction($event)" (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
-    <topic-partitions [topicName]="topicName"></topic-partitions>
-  </div>
   <div class="topic-table-area">
-    <ngx-datatable
+    <div class="topic-toolbar-area">
+      <kafka-toolbar [name]="topicName" (onAction)="onAction($event)"
+                     (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
+    </div>
+
+    <ng-template #noDataPlaceholder>
+      <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
+    </ng-template>
+    <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
                    class="topic-table material expandable"
                    [rows]="filteredRows"
                    [columns]="columns"
-                   [rowHeight]="40"
-                   [headerHeight]="40"
-                   [footerHeight]="40"
+                   [rowHeight]="48"
+                   [headerHeight]="48"
+                   [footerHeight]="80"
                    [scrollbarH]="true"
                    [scrollbarV]="true"
                    [columnMode]="'force'"
                    [rowClass]="getRowClass"
                    [loadingIndicator]="isLoading()"
+                   (activate)="showMessage($event)"
                    #table>
 
-      <ngx-datatable-row-detail [rowHeight]="320">
-        <ng-template let-row="row" ngx-datatable-row-detail-template>
-          <div class="kafka-row-details">
-            <div
-              class="kafka-row-details-inner">
-              <div>
-                <button class="kafka-small-btn-action " [cdkCopyToClipboard]="formatJson(row.kouncilValueJson)">Copy to clipboard</button>
-                <button class="kafka-small-btn-action" (click)="openResendPopup(row.kouncilKey, row.kouncilValueJson)">Resend</button>
-              </div>
-              <ngx-json-viewer [json]="row.kouncilValueJson" class="json-details"></ngx-json-viewer>
-            </div>
-          </div>
-        </ng-template>
-      </ngx-datatable-row-detail>
-
       <ngx-datatable-footer>
-        <ng-template
-          ngx-datatable-footer-template>
-          <topic-pagination class="topic-pagination" [onePartitionSelected]="onePartitionSelected$ | async" [paging]="paging$ | async" [topicName]="topicName"></topic-pagination>
+        <ng-template ngx-datatable-footer-template>
+          <topic-pagination class="topic-pagination" [onePartitionSelected]="onePartitionSelected$ | async"
+                            [paging]="paging$ | async" [topicName]="topicName"></topic-pagination>
         </ng-template>
       </ngx-datatable-footer>
     </ngx-datatable>
   </div>
 
   <ng-template #headerTemplate let-column="column" let-sort="sortFn">
-    <span class="datatable-header-cell-wrapper" title="{{column.name}}" (click)="sort()">{{column.nameShort}}</span>
+    <span class="datatable-header-cell-wrapper datatable-header-cell-label" title="{{column.name}}"
+          (click)="sort()">{{column.nameShort}}</span>
   </ng-template>
 
-  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template #expandColumnTemplate>
-    <a
-      href="javascript:void(0)"
-      class="kafka-arrow"
-      [class.datatable-icon-right]="!expanded"
-      [class.datatable-icon-down]="expanded"
-      title="Expand/Collapse Row"
-      (click)="toggleExpandRow(row)">
-    </a>
-  </ng-template>
-  <app-send-popup (onClose)="onPopupClose($event)"></app-send-popup>
 </div>

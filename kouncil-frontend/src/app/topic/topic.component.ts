@@ -10,6 +10,9 @@ import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicService, topicServiceProvider} from './topic.service';
 import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
+import {SendComponent} from '../send/send.component';
+import {MessageViewComponent} from './message/message-view.component';
+import {DrawerService} from '../util/drawer.service';
 
 @Component({
   selector: 'app-topic',
@@ -24,7 +27,8 @@ export class TopicComponent implements OnInit, OnDestroy {
               private jsonGrid: JsonGrid,
               private titleService: Title,
               private progressBarService: ProgressBarService,
-              private topicService: TopicService) {
+              private topicService: TopicService,
+              private drawerService: DrawerService) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
@@ -104,19 +108,20 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSendPopup() {
-    this.popup.openPopup(this.topicName);
-  }
-
-  openResendPopup(key: string, value: string) {
-    this.popup.openPopup(this.topicName, key, this.formatJson(value));
-  }
-
-  onPopupClose(event: boolean) {
-    if (event) {
-      this.progressBarService.setProgress(true);
-      this.topicService.getMessages(this.topicName);
+  showMessage(event): void {
+    if (event.type === 'click') {
+      this.drawerService.openDrawerWithPadding(MessageViewComponent, {
+        source: event.row.kouncilValueJson,
+        key: event.row.kouncilKey,
+        topicName: this.topicName
+      });
     }
+  }
+
+  openSendPopup() {
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: this.topicName
+    });
   }
 
   private jsonToGrid(topicMessages: TopicMessages) {
@@ -132,14 +137,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.jsonGrid.replaceObjects(values);
 
     const columns = [];
-    columns.push({
-      width: 20,
-      resizable: false,
-      sortable: false,
-      draggable: false,
-      canAutoResize: false,
-      cellTemplate: this.expandColumnTemplate
-    });
     columns.push({
       width: 100,
       resizable: true,
@@ -178,6 +175,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
         columns.push({
+          canAutoResize: true,
           prop: column.name,
           name: column.name,
           nameShort: column.nameShort,
@@ -191,18 +189,10 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows();
   }
 
-  toggleExpandRow(row) {
-    this.table.rowDetail.toggleExpandRow(row);
-  }
-
   private filterRows() {
     this.filteredRows = this.allRows.filter((row) => {
       return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
     });
-  }
-
-  formatJson(object) {
-    return JSON.stringify(object, null, 2);
   }
 
   isLoading(): boolean {

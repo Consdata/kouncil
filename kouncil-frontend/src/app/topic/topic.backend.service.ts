@@ -69,6 +69,24 @@ export class TopicBackendService implements TopicService {
     }
   }
 
+  selectPartition(partition: number, topicName: string): void {
+    const index = this.partitions.findIndex(e => e === partition);
+    for (let i = 0; i < this.selectedPartitions.length; i++) {
+      this.selectedPartitions[i] = -1;
+    }
+    this.selectedPartitions[index] = 1;
+    this.progressBarService.setProgress(true);
+    this.getMessages(topicName);
+  }
+
+  selectAllPartitions(topicName: string) {
+    for (let i = 0; i < this.selectedPartitions.length; i++) {
+      this.selectedPartitions[i] = 1;
+    }
+    this.progressBarService.setProgress(true);
+    this.getMessages(topicName);
+  }
+
   togglePartition(nr: any, topicName: string) {
     const index = this.partitions.findIndex(e => e === nr);
     this.selectedPartitions[index] = -1 * this.selectedPartitions[index];
