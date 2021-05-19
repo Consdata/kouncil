@@ -29,7 +29,7 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
-import {Globals} from './globals';
+import {Servers} from './servers.service';
 
 @NgModule({
   declarations: [
@@ -61,8 +61,8 @@ import {Globals} from './globals';
     ReactiveFormsModule
   ],
   providers: [
-    Globals,
-    { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [Globals], multi: true },
+    Servers,
+    { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [Servers], multi: true },
     SearchService,
     topicServiceProvider,
     {
@@ -92,6 +92,6 @@ import {Globals} from './globals';
 export class AppModule {
 }
 
-export function configProviderFactory(provider: Globals) {
+export function configProviderFactory(provider: Servers) {
   return () => provider.load();
 }

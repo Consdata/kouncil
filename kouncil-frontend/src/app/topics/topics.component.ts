@@ -8,7 +8,7 @@ import {SendPopupComponent} from '../send/send-popup.component';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
-import {Globals} from '../globals';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'app-topics',
@@ -20,7 +20,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
               private topicsService: TopicsService,
-              public globals: Globals) {
+              public servers: Servers) {
   }
 
   topics: TopicMetadata[] = [];
@@ -33,7 +33,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.topicsService.getTopics(this.globals.getSelectedServerId())
+    this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.topics = (<Topics>data).topics;

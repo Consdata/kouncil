@@ -3,7 +3,7 @@ import {TopicService} from './topic.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {TopicMessages} from './topic';
 import {Page} from './page';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProgressBarService} from '../util/progress-bar.service';
 
 @Injectable({
@@ -44,9 +44,13 @@ export class TopicBackendService implements TopicService {
     } else {
       url = `/api/topic/messages/${topicName}/all/latest`;
     }
-    url += this.addPagingToUrl();
-    url += `&serverId=${serverId}`;
-    this.http.get(url).subscribe((data: TopicMessages) => {
+    const paging = this.paginationChanged$.getValue();
+    const params = new HttpParams()
+      .set('serverId', serverId)
+      .set('offset', String((paging.pageNumber - 1) * paging.size))
+      .set('limit', String(paging.size));
+
+    this.http.get(url, {params}).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
     });
     this.onePartitionSelected();
@@ -96,11 +100,6 @@ export class TopicBackendService implements TopicService {
       this.visiblePartitions = subPartitions;
       this.visiblePartitionsChanged$.next(this.visiblePartitions);
     }
-  }
-
-  private addPagingToUrl(): string {
-    const paging = this.paginationChanged$.getValue();
-    return `?offset=${(paging.pageNumber - 1) * paging.size}&limit=${paging.size}`;
   }
 
   private getFirstElementIndex(): number {

@@ -8,13 +8,14 @@
            #searchInput>
   </div>
   <div class="kafka-spring"></div>
-  <a class="kafka-logo" href="https://www.consdata.com/"> <img class="consdata-logo-image"
-                                                               src="assets/consdata-logo.png"/></a>
+  <a class="kafka-logo" href="https://www.consdata.com/">
+    <img class="consdata-logo-image" alt="consdata-logo-image" src="assets/consdata-logo.png"/>
+  </a>
   <a class="kafka-logo" href="https://github.com/Consdata/kouncil">
     <span>Kouncil&nbsp;&nbsp;</span>
     <span class="kouncil-version" *ngIf="backendVersion$ | async as backendVersion">{{backendVersion}}</span>
   </a>
-  <select class="server-select" [(ngModel)]="globals.selectedServer">
-    <option *ngFor="let s of globals.servers" [ngValue]="s">{{s.label}}</option>
+  <select class="server-select" [(ngModel)]="servers.selectedServer">
+    <option *ngFor="let s of servers.servers" [ngValue]="s">{{s.label}}</option>
   </select>
 </div>

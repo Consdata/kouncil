@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Server} from './navbar/navbar.component';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable()
-export class Globals {
+export class Servers {
   servers: Server[] = [];
   selectedServer: Server;
 
@@ -34,3 +33,10 @@ export class Globals {
   }
 
 }
+
+export class Server {
+  serverId: string;
+  label: string;
+}
+
+

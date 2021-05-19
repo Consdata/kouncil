@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ConsumerGroupService} from './consumer-group.service';
 import {Observable} from 'rxjs';
 import {ConsumerGroupResponse} from './consumer-group';
@@ -13,6 +13,7 @@ export class ConsumerGroupBackendService implements ConsumerGroupService {
   }
 
   getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
-    return this.http.get<ConsumerGroupResponse>(`/api/consumer-group/${groupId}?serverId=${serverId}`);
+    const params = new HttpParams().set('serverId', serverId);
+    return this.http.get<ConsumerGroupResponse>(`/api/consumer-group/${groupId}`, {params});
   }
 }

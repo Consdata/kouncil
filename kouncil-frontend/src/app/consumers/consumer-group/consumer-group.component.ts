@@ -6,7 +6,7 @@ import {ConsumerGroupOffset, ConsumerGroupResponse} from 'app/consumers/consumer
 import {ProgressBarService} from '../../util/progress-bar.service';
 import {ConsumerGroupService} from './consumer-group.service';
 import {first} from 'rxjs/operators';
-import {Globals} from '../../globals';
+import {Servers} from '../../servers.service';
 
 @Component({
   selector: 'kafka-consumer-group',
@@ -27,7 +27,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private progressBarService: ProgressBarService,
               private consumerGroupService: ConsumerGroupService,
-              private globals: Globals) {
+              private servers: Servers) {
   }
 
   ngOnInit() {
@@ -58,7 +58,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.consumerGroupService.getConsumerGroup(this.globals.getSelectedServerId(), this.groupId)
+    this.consumerGroupService.getConsumerGroup(this.servers.getSelectedServerId(), this.groupId)
       .pipe(first())
       .subscribe(data => {
         this.allAssignments = (<ConsumerGroupResponse>data).consumerGroupOffset;
