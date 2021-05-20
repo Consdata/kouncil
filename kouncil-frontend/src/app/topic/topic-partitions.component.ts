@@ -35,9 +35,9 @@ export class TopicPartitionsComponent {
     const value = partition.value;
     this.selectedPartition = value;
     if (value === this.ALL_PARTITIONS) {
-      this.topicService.selectAllPartitions(this.topicName);
+      this.topicService.selectAllPartitions(this.servers.getSelectedServerId(), this.topicName);
     } else {
-      this.topicService.selectPartition(parseInt(value, 10), this.topicName);
+      this.topicService.selectPartition(this.servers.getSelectedServerId(), parseInt(value, 10), this.topicName);
     }
   }
 

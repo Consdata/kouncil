@@ -19,10 +19,10 @@ export class TopicService {
   togglePartition(serverId: string, nr: any, topicName: string) {
   }
 
-  selectPartition(partition: number, topicName: string) {
+  selectPartition(serverId: string, partition: number, topicName: string) {
   }
 
-  selectAllPartitions(topicName: string) {
+  selectAllPartitions(serverId: string, topicName: string) {
   }
 
   previous() {
