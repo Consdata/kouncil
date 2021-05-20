@@ -1,12 +1,12 @@
 <div class="kafka-topics" *ngIf="filtered">
   <ng-template #noDataPlaceholder>
-    <app-no-data-placeholder></app-no-data-placeholder>
+    <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
   </ng-template>
   <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                  class="topics-table material"
                  [rows]="filtered"
-                 [rowHeight]="50"
-                 [headerHeight]="40"
+                 [rowHeight]="48"
+                 [headerHeight]="24"
                  [scrollbarH]="false"
                  [scrollbarV]="false"
                  [columnMode]="'force'"
@@ -14,26 +14,25 @@
                  [groupExpansionDefault]="true"
                  [limit]="4"
                  (sort)="customSort($event)"
+                 (activate)="navigateToTopic($event)"
                  #table>
 
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-      <ng-template let-group="group" ngx-datatable-group-header-template>
-        <div class="kafka-topics-group-header">{{group.value[0].group === 'FAVOURITES' ? 'FAVOURITES' : 'ALL TOPICS'}}</div>
+      <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template class="datatable-group-header-wrapper">
+        <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All topics'}}</div>
+        <span class="datatable-header-divider"></span>
+        <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
+          <span *ngIf="expanded">HIDE</span>
+          <span *ngIf="!expanded">SHOW</span>
+        </span>
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="group" name="group" [width]="45" [resizeable]="false" [canAutoResize]="false" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-      </ng-template>
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <i class="material-icons left kafka-topics-favourite" *ngIf="value === 'FAVOURITES'" (click)="onFavouriteClick(row)">star</i>
-        <i class="material-icons left kafka-topics-favourite" *ngIf="value !== 'FAVOURITES'" (click)="onFavouriteClick(row)">star_border</i>
-      </ng-template>
-    </ngx-datatable-column>
-
     <ngx-datatable-column prop="name" name="Name" [width]="500">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="kafka-topics-name" [routerLink]="['/topic/messages', value]">{{value}}</a>
+        <mat-icon class="ngx-star-favourite" *ngIf="row.group === 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
+        <mat-icon class="ngx-star-favourite gray" *ngIf="row.group !== 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
+        <span [routerLink]="['/topics/messages', value]">{{value}}</span>
       </ng-template>
     </ngx-datatable-column>
 
@@ -43,14 +42,11 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Actions" prop="name" [width]="280" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
+    <ngx-datatable-column cellClass="ngx-actions-column" name="" prop="name" [width]="280" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="kafka-primary-action kafka-topic-action btn btn-small"
-           [routerLink]="['/topic/messages', value]">BROWSE</a>
-        <a class="kafka-secondary-action btn btn-small" (click)="openSendPopup(value)">SEND</a>
+        <button class="ngx-action-button" (click)="openSendPopup(value)">Send</button>
       </ng-template>
     </ngx-datatable-column>
 
   </ngx-datatable>
-  <app-send-popup></app-send-popup>
 </div>

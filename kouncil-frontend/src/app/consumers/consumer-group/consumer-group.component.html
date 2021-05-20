@@ -1,11 +1,15 @@
 <div class="kafka-consumer-group">
-  <ngx-datatable *ngIf="filteredAssignments"
+  <ng-template #noDataPlaceholder>
+    <app-no-data-placeholder [objectTypeName]="'Consumer'"></app-no-data-placeholder>
+  </ng-template>
+  <app-breadcrumb [parentLink]="'/consumer-groups'" [name]="groupId" [parentName]="'Consumer Groups'"></app-breadcrumb>
+  <ngx-datatable *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder"
                  class="brokers-table material"
                  [rows]="filteredAssignments"
-                 [rowHeight]="40"
-                 [headerHeight]="40"
-                 [scrollbarH]="true"
-                 [scrollbarV]="true"
+                 [rowHeight]="48"
+                 [headerHeight]="48"
+                 [scrollbarH]="false"
+                 [scrollbarV]="false"
                  [columnMode]="'force'"
                  [loadingIndicator]="isLoading()"
                  #table>

@@ -6,6 +6,9 @@ import {ProgressBarService} from 'app/util/progress-bar.service';
 import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {ConfirmService} from '../../confirm/confirm.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Servers} from '../../servers.service';
 
 @Component({
@@ -18,6 +21,9 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
               private consumerGroupsService: ConsumerGroupsService,
+              private confirmService: ConfirmService,
+              private snackbar: MatSnackBar,
+              private router: Router,
               private servers: Servers) {
   }
 
@@ -93,15 +99,36 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   deleteConsumerGroup(value) {
-    this.progressBarService.setProgress(true);
-    this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
+    this.confirmService.openConfirmDialog('consumer group', value)
       .pipe(first())
-      .subscribe(data => {
-        this.loadConsumerGroups();
-      }, error => {
-        console.warn(error);
-        this.progressBarService.setProgress(false);
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.progressBarService.setProgress(true);
+          this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
+            .pipe(first())
+            .subscribe(data => {
+              this.loadConsumerGroups();
+              this.snackbar.open(`Consumer group ${value} deleted`, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success', 'snackbar']
+              });
+            }, error => {
+              console.warn(error);
+              this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error', 'snackbar']
+              });
+              this.progressBarService.setProgress(false);
+            });
+        }
       });
+  }
+
+  navigateToConsumerGroup(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
+      this.router.navigate(['/consumer-groups/', event.row.groupId]);
+    }
   }
 
   customSort(event) {

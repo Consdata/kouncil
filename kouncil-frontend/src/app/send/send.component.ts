@@ -1,9 +1,11 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Inject, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message} from 'app/topic/message';
 import {FormControl, Validators} from '@angular/forms';
 import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
+import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Servers} from '../servers.service';
 
 @Component({
@@ -13,15 +15,25 @@ import {Servers} from '../servers.service';
 })
 export class SendComponent implements OnChanges {
 
-  @Input('topicName') topicName: string;
-  @Input('key') key: string;
-  @Input('value') value: string;
-  @Output() onClose: EventEmitter<any> = new EventEmitter();
-  @ViewChild('heroForm') sendForm: any;
+  @ViewChild('sendForm') sendForm: any;
+
   message: Message = new Message('', '', null, null, null);
+
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
-  constructor(private http: HttpClient, private sendService: SendService, private servers: Servers) {
+  constructor(private http: HttpClient,
+              private sendService: SendService,
+              private dialog: MatDialog,
+              private snackbar: MatSnackBar,
+              private servers: Servers,
+              @Inject(MAT_DIALOG_DATA) public data: {
+                topicName: string,
+                key: string,
+                source: string
+              }) {
+    console.log(this.data);
+    this.message.key = this.data.key;
+    this.message.value = JSON.stringify(this.data.source, null, 2);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -34,16 +46,30 @@ export class SendComponent implements OnChanges {
   }
 
   onSubmit() {
-    this.sendService.send(this.servers.getSelectedServerId(), this.topicName, this.countControl.value, this.message)
+    this.sendService.send(this.servers.getSelectedServerId(), this.data.topicName, this.countControl.value, this.message)
       .pipe(first())
       .subscribe(data => {
-        this.onClose.emit(true);
+        this.dialog.closeAll();
         this.resetForm();
+        this.snackbar.open(`Successfully sent to ${this.data.topicName}`, '', {
+          duration: 3000,
+          panelClass: ['snackbar-success', 'snackbar']
+        });
       });
   }
 
+  increaseCount() {
+    this.countControl.setValue(this.countControl.value + 1);
+  }
+
+  decreaseCount() {
+    if (this.countControl.value > 1) {
+      this.countControl.setValue(this.countControl.value - 1);
+    }
+  }
+
   cancel() {
-    this.onClose.emit(false);
+    this.dialog.closeAll();
     this.resetForm();
   }
 

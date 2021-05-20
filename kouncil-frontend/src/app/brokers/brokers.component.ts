@@ -6,6 +6,8 @@ import {Subscription} from 'rxjs';
 import {ProgressBarService} from 'app/util/progress-bar.service';
 import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
+import {BrokerComponent} from '../broker/broker.component';
+import {DrawerService} from '../util/drawer.service';
 import {Servers} from '../servers.service';
 
 @Component({
@@ -18,6 +20,7 @@ export class BrokersComponent implements OnInit {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
+              private drawerService: DrawerService,
               private servers: Servers) {
   }
 
@@ -50,13 +53,18 @@ export class BrokersComponent implements OnInit {
     });
   }
 
-  toggleExpandRow(row) {
-    this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), row.id)
-      .pipe(first())
-      .subscribe(data => {
-        row.config = <BrokerConfig[]>data;
-        this.table.rowDetail.toggleExpandRow(row);
-      });
+  showBrokerDetails(event) {
+    if (event.type === 'click') {
+      this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), event.row.id)
+        .pipe(first())
+        .subscribe(data => {
+          const brokerConfig = <BrokerConfig[]>data;
+          this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
+            config: brokerConfig
+          });
+        });
+    }
+
 
   }
 }

@@ -6,7 +6,7 @@ import * as M from 'materialize-css';
   template: `
     <div #popup id="send-popup" class="modal">
       <div class="modal-content">
-        <app-send [topicName]="topicName" [key]="key" [value]="value" (onClose)="close($event)"></app-send>
+        <app-send ></app-send>
       </div>
     </div>`
 })

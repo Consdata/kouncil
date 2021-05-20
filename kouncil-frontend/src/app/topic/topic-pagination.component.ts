@@ -7,27 +7,28 @@ import {Servers} from '../servers.service';
   selector: 'topic-pagination',
   template: `
     <div class="kafka-topic-footer">
-      <div class="kafka-topic-footer-pager">
-        <div class="kafka-topic-footer-pager-item">
-          <datatable-pager
-            *ngIf="onePartitionSelected"
-            [pagerLeftArrowIcon]="'datatable-icon-left'"
-            [pagerRightArrowIcon]="'datatable-icon-right'"
-            [pagerPreviousIcon]="'datatable-icon-prev'"
-            [pagerNextIcon]="'datatable-icon-skip'"
-            [page]="paging.pageNumber"
-            [size]="paging.size"
-            [count]="paging.totalElements"
-            (change)="paginateMessages($event)">
-          </datatable-pager>
-        </div>
-        <div class="kafka-topic-footer-pager-item">
-          <span>Items per page:</span>
-          <select class="kafka-topic-footer-pager-select-limit" [(ngModel)]="paging.size"
-                  (change)="getMessages()">
-            <option *ngFor="let limit of pageLimits" [ngValue]="limit">{{limit}}</option>
-          </select>
-        </div>
+      <div class="kafka-topic-footer-pager-item">
+      </div>
+      <div class="kafka-topic-footer-pager-item pages">
+        <datatable-pager
+          *ngIf="onePartitionSelected"
+          [pagerLeftArrowIcon]="'datatable-icon-left'"
+          [pagerRightArrowIcon]="'datatable-icon-right'"
+          [pagerPreviousIcon]="'datatable-icon-prev'"
+          [pagerNextIcon]="'datatable-icon-skip'"
+          [page]="paging.pageNumber"
+          [size]="paging.size"
+          [count]="paging.totalElements"
+          (change)="paginateMessages($event)">
+        </datatable-pager>
+      </div>
+      <div class="kafka-topic-footer-pager-item limit">
+        <span class="limit-label">Items per page:</span>
+        <mat-form-field class="select-form-field">
+          <mat-select panelClass="select-limit-panel" class="select" [(value)]="paging.size" (selectionChange)="getMessages()">
+            <mat-option *ngFor="let limit of pageLimits" [value]="limit">{{limit}}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>`,
   styleUrls: ['./topic-pagination.component.scss']

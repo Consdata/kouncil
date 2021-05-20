@@ -29,6 +29,21 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatIconModule} from '@angular/material/icon';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { ConfirmComponent } from './confirm/confirm.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { BrokerComponent } from './broker/broker.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
+import { MessageViewComponent } from './topic/message/message-view.component';
 import {Servers} from './servers.service';
 
 @NgModule({
@@ -48,7 +63,11 @@ import {Servers} from './servers.service';
     TopicPartitionsComponent,
     NoDataPlaceholderComponent,
     SendPopupComponent,
-    TopicPaginationComponent
+    TopicPaginationComponent,
+    BreadcrumbComponent,
+    ConfirmComponent,
+    BrokerComponent,
+    MessageViewComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +77,18 @@ import {Servers} from './servers.service';
     NgxDatatableModule,
     ClipboardModule,
     NgxJsonViewerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatSelectModule
   ],
   providers: [
     Servers,

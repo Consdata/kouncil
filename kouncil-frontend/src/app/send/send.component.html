@@ -1,23 +1,37 @@
-<div class="kafka-send">
-  <form #heroForm="ngForm" (ngSubmit)="onSubmit()">
-
-    <div>
-      <label for="key">Key</label>
-      <input [(ngModel)]="message.key" type="text" id="key" name="key"/>
+<mat-dialog-content>
+  <form #sendForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="drawer-header">
+      <div class="drawer-title">Send event</div>
+      <div class="spacer"></div>
+      <mat-icon mat-dialog-close class="close">close</mat-icon>
     </div>
 
-    <div>
-      <label for="value">Value (available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->})</label>
-      <textarea autosize [(ngModel)]="message.value" class="materialize-textarea kafka-send-value" id="value" name="value"></textarea>
+    <div class="drawer-subtitle">Send event to {{data.topicName}}</div>
+
+    <div class="drawer-section-title">Key</div>
+    <input [(ngModel)]="message.key" matInput type="text" name="key"/>
+
+    <div class="drawer-section-title">Value</div>
+    <div class="drawer-section-subtitle">Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}
+      <!----> }
+    </div>
+    <textarea rows="10" [(ngModel)]="message.value" name="value"></textarea>
+
+    <div class="drawer-section-title">Count</div>
+    <div class="drawer-section-subtitle">How many times you want to send this event?</div>
+    <div class="count">
+      <input matInput type="number" min="1" [formControl]="countControl" name="count"/>
+      <button type="button" mat-button disableRipple (click)="decreaseCount()">-</button>
+      <button type="button" mat-button disableRipple (click)="increaseCount()">+</button>
     </div>
 
-    <div>
-      <label for="count">Count</label>
-      <input type="number" id="count" name="count" min="1" [formControl]="countControl"/>
+    <span class="spacer"></span>
+
+    <div class="actions">
+      <button type="button" mat-dialog-close mat-button disableRipple class="cancel">Cancel</button>
+      <span class="spacer"></span>
+      <button mat-button disableRipple class="action" type="submit">Send event</button>
     </div>
-
-    <button type="submit" [disabled]="countControl.invalid" class="kafka-primary-action btn btn-small">Submit</button>
-    <button type="button" class="kafka-secondary-action btn btn-small" (click)="cancel()">Cancel</button>
-
   </form>
-</div>
+
+</mat-dialog-content>

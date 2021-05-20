@@ -4,10 +4,12 @@ import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
 import {TopicMetadata} from 'app/topics/topic-metadata';
 import {ProgressBarService} from '../util/progress-bar.service';
-import {SendPopupComponent} from '../send/send-popup.component';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {SendComponent} from '../send/send.component';
+import {DrawerService} from '../util/drawer.service';
 import {Servers} from '../servers.service';
 
 @Component({
@@ -20,6 +22,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
               private topicsService: TopicsService,
+              private router: Router,
+              private drawerService: DrawerService,
               public servers: Servers) {
   }
 
@@ -27,7 +31,6 @@ export class TopicsComponent implements OnInit, OnDestroy {
   grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
-  @ViewChild(SendPopupComponent) popup;
 
   private subscription: Subscription;
 
@@ -90,8 +93,17 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.filter(this.searchService.getCurrentPhrase());
   }
 
-  openSendPopup(topicName) {
-    this.popup.openPopup(topicName);
+  navigateToTopic(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
+      this.router.navigate(['/topics/messages', event.row.name]);
+    }
+  }
+
+  openSendPopup(name: string) {
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: name
+    });
   }
 
   customSort(event) {
