@@ -97,8 +97,12 @@ mat-divider {
 }
 
 .server-select {
-  width: 200px;
-  height: 30px;
-  font-size: 12px;
-  margin-top: 10px;
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+  padding: 11px 8px 11px 8px;
+  font-size: 14px;
+  line-height: $default-line-height;
+  min-width: 100px;
+  margin-left: 8px;
 }
