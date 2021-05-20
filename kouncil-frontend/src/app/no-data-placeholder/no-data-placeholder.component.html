@@ -1,5 +1,5 @@
 <div *ngIf="isNotLoading()" class="no-data-wrapper">
   <mat-icon>search_off</mat-icon>
   <div class="no-data-label">No data to display</div>
-  <div class="no-data-comment">{{objectTypeName}} "{{phrase$ | async}}" not found</div>
+  <div class="no-data-comment" *ngIf="currentPhrase">{{objectTypeName}} "{{currentPhrase}}" not found</div>
 </div>
