@@ -15,7 +15,7 @@ export class TopicsService {
   constructor() {
   }
 
-  getTopics(): Observable<Topics> {
+  getTopics(serverId: string): Observable<Topics> {
     return null;
   }
 }

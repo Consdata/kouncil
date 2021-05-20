@@ -13,17 +13,43 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 @Data
 public class KouncilConfiguration {
 
+    protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
     @Value("${bootstrapServers}")
-    private String bootstrapServers;
+    private List<String> initialBootstrapServers;
+
+    private Map<String, String> servers;
+
+    public String getServerById(String serverId) {
+        String server = servers.get(serverId);
+        if (Objects.isNull(server)) {
+            throw new KouncilRuntimeException("Unknown serverId");
+        } else {
+            return server;
+        }
+    }
+
+    public void addServer(String boostrapAddress){
+        servers.put(boostrapAddress.replaceAll(SPECIAL_CHARS, "_"), boostrapAddress);
+    }
+
+    public void removeServer(String serverId){
+        servers.remove(serverId);
+    }
 
     @PostConstruct
-    public void log() {
+    public void initialize() {
+        servers = initialBootstrapServers.stream()
+                .collect(Collectors.toMap(s -> s.replaceAll(SPECIAL_CHARS, "_"), s -> s));
         log.info(toString());
     }
 

@@ -9,6 +9,7 @@ import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {ConfirmService} from '../../confirm/confirm.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Servers} from '../../servers.service';
 
 @Component({
   selector: 'kafka-consumer-groups',
@@ -22,7 +23,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private consumerGroupsService: ConsumerGroupsService,
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
-              private router: Router) {
+              private router: Router,
+              private servers: Servers) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
@@ -43,7 +45,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   private loadConsumerGroups() {
-    this.consumerGroupsService.getConsumerGroups()
+    this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
@@ -102,7 +104,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       .subscribe((confirmed) => {
         if (confirmed) {
           this.progressBarService.setProgress(true);
-          this.consumerGroupsService.deleteConsumerGroup(value)
+          this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
             .pipe(first())
             .subscribe(data => {
               this.loadConsumerGroups();

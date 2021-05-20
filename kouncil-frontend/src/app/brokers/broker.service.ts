@@ -9,11 +9,11 @@ import {Backend} from '../app.backend';
 
 export class BrokerService {
 
-  getBrokers(): Observable<Brokers> {
+  getBrokers(serverId: string): Observable<Brokers> {
     return undefined;
   }
 
-  getBrokerConfig(id: string): Observable<BrokerConfig[]> {
+  getBrokerConfig(serverId: string, id: string): Observable<BrokerConfig[]> {
     return undefined;
   }
 

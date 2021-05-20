@@ -15,11 +15,11 @@ export class ConsumerGroupsService {
   constructor() {
   }
 
-  getConsumerGroups(): Observable<ConsumerGroupsResponse> {
+  getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse> {
     return null;
   }
 
-  deleteConsumerGroup(value: string): Observable<Object> {
+  deleteConsumerGroup(serverId: string, value: string): Observable<Object> {
     return null;
   }
 }

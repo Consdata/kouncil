@@ -3,6 +3,7 @@ import {SearchService} from 'app/search.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'kafka-navbar',
@@ -16,7 +17,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   phrase: string;
   backendVersion$: Observable<string>;
 
-  constructor(private searchService: SearchService, private router: Router, private http: HttpClient) {
+  constructor(private searchService: SearchService, private router: Router, private http: HttpClient, public servers: Servers) {
     router.events.subscribe((val) => {
       this.searchInputElementRef.nativeElement.value = '';
       this.searchInputElementRef.nativeElement.focus();

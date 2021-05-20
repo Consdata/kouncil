@@ -1,13 +1,19 @@
 package com.consdata.kouncil.broker;
 
+import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import org.apache.kafka.clients.admin.*;
+import lombok.AllArgsConstructor;
+import org.apache.kafka.clients.admin.Config;
+import org.apache.kafka.clients.admin.ConfigEntry;
+import org.apache.kafka.clients.admin.DescribeClusterResult;
+import org.apache.kafka.clients.admin.DescribeConfigsResult;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.Node;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -17,19 +23,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
 public class BrokersController {
 
-    private final AdminClient adminClient;
-
-    public BrokersController(AdminClient adminClient) {
-        this.adminClient = adminClient;
-    }
+    private final KafkaConnectionService kafkaConnectionService;
 
     @GetMapping("/api/brokers")
     @EntryExitLogger
-    public BrokersDto getBrokers() {
+    public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
         try {
-            DescribeClusterResult describeClusterResult = adminClient.describeCluster();
+            DescribeClusterResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeCluster();
             Collection<Node> nodes = describeClusterResult.nodes().get();
             List<Broker> brokers = new ArrayList<>();
             nodes.forEach(node -> brokers.add(Broker.builder()
@@ -48,11 +51,11 @@ public class BrokersController {
 
     @GetMapping("/api/configs/{name}")
     @EntryExitLogger
-    public Collection<BrokerConfig> getConfigs(@PathVariable("name") String name) {
+    public Collection<BrokerConfig> getConfigs(@PathVariable("name") String name, @RequestParam("serverId") String serverId) {
         try {
             ConfigResource o = new ConfigResource(ConfigResource.Type.BROKER, name);
             Collection<ConfigResource> resources = Collections.singletonList(o);
-            DescribeConfigsResult describeClusterResult = adminClient.describeConfigs(resources);
+            DescribeConfigsResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeConfigs(resources);
             KafkaFuture<Config> nodes = describeClusterResult.values().get(o);
             Collection<ConfigEntry> entries = nodes.get().entries();
             List<BrokerConfig> configs = new ArrayList<>();

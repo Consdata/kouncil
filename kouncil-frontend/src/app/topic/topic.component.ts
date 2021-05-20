@@ -13,6 +13,7 @@ import {Page} from './page';
 import {SendComponent} from '../send/send.component';
 import {MessageViewComponent} from './message/message-view.component';
 import {DrawerService} from '../util/drawer.service';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'app-topic',
@@ -28,7 +29,8 @@ export class TopicComponent implements OnInit, OnDestroy {
               private titleService: Title,
               private progressBarService: ProgressBarService,
               private topicService: TopicService,
-              private drawerService: DrawerService) {
+              private drawerService: DrawerService,
+              private servers: Servers) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
@@ -66,7 +68,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
-      this.topicService.getMessages(this.topicName);
+      this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
       this.titleService.setTitle(this.topicName + ' Kouncil');
       this.paused = true;
     });
@@ -88,7 +90,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
-    this.topicService.getMessages(this.topicName);
+    this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 

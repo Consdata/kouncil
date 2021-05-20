@@ -95,3 +95,14 @@ mat-divider {
   font-size: 24px;
   line-height: $default-line-height;
 }
+
+.server-select {
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+  padding: 11px 8px 11px 8px;
+  font-size: 14px;
+  line-height: $default-line-height;
+  min-width: 100px;
+  margin-left: 8px;
+}

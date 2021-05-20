@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {Observable} from 'rxjs';
 import {ConsumerGroupsResponse} from './consumer-groups';
@@ -12,11 +12,13 @@ export class ConsumerGroupsBackendService implements ConsumerGroupsService {
   constructor(private http: HttpClient) {
   }
 
-  deleteConsumerGroup(value: string): Observable<Object> {
-    return this.http.delete('/api/consumer-group/' + value);
+  deleteConsumerGroup(serverId: string, value: string): Observable<Object> {
+    const params = new HttpParams().set('serverId', serverId);
+    return this.http.delete(`/api/consumer-group/${value}`, {params});
   }
 
-  getConsumerGroups(): Observable<ConsumerGroupsResponse> {
-    return this.http.get<ConsumerGroupsResponse>('/api/consumer-groups');
+  getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse> {
+    const params = new HttpParams().set('serverId', serverId);
+    return this.http.get<ConsumerGroupsResponse>(`/api/consumer-groups`, {params});
   }
 }

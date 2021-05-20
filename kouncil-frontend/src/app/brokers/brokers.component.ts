@@ -8,6 +8,7 @@ import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
 import {BrokerComponent} from '../broker/broker.component';
 import {DrawerService} from '../util/drawer.service';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'kafka-brokers',
@@ -19,7 +20,8 @@ export class BrokersComponent implements OnInit {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
-              private drawerService: DrawerService) {
+              private drawerService: DrawerService,
+              private servers: Servers) {
   }
 
   @ViewChild('table') table: any;
@@ -30,7 +32,7 @@ export class BrokersComponent implements OnInit {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.brokerService.getBrokers()
+    this.brokerService.getBrokers(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.allBrokers = (<Brokers>data).brokers;
@@ -53,7 +55,7 @@ export class BrokersComponent implements OnInit {
 
   showBrokerDetails(event) {
     if (event.type === 'click') {
-      this.brokerService.getBrokerConfig(event.row.id)
+      this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())
         .subscribe(data => {
           const brokerConfig = <BrokerConfig[]>data;

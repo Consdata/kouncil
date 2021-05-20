@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 import {AppComponent} from './app.component';
@@ -44,15 +44,16 @@ import { BrokerComponent } from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import { MessageViewComponent } from './topic/message/message-view.component';
+import {Servers} from './servers.service';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavbarComponent,
     TopicComponent,
     TopicsComponent,
     ConsumerGroupsComponent,
     SendComponent,
-    NavbarComponent,
     ToolbarComponent,
     BrokersComponent,
     AutosizeDirective,
@@ -90,6 +91,8 @@ import { MessageViewComponent } from './topic/message/message-view.component';
     MatSelectModule
   ],
   providers: [
+    Servers,
+    { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [Servers], multi: true },
     SearchService,
     topicServiceProvider,
     {
@@ -117,4 +120,8 @@ import { MessageViewComponent } from './topic/message/message-view.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+}
+
+export function configProviderFactory(provider: Servers) {
+  return () => provider.load();
 }

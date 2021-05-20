@@ -16,5 +16,7 @@
   <div class="search">
     <input accesskey="/" class="search-input" type="text" placeholder="Search" (input)="onPhraseChange($event.target.value)" #searchInput>
   </div>
-
+  <select class="server-select" [(ngModel)]="servers.selectedServer">
+    <option *ngFor="let s of servers.servers" [ngValue]="s">{{s.label}}</option>
+  </select>
 </mat-toolbar>

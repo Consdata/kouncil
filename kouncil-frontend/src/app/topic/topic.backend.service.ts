@@ -3,7 +3,7 @@ import {TopicService} from './topic.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {TopicMessages} from './topic';
 import {Page} from './page';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProgressBarService} from '../util/progress-bar.service';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class TopicBackendService implements TopicService {
     this.initPaging();
   }
 
-  getMessages(topicName: string) {
+  getMessages(serverId: string, topicName: string) {
     let url;
     if (typeof this.selectedPartitions !== 'undefined') {
       let partitionsParam = '';
@@ -44,8 +44,13 @@ export class TopicBackendService implements TopicService {
     } else {
       url = `/api/topic/messages/${topicName}/all/latest`;
     }
-    url += this.addPagingToUrl();
-    this.http.get(url).subscribe((data: TopicMessages) => {
+    const paging = this.paginationChanged$.getValue();
+    const params = new HttpParams()
+      .set('serverId', serverId)
+      .set('offset', String((paging.pageNumber - 1) * paging.size))
+      .set('limit', String(paging.size));
+
+    this.http.get(url, {params}).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
     });
     this.onePartitionSelected();
@@ -69,29 +74,29 @@ export class TopicBackendService implements TopicService {
     }
   }
 
-  selectPartition(partition: number, topicName: string): void {
+  selectPartition(serverId: string, partition: number, topicName: string): void {
     const index = this.partitions.findIndex(e => e === partition);
     for (let i = 0; i < this.selectedPartitions.length; i++) {
       this.selectedPartitions[i] = -1;
     }
     this.selectedPartitions[index] = 1;
     this.progressBarService.setProgress(true);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
-  selectAllPartitions(topicName: string) {
+  selectAllPartitions(serverId: string, topicName: string) {
     for (let i = 0; i < this.selectedPartitions.length; i++) {
       this.selectedPartitions[i] = 1;
     }
     this.progressBarService.setProgress(true);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
-  togglePartition(nr: any, topicName: string) {
+  togglePartition(serverId: string, nr: any, topicName: string) {
     const index = this.partitions.findIndex(e => e === nr);
     this.selectedPartitions[index] = -1 * this.selectedPartitions[index];
     this.progressBarService.setProgress(true);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
   previous() {
@@ -113,11 +118,6 @@ export class TopicBackendService implements TopicService {
       this.visiblePartitions = subPartitions;
       this.visiblePartitionsChanged$.next(this.visiblePartitions);
     }
-  }
-
-  private addPagingToUrl(): string {
-    const paging = this.paginationChanged$.getValue();
-    return `?offset=${(paging.pageNumber - 1) * paging.size}&limit=${paging.size}`;
   }
 
   private getFirstElementIndex(): number {
@@ -164,11 +164,11 @@ export class TopicBackendService implements TopicService {
     return this.onePartitionSelected$.asObservable();
   }
 
-  paginateMessages(event: any, topicName: string) {
+  paginateMessages(serverId: string, event: any, topicName: string) {
     const paging = this.paginationChanged$.getValue();
     paging.pageNumber = event.page;
     this.paginationChanged$ = new BehaviorSubject<Page>(paging);
-    this.getMessages(topicName);
+    this.getMessages(serverId, topicName);
   }
 
   initPaging(): void {

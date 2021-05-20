@@ -10,6 +10,7 @@ import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'app-topics',
@@ -22,7 +23,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private arraySortPipe: ArraySortPipe,
               private topicsService: TopicsService,
               private router: Router,
-              private drawerService: DrawerService) {
+              private drawerService: DrawerService,
+              public servers: Servers) {
   }
 
   topics: TopicMetadata[] = [];
@@ -34,7 +36,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.topicsService.getTopics()
+    this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.topics = (<Topics>data).topics;

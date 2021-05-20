@@ -6,6 +6,7 @@ import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'app-send',
@@ -24,6 +25,7 @@ export class SendComponent implements OnChanges {
               private sendService: SendService,
               private dialog: MatDialog,
               private snackbar: MatSnackBar,
+              private servers: Servers,
               @Inject(MAT_DIALOG_DATA) public data: {
                 topicName: string,
                 key: string,
@@ -44,7 +46,7 @@ export class SendComponent implements OnChanges {
   }
 
   onSubmit() {
-    this.sendService.send(this.data.topicName, this.countControl.value, this.message)
+    this.sendService.send(this.servers.getSelectedServerId(), this.data.topicName, this.countControl.value, this.message)
       .pipe(first())
       .subscribe(data => {
         this.dialog.closeAll();

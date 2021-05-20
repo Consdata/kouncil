@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TopicService} from './topic.service';
 import {MatSelectChange} from '@angular/material/select';
+import {Servers} from '../servers.service';
 
 @Component({
   selector: 'topic-partitions',
@@ -24,7 +25,7 @@ export class TopicPartitionsComponent {
 
   partitions = [];
 
-  constructor(private topicService: TopicService) {
+  constructor(private topicService: TopicService, private servers: Servers) {
     this.topicService.getSelectedPartitionsObservable().subscribe(value => {
       this.partitions = Array.from(Array(value.length).keys());
     });
@@ -34,9 +35,9 @@ export class TopicPartitionsComponent {
     const value = partition.value;
     this.selectedPartition = value;
     if (value === this.ALL_PARTITIONS) {
-      this.topicService.selectAllPartitions(this.topicName);
+      this.topicService.selectAllPartitions(this.servers.getSelectedServerId(), this.topicName);
     } else {
-      this.topicService.selectPartition(parseInt(value, 10), this.topicName);
+      this.topicService.selectPartition(this.servers.getSelectedServerId(), parseInt(value, 10), this.topicName);
     }
   }
 
