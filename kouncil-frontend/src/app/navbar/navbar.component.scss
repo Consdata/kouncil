@@ -96,13 +96,26 @@ mat-divider {
   line-height: $default-line-height;
 }
 
-.server-select {
-  background: $main-0;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  padding: 11px 8px 11px 8px;
-  font-size: 14px;
+.servers-form-field {
+  margin-left: 16px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.servers {
+  ::ng-deep .mat-select-value-text {
+    padding-left: 32px;
+  }
+}
+
+.servers::before {
+  content: '\e1db';
+  position: absolute;
+  left: 8px;
+  top: 18px;
+  color: $main-50;
+  padding: 0 6px;
+  font-size: 24px;
   line-height: $default-line-height;
-  min-width: 100px;
-  margin-left: 8px;
+  font-family: 'Material Icons';
 }

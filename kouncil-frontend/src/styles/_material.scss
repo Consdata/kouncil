@@ -181,11 +181,11 @@ snack-bar-container.snackbar {
 .mat-select-panel {
   // angular material styles select panel through 'style' attribute, hence the 'importants'
   min-width: 100% !important;
-  transform: translate(0px, 40px) !important;
+  transform: translate(0px, 44px) !important;
 }
 
 .select-limit-panel {
-  transform: translate(0px, -40px) !important;
+  transform: translate(0px, -44px) !important;
 }
 
 .mat-select-panel .mat-active.mat-option.mat-selected:not(.mat-option-multiple) {
@@ -234,5 +234,35 @@ snack-bar-container.snackbar {
 
   &:hover {
     border: 1px solid $main-40;
+  }
+
+  &[aria-expanded=true] {
+    outline: none;
+    box-shadow: 0 0 3px 1px $blue-60;
+    transition: all $default-transition-time;
+  }
+}
+
+.servers-list {
+  .mat-option-text {
+    padding-left: 30px;
+  }
+
+  .mat-option-text::before {
+    content: '\e876';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    color: $main-50;
+    padding: 0 6px;
+    font-size: 24px;
+    line-height: $default-line-height;
+    font-family: 'Material Icons';
+  }
+
+  .mat-active {
+    .mat-option-text::before {
+      color: $blue-50;
+    }
   }
 }

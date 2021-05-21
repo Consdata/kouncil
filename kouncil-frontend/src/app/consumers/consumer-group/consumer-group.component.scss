@@ -1,7 +1,7 @@
 @import 'palette';
 
 .kafka-consumer-group {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100% - 22px);
   padding-top: 22px;
 
