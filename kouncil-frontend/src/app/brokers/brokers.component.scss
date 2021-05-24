@@ -2,6 +2,9 @@
 
 .kafka-brokers {
 
+  height: 100%;
+  overflow-y: auto;
+
   .brokers-table {
     width: 100%;
   }
