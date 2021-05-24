@@ -24,6 +24,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public serverSelectionChanged() {
+    this.router.navigate([this.router.url]);
+  }
+
   public ngAfterViewInit(): void {
     this.searchInputElementRef.nativeElement.focus();
   }

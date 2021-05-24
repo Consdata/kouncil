@@ -1,10 +1,32 @@
-import { NgModule } from '@angular/core';
-import { TopicComponent } from '../topic/topic.component';
-import { RouterModule, Routes } from '@angular/router';
-import { TopicsComponent } from 'app/topics/topics.component';
-import { BrokersComponent } from 'app/brokers/brokers.component';
-import { ConsumerGroupsComponent } from 'app/consumers/consumer-groups/consumer-groups.component';
-import { ConsumerGroupComponent } from 'app/consumers/consumer-group/consumer-group.component';
+import {Injectable, NgModule} from '@angular/core';
+import {TopicComponent} from '../topic/topic.component';
+import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes} from '@angular/router';
+import {TopicsComponent} from 'app/topics/topics.component';
+import {BrokersComponent} from 'app/brokers/brokers.component';
+import {ConsumerGroupsComponent} from 'app/consumers/consumer-groups/consumer-groups.component';
+import {ConsumerGroupComponent} from 'app/consumers/consumer-group/consumer-group.component';
+
+@Injectable()
+export class ReloadingRouterStrategy extends RouteReuseStrategy {
+  shouldDetach(route: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+
+  store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
+  }
+
+  shouldAttach(route: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+
+  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+    return null;
+  }
+
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+}
 
 const routes: Routes = [
   {
@@ -36,12 +58,16 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })
+    RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy', onSameUrlNavigation: 'reload' })
   ],
   exports: [
     RouterModule
   ],
-  declarations: []
+  declarations: [],
+  providers: [{
+    provide: RouteReuseStrategy,
+    useClass: ReloadingRouterStrategy
+  }]
 })
 export class RoutingModule {
 }
