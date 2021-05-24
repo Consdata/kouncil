@@ -46,7 +46,7 @@ docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:8001" con
 
 # Release
 
-To release, just push to release branch:
+To release just push to release branch:
 ```bash
 git push origin master:release
 ```
