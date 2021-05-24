@@ -17,7 +17,11 @@
     <input accesskey="/" class="search-input" type="text" placeholder="Search" (input)="onPhraseChange($event.target.value)" #searchInput>
   </div>
   <mat-form-field class="servers-form-field">
-    <mat-select panelClass="servers-list" class="select servers" [(value)]="servers.selectedServer.serverId">
+    <mat-select
+      panelClass="servers-list"
+      class="select servers"
+      [(value)]="servers.selectedServerId"
+      (selectionChange)="serverSelectionChanged()">
       <mat-option *ngFor="let s of servers.servers" value="{{s.serverId}}">{{s.label}}</mat-option>
     </mat-select>
   </mat-form-field>

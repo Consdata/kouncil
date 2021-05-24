@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 @Injectable()
 export class Servers {
   servers: Server[] = [];
-  selectedServer: Server;
+  selectedServerId: string;
 
   constructor(private http: HttpClient) {
   }
@@ -20,7 +20,7 @@ export class Servers {
               server.serverId = key;
               this.servers.push(server);
             }
-            this.selectedServer = this.servers[0];
+            this.selectedServerId = this.servers[0].serverId;
           }
           resolve(true);
         }
@@ -29,7 +29,7 @@ export class Servers {
   }
 
   getSelectedServerId() {
-    return this.selectedServer.serverId;
+    return this.selectedServerId;
   }
 
 }
