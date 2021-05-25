@@ -3,7 +3,7 @@ import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 import {AppComponent} from './app.component';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -38,13 +38,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import { ConfirmComponent } from './confirm/confirm.component';
+import {ConfirmComponent} from './confirm/confirm.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { BrokerComponent } from './broker/broker.component';
+import {BrokerComponent} from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
-import { MessageViewComponent } from './topic/message/message-view.component';
+import {MessageViewComponent} from './topic/message/message-view.component';
 import {Servers} from './servers.service';
+import {HttpClientInterceptor} from './util/http-client.interceptor';
 
 @NgModule({
   declarations: [
@@ -91,8 +92,18 @@ import {Servers} from './servers.service';
     MatSelectModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpClientInterceptor,
+      multi: true
+    },
     Servers,
-    { provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [Servers], multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: configProviderFactory,
+      deps: [Servers],
+      multi: true
+    },
     SearchService,
     topicServiceProvider,
     {
