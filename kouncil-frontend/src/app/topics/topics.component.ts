@@ -62,13 +62,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   private applyFavourites() {
-    const favouritesStr = localStorage.getItem('kouncil-topics-favourites');
-    let favourites = [];
-    if (favouritesStr) {
-      favourites = favouritesStr.split(',');
-    }
+    const favourites = this.parseFavourites();
     this.topics.forEach(topic => {
-      topic.group = favourites.indexOf(topic.name) > -1 ? TopicMetadata.GROUP_FAVOURITES : TopicMetadata.GROUP_ALL;
+      topic.group = favourites.indexOf(this.favouriteKey(topic.name)) > -1 ? TopicMetadata.GROUP_FAVOURITES : TopicMetadata.GROUP_ALL;
     });
     this.topics.sort((a, b) => {
       if (a.group === b.group) {
@@ -82,15 +78,28 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   onFavouriteClick(row) {
+    const favourites = this.parseFavourites();
     if (row.group === TopicMetadata.GROUP_FAVOURITES) {
-      row.group = TopicMetadata.GROUP_ALL;
+      favourites.splice(favourites.indexOf(this.favouriteKey(row.name)), 1);
     } else {
-      row.group = TopicMetadata.GROUP_FAVOURITES;
+      favourites.push(this.favouriteKey(row.name));
     }
-    const favourites = this.topics.filter(topic => topic.group === TopicMetadata.GROUP_FAVOURITES).map(topic => topic.name);
     localStorage.setItem('kouncil-topics-favourites', favourites.join());
     this.applyFavourites();
     this.filter(this.searchService.getCurrentPhrase());
+  }
+
+  private parseFavourites(): string[] {
+    const favouritesStr = localStorage.getItem('kouncil-topics-favourites');
+    let favourites = [];
+    if (favouritesStr) {
+      favourites = favouritesStr.split(',');
+    }
+    return favourites;
+  }
+
+  private favouriteKey(topicName: string): string {
+    return this.servers.getSelectedServerId() + ';' + topicName;
   }
 
   navigateToTopic(event): void {
