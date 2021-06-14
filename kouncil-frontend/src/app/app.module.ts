@@ -45,6 +45,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import { MessageViewComponent } from './topic/message/message-view.component';
 import {Servers} from './servers.service';
+import {FileSizePipe} from './brokers/filze-size.pipe';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import {Servers} from './servers.service';
     BreadcrumbComponent,
     ConfirmComponent,
     BrokerComponent,
-    MessageViewComponent
+    MessageViewComponent,
+    FileSizePipe
   ],
   imports: [
     BrowserModule,

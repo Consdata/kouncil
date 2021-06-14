@@ -4,6 +4,12 @@ export class Broker {
   port: number;
   rack: string;
   config: BrokerConfig[];
+  jmxStats: boolean;
+  system?: string;
+  availableProcessors?: number;
+  systemLoadAverage?: number;
+  freeMem?: number;
+  totalMem?: number;
 }
 
 export class BrokerConfig {
