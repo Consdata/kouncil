@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -31,8 +32,8 @@ public class KouncilConfiguration {
 
     private static final String HOST_PORT_SEPARATOR = ":";
 
-    @Value("${bootstrapServers}")
-    private List<String> initialBootstrapServers;
+    @Value("${bootstrapServers:}")
+    private List<String> initialBootstrapServers = new ArrayList<>();
 
     private List<ClusterConfig> clusters;
 
@@ -98,7 +99,7 @@ public class KouncilConfiguration {
     }
 
     private void initializeSimpleConfig() {
-        log.info("Using simple Kouncil configuration");
+        log.info("Using simple Kouncil configuration, {}", initialBootstrapServers);
         clusterConfig = new HashMap<>();
         for (String initialBootstrapServer : initialBootstrapServers) {
             String clusterId = sanitizeClusterId(initialBootstrapServer);
@@ -117,7 +118,7 @@ public class KouncilConfiguration {
                         .build();
                 this.clusterConfig.put(clusterId, simpleClusterConfig);
             } else {
-                // TODO błąd
+                throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
             }
         }
     }
@@ -129,18 +130,32 @@ public class KouncilConfiguration {
                         cluster -> sanitizeClusterId(cluster.getName()),
                         cluster -> cluster
                 ));
+
+        log.info("Populating initial bootstrap servers");
         clusterConfig
                 .values()
                 .stream()
-                .filter(ClusterConfig::hasJmxConfig)
-                .forEach(cluster -> {
-                    log.info("Propagating JMX config from cluster {} to brokers", cluster.getName());
-                    cluster.getBrokers().forEach(broker -> {
-                        broker.setJmxPort(cluster.getJmxPort());
-                        broker.setJmxUser(cluster.getJmxUser());
-                        broker.setJmxPassword(cluster.getJmxPassword());
-                    });
-                });
+                .map(ClusterConfig::getBrokers)
+                .filter(brokers -> !brokers.isEmpty())
+                .map(brokers -> brokers.get(0))
+                .forEach(broker -> initialBootstrapServers.add(format("%s:%s", broker.getHost(), broker.getPort())));
+        log.info("Bootstrap servers populated {}", initialBootstrapServers);
+
+        log.info("Propagating jmx config values from clusters to brokers");
+        clusterConfig.values().forEach(cluster -> {
+            if (cluster.getJmxPort() != null) {
+                log.info("Propagating JMX port {} from cluster {} to brokers", cluster.getJmxPort(), cluster.getName());
+                cluster.getBrokers().forEach(broker -> broker.setJmxPort(cluster.getJmxPort()));
+            }
+            if (cluster.getJmxUser() != null) {
+                log.info("Propagating JMX user {} from cluster {} to brokers", cluster.getJmxUser(), cluster.getName());
+                cluster.getBrokers().forEach(broker -> broker.setJmxUser(cluster.getJmxUser()));
+            }
+            if (cluster.getJmxPassword() != null) {
+                log.info("Propagating JMX password from cluster {} to brokers", cluster.getName());
+                cluster.getBrokers().forEach(broker -> broker.setJmxPassword(cluster.getJmxPassword()));
+            }
+        });
     }
 
     private String sanitizeClusterId(String serverId) {

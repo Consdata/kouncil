@@ -67,7 +67,6 @@ public class BrokersController {
             if (brokerConfig.isPresent() && brokerConfig.get().hasJmxConfig()) {
                 try {
                     SystemConfiguration systemMetrics = brokerJXMClient.getSystemMetrics(brokerConfig.get());
-                    kafkaBroker.setJmxStats(true);
                     kafkaBroker.setSystem(String.format("%s (%s, %s)",
                             systemMetrics.getName(),
                             systemMetrics.getVersion(),
@@ -76,6 +75,7 @@ public class BrokersController {
                     kafkaBroker.setFreeMem(systemMetrics.getFreePhysicalMemorySize());
                     kafkaBroker.setTotalMem(systemMetrics.getTotalPhysicalMemorySize());
                     kafkaBroker.setSystemLoadAverage(systemMetrics.getSystemLoadAverage());
+                    kafkaBroker.setJmxStats(true);
                 } catch (IOException | MalformedObjectNameException e) {
                     log.warn("Could not obtain JMX Metrics from broker {}", brokerConfig, e);
                 }

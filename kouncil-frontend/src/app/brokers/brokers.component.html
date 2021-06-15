@@ -19,7 +19,9 @@
     <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
     <ngx-datatable-column prop="system" name="System" *ngIf="showJmxStats"></ngx-datatable-column>
     <ngx-datatable-column prop="availableProcessors" name="CPUs" *ngIf="showJmxStats"></ngx-datatable-column>
-    <ngx-datatable-column prop="systemLoadAverage" name="Load Average" *ngIf="showJmxStats"></ngx-datatable-column>
+    <ngx-datatable-column prop="systemLoadAverage" name="Load Average" *ngIf="showJmxStats">
+      <ng-template let-value="value" ngx-datatable-cell-template>{{value.toFixed(2)}}</ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column prop="freeMem" name="Free Mem" *ngIf="showJmxStats">
       <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
     </ngx-datatable-column>

@@ -30,4 +30,8 @@ public class BrokerConfig {
     public boolean hasJmxConfig() {
         return jmxPort != null;
     }
+
+    public boolean hasJmxCredentials() {
+        return jmxUser != null && jmxPassword != null;
+    }
 }
