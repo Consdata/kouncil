@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 import {Servers} from '../servers.service';
 
 @Component({
-  selector: 'kafka-navbar',
+  selector: 'app-kafka-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   public serverSelectionChanged() {
+    localStorage.setItem('lastSelectedServer', this.servers.selectedServerId);
     this.router.navigate([this.router.url]);
   }
 

@@ -1,5 +1,5 @@
 <mat-toolbar>
-  <img src="assets/kouncil-logo.png" class="kouncil-logo" />
+  <img src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo" *ngIf="backendVersion$ | async as backendVersion" matTooltip="{{backendVersion}}"/>
   <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/topics']">Topics</button>
   <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/brokers']">Brokers</button>
   <button class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumer Groups</button>
