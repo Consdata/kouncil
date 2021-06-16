@@ -1,9 +1,8 @@
 import {FavouritesGroup} from '../../favourites-group';
 import {Favouritable} from '../../favouritable';
 
-export class ConsumerGroup extends Favouritable {
+export class ConsumerGroup implements Favouritable {
   constructor(public groupId: string, public status: string, public group: FavouritesGroup) {
-    super(group);
   }
 
   public caption(): string {

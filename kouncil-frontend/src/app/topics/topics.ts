@@ -1,15 +1,13 @@
 import {FavouritesGroup} from '../favourites-group';
 import {Favouritable} from '../favouritable';
 
-export class TopicMetadata extends Favouritable {
+export class TopicMetadata implements Favouritable {
   constructor(public partitions: number, public group: FavouritesGroup, public name: string) {
-    super(group);
   }
 
   public caption(): string {
     return this.name;
   }
-
 }
 
 export class Topics {
