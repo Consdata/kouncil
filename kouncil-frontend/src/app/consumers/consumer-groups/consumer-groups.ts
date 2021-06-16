@@ -1,20 +1,13 @@
 import {FavouritesGroup} from '../../favourites-group';
 import {Favouritable} from '../../favouritable';
 
-export class ConsumerGroup implements Favouritable {
+export class ConsumerGroup extends Favouritable {
   constructor(public groupId: string, public status: string, public group: FavouritesGroup) {
+    super(group);
   }
 
-  public favouriteToken(): string {
+  public caption(): string {
     return this.groupId;
-  }
-
-  public favouriteGroup(): FavouritesGroup {
-    return this.group;
-  }
-
-  setFavouriteGroup(group: FavouritesGroup): void {
-    this.group = group;
   }
 
 }

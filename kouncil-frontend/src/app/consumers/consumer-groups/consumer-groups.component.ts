@@ -11,6 +11,7 @@ import {ConfirmService} from '../../confirm/confirm.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Servers} from '../../servers.service';
 import {FavouritesService} from '../../favourites.service';
+import {TopicMetadata} from '../../topics/topics';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -50,7 +51,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
-        this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
+        this.consumerGroups = data.consumerGroups.map( t => new ConsumerGroup(t.groupId, t.status,  null));
         this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter();
         this.progressBarService.setProgress(false);
@@ -68,6 +69,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   onFavouriteClick(row) {
+    console.log(row);
     this.favouritesService.updateFavourites(row, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.filter(this.searchService.getCurrentPhrase());

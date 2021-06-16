@@ -1,10 +1,8 @@
 import {FavouritesGroup} from './favourites-group';
 
-export interface Favouritable {
-  favouriteToken(): string;
+export abstract class Favouritable {
+  protected constructor(public group: FavouritesGroup) {
+  }
 
-  favouriteGroup(): FavouritesGroup;
-
-  setFavouriteGroup(group: FavouritesGroup): void;
-
+  abstract caption(): string;
 }

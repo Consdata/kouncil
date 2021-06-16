@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FavouritesGroup} from './favourites-group';
 import {Favouritable} from './favouritable';
-import {TopicMetadata} from './topics/topics';
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +18,16 @@ export class FavouritesService {
     return favourites;
   }
 
-  private static favouriteKey(topicName: string, serverId: string): string {
-    return serverId + ';' + topicName;
+  private static favouriteKey(token: string, serverId: string): string {
+    return serverId + ';' + token;
   }
 
-  public updateFavourites(row, favouritesKey: string, serverId: string) {
+  public updateFavourites(row: Favouritable, favouritesKey: string, serverId: string) {
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     if (row.group === FavouritesGroup.GROUP_FAVOURITES) {
-      favourites.splice(favourites.indexOf(FavouritesService.favouriteKey(row.name, serverId)), 1);
+      favourites.splice(favourites.indexOf(FavouritesService.favouriteKey(row.caption(), serverId)), 1);
     } else {
-      favourites.push(FavouritesService.favouriteKey(row.name, serverId));
+      favourites.push(FavouritesService.favouriteKey(row.caption(), serverId));
     }
     localStorage.setItem(favouritesKey, favourites.join());
   }
@@ -36,16 +35,16 @@ export class FavouritesService {
   public applyFavourites(elements: Favouritable[], favouritesKey: string, serverId: string) {
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     elements.forEach(element => {
-      element.setFavouriteGroup(favourites.indexOf(FavouritesService.favouriteKey(element.favouriteToken(), serverId)) > -1
+      element.group = favourites.indexOf(FavouritesService.favouriteKey(element.caption(), serverId)) > -1
         ? FavouritesGroup.GROUP_FAVOURITES
-        : FavouritesGroup.GROUP_ALL);
+        : FavouritesGroup.GROUP_ALL;
     });
     elements.sort((a, b) => {
-      if (a.favouriteGroup() === b.favouriteGroup()) {
-        return a.favouriteToken().localeCompare(b.favouriteToken());
-      } else if (a.favouriteGroup() === FavouritesGroup.GROUP_FAVOURITES) {
+      if (a.group === b.group) {
+        return a.caption().localeCompare(b.caption());
+      } else if (a.group === FavouritesGroup.GROUP_FAVOURITES) {
         return -1;
-      } else if (b.favouriteGroup() === FavouritesGroup.GROUP_FAVOURITES) {
+      } else if (b.group === FavouritesGroup.GROUP_FAVOURITES) {
         return 1;
       }
     });
