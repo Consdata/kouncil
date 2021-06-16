@@ -11,6 +11,9 @@ import {Router} from '@angular/router';
 import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
 import {Servers} from '../servers.service';
+import {FavouritesService} from '../favourites.service';
+
+const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
 @Component({
   selector: 'app-topics',
@@ -24,11 +27,11 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private topicsService: TopicsService,
               private router: Router,
               private drawerService: DrawerService,
-              public servers: Servers) {
+              private servers: Servers,
+              private favouritesService: FavouritesService) {
   }
 
   topics: TopicMetadata[] = [];
-  grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
 
@@ -40,7 +43,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(data => {
         this.topics = (<Topics>data).topics;
-        this.applyFavourites();
+        this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter();
         this.progressBarService.setProgress(false);
       });
@@ -61,45 +64,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private applyFavourites() {
-    const favourites = this.parseFavourites();
-    this.topics.forEach(topic => {
-      topic.group = favourites.indexOf(this.favouriteKey(topic.name)) > -1 ? TopicMetadata.GROUP_FAVOURITES : TopicMetadata.GROUP_ALL;
-    });
-    this.topics.sort((a, b) => {
-      if (a.group === b.group) {
-        return a.name.localeCompare(b.name);
-      } else if (a.group === TopicMetadata.GROUP_FAVOURITES) {
-        return -1;
-      } else if (b.group === TopicMetadata.GROUP_FAVOURITES) {
-        return 1;
-      }
-    });
-  }
-
   onFavouriteClick(row) {
-    const favourites = this.parseFavourites();
-    if (row.group === TopicMetadata.GROUP_FAVOURITES) {
-      favourites.splice(favourites.indexOf(this.favouriteKey(row.name)), 1);
-    } else {
-      favourites.push(this.favouriteKey(row.name));
-    }
-    localStorage.setItem('kouncil-topics-favourites', favourites.join());
-    this.applyFavourites();
+    this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+    this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.filter(this.searchService.getCurrentPhrase());
-  }
-
-  private parseFavourites(): string[] {
-    const favouritesStr = localStorage.getItem('kouncil-topics-favourites');
-    let favourites = [];
-    if (favouritesStr) {
-      favourites = favouritesStr.split(',');
-    }
-    return favourites;
-  }
-
-  private favouriteKey(topicName: string): string {
-    return this.servers.getSelectedServerId() + ';' + topicName;
   }
 
   navigateToTopic(event): void {
