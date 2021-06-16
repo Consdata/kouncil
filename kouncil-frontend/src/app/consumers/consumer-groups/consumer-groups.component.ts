@@ -10,9 +10,12 @@ import {Router} from '@angular/router';
 import {ConfirmService} from '../../confirm/confirm.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Servers} from '../../servers.service';
+import {FavouritesService} from '../../favourites.service';
+
+const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
 @Component({
-  selector: 'kafka-consumer-groups',
+  selector: 'app-kafka-consumer-groups',
   templateUrl: './consumer-groups.component.html',
   styleUrls: ['./consumer-groups.component.scss']
 })
@@ -24,11 +27,11 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
               private router: Router,
-              private servers: Servers) {
+              private servers: Servers,
+              private favouritesService: FavouritesService) {
   }
 
   consumerGroups: ConsumerGroup[] = [];
-  grouped: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
   @ViewChild('table') private table: ElementRef;
 
@@ -37,7 +40,6 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
-
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
@@ -49,7 +51,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(data => {
         this.consumerGroups = (<ConsumerGroupsResponse>data).consumerGroups;
-        this.applyFavourites();
+        this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter();
         this.progressBarService.setProgress(false);
       });
@@ -65,36 +67,9 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private applyFavourites() {
-    const favouritesStr = localStorage.getItem('kouncil-consumer-groups-favourites');
-    let favourites = [];
-    if (favouritesStr) {
-      favourites = favouritesStr.split(',');
-    }
-    this.consumerGroups.forEach(consumerGroup => {
-      consumerGroup.group = favourites.indexOf(consumerGroup.groupId) > -1 ? ConsumerGroup.GROUP_FAVOURITES : ConsumerGroup.GROUP_ALL;
-    });
-    this.consumerGroups.sort((a, b) => {
-      if (a.group === b.group) {
-        return a.groupId.localeCompare(b.groupId);
-      } else if (a.group === ConsumerGroup.GROUP_FAVOURITES) {
-        return -1;
-      } else if (b.group === ConsumerGroup.GROUP_FAVOURITES) {
-        return 1;
-      }
-    });
-  }
-
   onFavouriteClick(row) {
-    if (row.group === ConsumerGroup.GROUP_FAVOURITES) {
-      row.group = ConsumerGroup.GROUP_ALL;
-    } else {
-      row.group = ConsumerGroup.GROUP_FAVOURITES;
-    }
-    const favourites = this.consumerGroups.filter(consumerGroup => consumerGroup.group === ConsumerGroup.GROUP_FAVOURITES).map(
-      consumerGroup => consumerGroup.groupId);
-    localStorage.setItem('kouncil-consumer-groups-favourites', favourites.join());
-    this.applyFavourites();
+    this.favouritesService.updateFavourites(row, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
+    this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.filter(this.searchService.getCurrentPhrase());
   }
 
@@ -106,7 +81,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
           this.progressBarService.setProgress(true);
           this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
             .pipe(first())
-            .subscribe(data => {
+            .subscribe(() => {
               this.loadConsumerGroups();
               this.snackbar.open(`Consumer group ${value} deleted`, '', {
                 duration: 3000,

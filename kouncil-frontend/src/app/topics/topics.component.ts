@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Topics} from 'app/topics/topics';
+import {TopicMetadata, Topics} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
-import {TopicMetadata} from 'app/topics/topic-metadata';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
@@ -39,18 +38,21 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.topicsService.getTopics(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe(data => {
-        this.topics = (<Topics>data).topics;
-        this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-        this.filter();
-        this.progressBarService.setProgress(false);
-      });
-
+    this.loadTopics();
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
+      });
+  }
+
+  private loadTopics() {
+    this.topicsService.getTopics(this.servers.getSelectedServerId())
+      .pipe(first())
+      .subscribe(data => {
+        this.topics = data.topics.map( t => new TopicMetadata(t.partitions, null, t.name));
+        this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+        this.filter();
+        this.progressBarService.setProgress(false);
       });
   }
 

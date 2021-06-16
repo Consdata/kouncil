@@ -1,23 +1,9 @@
+import {FavouritesGroup} from '../../favourites-group';
 import {ConsumerGroup} from './consumer-groups';
 
-export const demoConsumerGroups = [{
-  'groupId': 'transaction-processing',
-  'status': 'Stable',
-  'group': ConsumerGroup.GROUP_ALL
-}, {
-  'groupId': 'transaction-history',
-  'status': 'Empty',
-  'group': ConsumerGroup.GROUP_ALL
-}, {
-  'groupId': 'transaction-history-report',
-  'status': 'Empty',
-  'group': ConsumerGroup.GROUP_ALL
-}, {
-  'groupId': 'currency-exchange-rate-aggregation',
-  'status': 'Stable',
-  'group': ConsumerGroup.GROUP_ALL
-}, {
-  'groupId': 'currency-exchange-stream',
-  'status': 'Stable',
-  'group': ConsumerGroup.GROUP_ALL
-}];
+export const demoConsumerGroups = [
+  new ConsumerGroup('transaction-processing', 'Stable', FavouritesGroup.GROUP_ALL),
+  new ConsumerGroup('transaction-history', 'Empty', FavouritesGroup.GROUP_ALL),
+  new ConsumerGroup('transaction-history-report', 'Empty', FavouritesGroup.GROUP_ALL),
+  new ConsumerGroup('currency-exchange-rate-aggregation', 'Stable', FavouritesGroup.GROUP_ALL),
+  new ConsumerGroup('currency-exchange-stream', 'Stable', FavouritesGroup.GROUP_ALL)];
