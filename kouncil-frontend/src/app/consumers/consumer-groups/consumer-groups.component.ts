@@ -69,7 +69,6 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   onFavouriteClick(row) {
-    console.log(row);
     this.favouritesService.updateFavourites(row, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.filter(this.searchService.getCurrentPhrase());

@@ -7,8 +7,6 @@ import {Favouritable} from './favouritable';
 })
 export class FavouritesService {
 
-  constructor() { }
-
   private static parseFavourites(favouritesKey: string): string[] {
     const favouritesStr = localStorage.getItem(favouritesKey);
     let favourites = [];
