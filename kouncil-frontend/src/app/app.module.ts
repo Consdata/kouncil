@@ -21,7 +21,6 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ProgressBarComponent} from './util/progress-bar.component';
 import {NoDataPlaceholderComponent} from './no-data-placeholder/no-data-placeholder.component';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
-import {SendPopupComponent} from './send/send-popup.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
@@ -64,7 +63,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     NoDataPlaceholderComponent,
     TopicPartitionsComponent,
     NoDataPlaceholderComponent,
-    SendPopupComponent,
     TopicPaginationComponent,
     BreadcrumbComponent,
     ConfirmComponent,
