@@ -8,7 +8,6 @@ import {DatePipe} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicService, topicServiceProvider} from './topic.service';
-import {SendPopupComponent} from '../send/send-popup.component';
 import {Page} from './page';
 import {SendComponent} from '../send/send.component';
 import {MessageViewComponent} from './message/message-view.component';
@@ -54,7 +53,6 @@ export class TopicComponent implements OnInit, OnDestroy {
   @ViewChild('table') table: any;
   @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
   @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
-  @ViewChild(SendPopupComponent) popup;
 
   private static tryParseJson(message) {
     try {

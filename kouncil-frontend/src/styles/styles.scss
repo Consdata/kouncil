@@ -1,15 +1,15 @@
+@use '~@angular/material' as mat;
 @import 'palette';
 @import 'ngx';
 @import 'material';
-@import '~@angular/material/theming';
 
-@include mat-core();
+@include mat.core();
 
-$kouncil-primary: mat-palette($palette-main);
-$kouncil-accent: mat-palette($palette-accent);
-$kouncil-warn: mat-palette($palette-warn);
+$kouncil-primary: mat.define-palette($palette-main);
+$kouncil-accent: mat.define-palette($palette-accent);
+$kouncil-warn: mat.define-palette($palette-warn);
 
-$kouncil-theme: mat-light-theme((
+$kouncil-theme: mat.define-light-theme((
   color: (
     primary: $kouncil-primary,
     accent: $kouncil-accent,
@@ -17,13 +17,13 @@ $kouncil-theme: mat-light-theme((
   )
 ));
 
-@include angular-material-theme($kouncil-theme);
+@include mat.all-component-themes($kouncil-theme);
 
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Inter, normal'
 );
-@include mat-base-typography($custom-typography);
-@include mat-core($custom-typography);
+@include mat.typography-hierarchy($custom-typography);
+@include mat.core($custom-typography);
 
 @import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
