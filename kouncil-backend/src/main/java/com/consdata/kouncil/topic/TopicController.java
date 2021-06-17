@@ -1,6 +1,7 @@
 package com.consdata.kouncil.topic;
 
 import com.consdata.kouncil.KafkaConnectionService;
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,9 +38,11 @@ public class TopicController {
                                              @RequestParam("serverId") String serverId) {
         log.debug("TCM01 topicName={}, partition={}, offset={}, offsetParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
                 topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis, endTimestampMillis);
+        checkTopicExists(serverId, topicName);
         int limit = Integer.parseInt(limitParam);
         long offsetShift = Long.parseLong(offsetShiftParam);
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId)) {
+
             List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
             log.debug("TCM02 partitionInfos={}", partitionInfos);
             List<TopicPartition> topicPartitions = new ArrayList<>();
@@ -72,7 +76,7 @@ public class TopicController {
             final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
                     .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
             final Map<Integer, Long> endOffsets;
-            if(endTimestampMillis != null) {
+            if (endTimestampMillis != null) {
                 Map<TopicPartition, Long> endTimestamps = topicPartitions.stream()
                         .collect(Collectors.toMap(Function.identity(), ignore -> endTimestampMillis + 1));
                 endOffsets = consumer.offsetsForTimes(endTimestamps).entrySet().stream()
@@ -148,17 +152,40 @@ public class TopicController {
         }
     }
 
-    @PostMapping("/api/topic/send/{topic}/{count}")
+    @PostMapping("/api/topic/send/{topicName}/{count}")
     @EntryExitLogger
-    public void send(@PathVariable("topic") String topic,
+    public void send(@PathVariable("topicName") String topicName,
                      @PathVariable("count") int count,
                      @RequestBody TopicMessage message,
                      @RequestParam("serverId") String serverId) {
+        log.debug("TCS01 topicName={}, count={}, serverId={}", topicName, count, serverId);
+        checkTopicExists(serverId, topicName);
         KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         for (int i = 0; i < count; i++) {
-            kafkaTemplate.send(topic, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
+            kafkaTemplate.send(topicName, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
         }
         kafkaTemplate.flush();
+        log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);
+    }
+
+    private void checkTopicExists(String serverId, String topicName) {
+        boolean topicExists;
+        try {
+            topicExists = kafkaConnectionService
+                    .getAdminClient(serverId)
+                    .listTopics()
+                    .names()
+                    .get()
+                    .stream().anyMatch(t -> t.equalsIgnoreCase(topicName));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new KouncilRuntimeException(String.format("Cannot check if topic [%s] exists on server [%s](%s)", topicName, serverId, e.getMessage()));
+        } catch (ExecutionException e) {
+            throw new KouncilRuntimeException(String.format("Cannot check if topic [%s] exists on server [%s](%s)", topicName, serverId, e.getMessage()));
+        }
+        if (!topicExists) {
+            throw new KouncilRuntimeException(String.format("Topic [%s] not exists on server [%s]", topicName, serverId));
+        }
     }
 
     private String replaceTokens(String data, int i) {
