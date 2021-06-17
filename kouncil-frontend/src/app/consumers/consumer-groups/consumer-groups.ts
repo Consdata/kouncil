@@ -1,12 +1,15 @@
-export class ConsumerGroup {
-  static GROUP_FAVOURITES = 'FAVOURITES';
-  static GROUP_ALL = 'ALL';
+import {FavouritesGroup} from '../../favourites-group';
+import {Favouritable} from '../../favouritable';
 
-  constructor(public groupId: string, public status: string, public group: string) {
-
+export class ConsumerGroup implements Favouritable {
+  constructor(public groupId: string, public status: string, public group: FavouritesGroup) {
   }
-}
 
+  public caption(): string {
+    return this.groupId;
+  }
+
+}
 
 export class ConsumerGroupsResponse {
   consumerGroups: ConsumerGroup[];

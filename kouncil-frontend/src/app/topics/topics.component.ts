@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Topics} from 'app/topics/topics';
+import {TopicMetadata, Topics} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
-import {TopicMetadata} from 'app/topics/topic-metadata';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
@@ -11,6 +10,9 @@ import {Router} from '@angular/router';
 import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
 import {Servers} from '../servers.service';
+import {FavouritesService} from '../favourites.service';
+
+const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
 @Component({
   selector: 'app-topics',
@@ -24,11 +26,11 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private topicsService: TopicsService,
               private router: Router,
               private drawerService: DrawerService,
-              public servers: Servers) {
+              private servers: Servers,
+              private favouritesService: FavouritesService) {
   }
 
   topics: TopicMetadata[] = [];
-  grouped: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
 
@@ -36,18 +38,21 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
-    this.topicsService.getTopics(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe(data => {
-        this.topics = (<Topics>data).topics;
-        this.applyFavourites();
-        this.filter();
-        this.progressBarService.setProgress(false);
-      });
-
+    this.loadTopics();
     this.subscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
+      });
+  }
+
+  private loadTopics() {
+    this.topicsService.getTopics(this.servers.getSelectedServerId())
+      .pipe(first())
+      .subscribe(data => {
+        this.topics = data.topics.map( t => new TopicMetadata(t.partitions, null, t.name));
+        this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+        this.filter();
+        this.progressBarService.setProgress(false);
       });
   }
 
@@ -61,35 +66,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private applyFavourites() {
-    const favouritesStr = localStorage.getItem('kouncil-topics-favourites');
-    let favourites = [];
-    if (favouritesStr) {
-      favourites = favouritesStr.split(',');
-    }
-    this.topics.forEach(topic => {
-      topic.group = favourites.indexOf(topic.name) > -1 ? TopicMetadata.GROUP_FAVOURITES : TopicMetadata.GROUP_ALL;
-    });
-    this.topics.sort((a, b) => {
-      if (a.group === b.group) {
-        return a.name.localeCompare(b.name);
-      } else if (a.group === TopicMetadata.GROUP_FAVOURITES) {
-        return -1;
-      } else if (b.group === TopicMetadata.GROUP_FAVOURITES) {
-        return 1;
-      }
-    });
-  }
-
   onFavouriteClick(row) {
-    if (row.group === TopicMetadata.GROUP_FAVOURITES) {
-      row.group = TopicMetadata.GROUP_ALL;
-    } else {
-      row.group = TopicMetadata.GROUP_FAVOURITES;
-    }
-    const favourites = this.topics.filter(topic => topic.group === TopicMetadata.GROUP_FAVOURITES).map(topic => topic.name);
-    localStorage.setItem('kouncil-topics-favourites', favourites.join());
-    this.applyFavourites();
+    this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+    this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
     this.filter(this.searchService.getCurrentPhrase());
   }
 

@@ -1,29 +1,11 @@
-import {TopicMetadata} from './topic-metadata';
+import {FavouritesGroup} from '../favourites-group';
+import {TopicMetadata} from './topics';
 
 export const demoTopics = [
-  {
-    'name': 'bank-transactions',
-    'partitions': 4,
-    'group': TopicMetadata.GROUP_ALL
-  }, {
-    'name': 'currency-rates',
-    'partitions': 2,
-    'group': TopicMetadata.GROUP_ALL
-  }, {
-    'name': 'system-events',
-    'partitions': 256,
-    'group': TopicMetadata.GROUP_ALL
-  }, {
-    'name': 'user-audit-actions',
-    'partitions': 256,
-    'group': TopicMetadata.GROUP_ALL
-  }, {
-    'name': 'frontend-activity-monitoring',
-    'partitions': 128,
-    'group': TopicMetadata.GROUP_ALL
-  }, {
-    'name': 'user-reports',
-    'partitions': 16,
-    'group': TopicMetadata.GROUP_ALL
-  }
+  new TopicMetadata(4, FavouritesGroup.GROUP_ALL, 'bank-transactions'),
+  new TopicMetadata(2, FavouritesGroup.GROUP_ALL, 'currency-rates'),
+  new TopicMetadata(256, FavouritesGroup.GROUP_ALL, 'system-events'),
+  new TopicMetadata(256, FavouritesGroup.GROUP_ALL, 'user-audit-actions'),
+  new TopicMetadata(128, FavouritesGroup.GROUP_ALL, 'frontend-activity-monitoring'),
+  new TopicMetadata(16, FavouritesGroup.GROUP_ALL, 'user-reports')
 ];

@@ -46,6 +46,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {Servers} from './servers.service';
 import {HttpClientInterceptor} from './util/http-client.interceptor';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -70,27 +71,28 @@ import {HttpClientInterceptor} from './util/http-client.interceptor';
     BrokerComponent,
     MessageViewComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    RoutingModule,
-    FormsModule,
-    NgxDatatableModule,
-    ClipboardModule,
-    NgxJsonViewerModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-    MatSelectModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        RoutingModule,
+        FormsModule,
+        NgxDatatableModule,
+        ClipboardModule,
+        NgxJsonViewerModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatSlideToggleModule,
+        MatSelectModule,
+        MatTooltipModule
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
