@@ -21,13 +21,13 @@ public class KafkaBroker implements Comparable<KafkaBroker> {
 
     private String system;
 
-    private int availableProcessors;
+    private Integer availableProcessors;
 
-    private double systemLoadAverage;
+    private Double systemLoadAverage;
 
-    private long freeMem;
+    private Long freeMem;
 
-    private long totalMem;
+    private Long totalMem;
 
     @Override
     public int compareTo(KafkaBroker o) {

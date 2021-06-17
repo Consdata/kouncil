@@ -38,7 +38,7 @@ export class BrokersComponent implements OnInit {
       .subscribe(data => {
         this.allBrokers = (<Brokers>data).brokers;
         this.filterRows();
-        this.shouldShowJmxDetails();
+        this.filterJmxDetails();
         this.progressBarService.setProgress(false);
       });
 
@@ -49,7 +49,7 @@ export class BrokersComponent implements OnInit {
       });
   }
 
-  private shouldShowJmxDetails() {
+  private filterJmxDetails() {
     this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
   }
 
