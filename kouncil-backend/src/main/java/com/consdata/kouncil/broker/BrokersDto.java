@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BrokersDto {
-    private List<Broker> brokers;
+    private List<KafkaBroker> brokers;
 }

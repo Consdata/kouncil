@@ -45,6 +45,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {Servers} from './servers.service';
+import {FileSizePipe} from './brokers/filze-size.pipe';
 import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
@@ -69,7 +70,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     BreadcrumbComponent,
     ConfirmComponent,
     BrokerComponent,
-    MessageViewComponent
+    MessageViewComponent,
+    FileSizePipe
   ],
     imports: [
         BrowserModule,

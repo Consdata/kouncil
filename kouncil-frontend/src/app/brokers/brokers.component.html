@@ -17,5 +17,16 @@
     <ngx-datatable-column [width]="200" prop="host" name="Host"></ngx-datatable-column>
     <ngx-datatable-column [width]="150" prop="port" name="Port"></ngx-datatable-column>
     <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
+    <ngx-datatable-column prop="system" name="System" *ngIf="showJmxStats"></ngx-datatable-column>
+    <ngx-datatable-column prop="availableProcessors" name="CPUs" *ngIf="showJmxStats"></ngx-datatable-column>
+    <ngx-datatable-column prop="systemLoadAverage" name="Load Average" *ngIf="showJmxStats">
+      <ng-template let-value="value" ngx-datatable-cell-template>{{value ? value.toFixed(2) : ''}}</ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="freeMem" name="Free Mem" *ngIf="showJmxStats">
+      <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="totalMem" name="Total Mem" *ngIf="showJmxStats">
+      <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
+    </ngx-datatable-column>
   </ngx-datatable>
 </div>

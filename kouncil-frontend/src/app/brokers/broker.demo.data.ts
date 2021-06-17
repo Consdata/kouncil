@@ -3,19 +3,37 @@ export const demoBrokers = [{
   host: '192.168.10.1',
   port: 9002,
   rack: '',
-  config: null
+  config: null,
+  jmxStats: true,
+  system: 'Linux (5.12.10, amd64)',
+  availableProcessors: 6,
+  systemLoadAverage: 2.32,
+  freeMem: 2288545024,
+  totalMem: 6442450944
 }, {
   id: '1002',
   host: '192.168.10.2',
   port: 9002,
   rack: '',
-  config: null
+  config: null,
+  jmxStats: true,
+  system: 'Linux (5.12.10, amd64)',
+  availableProcessors: 6,
+  systemLoadAverage: 2.03,
+  freeMem: 2588545024,
+  totalMem: 6442450944
 }, {
   id: '1003',
   host: '192.168.10.3',
   port: 9002,
   rack: '',
-  config: null
+  config: null,
+  jmxStats: true,
+  system: 'Linux (5.12.10, amd64)',
+  availableProcessors: 6,
+  systemLoadAverage: 1.86,
+  freeMem: 2888545024,
+  totalMem: 6442450944
 }];
 
 export const demoBrokerConfig = [{

@@ -29,6 +29,7 @@ export class BrokersComponent implements OnInit {
   filteredBrokers: Broker[];
   private subscription: Subscription;
   phrase: string;
+  showJmxStats = false;
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
@@ -37,6 +38,7 @@ export class BrokersComponent implements OnInit {
       .subscribe(data => {
         this.allBrokers = (<Brokers>data).brokers;
         this.filterRows();
+        this.filterJmxDetails();
         this.progressBarService.setProgress(false);
       });
 
@@ -45,6 +47,10 @@ export class BrokersComponent implements OnInit {
         this.phrase = phrase;
         this.filterRows();
       });
+  }
+
+  private filterJmxDetails() {
+    this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
   }
 
   private filterRows() {

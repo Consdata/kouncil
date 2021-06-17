@@ -1,7 +1,7 @@
 package com.consdata.kouncil.consumergroup;
 
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.KouncilConfiguration;
+import com.consdata.kouncil.config.KouncilConfiguration;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
