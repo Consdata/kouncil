@@ -11,7 +11,6 @@ import {Servers} from '../servers.service';
       </div>
       <div class="kafka-topic-footer-pager-item pages">
         <datatable-pager
-          *ngIf="onePartitionSelected"
           [pagerLeftArrowIcon]="'datatable-icon-left'"
           [pagerRightArrowIcon]="'datatable-icon-right'"
           [pagerPreviousIcon]="'datatable-icon-prev'"
@@ -36,7 +35,6 @@ import {Servers} from '../servers.service';
 
 export class TopicPaginationComponent {
   @Input() paging: Page;
-  @Input() onePartitionSelected: boolean;
   @Input() topicName: string;
   pageLimits = [10, 20, 50, 100];
 

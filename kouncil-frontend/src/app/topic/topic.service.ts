@@ -16,50 +16,17 @@ export class TopicService {
   getMessages(serverId: string, topicName: string) {
   }
 
-  togglePartition(serverId: string, nr: any, topicName: string) {
-  }
-
   selectPartition(serverId: string, partition: number, topicName: string) {
   }
 
   selectAllPartitions(serverId: string, topicName: string) {
   }
 
-  previous() {
-  }
-
-  next() {
-  }
-
-  hasNoMorePrevValues(): boolean {
-    return undefined;
-  }
-
-  hasNoMoreNextValues(): boolean {
-    return undefined;
-  }
-
   getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {
     return undefined;
   }
 
-  getPartitionOffset(partitionNr: number): string {
-    return undefined;
-  }
-
-  showMorePartitions(): boolean {
-    return undefined;
-  }
-
-  getSelectedPartitionsObservable(): Observable<number[]> {
-    return undefined;
-  }
-
-  getVisiblePartitionsObservable(): Observable<number[]> {
-    return undefined;
-  }
-
-  isOnePartitionSelected$(): Observable<boolean> {
+  getNumberOfPartitionsObservable(): Observable<number> {
     return undefined;
   }
 

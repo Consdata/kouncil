@@ -26,8 +26,8 @@ export class TopicPartitionsComponent {
   partitions = [];
 
   constructor(private topicService: TopicService, private servers: Servers) {
-    this.topicService.getSelectedPartitionsObservable().subscribe(value => {
-      this.partitions = Array.from(Array(value.length).keys());
+    this.topicService.getNumberOfPartitionsObservable().subscribe(value => {
+      this.partitions = Array.from(Array(value).keys());
     });
   }
 

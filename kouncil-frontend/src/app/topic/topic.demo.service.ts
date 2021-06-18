@@ -33,19 +33,12 @@ export class TopicDemoService extends TopicBackendService {
 
     const data = new TopicMessages(messages, partitionOffsets, partitionOffsets, totalResults);
     this.processMessagesData(data);
-    this.onePartitionSelected();
   }
 
   private createRandomMessage(i: number, partitions: number, partitionOffsets: {}): Message {
     let partition = this.randomInt(0, partitions - 1);
-    if (this.selectedPartitions !== undefined) {
-      const selectedPartitionNumbers = [];
-      this.selectedPartitions.forEach((value: number, index: number) => {
-        if (value !== -1) {
-          selectedPartitionNumbers.push(index);
-        }
-      });
-      partition = selectedPartitionNumbers[this.randomInt(0, selectedPartitionNumbers.length - 1)];
+    if (this.selectedPartition !== undefined) {
+      partition = parseInt(this.selectedPartition, 10);
     }
     const pagination = this.paginationChanged$.getValue();
     return new Message(
