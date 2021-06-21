@@ -6,6 +6,7 @@ import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
 
 import scala.concurrent.duration.DurationInt
+import scala.language.postfixOps
 
 class KouncilSimulation extends Simulation {
 
@@ -17,7 +18,7 @@ class KouncilSimulation extends Simulation {
     "sec-ch-ua-mobile" -> "?0")
 
   val httpProtocol: HttpProtocolBuilder = http
-    .baseUrl("http://kouncil.consdata.local")
+    .baseUrl("https://kouncil.consdata.local")
     .inferHtmlResources(BlackList(), WhiteList())
     .acceptHeader("application/json, text/plain, */*")
     .acceptEncodingHeader("gzip, deflate")
@@ -28,15 +29,23 @@ class KouncilSimulation extends Simulation {
   val scn: ScenarioBuilder = scenario("KouncilSimulation")
     .exec(http("topic_list")
       .get("/api/topics?serverId=uber_poczta_consdata_local_9092")
-      .check(status.in(200)))
+      .check(status.in(200))
+      .check(jsonPath("$..name").find.saveAs("topicName"))) //poszukac pierwszej z brzegu nazwy topiku i uzycie go w nastepnym kroku
     .pause(3)
-    .exec(http("dev_topic_final_first_page")
-      .get("/api/topic/messages/dev-topic-final/all/latest?serverId=uber_poczta_consdata_local_9092&offset=0&limit=20")
+    .exec(http("first_topic_first_page")
+      .get("/api/topic/messages/${topicName}/all/latest?serverId=uber_poczta_consdata_local_9092&offset=0&limit=20")
       .check(status.in(200)))
     .pause(3)
     .exec(http("broker_list")
       .get("/api/brokers?serverId=uber_poczta_consdata_local_9092")
-      .check(status.in(200)))
+      .check(status.in(200))
+      .check(bodyString.saveAs("BODY")))
+    .exec {
+      //wypisanie body z listy brokerow
+      session =>
+        println(session("BODY").as[String])
+        session
+    }
     .pause(3)
     .exec(http("broker_config")
       .get("/api/configs/1001?serverId=uber_poczta_consdata_local_9092")
