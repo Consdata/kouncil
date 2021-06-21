@@ -11,17 +11,12 @@ import {ProgressBarService} from '../util/progress-bar.service';
 })
 export class TopicBackendService implements TopicService {
 
-  readonly VISIBLE_PARTITION_QUANTITY: number = 10;
-
   partitionOffsets: { [key: number]: number } = {};
   partitionEndOffsets: { [key: number]: number } = {};
   partitions: number[];
-  selectedPartitions: number[];
-  visiblePartitions: number[];
+  selectedPartition: string;
   convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
-  selectedPartitionsChanged$: Subject<number[]> = new Subject<number[]>();
-  visiblePartitionsChanged$: Subject<number[]> = new Subject<number[]>();
-  onePartitionSelected$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
   paginationChanged$: BehaviorSubject<Page>;
 
   constructor(public http: HttpClient, public progressBarService: ProgressBarService) {
@@ -30,17 +25,8 @@ export class TopicBackendService implements TopicService {
 
   getMessages(serverId: string, topicName: string) {
     let url;
-    if (typeof this.selectedPartitions !== 'undefined') {
-      let partitionsParam = '';
-      for (let i = 0; i < this.selectedPartitions.length; i++) {
-        if (this.selectedPartitions[i] === 1) {
-          partitionsParam += i + ',';
-        }
-      }
-      if (partitionsParam === '') {
-        return;
-      }
-      url = `/api/topic/messages/${topicName}/${partitionsParam}/latest`;
+    if (typeof this.selectedPartition !== 'undefined') {
+      url = `/api/topic/messages/${topicName}/${this.selectedPartition}/latest`;
     } else {
       url = `/api/topic/messages/${topicName}/all/latest`;
     }
@@ -53,7 +39,6 @@ export class TopicBackendService implements TopicService {
     this.http.get(url, {params}).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
     });
-    this.onePartitionSelected();
   }
 
   processMessagesData(data: TopicMessages): void {
@@ -64,104 +49,30 @@ export class TopicBackendService implements TopicService {
     this.convertTopicMessagesJsonToGrid$.next(data);
     this.progressBarService.setProgress(false);
     this.partitions = Array.from({length: Object.values(this.partitionOffsets).length}, (v, i) => i);
-    if (typeof this.selectedPartitions === 'undefined') {
-      this.selectedPartitions = Array.from({length: Object.values(this.partitionOffsets).length}, () => 1);
-      this.selectedPartitionsChanged$.next(this.selectedPartitions);
-    }
-    if (typeof this.visiblePartitions === 'undefined') {
-      this.visiblePartitions = this.partitions.slice(0, this.VISIBLE_PARTITION_QUANTITY);
-      this.visiblePartitionsChanged$.next(this.visiblePartitions);
+    if (typeof this.selectedPartition === 'undefined') {
+      this.selectedPartition = 'all';
+      this.numberOfPartitionsChanged$.next(this.partitions.length);
     }
   }
 
   selectPartition(serverId: string, partition: number, topicName: string): void {
-    const index = this.partitions.findIndex(e => e === partition);
-    for (let i = 0; i < this.selectedPartitions.length; i++) {
-      this.selectedPartitions[i] = -1;
-    }
-    this.selectedPartitions[index] = 1;
+    this.selectedPartition = partition.toString();
     this.progressBarService.setProgress(true);
     this.getMessages(serverId, topicName);
   }
 
   selectAllPartitions(serverId: string, topicName: string) {
-    for (let i = 0; i < this.selectedPartitions.length; i++) {
-      this.selectedPartitions[i] = 1;
-    }
+    this.selectedPartition = 'all';
     this.progressBarService.setProgress(true);
     this.getMessages(serverId, topicName);
-  }
-
-  togglePartition(serverId: string, nr: any, topicName: string) {
-    const index = this.partitions.findIndex(e => e === nr);
-    this.selectedPartitions[index] = -1 * this.selectedPartitions[index];
-    this.progressBarService.setProgress(true);
-    this.getMessages(serverId, topicName);
-  }
-
-  previous() {
-    if (this.partitions.length > this.VISIBLE_PARTITION_QUANTITY) {
-      const index = this.getFirstElementIndex();
-      const subPartitions = this.partitions.slice(index - 1, index + (this.VISIBLE_PARTITION_QUANTITY - 1));
-      this.updateVisiblePartitions(subPartitions);
-    }
-  }
-
-  next() {
-    const index = this.getFirstElementIndex();
-    const subPartitions = this.partitions.slice(index + 1, index + (this.VISIBLE_PARTITION_QUANTITY + 1));
-    this.updateVisiblePartitions(subPartitions);
-  }
-
-  private updateVisiblePartitions(subPartitions: number[]) {
-    if (subPartitions.length === this.VISIBLE_PARTITION_QUANTITY) {
-      this.visiblePartitions = subPartitions;
-      this.visiblePartitionsChanged$.next(this.visiblePartitions);
-    }
-  }
-
-  private getFirstElementIndex(): number {
-    const firstElement = this.visiblePartitions[0];
-    return this.partitions.findIndex(e => e === firstElement);
-  }
-
-  onePartitionSelected(): void {
-    this.onePartitionSelected$.next(
-      this.selectedPartitions
-      && this.selectedPartitions.filter(((value, index) => value === 1)).length === 1
-    );
-  }
-
-  hasNoMorePrevValues(): boolean {
-    return this.visiblePartitions[0] === this.partitions[0];
-  }
-
-  hasNoMoreNextValues(): boolean {
-    return this.visiblePartitions[this.visiblePartitions.length - 1] === this.partitions[this.partitions.length - 1];
   }
 
   getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {
     return this.convertTopicMessagesJsonToGrid$.asObservable();
   }
 
-  getPartitionOffset(partitionNr: number): string {
-    return this.partitionOffsets[partitionNr] + ' - ' + this.partitionEndOffsets[partitionNr];
-  }
-
-  showMorePartitions(): boolean {
-    return this.partitions?.length > this.VISIBLE_PARTITION_QUANTITY;
-  }
-
-  getSelectedPartitionsObservable(): Observable<number[]> {
-    return this.selectedPartitionsChanged$.asObservable();
-  }
-
-  getVisiblePartitionsObservable(): Observable<number[]> {
-    return this.visiblePartitionsChanged$.asObservable();
-  }
-
-  isOnePartitionSelected$(): Observable<boolean> {
-    return this.onePartitionSelected$.asObservable();
+  getNumberOfPartitionsObservable(): Observable<number> {
+    return this.numberOfPartitionsChanged$.asObservable();
   }
 
   paginateMessages(serverId: string, event: any, topicName: string) {
