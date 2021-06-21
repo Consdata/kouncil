@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @Slf4j
 @RestController
@@ -137,14 +138,17 @@ public class TopicController {
             }
             log.debug("TCM20 poll completed records.size={}", messages.size());
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
+
+            long totalResult = LongStream
+                    .range(0, partitionsArray.length)
+                    // index will never exceed max int, so this cast should be safe
+                    .map(index -> endOffsets.get(partitionsArray[(int) index]) - beginningOffsets.get(partitionsArray[(int) index]))
+                    .sum();
             TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
                     .messages(messages)
                     .partitionOffsets(beginningOffsets)
                     .partitionEndOffsets(endOffsets)
-                    // pagination works only for single selected partition
-                    .totalResults(partitionsArray.length == 1
-                            ? endOffsets.get(partitionsArray[0]) - beginningOffsets.get(partitionsArray[0])
-                            : null)
+                    .totalResults(totalResult)
                     .build();
             log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessagesDto.getMessages().size());
             return topicMessagesDto;

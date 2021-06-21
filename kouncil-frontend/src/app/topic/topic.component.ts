@@ -22,6 +22,22 @@ import {Servers} from '../servers.service';
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
+  topicName: string;
+  columns = [];
+  allRows = [];
+  filteredRows = [];
+  searchSubscription: Subscription;
+  paused: boolean;
+
+  phrase: string;
+
+  jsonToGridSubscription: Subscription;
+  paging$: Observable<Page>;
+
+  @ViewChild('table') table: any;
+  @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
+  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
               private jsonGrid: JsonGrid,
@@ -33,26 +49,8 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
-    this.onePartitionSelected$ = this.topicService.isOnePartitionSelected$();
     this.paging$ = this.topicService.getPagination$();
   }
-
-  topicName: string;
-  columns = [];
-  allRows = [];
-  filteredRows = [];
-  searchSubscription: Subscription;
-  paused: boolean;
-
-  phrase: string;
-
-  jsonToGridSubscription: Subscription;
-  onePartitionSelected$: Observable<boolean>;
-  paging$: Observable<Page>;
-
-  @ViewChild('table') table: any;
-  @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
-  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
 
   private static tryParseJson(message) {
     try {
