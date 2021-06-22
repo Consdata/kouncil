@@ -26,6 +26,10 @@ import java.util.stream.LongStream;
 @AllArgsConstructor
 public class TopicController {
 
+    private static final int POLL_TIMEOUT = 10000;
+
+    private static final int MAX_POLL_RETRIES = 5;
+
     private final KafkaConnectionService kafkaConnectionService;
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
@@ -116,9 +120,12 @@ public class TopicController {
 
             List<TopicMessage> messages = new ArrayList<>();
             int i = 0;
-            // couple first polls after seek don't return eny records
-            while (i < 100 && messages.size() < limit) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(10));
+            // in case first poll doesn't return desired number of messages we give a few more tries
+            // in 99% of cases the first call will be the last
+            while (i < MAX_POLL_RETRIES && messages.size() < limit) {
+                long startTime = System.nanoTime();
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+                log.debug("TCM19 poll took={}ms", (System.nanoTime() - startTime) / 1000000);
                 for (ConsumerRecord<String, String> record : records) {
                     if (record.offset() >= endOffsets.get(record.partition())) {
                         continue;
