@@ -131,16 +131,6 @@ public class KouncilConfiguration {
                         cluster -> cluster
                 ));
 
-        log.info("Populating initial bootstrap servers");
-        clusterConfig
-                .values()
-                .stream()
-                .map(ClusterConfig::getBrokers)
-                .filter(brokers -> !brokers.isEmpty())
-                .map(brokers -> brokers.get(0))
-                .forEach(broker -> initialBootstrapServers.add(format("%s:%s", broker.getHost(), broker.getPort())));
-        log.info("Bootstrap servers populated {}", initialBootstrapServers);
-
         log.info("Propagating jmx config values from clusters to brokers");
         clusterConfig.values().forEach(cluster -> {
             if (cluster.getJmxPort() != null) {

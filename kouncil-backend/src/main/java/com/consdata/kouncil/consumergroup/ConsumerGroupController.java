@@ -3,6 +3,7 @@ package com.consdata.kouncil.consumergroup;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class ConsumerGroupController {
@@ -45,7 +47,6 @@ public class ConsumerGroupController {
     public ConsumerGroupResponse getConsumerGroup(
             @PathVariable("groupId") String groupId,
             @RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
-
         ConsumerGroupResponse result = ConsumerGroupResponse.builder().consumerGroupOffset(new ArrayList<>()).build();
         Map<TopicPartition, OffsetAndMetadata> offsets = kafkaConnectionService.getAdminClient(serverId).listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get();
         offsets.forEach((tp, omd) -> result
@@ -71,8 +72,9 @@ public class ConsumerGroupController {
                     });
                 })));
 
-        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer()) {
-            Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList()));
+        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(kouncilConfiguration.getServerByClusterId(serverId))) {
+            List<TopicPartition> partitions = result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList());
+            Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(partitions);
             result.getConsumerGroupOffset().forEach(consumerGroupOffset -> {
                 String topic = consumerGroupOffset.getTopic();
                 int partition = consumerGroupOffset.getPartition();
@@ -91,9 +93,9 @@ public class ConsumerGroupController {
         kafkaConnectionService.getAdminClient(serverId).deleteConsumerGroups(Collections.singletonList(groupId));
     }
 
-    private KafkaConsumer<String, String> createConsumer() {
+    private KafkaConsumer<String, String> createConsumer(String bootstrapServer) {
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getInitialBootstrapServers());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
