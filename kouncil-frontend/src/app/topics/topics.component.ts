@@ -61,22 +61,20 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   private filter(phrase?) {
-    const tempFiltered = this.topics.filter((topicsMetadata) => {
+    this.filtered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
-    this.filtered.push(...tempFiltered);
-    this.filtered = [...this.filtered]; // Refresh the data
   }
 
   onFavouriteClick(row) {
+    this.progressBarService.setProgress(true);
     this.filtered = [];
-    this.filtered.push();
     setTimeout(() => {
       this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
       this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
       this.filter(this.searchService.getCurrentPhrase());
-    }, 10);
-
+      this.progressBarService.setProgress(false);
+    });
   }
 
   navigateToTopic(event): void {
