@@ -28,8 +28,6 @@ public class TopicController {
 
     private static final int POLL_TIMEOUT = 10000;
 
-    private static final int MAX_POLL_RETRIES = 5;
-
     private final KafkaConnectionService kafkaConnectionService;
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
@@ -119,29 +117,23 @@ public class TopicController {
             }
 
             List<TopicMessage> messages = new ArrayList<>();
-            int i = 0;
-            // in case first poll doesn't return desired number of messages we give a few more tries
-            // in 99% of cases the first call will be the last
-            while (i < MAX_POLL_RETRIES && messages.size() < limit) {
-                long startTime = System.nanoTime();
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
-                log.debug("TCM19 poll took={}ms", (System.nanoTime() - startTime) / 1000000);
-                for (ConsumerRecord<String, String> record : records) {
-                    if (record.offset() >= endOffsets.get(record.partition())) {
-                        continue;
-                    }
-                    if (messages.size() < limit) {
-                        messages.add(TopicMessage
-                                .builder()
-                                .key(record.key())
-                                .value(record.value())
-                                .offset(record.offset())
-                                .partition(record.partition())
-                                .timestamp(record.timestamp())
-                                .build());
-                    }
+            long startTime = System.nanoTime();
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+            log.debug("TCM19 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
+            for (ConsumerRecord<String, String> record : records) {
+                if (record.offset() >= endOffsets.get(record.partition())) {
+                    continue;
                 }
-                i++;
+                if (messages.size() < limit) {
+                    messages.add(TopicMessage
+                            .builder()
+                            .key(record.key())
+                            .value(record.value())
+                            .offset(record.offset())
+                            .partition(record.partition())
+                            .timestamp(record.timestamp())
+                            .build());
+                }
             }
             log.debug("TCM20 poll completed records.size={}", messages.size());
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
