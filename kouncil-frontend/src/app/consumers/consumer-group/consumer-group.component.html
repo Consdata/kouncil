@@ -35,7 +35,13 @@
     </ngx-datatable-column>
     <ngx-datatable-column prop="pace" name="pace">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value | number }} per sec
+        <div *ngIf="value == 0; then noPace else paceBlock"></div>
+        <ng-template #noPace>=</ng-template>
+        <ng-template #paceBlock>
+          <div *ngIf="value > 0; then upperArrowBlock else downArrowBlock"></div>
+          <ng-template #upperArrowBlock>↑ ({{value | number }})</ng-template>
+          <ng-template #downArrowBlock>↓ ({{value | number }})</ng-template>
+        </ng-template>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

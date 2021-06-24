@@ -9,7 +9,7 @@ import {first} from 'rxjs/operators';
 import {Servers} from '../../servers.service';
 
 @Component({
-  selector: 'kafka-consumer-group',
+  selector: 'app-kafka-consumer-group',
   templateUrl: './consumer-group.component.html',
   styleUrls: ['./consumer-group.component.scss']
 })
@@ -76,17 +76,16 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   private calculateLags() {
-    console.log(this.allAssignments);
     this.allAssignments.forEach(assignment => {
       const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
       assignment.lag = lag;
-      assignment.pace = lag - this.lastLags[ConsumerGroupComponent.getKey(assignment)];
-      this.lastLags[ConsumerGroupComponent.getKey(assignment)] = lag;
+      assignment.pace = lag - this.lastLags[this.getKey(assignment)];
+      this.lastLags[this.getKey(assignment)] = lag;
     });
   }
 
-  private static getKey(assignment: ConsumerGroupOffset) {
-    return assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
+  private getKey(assignment: ConsumerGroupOffset) {
+    return this.servers.getSelectedServerId() + assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
   }
 }
 
