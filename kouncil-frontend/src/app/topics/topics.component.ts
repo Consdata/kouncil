@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TopicMetadata, Topics} from 'app/topics/topics';
+import {TopicMetadata} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
@@ -49,7 +49,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
-        this.topics = data.topics.map( t => new TopicMetadata(t.partitions, null, t.name));
+        this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
         this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter();
         this.progressBarService.setProgress(false);
@@ -61,15 +61,22 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   private filter(phrase?) {
-    this.filtered = this.topics.filter((topicsMetadata) => {
+    const tempFiltered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
+    this.filtered.push(...tempFiltered);
+    this.filtered = [...this.filtered]; // Refresh the data
   }
 
   onFavouriteClick(row) {
-    this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-    this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-    this.filter(this.searchService.getCurrentPhrase());
+    this.filtered = [];
+    this.filtered.push();
+    setTimeout(() => {
+      this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+      this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+      this.filter(this.searchService.getCurrentPhrase());
+    }, 10);
+
   }
 
   navigateToTopic(event): void {
