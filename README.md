@@ -1,11 +1,10 @@
-# Kouncil
+![Kouncil](.github/img/jumbo.png)
 
+# Kouncil
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
-[Kouncil](https://kounci.io) lets you manage your Kafka clusters using convenient web interface. 
-
-![Kouncil](.github/img/jumbo.png)
+[Kouncil](https://kounci.io) lets you manage your Kafka clusters using modern web interface. It's [free & open source](#license), [feature rich](#features) and [easy to setup](#quick-start)! 
 
 During work on our latest messaging system which is based on Kafka, we needed a simple tool for browsing and testing. We went on a search for an easy and free solution, but we didn't find anything that suits our needs. So we came up with our own solution. If your payload is in JSON, you're in the right place. Kouncil lets you 
 * check cluster state, 
@@ -13,9 +12,41 @@ During work on our latest messaging system which is based on Kafka, we needed a 
 * browse messages in a table format,
 * generate messages with auto-filled placeholders.
 
-# 
+## Table of Contents
 
-# Development
+- [Quick start](#quick-start)
+- [Demo site](#demo-site)
+- [Features](#features)
+- [Deployment](#deployment)
+  - [Docker](#docker)
+  - [From sources](#sources)
+  - [Helm](#helm)
+- [Configuration](#configuration)
+- [Development](#development)
+- [License](#license)
+- [About](#about)
+
+## Quick start
+
+```
+docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:8001" consdata/kouncil:latest
+```
+
+## Demo site
+
+## Features
+
+## Deployment
+
+### Docker
+
+### Sources
+
+### Helm
+
+## Configuration
+
+## Development
 For a backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
 
 For a frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
@@ -44,11 +75,6 @@ run ```docker-compose up -d```
 
 more info: https://hub.docker.com/r/wurstmeister/kafka/
 
-# Deployment
-
-```
-docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:8001" consdata/kouncil:latest
-```
 
 # Release
 
@@ -61,3 +87,4 @@ after successful release, remember to merge back to master:
 ```bash
 git merge origin/release
 ```
+## License
