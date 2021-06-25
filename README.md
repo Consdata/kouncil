@@ -7,10 +7,10 @@
 [Kouncil](https://kounci.io) lets you manage your Kafka clusters using modern web interface. It's [free & open source](#license), [feature rich](#features) and [easy to setup](#quick-start)! 
 
 Here are some of the main features. For more comprehensive list checkout the [features section](#features).
+* Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
 * Consumer group monitoring
-* Advanced record browsing
 
 ## Table of Contents
 
@@ -20,9 +20,8 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 - [Deployment](#deployment)
   - [Docker](#docker)
   - [From sources](#sources)
-  - [Helm](#helm)
 - [Configuration](#configuration)
-- [Development](#development)
+- [Local Development](#local-development)
 - [License](#license)
 - [About](#about)
 
@@ -31,13 +30,15 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 Easiest way to start working with Kouncil is by using Docker:
 
 ```
-docker run -d -p 80:8080 -e bootstrapServers="KAFKA_HOST:9092" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
-There is only one required environment variable, `bootstrapServers`, that should point to one of the servers in your Kafka cluster. For example, if your cluster consists of three machines - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
+There is only one required environment variable, `bootstrapServers`, that should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
 
-Additionaly, Koucil supports multiple clusters. Hosts specified in `bootstrapServers` may point to servers in several different clusters, and Kouncil will recognize that properly. Servers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
+Additionaly, Koucil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several different clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
-For more advanced configuration consult the [Deployment](#deployment) and [Configuration](#configuration) sections.
+After the `docker run` command head to [http://localhost](http://localhost).
+
+For more advanced configuration consult the [Deployment](#deployment) section.
 
 ## Demo site
 
@@ -55,15 +56,49 @@ If you wish to simply check out Kouncil in action, without having to install it,
 
 ## Deployment
 
-### Docker
+There are two ways in which Kouncil can be configured:
+* simple - suitable for most cases, relying solely on `docker run` parameters
+* advanced - suitable for larger configurations. Since it's provided as an external file, advanced configuration can be tracked in version control. It also exposes additional configuration options, which are not avaiable in simple configuration
+
+### Docker - simple configuration
+
+Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](#quick-start):
+
+```
+docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
+```
+
+`bootstrapServers` variable expects a comma separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about single broker from cluster in order to work.
+
+So the simplest possible configuration would look like that:
+
+```
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" consdata/kouncil:latest
+```
+
+After that, visit [http://localhost](http://localhost) in your browser, and you should be greeted with list of topics from your cluster.
+
+If you have multiple clusters, and wish to manage them all with Kouncil, you can do so by simply specifying one broker from each cluster using comma separated list:
+
+```
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092,kafka1.another.cluster:8001" consdata/kouncil:latest
+```
+
+If you wish to change the port on which Kouncil listens for connections, just modify the `-p` argument, like so:
+
+```
+docker run -d -p 7070:8080 -e bootstrapServers="kafka1.cluster.local:9092" consdata/kouncil:latest
+```
+
+That will cause Kouncil to listen on port `7070`.
+
+### Docker - advanced configuration
+
+Advanced configuration takes precedence over simple configuration.
 
 ### Sources
 
-### Helm
-
-## Configuration
-
-## Development
+## Local Development
 For a backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
 
 For a frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
