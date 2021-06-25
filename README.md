@@ -94,7 +94,11 @@ That will cause Kouncil to listen on port `7070`.
 
 ### Docker - advanced configuration
 
-Advanced configuration takes precedence over simple configuration.
+If you have many Kafka clusters configuring them using `bootstrapServers` may become cumbersome. It is also impossible to express more sophisticated configuration options using such simple configuration pattern.
+
+To address this issues Kouncil allows you to provide external configuration in yaml format.
+
+In case of both simple and advanced configuration being present, advanced config takes precedence.
 
 ### Sources
 
