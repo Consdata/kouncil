@@ -6,11 +6,11 @@
 
 [Kouncil](https://kounci.io) lets you manage your Kafka clusters using modern web interface. It's [free & open source](#license), [feature rich](#features) and [easy to setup](#quick-start)! 
 
-During work on our latest messaging system which is based on Kafka, we needed a simple tool for browsing and testing. We went on a search for an easy and free solution, but we didn't find anything that suits our needs. So we came up with our own solution. If your payload is in JSON, you're in the right place. Kouncil lets you 
-* check cluster state, 
-* monitor consumers lag,
-* browse messages in a table format,
-* generate messages with auto-filled placeholders.
+Here are some of the main features. For more comprehensive list checkout the [features section](#features).
+* Multiple cluster support
+* Cluster monitoring
+* Consumer group monitoring
+* Advanced record browsing
 
 ## Table of Contents
 
@@ -28,13 +28,30 @@ During work on our latest messaging system which is based on Kafka, we needed a 
 
 ## Quick start
 
+Easiest way to start working with Kouncil is by using Docker:
+
 ```
-docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:8001" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="KAFKA_HOST:9092" consdata/kouncil:latest
 ```
+There is only one required environment variable, `bootstrapServers`, that should point to one of the servers in your Kafka cluster. For example, if your cluster consists of three machines - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
+
+Additionaly, Koucil supports multiple clusters. Hosts specified in `bootstrapServers` may point to servers in several different clusters, and Kouncil will recognize that properly. Servers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
+
+For more advanced configuration consult the [Deployment](#deployment) and [Configuration](#configuration) sections.
 
 ## Demo site
 
+If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing main features of Kouncil. Demo site can be found [here](https://kouncil-demo.web.app/)
+
 ## Features
+
+### Multiple cluster support
+
+### Advanced JSON processing
+
+### Cluster monitoring
+
+### Consumer monitoring
 
 ## Deployment
 
