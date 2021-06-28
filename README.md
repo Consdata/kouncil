@@ -17,10 +17,13 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 - [Quick start](#quick-start)
 - [Demo site](#demo-site)
 - [Features](#features)
+  - [Advanced record browsing in table format](#advanced-record-browsing-in-table-format)
+  - [Multiple cluster support](#multiple-cluster-support)
+  - [Cluster monitoring](#cluster-monitoring)
+  - [Consumer monitoring](#consumer-monitoring)
 - [Deployment](#deployment)
   - [Simple configuration](#docker---simple-configuration)
   - [Advanced configuration](#docker---advanced-configuration)
-- [Configuration](#configuration)
 - [Local Development](#local-development)
 - [License](#license)
 - [About](#about)
@@ -46,13 +49,21 @@ If you wish to simply check out Kouncil in action, without having to install it,
 
 ## Features
 
+### Advanced record browsing in table format
+
+Kouncil presents messages in convenient table format. This way even large amounts of complex messages can be easily browsed.
+
 ### Multiple cluster support
 
-### Advanced JSON processing
+If your config spans across multiple Kafka clusters it's no problem for Kouncil. You can switch between them any time, without having to restart or reconfigure anything.
 
 ### Cluster monitoring
 
+
+
 ### Consumer monitoring
+
+
 
 ## Deployment
 
