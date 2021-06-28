@@ -6,7 +6,7 @@ import {SendService} from './send.service';
 import {first} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Servers} from '../servers.service';
+import {ServersService} from '../servers.service';
 
 @Component({
   selector: 'app-send',
@@ -25,7 +25,7 @@ export class SendComponent implements OnChanges {
               private sendService: SendService,
               private dialog: MatDialog,
               private snackbar: MatSnackBar,
-              private servers: Servers,
+              private servers: ServersService,
               @Inject(MAT_DIALOG_DATA) public data: {
                 topicName: string,
                 key: string,

@@ -12,7 +12,7 @@ import {Page} from './page';
 import {SendComponent} from '../send/send.component';
 import {MessageViewComponent} from './message/message-view.component';
 import {DrawerService} from '../util/drawer.service';
-import {Servers} from '../servers.service';
+import {ServersService} from '../servers.service';
 
 @Component({
   selector: 'app-topic',
@@ -45,7 +45,7 @@ export class TopicComponent implements OnInit, OnDestroy {
               private progressBarService: ProgressBarService,
               private topicService: TopicService,
               private drawerService: DrawerService,
-              private servers: Servers) {
+              private servers: ServersService) {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });

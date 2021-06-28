@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {TopicService} from './topic.service';
 import {MatSelectChange} from '@angular/material/select';
-import {Servers} from '../servers.service';
+import {ServersService} from '../servers.service';
 
 @Component({
   selector: 'topic-partitions',
@@ -25,7 +25,7 @@ export class TopicPartitionsComponent {
 
   partitions = [];
 
-  constructor(private topicService: TopicService, private servers: Servers) {
+  constructor(private topicService: TopicService, private servers: ServersService) {
     this.topicService.getNumberOfPartitionsObservable().subscribe(value => {
       this.partitions = Array.from(Array(value).keys());
     });

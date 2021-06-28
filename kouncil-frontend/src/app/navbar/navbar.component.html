@@ -22,7 +22,7 @@
       class="select servers"
       [(value)]="servers.selectedServerId"
       (selectionChange)="serverSelectionChanged()">
-      <mat-option *ngFor="let s of servers.servers" value="{{s.serverId}}">{{s.label}}</mat-option>
+      <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{s.label}}</mat-option>
     </mat-select>
   </mat-form-field>
 </mat-toolbar>

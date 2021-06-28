@@ -9,8 +9,8 @@ import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
-import {Servers} from '../servers.service';
 import {FavouritesService} from '../favourites.service';
+import {ServersService} from '../servers.service';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -26,7 +26,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private topicsService: TopicsService,
               private router: Router,
               private drawerService: DrawerService,
-              private servers: Servers,
+              private servers: ServersService,
               private favouritesService: FavouritesService) {
   }
 

@@ -9,8 +9,8 @@ import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {ConfirmService} from '../../confirm/confirm.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Servers} from '../../servers.service';
 import {FavouritesService} from '../../favourites.service';
+import {ServersService} from '../../servers.service';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -27,7 +27,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
               private router: Router,
-              private servers: Servers,
+              private servers: ServersService,
               private favouritesService: FavouritesService) {
   }
 

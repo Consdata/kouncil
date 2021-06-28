@@ -11,7 +11,7 @@ export class ConsumerGroupDemoService implements ConsumerGroupService {
 
   constructor() { }
 
-  getConsumerGroup(groupId: string): Observable<ConsumerGroupResponse> {
+  getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
     const consumerGroupResponse = new ConsumerGroupResponse();
     consumerGroupResponse.consumerGroupOffset = demoConsumerGroup[groupId];
     return from([consumerGroupResponse]);

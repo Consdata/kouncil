@@ -8,7 +8,7 @@ import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
 import {BrokerComponent} from '../broker/broker.component';
 import {DrawerService} from '../util/drawer.service';
-import {Servers} from '../servers.service';
+import {ServersService} from '../servers.service';
 
 @Component({
   selector: 'kafka-brokers',
@@ -21,7 +21,7 @@ export class BrokersComponent implements OnInit {
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
               private drawerService: DrawerService,
-              private servers: Servers) {
+              private servers: ServersService) {
   }
 
   @ViewChild('table') table: any;
