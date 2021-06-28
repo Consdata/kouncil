@@ -17,7 +17,7 @@ export class SendComponent implements OnChanges {
 
   @ViewChild('sendForm') sendForm: any;
 
-  message: Message = new Message('', '', null, null, null);
+  message: Message = new Message('', '', null, null, null, []);
 
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 

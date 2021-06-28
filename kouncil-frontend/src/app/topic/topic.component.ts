@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {TopicMessages} from 'app/topic/topic';
+import {TopicMessages} from 'app/topic/topic-messages';
 import {SearchService} from 'app/search.service';
 import {Observable, Subscription} from 'rxjs';
 import {JsonGrid} from 'app/topic/json-grid';
@@ -110,6 +110,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
         source: event.row.kouncilValueJson,
+        headers: event.row.headers,
         key: event.row.kouncilKey,
         topicName: this.topicName
       });
@@ -130,7 +131,8 @@ export class TopicComponent implements OnInit, OnDestroy {
       partition: message.partition,
       offset: message.offset,
       key: message.key,
-      timestamp: message.timestamp
+      timestamp: message.timestamp,
+      headers: message.headers
     }));
     this.jsonGrid.replaceObjects(values);
 

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {TopicMessages} from './topic';
+import {TopicMessages} from './topic-messages';
 import {Message} from './message';
 import {TopicBackendService} from './topic.backend.service';
 import {demoTopics} from '../topics/topics.demo.data';
@@ -46,7 +46,8 @@ export class TopicDemoService extends TopicBackendService {
       this.createRandomEvent(),
       partitionOffsets[partition] - (pagination.size * pagination.pageNumber) - i,
       partition,
-      new Date().getTime()
+      new Date().getTime(),
+      []
     );
   }
 

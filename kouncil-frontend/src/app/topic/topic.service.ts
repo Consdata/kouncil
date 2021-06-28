@@ -1,4 +1,4 @@
-import {TopicMessages} from './topic';
+import {TopicMessages} from './topic-messages';
 import {Observable} from 'rxjs';
 import {Page} from './page';
 import {HttpClient} from '@angular/common/http';

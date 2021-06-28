@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TopicService} from './topic.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {TopicMessages} from './topic';
+import {TopicMessages} from './topic-messages';
 import {Page} from './page';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProgressBarService} from '../util/progress-bar.service';
