@@ -67,11 +67,15 @@ If your config spans across multiple Kafka clusters it's no problem for Kouncil.
 
 ### Cluster monitoring
 
-
+<p align="left">
+  <img src=".github/img/kouncil_brokers.png" width="400">
+</p>
 
 ### Consumer monitoring
 
-
+<p align="left">
+  <img src=".github/img/kouncil_consumer_group.png" width="400">
+</p>
 
 ## Deployment
 
