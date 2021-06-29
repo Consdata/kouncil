@@ -1,8 +1,10 @@
 <div class="topic">
   <div class="topic-table-area">
     <div class="topic-toolbar-area">
-      <kafka-toolbar [name]="topicName" (onAction)="onAction($event)"
-                     (onOpenSendPopup)="openSendPopup()"></kafka-toolbar>
+      <app-kafka-toolbar [name]="topicName"
+                         (onAction)="onAction($event)"
+                         (onOpenSendPopup)="openSendPopup()"
+                         (onToggleHeaders)="toggleHeaders()"></app-kafka-toolbar>
     </div>
 
     <ng-template #noDataPlaceholder>

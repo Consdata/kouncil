@@ -1,41 +1,42 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
-  selector: 'kafka-toolbar',
+  selector: 'app-kafka-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent {
 
   @Input() name: string;
   @Output() onAction: EventEmitter<any> = new EventEmitter();
   @Output() onOpenSendPopup: EventEmitter<any> = new EventEmitter();
+  @Output() onToggleHeaders: EventEmitter<any> = new EventEmitter();
 
-  online: boolean = false;
+  online = false;
+  headers = true;
 
   constructor() {
   }
 
-  ngOnInit() {
-  }
-
   onChange() {
-    if(this.online) {
-      this.onAction.emit("play");
+    if (this.online) {
+      this.onAction.emit(LiveUpdateState.PLAY);
     } else {
-      this.onAction.emit("pause");
+      this.onAction.emit(LiveUpdateState.PAUSE);
     }
-  }
-
-  onPause() {
-    this.onAction.emit("pause");
-  }
-
-  onPlay() {
-    this.onAction.emit("play");
   }
 
   openSendPopup() {
     this.onOpenSendPopup.emit();
   }
+
+  toggleHeaders() {
+    this.onToggleHeaders.emit();
+  }
 }
+
+export enum LiveUpdateState {
+  PLAY = 'play',
+  PAUSE = 'pause'
+}
+
