@@ -8,30 +8,30 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class ToolbarComponent {
 
   @Input() name: string;
-  @Output() onAction: EventEmitter<any> = new EventEmitter();
-  @Output() onOpenSendPopup: EventEmitter<any> = new EventEmitter();
-  @Output() onToggleHeaders: EventEmitter<any> = new EventEmitter();
+  @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter();
+  @Output() openSendPopupEvent: EventEmitter<any> = new EventEmitter();
+  @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter();
 
-  online = false;
-  headers = true;
+  liveState = false;
+  showHeaderColumns = true;
 
   constructor() {
   }
 
-  onChange() {
-    if (this.online) {
-      this.onAction.emit(LiveUpdateState.PLAY);
+  toggleLive() {
+    if (this.liveState) {
+      this.toggleLiveEvent.emit(LiveUpdateState.PLAY);
     } else {
-      this.onAction.emit(LiveUpdateState.PAUSE);
+      this.toggleLiveEvent.emit(LiveUpdateState.PAUSE);
     }
   }
 
   openSendPopup() {
-    this.onOpenSendPopup.emit();
+    this.openSendPopupEvent.emit();
   }
 
   toggleHeaders() {
-    this.onToggleHeaders.emit();
+    this.toggleHeadersEvent.emit(this.showHeaderColumns);
   }
 }
 

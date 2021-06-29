@@ -2,9 +2,9 @@
   <div class="topic-table-area">
     <div class="topic-toolbar-area">
       <app-kafka-toolbar [name]="topicName"
-                         (onAction)="onAction($event)"
-                         (onOpenSendPopup)="openSendPopup()"
-                         (onToggleHeaders)="toggleHeaders()"></app-kafka-toolbar>
+                         (toggleLiveEvent)="toggleLiveEventHandler($event)"
+                         (openSendPopupEvent)="openSendPopup()"
+                         (toggleHeadersEvent)="toggleHeadersEventHandler($event)"></app-kafka-toolbar>
     </div>
 
     <ng-template #noDataPlaceholder>

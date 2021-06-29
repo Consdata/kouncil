@@ -100,8 +100,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         };
     }
 
-    onAction(action: string) {
-        console.log('Toolbar action: ' + action);
+    toggleLiveEventHandler(action: LiveUpdateState) {
         if (LiveUpdateState.PAUSE === action) {
             this.paused = true;
         } else if (LiveUpdateState.PLAY === action) {
@@ -211,12 +210,12 @@ export class TopicComponent implements OnInit, OnDestroy {
         return this.progressBarService.progressSub.getValue();
     }
 
-    toggleHeaders() {
+    toggleHeadersEventHandler(showHeaderColumns: boolean): void {
+        this.showHeaderColumns = showHeaderColumns;
         if (this.showHeaderColumns) {
-            this.columns = this.nonHeaderColumns;
-        } else {
             this.columns = this.allColumns;
+        } else {
+            this.columns = this.nonHeaderColumns;
         }
-        this.showHeaderColumns = !this.showHeaderColumns;
     }
 }
