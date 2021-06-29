@@ -19,14 +19,13 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 - [Features](#features)
   - [Advanced record browsing in table format](#advanced-record-browsing-in-table-format)
   - [Multiple cluster support](#multiple-cluster-support)
-  - [Cluster monitoring](#cluster-monitoring)
   - [Consumer monitoring](#consumer-monitoring)
+  - [Cluster monitoring](#cluster-monitoring)
 - [Deployment](#deployment)
   - [Simple configuration](#docker---simple-configuration)
   - [Advanced configuration](#docker---advanced-configuration)
 - [Local Development](#local-development)
-- [License](#license)
-- [About](#about)
+
 
 ## Quick start
 
@@ -51,7 +50,7 @@ If you wish to simply check out Kouncil in action, without having to install it,
 
 ### Advanced record browsing in table format
 
-Kouncil presents messages in convenient table format. This way even large amounts of complex messages can be easily browsed.
+Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can also choose between browsing single partition and topic as a whole. If you wish to examine any of the messages more closely you can view it's source.
 
 <p align="left">
   <img src=".github/img/kouncil_topic_details_border.png" width="400">
@@ -63,19 +62,25 @@ Kouncil presents messages in convenient table format. This way even large amount
 
 ### Multiple cluster support
 
-If your config spans across multiple Kafka clusters it's no problem for Kouncil. You can switch between them any time, without having to restart or reconfigure anything.
-
-### Cluster monitoring
-
-<p align="left">
-  <img src=".github/img/kouncil_brokers.png" width="400">
-</p>
+If your config spans across multiple Kafka clusters it's no problem for Kouncil. You can switch between them at any time, without having to restart or reconfigure anything.
 
 ### Consumer monitoring
 
+Monitoring your consumer groups is one of the most important things when dealing with Kafka. Are my consumers even connected to Kafka? Do the process process events? If so, how fast? How long until they finish their workload? Kouncil can help you answer all those questions.
+
 <p align="left">
-  <img src=".github/img/kouncil_consumer_group.png" width="400">
+  <img src=".github/img/kouncil_consumer_group.png" width="820">
 </p>
+
+
+### Cluster monitoring
+
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected do cluster, but also their current resource consumption.
+
+<p align="left">
+  <img src=".github/img/kouncil_brokers.png" width="820">
+</p>
+
 
 ## Deployment
 
@@ -275,4 +280,3 @@ after successful release, remember to merge back to master:
 ```bash
 git merge origin/release
 ```
-## License
