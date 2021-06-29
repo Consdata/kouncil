@@ -3,14 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {Server} from './server';
 import {ServersService} from './servers.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ServersBackendService implements ServersService {
-  servers: Server[] = [];
-  selectedServerId: string;
+@Injectable()
+export class ServersBackendService extends ServersService {
 
   constructor(private http: HttpClient) {
+    super();
   }
 
   load() {
@@ -37,13 +34,4 @@ export class ServersBackendService implements ServersService {
       );
     });
   }
-
-  getSelectedServerId() {
-    return this.selectedServerId;
-  }
-
-  getServers(): Server[] {
-    return this.servers;
-  }
-
 }

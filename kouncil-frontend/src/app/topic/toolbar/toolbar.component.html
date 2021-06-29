@@ -1,7 +1,10 @@
 <div class="kafka-toolbar">
   <app-breadcrumb [parentName]="'Topics'" [parentLink]="'/topics'" [name]="name"></app-breadcrumb>
   <div class="spacer"></div>
-  <mat-slide-toggle [class.active]="online === true" disableRipple class="switch" (change)="onChange()" [(ngModel)]="online">
+  <mat-slide-toggle [class.active]="showHeaderColumns === true" disableRipple class="switch" (change)="toggleHeaders()" [(ngModel)]="showHeaderColumns">
+    Headers
+  </mat-slide-toggle>
+  <mat-slide-toggle [class.active]="liveState === true" disableRipple class="switch" (change)="toggleLive()" [(ngModel)]="liveState">
     Live update
     <div class="circle"></div>
   </mat-slide-toggle>
