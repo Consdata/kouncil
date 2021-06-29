@@ -53,6 +53,14 @@ If you wish to simply check out Kouncil in action, without having to install it,
 
 Kouncil presents messages in convenient table format. This way even large amounts of complex messages can be easily browsed.
 
+<p align="left">
+  <img src=".github/img/kouncil_topic_details_border.png" width="400">
+  <span>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </span>
+  <img src=".github/img/kouncil_topic_event_details.png" width="400">
+</p>
+
 ### Multiple cluster support
 
 If your config spans across multiple Kafka clusters it's no problem for Kouncil. You can switch between them any time, without having to restart or reconfigure anything.
