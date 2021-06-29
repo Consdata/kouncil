@@ -46,7 +46,11 @@ import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
 import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ServersService, serverServiceFactory} from './servers.service';
+import {ServersService} from './servers.service';
+import {environment} from '../environments/environment';
+import {Backend} from './app.backend';
+import {ServersBackendService} from './servers.backend.service';
+import {ServersDemoService} from './servers.demo.service';
 
 @NgModule({
   declarations: [
@@ -98,11 +102,6 @@ import {ServersService, serverServiceFactory} from './servers.service';
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    }, {
-      provide: APP_INITIALIZER,
-      useFactory: configProviderFactory,
-      deps: [ServersService],
-      multi: true
     },
     SearchService,
     topicServiceProvider,
@@ -130,6 +129,11 @@ import {ServersService, serverServiceFactory} from './servers.service';
       provide: ServersService,
       useFactory: serverServiceFactory,
       deps: [HttpClient]
+    }, {
+      provide: APP_INITIALIZER,
+      useFactory: configProviderFactory,
+      deps: [ServersService],
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
@@ -139,4 +143,15 @@ export class AppModule {
 
 export function configProviderFactory(provider: ServersService) {
   return () => provider.load();
+}
+
+export function serverServiceFactory(http: HttpClient): ServersService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new ServersBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new ServersDemoService();
+    }
+  }
 }

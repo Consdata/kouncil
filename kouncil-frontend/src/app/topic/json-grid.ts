@@ -4,6 +4,9 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class JsonGrid {
 
+  constructor(private datePipe: DatePipe) {
+  }
+
   private static ROWS_LIMIT = 1000;
   private static FRESH_ROWS_TIMEOUT_MILLIS = 1000;
   private static EXPAND_LIST_LIMIT = 10;
@@ -14,7 +17,26 @@ export class JsonGrid {
   private columnNames = new Set<string>();
   private rows: any[] = [];
 
-  constructor(private datePipe: DatePipe) {
+  private static isScalar(propertyValue: any) {
+    return typeof propertyValue === 'string'
+      || typeof propertyValue === 'number'
+      || typeof propertyValue === 'boolean';
+  }
+
+  private static escapeHtml(propertyValue) {
+    if (typeof propertyValue === 'string') {
+      return propertyValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    } else {
+      return propertyValue;
+    }
+  }
+
+  private static limitChars(propertyValue) {
+    if (typeof propertyValue === 'string') {
+      return propertyValue.substr(0, 100);
+    } else {
+      return propertyValue;
+    }
   }
 
   replaceObjects(objects: any[]) {
@@ -23,6 +45,13 @@ export class JsonGrid {
     objects.forEach(object => {
       try {
         const row = {};
+        if (object.headers) {
+          object.headers.forEach( header => {
+            const headerPath = 'H[' + header.key + ']';
+            row[headerPath] = header.value;
+            this.addColumn(headerPath);
+          });
+        }
         if (object.valueJson) {
           Object.keys(object.valueJson).forEach(propertyName => {
             this.handleObject(0, object.valueJson[propertyName], row, propertyName);
@@ -62,9 +91,9 @@ export class JsonGrid {
     if (level > JsonGrid.MAX_OBJECT_DEPTH) {
       return;
     }
-    if (this.isScalar(value) || value === null) { // scalar value
+    if (JsonGrid.isScalar(value) || value === null) { // scalar value
       this.addColumn(path);
-      row[path] = this.escapeHtml(this.limitChars(value));
+      row[path] = JsonGrid.escapeHtml(JsonGrid.limitChars(value));
     } else if (typeof value === 'object' && Array.isArray(value)) { // array
       if (value.length <= JsonGrid.EXPAND_LIST_LIMIT) {
         value.forEach((arrayValue, i) => this.handleObject(level + 1, arrayValue, row, `${path}[${i}]`));
@@ -95,34 +124,17 @@ export class JsonGrid {
     }).join('.');
   }
 
-  private limitChars(propertyValue) {
-    if (typeof propertyValue === 'string') {
-      return propertyValue.substr(0, 100);
-    } else {
-      return propertyValue;
-    }
-  }
-
-  private escapeHtml(propertyValue) {
-    if (typeof propertyValue === 'string') {
-      return propertyValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    } else {
-      return propertyValue;
-    }
-  }
-
-  private isScalar(propertyValue: any) {
-    return typeof propertyValue === 'string'
-      || typeof propertyValue === 'number'
-      || typeof propertyValue === 'boolean';
-  }
-
   private limitRows() {
     this.rows.splice(JsonGrid.ROWS_LIMIT, this.rows.length - JsonGrid.ROWS_LIMIT);
   }
 
   private sortColumns() {
     const sorted = new Set<Column>();
+    Array.from(this.columns.values()).forEach(column => {
+      if (column.name.startsWith('H[')) {
+        sorted.add(column);
+      }
+    });
     Array.from(this.columns.values()).forEach(column => {
       if (column.name.indexOf('.') === -1) {
         sorted.add(column);
