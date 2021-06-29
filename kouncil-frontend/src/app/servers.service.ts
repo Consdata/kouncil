@@ -1,48 +1,38 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {environment} from '../environments/environment';
+import {Backend} from './app.backend';
+import {ServersBackendService} from './servers.backend.service';
+import {ServersDemoService} from './servers.demo.service';
+import {Server} from './server';
 
-@Injectable()
-export class Servers {
-  servers: Server[] = [];
+@Injectable({
+  providedIn: 'root'
+})
+export class ServersService {
   selectedServerId: string;
-
-  constructor(private http: HttpClient) {
+  constructor() {
   }
 
   load() {
-    return new Promise((resolve) => {
-      this.http.get(`/api/connection`).subscribe(
-        value => {
-          if (value != null) {
-            const lastSelectedServer = localStorage.getItem('lastSelectedServer');
-            for (const key in value) {
-              if (value.hasOwnProperty(key)) {
-                this.servers.push(new Server(key, value[key]));
-                if (key === lastSelectedServer) {
-                  this.selectedServerId = key;
-                }
-              }
-            }
-
-            if (this.selectedServerId === undefined) {
-              this.selectedServerId = this.servers[0].serverId;
-            }
-          }
-          resolve(true);
-        }
-      );
-    });
   }
 
   getSelectedServerId() {
     return this.selectedServerId;
   }
 
-}
-
-export class Server {
-  constructor(public serverId: string, public label: string) {
+  getServers(): Server[] {
+    return null;
   }
 }
 
-
+export function serverServiceFactory(http: HttpClient): ServersService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new ServersBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new ServersDemoService();
+    }
+  }
+}

@@ -43,10 +43,10 @@ import {BrokerComponent} from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
-import {Servers} from './servers.service';
 import {FileSizePipe} from './brokers/filze-size.pipe';
 import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {ServersService, serverServiceFactory} from './servers.service';
 
 @NgModule({
   declarations: [
@@ -98,12 +98,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    },
-    Servers,
-    {
+    }, {
       provide: APP_INITIALIZER,
       useFactory: configProviderFactory,
-      deps: [Servers],
+      deps: [ServersService],
       multi: true
     },
     SearchService,
@@ -128,6 +126,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
       provide: SendService,
       useFactory: sendServiceFactory,
       deps: [HttpClient]
+    }, {
+      provide: ServersService,
+      useFactory: serverServiceFactory,
+      deps: [HttpClient]
     }
   ],
   bootstrap: [AppComponent]
@@ -135,6 +137,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 export class AppModule {
 }
 
-export function configProviderFactory(provider: Servers) {
+export function configProviderFactory(provider: ServersService) {
   return () => provider.load();
 }

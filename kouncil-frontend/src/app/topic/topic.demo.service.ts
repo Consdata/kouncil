@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {TopicMessages} from './topic';
+import {TopicMessages} from './topic-messages';
 import {Message} from './message';
 import {TopicBackendService} from './topic.backend.service';
 import {demoTopics} from '../topics/topics.demo.data';
@@ -15,7 +15,7 @@ export class TopicDemoService extends TopicBackendService {
     super(http, progressBarService);
   }
 
-  getMessages(topicName: string) {
+  getMessages(serverId: string, topicName: string) {
     const partitionOffsets = {};
     let totalResults = 0;
     const partitions = demoTopics.filter(t => t.name === topicName)[0].partitions;
@@ -46,7 +46,8 @@ export class TopicDemoService extends TopicBackendService {
       this.createRandomEvent(),
       partitionOffsets[partition] - (pagination.size * pagination.pageNumber) - i,
       partition,
-      new Date().getTime()
+      new Date().getTime(),
+      []
     );
   }
 

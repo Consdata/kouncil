@@ -4,6 +4,19 @@
     <div class="spacer"></div>
     <mat-icon mat-dialog-close class="close">close</mat-icon>
   </div>
+  <div class="headers-table">
+    <ngx-datatable *ngIf="data.headers.length > 0 && isAnimationDone" class="headers-table-detail material"
+                   [rows]="data.headers"
+                   [rowHeight]="38"
+                   [headerHeight]="38"
+                   [scrollbarH]="false"
+                   [scrollbarV]="false"
+                   [columnMode]="'force'">
+      <ngx-datatable-column prop="key" name="header key"></ngx-datatable-column>
+      <ngx-datatable-column prop="value" name="header value"></ngx-datatable-column>
+    </ngx-datatable>
+    <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
+  </div>
 
   <ngx-json-viewer [json]="data.source" class="json-details"></ngx-json-viewer>
 

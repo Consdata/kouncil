@@ -35,6 +35,7 @@ export class JsonGrid {
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
         row['kouncilValueJson'] = object.valueJson;
+        row['headers'] = object.headers;
         this.rows.unshift(row);
       } catch (e) {
         this.rows.unshift({});

@@ -10,6 +10,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,6 +134,7 @@ public class TopicController {
                             .offset(record.offset())
                             .partition(record.partition())
                             .timestamp(record.timestamp())
+                            .headers(mapHeaders(record.headers()))
                             .build());
                 }
             }
@@ -153,6 +156,17 @@ public class TopicController {
             return topicMessagesDto;
 
         }
+    }
+
+    private List<TopicMessageHeader> mapHeaders(Headers headers) {
+        List<TopicMessageHeader> result = new ArrayList<>();
+        for (Header header : headers) {
+            result.add(TopicMessageHeader.builder()
+                    .key(header.key())
+                    .value(header.value() == null ? null : new String(header.value()))
+                    .build());
+        }
+        return result;
     }
 
     @PostMapping("/api/topic/send/{topicName}/{count}")

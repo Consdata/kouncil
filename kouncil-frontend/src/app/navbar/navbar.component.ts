@@ -3,7 +3,9 @@ import {SearchService} from 'app/search.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {Servers} from '../servers.service';
+import {environment} from '../../environments/environment';
+import {Backend} from '../app.backend';
+import {ServersService} from '../servers.service';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -17,7 +19,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   phrase: string;
   backendVersion$: Observable<string>;
 
-  constructor(private searchService: SearchService, private router: Router, private http: HttpClient, public servers: Servers) {
+  constructor(private searchService: SearchService,
+              private router: Router,
+              private http: HttpClient,
+              public servers: ServersService) {
     router.events.subscribe((val) => {
       this.searchInputElementRef.nativeElement.value = '';
       this.searchInputElementRef.nativeElement.focus();
@@ -25,7 +30,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   public serverSelectionChanged() {
-    localStorage.setItem('lastSelectedServer', this.servers.selectedServerId);
+    localStorage.setItem('lastSelectedServer', this.servers.getSelectedServerId());
     this.router.navigate([this.router.url]);
   }
 
@@ -34,7 +39,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
+    switch (environment.backend) {
+      case Backend.SERVER: {
+        this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
+        break;
+      }
+      case Backend.DEMO: {
+        this.backendVersion$ = new Observable( observer => observer.next('DEMO'));
+        break;
+      }
+    }
   }
 
   onPhraseChange(phrase: string) {
