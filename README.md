@@ -15,8 +15,8 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 ## Table of Contents
 
 - [Quick start](#quick-start)
-- [Demo site](#demo-site)
-- [Features](#features)
+- [Demo app](#demo-app)
+- [Main features](#features)
   - [Advanced record browsing in table format](#advanced-record-browsing-in-table-format)
   - [Multiple cluster support](#multiple-cluster-support)
   - [Consumer monitoring](#consumer-monitoring)
@@ -34,7 +34,7 @@ Easiest way to start working with Kouncil is by using Docker:
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
-There is only one required environment variable, `bootstrapServers`, that should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
+There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
 
 Additionaly, Koucil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several different clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
@@ -42,15 +42,17 @@ After the `docker run` command head to [http://localhost](http://localhost).
 
 For more advanced configuration consult the [Deployment](#deployment) section.
 
-## Demo site
+## Demo app
 
 If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing main features of Kouncil. Demo site can be found [here](https://kouncil-demo.web.app/)
 
 ## Features
 
+Here are some of the main features of Kouncil. This list is not exhaustive, check out our [demo app](https://kouncil-demo.web.app/) or [quickly install Kouncil](#quick-start) to experience them first-hand.
+
 ### Advanced record browsing in table format
 
-Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can also choose between browsing single partition and topic as a whole. If you wish to examine any of the messages more closely you can view it's source.
+Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing single partition or topic as a whole. If you wish to examine any of the messages more closely you can view it's source, copy it to clipboard, or even post it again.
 
 <p align="left">
   <img src=".github/img/kouncil_topic_details_border.png" width="400">
@@ -66,7 +68,7 @@ If your config spans across multiple Kafka clusters it's no problem for Kouncil.
 
 ### Consumer monitoring
 
-Monitoring your consumer groups is one of the most important things when dealing with Kafka. Are my consumers even connected to Kafka? Do the process process events? If so, how fast? How long until they finish their workload? Kouncil can help you answer all those questions.
+Monitoring your consumer groups is one of the most important things when dealing with Kafka. Are my consumers even connected to Kafka? Do they process events? If so, how fast? How long until they finish their workload? Kouncil can help you answer all those questions.
 
 <p align="left">
   <img src=".github/img/kouncil_consumer_group.png" width="820">
@@ -75,7 +77,7 @@ Monitoring your consumer groups is one of the most important things when dealing
 
 ### Cluster monitoring
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected do cluster, but also their current resource consumption.
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected do cluster, but also their current resource consumption (ssing Kouncil's [advanced config](#docker---advanced-configuration))
 
 <p align="left">
   <img src=".github/img/kouncil_brokers.png" width="820">
@@ -98,7 +100,7 @@ docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/k
 
 `bootstrapServers` variable expects a comma separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about single broker from cluster in order to work.
 
-Simplest possible configuration would look like that:
+Simplest possible configuration looks like this:
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" consdata/kouncil:latest
