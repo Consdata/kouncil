@@ -34,9 +34,9 @@ Easiest way to start working with Kouncil is by using Docker:
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
-There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`) and you are good to go, Kouncil will automatically do the rest!
+There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`), and you are good to go, Kouncil will automatically do the rest!
 
-Additionaly, Koucil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several different clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
+Additionaly, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
 After the `docker run` command head to [http://localhost](http://localhost).
 
@@ -52,7 +52,7 @@ Here are some of the main features of Kouncil. This list is not exhaustive, chec
 
 ### Advanced record browsing in table format
 
-Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing single partition or topic as a whole. If you wish to examine any of the messages more closely you can view it's source, copy it to clipboard, or even post it again.
+Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing single partition or topic as a whole. If you wish to examine any of the messages more closely you can view its source, copy it to clipboard, or even post it again.
 
 <p align="left">
   <img src=".github/img/kouncil_topic_details_border.png" width="400">
@@ -77,7 +77,7 @@ Monitoring your consumer groups is one of the most important things when dealing
 
 ### Cluster monitoring
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected do cluster, but also their current resource consumption (ssing Kouncil's [advanced config](#docker---advanced-configuration))
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to cluster, but also their current resource consumption (using Kouncil's [advanced config](#docker---advanced-configuration))
 
 <p align="left">
   <img src=".github/img/kouncil_brokers.png" width="820">
@@ -88,7 +88,7 @@ Monitoring your cluster's health can be as important as monitoring your consumer
 
 There are two ways in which Kouncil can be configured:
 * simple - suitable for most cases, relying solely on `docker run` parameters
-* advanced - suitable for larger configurations. Provided as an external file, and thus can be tracked in version control. It also exposes additional configuration options, which are not avaiable in simple configuration
+* advanced - suitable for larger configurations. Provided as an external file, and thus can be tracked in version control. It also exposes additional configuration options, which are not available in simple configuration
 
 ### Docker - simple configuration
 
@@ -100,7 +100,7 @@ docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/k
 
 `bootstrapServers` variable expects a comma separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about single broker from cluster in order to work.
 
-Simplest possible configuration looks like this:
+The simplest possible configuration looks like this:
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" consdata/kouncil:latest
@@ -177,7 +177,7 @@ kouncil:
           port: 9094
           jmxPort: 5090
 ```
-This example assumes that broker does not require any kind of authentication to access JMX metrics - you only need to specify JMX port. If thats not the case, and JMX authentication is turned on, you can also specify JMX user and password:
+This example assumes that broker does not require any kind of authentication to access JMX metrics - you only need to specify JMX port. If that's not the case, and JMX authentication is turned on, you can also specify JMX user and password:
 
 ```yaml
 kouncil:
@@ -217,7 +217,7 @@ kouncil:
         - host: 192.10.0.3
           port: 9094
 ```
-All of the brokers inside `transaction-cluster` will share the same JMX configuration (`jmxPort` = `5088`, `jmxUser` = `jmxAdmin`, `jmxPassword` = `jmxPassword`).
+All brokers inside `transaction-cluster` will share the same JMX configuration (`jmxPort` = `5088`, `jmxUser` = `jmxAdmin`, `jmxPassword` = `jmxPassword`).
 
 Propagation of JMX parameters works independently for each of those parameters. For example, each of the brokers may have the same JMX user and password, but different port:
 
