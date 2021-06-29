@@ -46,7 +46,17 @@ import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
 import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ServersService, serverServiceFactory} from './servers.service';
+import {ServersService} from './servers.service';
+import {environment} from '../environments/environment';
+import {Backend} from './app.backend';
+import {ServersBackendService} from './servers.backend.service';
+import {ServersDemoService} from './servers.demo.service';
+import { TrackComponent } from './track/track.component';
+import { TrackFilterComponent } from './track/track-filter/track-filter.component';
+import { TrackResultComponent } from './track/track-result/track-result.component';
+import {TrackService} from './track/track.service';
+import {TrackBackendService} from './track/track.backend.service';
+import {TrackDemoService} from './track/track.demo.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +79,10 @@ import {ServersService, serverServiceFactory} from './servers.service';
     ConfirmComponent,
     BrokerComponent,
     MessageViewComponent,
-    FileSizePipe
+    FileSizePipe,
+    TrackComponent,
+    TrackFilterComponent,
+    TrackResultComponent
   ],
     imports: [
         BrowserModule,
@@ -98,11 +111,6 @@ import {ServersService, serverServiceFactory} from './servers.service';
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    }, {
-      provide: APP_INITIALIZER,
-      useFactory: configProviderFactory,
-      deps: [ServersService],
-      multi: true
     },
     SearchService,
     topicServiceProvider,
@@ -130,6 +138,15 @@ import {ServersService, serverServiceFactory} from './servers.service';
       provide: ServersService,
       useFactory: serverServiceFactory,
       deps: [HttpClient]
+    }, {
+      provide: TrackService,
+      useFactory: trackServiceFactory,
+      deps: [HttpClient]
+    }, {
+      provide: APP_INITIALIZER,
+      useFactory: configProviderFactory,
+      deps: [ServersService],
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
@@ -139,4 +156,26 @@ export class AppModule {
 
 export function configProviderFactory(provider: ServersService) {
   return () => provider.load();
+}
+
+export function serverServiceFactory(http: HttpClient): ServersService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new ServersBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new ServersDemoService();
+    }
+  }
+}
+
+export function trackServiceFactory(http: HttpClient): TrackService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new TrackBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new TrackDemoService();
+    }
+  }
 }

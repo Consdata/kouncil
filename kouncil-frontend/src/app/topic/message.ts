@@ -6,7 +6,8 @@ export class Message {
                public offset: number,
                public partition: number,
                public timestamp: number,
-               public headers: MessageHeader[]) {
+               public headers: MessageHeader[],
+               public topic: string) {
 
    }
 }
