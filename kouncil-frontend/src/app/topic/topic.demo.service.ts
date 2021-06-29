@@ -101,16 +101,4 @@ export class TopicDemoService extends TopicBackendService {
     });
   }
 
-  private randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  private formatAmount(x: number): string {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  }
-
-  private randomDate(start: Date, end: Date): Date {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  }
-
 }
