@@ -4,9 +4,9 @@
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
-[Kouncil](https://kounci.io) lets you manage your Kafka clusters using modern web interface. It's [free & open source](#license), [feature rich](#features) and [easy to setup](#quick-start)! 
+[Kouncil](https://kounci.io) lets you manage your Kafka clusters using a modern web interface. It's [free & open source](#license), [feature-rich](#features) and [easy to set up](#quick-start)! 
 
-Here are some of the main features. For more comprehensive list checkout the [features section](#features).
+Here are some of the main features. For a more comprehensive list check out the [features section](#features).
 * Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
@@ -29,14 +29,14 @@ Here are some of the main features. For more comprehensive list checkout the [fe
 
 ## Quick start
 
-Easiest way to start working with Kouncil is by using Docker:
+The easiest way to start working with Kouncil is by using Docker:
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
 There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`), and you are good to go, Kouncil will automatically do the rest!
 
-Additionaly, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
+Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
 After the `docker run` command head to [http://localhost](http://localhost).
 
@@ -44,7 +44,7 @@ For more advanced configuration consult the [Deployment](#deployment) section.
 
 ## Demo app
 
-If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing main features of Kouncil. Demo site can be found [here](https://kouncil-demo.web.app/)
+If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app/)
 
 ## Features
 
@@ -52,7 +52,7 @@ Here are some of the main features of Kouncil. This list is not exhaustive, chec
 
 ### Advanced record browsing in table format
 
-Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing single partition or topic as a whole. If you wish to examine any of the messages more closely you can view its source, copy it to clipboard, or even post it again.
+Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing a single partition or a topic as a whole. If you wish to examine any of the messages more closely you can view its source, copy it to clipboard, or even post it again.
 
 <p align="left">
   <img src=".github/img/kouncil_topic_details_border.png" width="400">
@@ -77,7 +77,7 @@ Monitoring your consumer groups is one of the most important things when dealing
 
 ### Cluster monitoring
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to cluster, but also their current resource consumption (using Kouncil's [advanced config](#docker---advanced-configuration))
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](#docker---advanced-configuration))
 
 <p align="left">
   <img src=".github/img/kouncil_brokers.png" width="820">
@@ -88,7 +88,7 @@ Monitoring your cluster's health can be as important as monitoring your consumer
 
 There are two ways in which Kouncil can be configured:
 * simple - suitable for most cases, relying solely on `docker run` parameters
-* advanced - suitable for larger configurations. Provided as an external file, and thus can be tracked in version control. It also exposes additional configuration options, which are not available in simple configuration
+* advanced - suitable for larger configurations. Provided as an external file, and thus can be tracked in version control. It also exposes additional configuration options, which are not available in the simple configuration
 
 ### Docker - simple configuration
 
@@ -98,7 +98,7 @@ Simple configuration is passed directly into `docker run` command using `bootstr
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
 
-`bootstrapServers` variable expects a comma separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about single broker from cluster in order to work.
+`bootstrapServers` variable expects a comma-separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about a single broker from the cluster in order to work.
 
 The simplest possible configuration looks like this:
 
@@ -106,9 +106,9 @@ The simplest possible configuration looks like this:
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" consdata/kouncil:latest
 ```
 
-After that, visit [http://localhost](http://localhost) in your browser, and you should be greeted with list of topics from your cluster.
+After that, visit [http://localhost](http://localhost) in your browser, and you should be greeted with a list of topics from your cluster.
 
-If you have multiple clusters, and wish to manage them all with Kouncil, you can do so by simply specifying one broker from each cluster using comma separated list:
+If you have multiple clusters and wish to manage them all with Kouncil, you can do so by simply specifying one broker from each cluster using comma-separated list:
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092,kafka1.another.cluster:8001" consdata/kouncil:latest
@@ -124,9 +124,9 @@ That will cause Kouncil to listen on port `7070`.
 
 ### Docker - advanced configuration
 
-If you have many Kafka clusters, configuring them using `bootstrapServers` may become cumbersome. It is also impossible to express more sophisticated configuration options using such simple configuration pattern.
+If you have many Kafka clusters, configuring them using `bootstrapServers` may become cumbersome. It is also impossible to express more sophisticated configuration options using such a simple configuration pattern.
 
-To address this issues Kouncil allows you to provide external configuration in yaml file.
+To address these issues Kouncil allows you to provide an external configuration in a yaml file.
 
 Kouncil expects this configuration file to be named `kouncil.yaml`. After that it's only a matter of binding a directory containing that file into docker - let's say your `kouncil.yaml` lives in `/home/users/test/Kouncil/config/`, that's how your `docker run` should look:
 
@@ -156,7 +156,7 @@ kouncil:
         - host: kouncil.kafka.local
           port: 8002
 ```
-This example shows two clusters, named `transaction-cluster` and `kouncil` respectively. Each cluster needs to have its name specified. After that comes a list of brokers that make up this cluster - each of which consisting of broker's host and port on which it's listening on.
+This example shows two clusters, named `transaction-cluster` and `kouncil` respectively. Each cluster needs to have its name specified. After that comes a list of brokers that make up this cluster - each of which consisting of the broker's host and port on which it's listening on.
 
 #### Advanced config - JMX monitoring
 
@@ -200,7 +200,7 @@ kouncil:
           jmxUser: jmxAdmin
           jmxPassword: jmxPassword
 ```
-It quickly becomes clear, that in many cases those properties (`jmxPort`, `jmxUser`, `jmxPassword`) will be identical for each of the brokers inside cluster. For that reason, you can also specify them on a cluster level, and they will propagate to each broker:
+It quickly becomes clear, that in many cases those properties (`jmxPort`, `jmxUser`, `jmxPassword`) will be identical for each of the brokers inside the cluster. For that reason, you can also specify them on a cluster level, and they will propagate to each broker:
 
 ```yaml
 kouncil:
@@ -239,14 +239,14 @@ kouncil:
           jmxPort: 5090
 ```
 
-In case of both simple and advanced configuration being present, advanced configuration takes precedence.
+In the case of both simple and advanced configuration being present, the advanced configuration takes precedence.
 
 ## Local Development
-For a backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
+For the backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
 
-For a frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
+For the frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
 
-For a local Kafka with two test topics, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your docker host IP)
+For the local Kafka with two test topics, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your docker host IP)
 ```yaml
 version: '2'
 services:
@@ -278,7 +278,7 @@ To release just push to release branch:
 git push origin master:release
 ```
 
-after successful release, remember to merge back to master:
+after a successful release, remember to merge back to master:
 ```bash
 git merge origin/release
 ```
