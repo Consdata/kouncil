@@ -89,7 +89,8 @@ export class TopicDemoService extends TopicBackendService {
       partitionOffsets[partition] - (pagination.size * pagination.pageNumber) - i,
       partition,
       new Date().getTime(),
-      [new MessageHeader('traceId', this.uuidv4())]
+      [new MessageHeader('traceId', this.uuidv4())],
+      ''
     );
   }
 

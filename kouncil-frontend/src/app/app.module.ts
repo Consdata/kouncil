@@ -51,6 +51,12 @@ import {environment} from '../environments/environment';
 import {Backend} from './app.backend';
 import {ServersBackendService} from './servers.backend.service';
 import {ServersDemoService} from './servers.demo.service';
+import { TrackComponent } from './track/track.component';
+import { TrackFilterComponent } from './track/track-filter/track-filter.component';
+import { TrackResultComponent } from './track/track-result/track-result.component';
+import {TrackService} from './track/track.service';
+import {TrackBackendService} from './track/track.backend.service';
+import {TrackDemoService} from './track/track.demo.service';
 
 @NgModule({
   declarations: [
@@ -73,7 +79,10 @@ import {ServersDemoService} from './servers.demo.service';
     ConfirmComponent,
     BrokerComponent,
     MessageViewComponent,
-    FileSizePipe
+    FileSizePipe,
+    TrackComponent,
+    TrackFilterComponent,
+    TrackResultComponent
   ],
     imports: [
         BrowserModule,
@@ -130,6 +139,10 @@ import {ServersDemoService} from './servers.demo.service';
       useFactory: serverServiceFactory,
       deps: [HttpClient]
     }, {
+      provide: TrackService,
+      useFactory: trackServiceFactory,
+      deps: [HttpClient]
+    }, {
       provide: APP_INITIALIZER,
       useFactory: configProviderFactory,
       deps: [ServersService],
@@ -152,6 +165,17 @@ export function serverServiceFactory(http: HttpClient): ServersService {
     }
     case Backend.DEMO: {
       return new ServersDemoService();
+    }
+  }
+}
+
+export function trackServiceFactory(http: HttpClient): TrackService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new TrackBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new TrackDemoService();
     }
   }
 }

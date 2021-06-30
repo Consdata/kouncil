@@ -1,0 +1,29 @@
+@import 'palette';
+
+.filter-title {
+  margin: 2px 20px 2px 20px;
+  font-size: 14px;
+}
+
+.filter-input {
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+  padding: 2px 2px 2px 2px;
+  margin: 2px 20px 2px 20px;
+  font-size: 14px;
+  line-height: $default-line-height;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+.filter-input:hover {
+  border: 1px solid $main-40;
+  transition: all $default-transition-time;
+}
+
+.filter-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 3px 1px $blue-60;
+  transition: all $default-transition-time;
+}
