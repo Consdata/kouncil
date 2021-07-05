@@ -5,7 +5,6 @@ import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -30,29 +28,13 @@ public class TopicsController {
         try {
             AdminClient adminClient = kafkaConnectionService.getAdminClient(serverId);
             ListTopicsResult listTopicsResult = adminClient.listTopics();
-            List<String> children = new ArrayList<>(listTopicsResult.names().get());
-            Collections.sort(children);
-            // XXX: optimization: describe all topics in one call
-            List<TopicMetadata> topics = children.stream().map(name -> getTopicMetadata(name, adminClient)).collect(Collectors.toList());
+            Map<String, TopicDescription> topicDescriptions = adminClient.describeTopics(listTopicsResult.names().get()).all().get();
+            List<TopicMetadata> topics = new ArrayList<>();
+            topicDescriptions.forEach((k, v) -> topics.add(TopicMetadata.builder().name(k).partitions(v.partitions().size()).build()));
+            Collections.sort(topics);
             return TopicsDto.builder().topics(topics).build();
         } catch (Exception e) {
             throw new KouncilRuntimeException(e);
         }
     }
-
-    private TopicMetadata getTopicMetadata(String name, AdminClient adminClient) {
-        try {
-            DescribeTopicsResult describeTopicsResult = adminClient.describeTopics(Collections.singletonList(name));
-            Map<String, TopicDescription> topics = describeTopicsResult.all().get();
-            TopicDescription topicDescription = topics.get(name);
-            int partitions = -1;
-            if (topicDescription != null) {
-                partitions = topicDescription.partitions().size();
-            }
-            return TopicMetadata.builder().name(name).partitions(partitions).build();
-        } catch (Exception e) {
-            throw new KouncilRuntimeException(e);
-        }
-    }
-
 }

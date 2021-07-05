@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
 import {Title} from '@angular/platform-browser';
@@ -8,6 +8,7 @@ import {DrawerService} from '../../util/drawer.service';
 import {ServersService} from '../../servers.service';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
+import {Message} from '../../topic/message';
 
 @Component({
   selector: 'app-track-result',
@@ -20,13 +21,15 @@ export class TrackResultComponent implements OnInit {
   searchSubscription: Subscription;
   @ViewChild('table') table: any;
   phrase: string;
+
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
               private titleService: Title,
               private progressBarService: ProgressBarService,
               private trackService: TrackService,
               private drawerService: DrawerService,
-              private servers: ServersService) { }
+              private servers: ServersService) {
+  }
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
@@ -35,7 +38,8 @@ export class TrackResultComponent implements OnInit {
         this.phrase = phrase;
         this.filterRows();
       });
-    this.allRows = this.trackService.getEvents();
+    this.trackService.getEvents('', [], '', '', 0, 0)
+      .subscribe( events => this.allRows = events);
     this.filterRows();
     this.progressBarService.setProgress(false);
   }
