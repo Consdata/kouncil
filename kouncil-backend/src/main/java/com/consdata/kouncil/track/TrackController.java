@@ -97,8 +97,10 @@ public class TrackController {
                     log.debug("TRACK23 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
                     for (ConsumerRecord<String, String> record : records) {
                         if (record.offset() >= endOffsets.get(record.partition())) {
-                            log.debug("TRACK24 topic={}, partition={} exhausted", t, record.partition());
-                            exhausted[record.partition()] = true;
+                            if (!exhausted[record.partition()]) {
+                                log.debug("TRACK24 topic={}, partition={} exhausted", t, record.partition());
+                                exhausted[record.partition()] = true;
+                            }
                             continue;
                         }
                         if (Strings.isBlank(field)
@@ -121,6 +123,10 @@ public class TrackController {
             });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
             log.debug("TRACK99 search completed result.size={}", messages.size());
+            if (messages.size() > 1000) {
+                log.warn("Result to large for browser to handle!");
+                return messages.subList(0, 1000);
+            }
             return messages;
         }
     }

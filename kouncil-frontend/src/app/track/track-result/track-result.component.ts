@@ -61,12 +61,6 @@ import {TrackFilter} from '../track-filter/track-filter';
   styleUrls: ['./track-result.component.scss']
 })
 export class TrackResultComponent implements OnInit {
-  filteredRows = [];
-  allRows = [];
-  searchSubscription: Subscription;
-  trackFilterSubscription: Subscription;
-  @ViewChild('table') table: any;
-  phrase: string;
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -75,6 +69,20 @@ export class TrackResultComponent implements OnInit {
               private trackService: TrackService,
               private drawerService: DrawerService,
               private servers: ServersService) {
+  }
+  filteredRows = [];
+  allRows = [];
+  searchSubscription: Subscription;
+  trackFilterSubscription: Subscription;
+  @ViewChild('table') table: any;
+  phrase: string;
+
+  private static tryParseJson(message): string {
+    try {
+      return JSON.parse(message);
+    } catch (e) {
+      return null;
+    }
   }
 
   ngOnInit(): void {
@@ -86,7 +94,6 @@ export class TrackResultComponent implements OnInit {
       });
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
-      this.filterRows();
     });
     this.progressBarService.setProgress(false);
   }
@@ -94,7 +101,7 @@ export class TrackResultComponent implements OnInit {
   showMessage(event): void {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-        source: event.row.value,
+        source: TrackResultComponent.tryParseJson(event.row.value),
         headers: event.row.headers,
         key: event.row.key,
         topicName: event.row.topic
@@ -114,9 +121,14 @@ export class TrackResultComponent implements OnInit {
 
   private getEvents(trackFilter: TrackFilter) {
     this.progressBarService.setProgress(true);
-    this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter).subscribe(events => {
-      this.allRows = events;
-      this.progressBarService.setProgress(false);
+    this.filteredRows = [];
+    setTimeout(() => {
+      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter).subscribe(events => {
+        this.allRows = events;
+        this.filterRows();
+        this.progressBarService.setProgress(false);
+      });
     });
   }
+
 }
