@@ -26,9 +26,9 @@ export class TopicBackendService implements TopicService {
   getMessages(serverId: string, topicName: string) {
     let url;
     if (typeof this.selectedPartition !== 'undefined') {
-      url = `/api/topic/messages/${topicName}/${this.selectedPartition}/latest`;
+      url = `/api/topic/messages/${topicName}/${this.selectedPartition}`;
     } else {
-      url = `/api/topic/messages/${topicName}/all/latest`;
+      url = `/api/topic/messages/${topicName}/all`;
     }
     const paging = this.paginationChanged$.getValue();
     const params = new HttpParams()
