@@ -2,6 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
 import {TrackFilter} from './track-filter';
 import {NgForm} from '@angular/forms';
+import {TopicsService} from '../../topics/topics.service';
+import {ServersService} from '../../servers.service';
 
 @Component({
   selector: 'app-track-filter',
@@ -18,7 +20,7 @@ import {NgForm} from '@angular/forms';
       </div>
       <div>
         <mat-form-field class="filter-input">
-          <mat-select placeholder="Topics"  name="topics" [(ngModel)]="trackFilter.topics" multiple>
+          <mat-select placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple>
             <mat-option *ngFor="let topic of topicList" [value]="topic">{{topic}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -41,13 +43,18 @@ import {NgForm} from '@angular/forms';
 })
 export class TrackFilterComponent implements OnInit {
   @ViewChild('filtersForm', {static: false}) filtersForm: NgForm;
-  topicList = ['test1', 'test2', 'test3'];
+  topicList = [];
   trackFilter;
 
-  constructor(private trackService: TrackService) {
+  constructor(private trackService: TrackService,
+              private topicsService: TopicsService,
+              private servers: ServersService) {
   }
 
   ngOnInit(): void {
+    this.topicsService.getTopics(this.servers.getSelectedServerId()).subscribe(topics => {
+      this.topicList = topics.topics.map(tm => tm.name);
+    });
     const from = new Date();
     from.setMinutes(from.getMinutes() - 5);
     this.trackFilter = new TrackFilter('', '', from.toISOString().slice(0, 16), new Date().toISOString().slice(0, 16), []);

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Message} from '../topic/message';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
 
 @Injectable({
@@ -8,19 +8,18 @@ import {TrackFilter} from './track-filter/track-filter';
 })
 export abstract class TrackService {
 
+  private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
+  trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
+
   protected constructor() {
   }
 
-  abstract getEvents(serverId: string,
-                     topicNames: string[],
-                     field: string,
-                     value: string,
-                     beginningTimestampMillis: number,
-                     endTimestampMillis: number): Observable<Message[]>;
+  abstract getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]>;
 
   abstract getSearchableTopics(): string[];
 
   setTrackFilter(trackFilter: TrackFilter) {
     console.log(trackFilter);
+    this.trackFilterChange.next(trackFilter);
   }
 }
