@@ -31,7 +31,7 @@ import {TrackFilter} from '../track-filter/track-filter';
                      #table>
         <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
           <ng-template let-value="value" ngx-datatable-cell-template>
-            {{value}}
+            {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="topic" name="topic" [width]="190">
@@ -81,12 +81,11 @@ export class TrackResultComponent implements OnInit {
     try {
       return JSON.parse(message);
     } catch (e) {
-      return null;
+      return message;
     }
   }
 
   ngOnInit(): void {
-    this.progressBarService.setProgress(true);
     this.searchSubscription = this.searchService.getState().subscribe(
       phrase => {
         this.phrase = phrase;
@@ -95,7 +94,6 @@ export class TrackResultComponent implements OnInit {
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
     });
-    this.progressBarService.setProgress(false);
   }
 
   showMessage(event): void {

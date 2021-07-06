@@ -30,7 +30,4 @@ export class TrackBackendService extends TrackService {
     return this.http.get<Message[]>(url, {params});
   }
 
-  getSearchableTopics(): string[] {
-    return [];
-  }
 }

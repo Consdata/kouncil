@@ -16,8 +16,6 @@ export abstract class TrackService {
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]>;
 
-  abstract getSearchableTopics(): string[];
-
   setTrackFilter(trackFilter: TrackFilter) {
     console.log(trackFilter);
     this.trackFilterChange.next(trackFilter);
