@@ -33,7 +33,7 @@ export class TopicBackendService implements TopicService {
     const paging = this.paginationChanged$.getValue();
     const params = new HttpParams()
       .set('serverId', serverId)
-      .set('offset', String((paging.pageNumber - 1) * paging.size))
+      .set('page', String(paging.pageNumber))
       .set('limit', String(paging.size));
 
     this.http.get(url, {params}).subscribe((data: TopicMessages) => {
