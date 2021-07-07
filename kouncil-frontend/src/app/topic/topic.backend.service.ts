@@ -85,7 +85,7 @@ export class TopicBackendService implements TopicService {
   initPaging(): void {
     const paging = new Page();
     paging.pageNumber = 1;
-    paging.size = 20;
+    paging.size = 10;
     this.paginationChanged$ = new BehaviorSubject<Page>(paging);
   }
 

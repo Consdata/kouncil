@@ -22,7 +22,7 @@ import {ServersService} from '../servers.service';
         </datatable-pager>
       </div>
       <div class="kafka-topic-footer-pager-item limit">
-        <span class="limit-label">Items per page:</span>
+        <span class="limit-label">Items per partition:</span>
         <mat-form-field class="select-form-field">
           <mat-select panelClass="select-limit-panel" class="select" [(value)]="paging.size" (selectionChange)="getMessages()">
             <mat-option *ngFor="let limit of pageLimits" [value]="limit">{{limit}}</mat-option>
@@ -36,7 +36,7 @@ import {ServersService} from '../servers.service';
 export class TopicPaginationComponent {
   @Input() paging: Page;
   @Input() topicName: string;
-  pageLimits = [10, 20, 50, 100];
+  pageLimits = [1, 5, 10, 20, 50, 100, 500, 1000];
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }

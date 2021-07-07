@@ -4,6 +4,7 @@ import {SendComponent} from '../../send/send.component';
 import {DrawerService} from '../../util/drawer.service';
 import {MessageHeader} from '../message-header';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-message-view',
@@ -14,6 +15,7 @@ export class MessageViewComponent implements OnInit {
   public isAnimationDone = false;
   constructor(
     private drawerService: DrawerService,
+    private router: Router,
     private dialogRef: MatDialogRef<MessageViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       topicName: string,
@@ -45,4 +47,10 @@ export class MessageViewComponent implements OnInit {
     });
   }
 
+  navigateToTrack(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
+      this.router.navigate(['/track']);
+    }
+  }
 }
