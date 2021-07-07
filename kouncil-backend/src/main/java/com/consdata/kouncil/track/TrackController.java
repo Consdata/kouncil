@@ -1,10 +1,8 @@
 package com.consdata.kouncil.track;
 
+import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.topic.TopicMessage;
-import com.consdata.kouncil.topic.TopicMessageHeader;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -20,19 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
-public class TrackController {
+public class TrackController extends AbstractMessagesController {
 
     private static final int POLL_TIMEOUT = 10000;
 
-    private final KafkaConnectionService kafkaConnectionService;
+    public TrackController(KafkaConnectionService kafkaConnectionService) {
+        super(kafkaConnectionService);
+    }
 
     @GetMapping("/api/track")
     public List<TopicMessage> getTopicMessages(@RequestParam("topicNames") List<String> topicNames,
@@ -44,57 +43,44 @@ public class TrackController {
         log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}",
                 topicNames, field, value, beginningTimestampMillis, endTimestampMillis);
         validateTopics(serverId, topicNames);
-        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId)) {
+        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
             List<TopicMessage> messages = new ArrayList<>();
             topicNames.forEach(t -> {
+                Map<Integer, TopicPartition> partitionMap;
+                Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p));
                 List<PartitionInfo> partitionInfos = consumer.partitionsFor(t);
-                log.debug("TRACK20 topic={}, partitionInfos={}", t, partitionInfos);
-                List<TopicPartition> topicPartitions = new ArrayList<>();
-                for (int i = 0; i < partitionInfos.size(); i++) {
-                    topicPartitions.add(new TopicPartition(t, i));
-                }
-                consumer.assign(topicPartitions);
-                Map<Integer, Long> beginningOffsets;
-                Map<TopicPartition, Long> beginningTimestamps = topicPartitions.stream()
-                        .collect(Collectors.toMap(Function.identity(), ignore -> beginningTimestampMillis));
-                beginningOffsets = consumer.offsetsForTimes(beginningTimestamps).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                k -> k.getKey().partition(),
-                                v -> v.getValue() == null ? -1 : v.getValue().offset()
-                        ));
+                partitionMap = IntStream.rangeClosed(0, partitionInfos.size() - 1)
+                        .boxed()
+                        .collect(integerMapCollector);
 
-                final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
-                        .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-                final Map<Integer, Long> endOffsets;
-                Map<TopicPartition, Long> endTimestamps = topicPartitions.stream()
-                        .collect(Collectors.toMap(Function.identity(), ignore -> endTimestampMillis + 1));
-                endOffsets = consumer.offsetsForTimes(endTimestamps).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                k -> k.getKey().partition(),
-                                v -> v.getValue() == null ? globalEndOffsets.get(v.getKey().partition()) - 1 : v.getValue().offset()
-                        ));
+                consumer.assign(partitionMap.values());
 
-                log.debug("TRACK21 topic={}, beginningOffsets={}, endOffsets={}", t, beginningOffsets, endOffsets);
-                boolean[] exhausted = new boolean[topicPartitions.size()];
+                Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
+                log.debug("TRACK03 beginningOffsets={}", beginningOffsets);
 
-                for (int partitionIndex : IntStream.rangeClosed(0, topicPartitions.size() - 1).toArray()) {
+                Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
+                log.debug("TRACK04 endOffsets={}", endOffsets);
+
+                boolean[] exhausted = new boolean[partitionMap.size()];
+                for (Map.Entry<Integer, TopicPartition> entry : partitionMap.entrySet()) {
+                    Integer partitionIndex = entry.getKey();
                     Long startOffsetForPartition = beginningOffsets.get(partitionIndex);
+                    log.debug("TRACK50 partition={}, startOffsetForPartition={}", partitionIndex, startOffsetForPartition);
                     if (startOffsetForPartition < 0) {
-                        log.debug("TRACK22 startOffsetForPartition is -1, seekToEnd, topic={}, partition={}", t, partitionIndex);
-                        consumer.seekToEnd(Collections.singletonList(topicPartitions.get(partitionIndex)));
+                        log.debug("TRACK51 startOffsetForPartition is -1, seekToEnd, topic={}, partition={}", t, partitionIndex);
+                        consumer.seekToEnd(Collections.singletonList(partitionMap.get(partitionIndex)));
                         exhausted[partitionIndex] = true;
                     } else {
-                        log.debug("TRACK23 topic={}, partition={}, startOffsetForPartition={}", t, partitionIndex, startOffsetForPartition);
-                        consumer.seek(topicPartitions.get(partitionIndex), startOffsetForPartition);
+                        log.debug("TRACK52 topic={}, partition={}, startOffsetForPartition={}", t, partitionIndex, startOffsetForPartition);
+                        consumer.seek(partitionMap.get(partitionIndex), startOffsetForPartition);
                     }
                 }
-
 
                 long startTime = System.nanoTime();
                 List<TopicMessage> candidates = new ArrayList<>();
                 while (falseExists(exhausted)) {
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
-                    log.debug("TRACK23 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
+                    log.debug("TRACK70 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
                     for (ConsumerRecord<String, String> record : records) {
                         if (record.offset() >= endOffsets.get(record.partition())) {
                             if (!exhausted[record.partition()]) {
@@ -118,7 +104,7 @@ public class TrackController {
                         }
                     }
                 }
-                log.debug("TRACK25 poll completed topic={}, candidates.size={}", t, candidates.size());
+                log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
                 messages.addAll(candidates);
             });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
@@ -139,18 +125,6 @@ public class TrackController {
         return false;
     }
 
-
-    private List<TopicMessageHeader> mapHeaders(Headers headers) {
-        List<TopicMessageHeader> result = new ArrayList<>();
-        for (Header header : headers) {
-            result.add(TopicMessageHeader.builder()
-                    .key(header.key())
-                    .value(header.value() == null ? null : new String(header.value()))
-                    .build());
-        }
-        return result;
-    }
-
     private boolean headerMatch(Headers headers, String field, String value) {
         for (Header header : headers) {
             if (field.equals(header.key()) && new String(header.value()).contains(value)) {
@@ -161,22 +135,4 @@ public class TrackController {
     }
 
 
-    private void validateTopics(String serverId, List<String> topicNames) {
-        boolean topicsExists;
-        try {
-            topicsExists = kafkaConnectionService
-                    .getAdminClient(serverId)
-                    .listTopics()
-                    .names()
-                    .get().containsAll(topicNames);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new KouncilRuntimeException(String.format("Cannot check if topics [%s] exists on server [%s](%s)", topicNames, serverId, e.getMessage()));
-        } catch (ExecutionException e) {
-            throw new KouncilRuntimeException(String.format("Cannot check if topics [%s] exists on server [%s](%s)", topicNames, serverId, e.getMessage()));
-        }
-        if (!topicsExists) {
-            throw new KouncilRuntimeException(String.format("Topics [%s] not exists on server [%s]", topicNames, serverId));
-        }
-    }
 }
