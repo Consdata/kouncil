@@ -15,4 +15,5 @@ public class TopicMessage {
     private long timestamp;
     private int partition;
     private long offset;
+    private String topic;
 }

@@ -8,42 +8,98 @@ import {DrawerService} from '../../util/drawer.service';
 import {ServersService} from '../../servers.service';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
+import {TrackFilter} from '../track-filter/track-filter';
 
 @Component({
   selector: 'app-track-result',
-  templateUrl: './track-result.component.html',
+  template: `<div class="topic">
+    <div class="topic-table-area">
+      <ng-template #noDataPlaceholder>
+        <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
+      </ng-template>
+      <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+                     class="topic-table material expandable"
+                     [rows]="filteredRows"
+                     [rowHeight]="48"
+                     [headerHeight]="48"
+                     [footerHeight]="80"
+                     [scrollbarH]="true"
+                     [scrollbarV]="true"
+                     [columnMode]="'force'"
+                     [loadingIndicator]="isLoading()"
+                     (activate)="showMessage($event)"
+                     #table>
+        <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="topic" name="topic" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partition" name="partition" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="offset" name="offset" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="key" name="Key" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+  `,
   styleUrls: ['./track-result.component.scss']
 })
 export class TrackResultComponent implements OnInit {
-  filteredRows = [];
-  allRows = [];
-  searchSubscription: Subscription;
-  @ViewChild('table') table: any;
-  phrase: string;
+
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
               private titleService: Title,
               private progressBarService: ProgressBarService,
               private trackService: TrackService,
               private drawerService: DrawerService,
-              private servers: ServersService) { }
+              private servers: ServersService) {
+  }
+  filteredRows = [];
+  allRows = [];
+  searchSubscription: Subscription;
+  trackFilterSubscription: Subscription;
+  @ViewChild('table') table: any;
+  phrase: string;
+
+  private static tryParseJson(message): string {
+    try {
+      return JSON.parse(message);
+    } catch (e) {
+      return message;
+    }
+  }
 
   ngOnInit(): void {
-    this.progressBarService.setProgress(true);
     this.searchSubscription = this.searchService.getState().subscribe(
       phrase => {
         this.phrase = phrase;
         this.filterRows();
       });
-    this.allRows = this.trackService.getEvents();
-    this.filterRows();
-    this.progressBarService.setProgress(false);
+    this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
+      this.getEvents(trackFilter);
+    });
   }
 
   showMessage(event): void {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-        source: event.row.value,
+        source: TrackResultComponent.tryParseJson(event.row.value),
         headers: event.row.headers,
         key: event.row.key,
         topicName: event.row.topic
@@ -59,6 +115,18 @@ export class TrackResultComponent implements OnInit {
 
   isLoading(): boolean {
     return this.progressBarService.progressSub.getValue();
+  }
+
+  private getEvents(trackFilter: TrackFilter) {
+    this.progressBarService.setProgress(true);
+    this.filteredRows = [];
+    setTimeout(() => {
+      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter).subscribe(events => {
+        this.allRows = events;
+        this.filterRows();
+        this.progressBarService.setProgress(false);
+      });
+    });
   }
 
 }

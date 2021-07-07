@@ -5,7 +5,12 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TopicMetadata {
+public class TopicMetadata implements Comparable<TopicMetadata> {
     private String name;
     private int partitions;
+
+    @Override
+    public int compareTo(TopicMetadata o) {
+        return name.compareTo(o.getName());
+    }
 }
