@@ -111,11 +111,13 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     showMessage(event): void {
         if (event.type === 'click') {
+            console.log(event.row)
             this.drawerService.openDrawerWithPadding(MessageViewComponent, {
                 source: event.row.kouncilValueJson,
                 headers: event.row.headers,
                 key: event.row.kouncilKey,
-                topicName: this.topicName
+                topicName: this.topicName,
+                timestamp: event.row.kouncilTimestampEpoch
             });
         }
     }

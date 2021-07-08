@@ -4,20 +4,29 @@ import {Observable, Subject} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export abstract class TrackService {
 
-  private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
-  trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
+    private trackFilter: TrackFilter;
+    private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
+    trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
 
-  protected constructor() {
-  }
+    protected constructor() {
+    }
 
-  abstract getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]>;
+    abstract getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]>;
 
-  setTrackFilter(trackFilter: TrackFilter) {
-    console.log(trackFilter);
-    this.trackFilterChange.next(trackFilter);
-  }
+    setTrackFilter(trackFilter: TrackFilter) {
+        console.log(trackFilter);
+        this.trackFilterChange.next(trackFilter);
+    }
+
+    storeTrackFilter(trackFilter: TrackFilter) {
+        this.trackFilter = trackFilter;
+    }
+
+    getStoredTrackFilter() {
+        return this.trackFilter;
+    }
 }
