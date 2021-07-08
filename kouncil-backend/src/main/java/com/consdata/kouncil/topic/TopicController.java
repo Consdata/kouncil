@@ -1,132 +1,132 @@
 package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
-public class TopicController {
+public class TopicController extends AbstractMessagesController {
 
-    private static final int POLL_TIMEOUT = 10000;
+    public TopicController(KafkaConnectionService kafkaConnectionService) {
+        super(kafkaConnectionService);
+    }
 
-    private final KafkaConnectionService kafkaConnectionService;
-
-    @GetMapping("/api/topic/messages/{topicName}/{partition}/{offset}")
+    @GetMapping("/api/topic/messages/{topicName}/{partition}")
     public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
                                              @PathVariable("partition") String partitions,
-                                             @PathVariable("offset") String offset,
-                                             @RequestParam("offset") String offsetShiftParam,
+                                             @RequestParam("page") String pageParam,
                                              @RequestParam("limit") String limitParam,
                                              @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
                                              @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
                                              @RequestParam("serverId") String serverId) {
-        log.debug("TCM01 topicName={}, partition={}, offset={}, offsetParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
-                topicName, partitions, offset, offsetShiftParam, limitParam, beginningTimestampMillis, endTimestampMillis);
-        checkTopicExists(serverId, topicName);
-        int limit = Integer.parseInt(limitParam);
-        long offsetShift = Long.parseLong(offsetShiftParam);
-        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId)) {
-
-            List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-            log.debug("TCM02 partitionInfos={}", partitionInfos);
-            List<TopicPartition> topicPartitions = new ArrayList<>();
-            for (int i = 0; i < partitionInfos.size(); i++) {
-                topicPartitions.add(new TopicPartition(topicName, i));
-            }
-            consumer.assign(topicPartitions);
-
-            int[] partitionsArray;
+        log.debug("TCM01 topicName={}, partitions={}, pageParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
+                topicName, partitions, pageParam, limitParam, beginningTimestampMillis, endTimestampMillis);
+        validateTopics(serverId, Collections.singletonList(topicName));
+        int limit = Integer.parseInt(limitParam); // per partition!
+        long page = Long.parseLong(pageParam); // per partition!
+        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, limit)) {
+            Map<Integer, TopicPartition> partitionMap;
+            Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(topicName, p));
             if (partitions.equalsIgnoreCase("all")) {
-                partitionsArray = IntStream.rangeClosed(0, topicPartitions.size() - 1).toArray();
+                List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
+                partitionMap = IntStream.rangeClosed(0, partitionInfos.size() - 1)
+                        .boxed()
+                        .collect(integerMapCollector);
             } else {
-                partitionsArray = Arrays.stream(partitions.split(",")).mapToInt(Integer::parseInt).toArray();
+                partitionMap = Arrays.stream(partitions.split(","))
+                        .mapToInt(Integer::parseInt)
+                        .boxed()
+                        .collect(integerMapCollector);
             }
 
-            Map<Integer, Long> beginningOffsets;
-            if (beginningTimestampMillis != null) {
-                Map<TopicPartition, Long> beginningTimestamps = topicPartitions.stream()
-                        .collect(Collectors.toMap(Function.identity(), ignore -> beginningTimestampMillis));
-                beginningOffsets = consumer.offsetsForTimes(beginningTimestamps).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                k -> k.getKey().partition(),
-                                v -> v.getValue() == null ? -1 : v.getValue().offset()
-                        ));
-            } else {
-                beginningOffsets = consumer
-                        .beginningOffsets(topicPartitions).entrySet().stream()
-                        .collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-            }
+            consumer.assign(partitionMap.values());
 
-            final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
-                    .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-            final Map<Integer, Long> endOffsets;
-            if (endTimestampMillis != null) {
-                Map<TopicPartition, Long> endTimestamps = topicPartitions.stream()
-                        .collect(Collectors.toMap(Function.identity(), ignore -> endTimestampMillis + 1));
-                endOffsets = consumer.offsetsForTimes(endTimestamps).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                k -> k.getKey().partition(),
-                                v -> v.getValue() == null ? globalEndOffsets.get(v.getKey().partition()) : v.getValue().offset()
-                        ));
-            } else {
-                endOffsets = globalEndOffsets;
-            }
-
+            Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
             log.debug("TCM03 beginningOffsets={}", beginningOffsets);
-            log.debug("TCM04 endOffsets={}", endOffsets);
 
-            long availablePartitions = Arrays.stream(partitionsArray).filter(p -> beginningOffsets.get(p) >= 0).count();
-            for (int j : partitionsArray) {
-                Long startOffsetForPartition = beginningOffsets.get(j);
-                log.debug("TCM05 startOffsetForPartition={}", startOffsetForPartition);
+            Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
+            log.debug("TCM04 endOffsets={}", endOffsets);
+            List<TopicMessage> messages = new ArrayList<>();
+            for (Map.Entry<Integer, TopicPartition> entry : partitionMap.entrySet()) {
+
+                Integer partitionIndex = entry.getKey();
+                TopicPartition partition = entry.getValue();
+                consumer.assign(Collections.singletonList(partition));
+
+                Long startOffsetForPartition = beginningOffsets.get(partitionIndex);
+                log.debug("TCM50 partition={}, startOffsetForPartition={}", partitionIndex, startOffsetForPartition);
                 if (startOffsetForPartition < 0) {
-                    log.debug("TCM10 startOffsetForPartition is -1, seekToEnd");
-                    consumer.seekToEnd(Collections.singletonList(topicPartitions.get(j)));
+                    log.debug("TCM51 startOffsetForPartition is -1, seekToEnd");
+                    consumer.seekToEnd(Collections.singletonList(partition));
                     continue;
                 }
 
-                long position = endOffsets.get(j) - offsetShift;
-                log.debug("TCM06 position={}", position);
-                long seekTo = position - (limit / availablePartitions);
+                long position = endOffsets.get(partitionIndex) - limit * (page - 1);
+                log.debug("TCM60 partition={}, position={}", partitionIndex, position);
+                long seekTo = position - limit;
                 if (seekTo > startOffsetForPartition) {
-                    log.debug("TCM11 seekTo={}", seekTo);
-                    consumer.seek(topicPartitions.get(j), seekTo);
+                    log.debug("TCM61 partition={}, seekTo={}", partitionIndex, seekTo);
+                    consumer.seek(partition, seekTo);
                 } else {
-                    log.debug("TCM12 seekTo startOffset({})", startOffsetForPartition);
-                    consumer.seek(topicPartitions.get(j), startOffsetForPartition);
+                    log.debug("TCM62 partition={}, seekTo startOffset={}", partitionIndex, startOffsetForPartition);
+                    consumer.seek(partition, startOffsetForPartition);
                 }
+                pollMessages(limit, consumer, endOffsets, messages);
             }
 
-            List<TopicMessage> messages = new ArrayList<>();
-            long startTime = System.nanoTime();
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
-            log.debug("TCM19 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
+            log.debug("TCM90 poll completed records.size={}", messages.size());
+            messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
+
+            long totalResult = endOffsets.keySet().stream().map(index -> endOffsets.get(index) - beginningOffsets.get(index)).reduce(0L, Long::max);
+            TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
+                    .messages(messages)
+                    .partitionOffsets(beginningOffsets)
+                    .partitionEndOffsets(endOffsets)
+                    .totalResults(totalResult)
+                    .build();
+            log.debug("TCM99 topicName={}, partition={}, page={} topicMessages.size={}, totalResult={}", topicName, partitions, page, topicMessagesDto.getMessages().size(), totalResult);
+            return topicMessagesDto;
+        }
+    }
+
+    /**
+     * Sometimes poll after seek returns none or few results.
+     * So we try to call it until we receive two consecutive empty polls or have enught messages
+     */
+    private void pollMessages(int limit, KafkaConsumer<String, String> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
+        int emptyPolls = 0;
+        int messegesCount = 0;
+        while (emptyPolls < 3 && messegesCount < limit) {
+            ConsumerRecords<String, String> records = getConsumerRecords(consumer);
+            if (records.isEmpty()) {
+                emptyPolls++;
+            } else {
+                emptyPolls = 0;
+            }
             for (ConsumerRecord<String, String> record : records) {
                 if (record.offset() >= endOffsets.get(record.partition())) {
+                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", record.partition(), record.offset(), endOffsets.get(record.partition()));
+                    messegesCount = limit;
                     continue;
                 }
-                if (messages.size() < limit) {
+                if (messegesCount < limit) {
+                    messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
                             .key(record.key())
@@ -138,35 +138,14 @@ public class TopicController {
                             .build());
                 }
             }
-            log.debug("TCM20 poll completed records.size={}", messages.size());
-            messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
-
-            long totalResult = LongStream
-                    .range(0, partitionsArray.length)
-                    // index will never exceed max int, so this cast should be safe
-                    .map(index -> endOffsets.get(partitionsArray[(int) index]) - beginningOffsets.get(partitionsArray[(int) index]))
-                    .sum();
-            TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
-                    .messages(messages)
-                    .partitionOffsets(beginningOffsets)
-                    .partitionEndOffsets(endOffsets)
-                    .totalResults(totalResult)
-                    .build();
-            log.debug("TCM99 topicName={}, partition={}, offset={} topicMessages.size={}", topicName, partitions, offset, topicMessagesDto.getMessages().size());
-            return topicMessagesDto;
-
         }
     }
 
-    private List<TopicMessageHeader> mapHeaders(Headers headers) {
-        List<TopicMessageHeader> result = new ArrayList<>();
-        for (Header header : headers) {
-            result.add(TopicMessageHeader.builder()
-                    .key(header.key())
-                    .value(header.value() == null ? null : new String(header.value()))
-                    .build());
-        }
-        return result;
+    private ConsumerRecords<String, String> getConsumerRecords(KafkaConsumer<String, String> consumer) {
+        long startTime = System.nanoTime();
+        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+        log.debug("TCM40 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
+        return records;
     }
 
     @PostMapping("/api/topic/send/{topicName}/{count}")
@@ -176,33 +155,13 @@ public class TopicController {
                      @RequestBody TopicMessage message,
                      @RequestParam("serverId") String serverId) {
         log.debug("TCS01 topicName={}, count={}, serverId={}", topicName, count, serverId);
-        checkTopicExists(serverId, topicName);
+        validateTopics(serverId, Collections.singletonList(topicName));
         KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         for (int i = 0; i < count; i++) {
             kafkaTemplate.send(topicName, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
         }
         kafkaTemplate.flush();
         log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);
-    }
-
-    private void checkTopicExists(String serverId, String topicName) {
-        boolean topicExists;
-        try {
-            topicExists = kafkaConnectionService
-                    .getAdminClient(serverId)
-                    .listTopics()
-                    .names()
-                    .get()
-                    .stream().anyMatch(t -> t.equalsIgnoreCase(topicName));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new KouncilRuntimeException(String.format("Cannot check if topic [%s] exists on server [%s](%s)", topicName, serverId, e.getMessage()));
-        } catch (ExecutionException e) {
-            throw new KouncilRuntimeException(String.format("Cannot check if topic [%s] exists on server [%s](%s)", topicName, serverId, e.getMessage()));
-        }
-        if (!topicExists) {
-            throw new KouncilRuntimeException(String.format("Topic [%s] not exists on server [%s]", topicName, serverId));
-        }
     }
 
     private String replaceTokens(String data, int i) {
