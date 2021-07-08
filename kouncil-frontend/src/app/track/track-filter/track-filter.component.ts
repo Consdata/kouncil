@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
-import {TrackFilter} from './track-filter';
 import {NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
-import * as moment from 'moment';
 
 @Component({
     selector: 'app-track-filter',
@@ -56,14 +54,7 @@ export class TrackFilterComponent implements OnInit {
         this.topicsService.getTopics(this.servers.getSelectedServerId()).subscribe(topics => {
             this.topicList = topics.topics.map(tm => tm.name);
         });
-        const from = new Date();
-        from.setMinutes(from.getMinutes() - 5);
-        const trackFilter = this.trackService.getStoredTrackFilter();
-        if (trackFilter === undefined) {
-            this.trackFilter = new TrackFilter('', '', moment(from).format('YYYY-MM-DDTHH:mm'), moment(new Date()).format('YYYY-MM-DDTHH:mm'), []);
-        } else {
-            this.trackFilter = trackFilter;
-        }
+        this.trackFilter = this.trackService.getStoredTrackFilter();
     }
 
     setFilter() {

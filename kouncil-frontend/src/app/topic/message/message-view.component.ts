@@ -5,8 +5,6 @@ import {DrawerService} from '../../util/drawer.service';
 import {MessageHeader} from '../message-header';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {TrackFilter} from '../../track/track-filter/track-filter';
-import * as moment from 'moment';
 import {TrackService} from '../../track/track.service';
 
 @Component({
@@ -56,16 +54,7 @@ export class MessageViewComponent implements OnInit {
     navigateToTrack(event): void {
         const element = event.event.target as HTMLElement;
         if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
-            const date = new Date(this.data.timestamp);
-            date.setMinutes(date.getMinutes() + 1);
-            const trackFilter = new TrackFilter(
-                event.row.key,
-                event.row.value,
-                moment(new Date(this.data.timestamp)).format('YYYY-MM-DDTHH:mm'),
-                moment(date).format('YYYY-MM-DDTHH:mm'),
-                [this.data.topicName]);
-            console.log(trackFilter);
-            this.trackService.storeTrackFilter(trackFilter);
+            this.trackService.storeTrackFilter(event.row.key, event.row.value, this.data.timestamp, this.data.topicName);
             this.router.navigate(['/track']);
         }
     }
