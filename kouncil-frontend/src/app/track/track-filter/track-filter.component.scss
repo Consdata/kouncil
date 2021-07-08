@@ -1,5 +1,50 @@
 @import 'palette';
 
+form {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+
+  .wrapper-field {
+    border: none;
+    padding: 0 5px;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  .wrapper-glue {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+    color: $main-40;
+  }
+
+  &:hover {
+    border: 1px solid $main-40;
+    transition: all $default-transition-time;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 3px 1px $blue-60;
+    transition: all $default-transition-time;
+  }
+}
+
 .filter-title {
   margin: 2px 20px 2px 20px;
   font-size: 14px;
@@ -9,12 +54,11 @@
   background: $main-0;
   border: 1px solid $main-20;
   border-radius: $default-border-radius;
-  padding: 2px 2px 2px 2px;
-  margin: 2px 20px 10px 20px;
   font-size: 14px;
   line-height: $default-line-height;
   min-width: 100px;
   max-width: 550px;
+  height: 40px;
 }
 
 .filter-input:hover {

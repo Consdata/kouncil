@@ -9,13 +9,11 @@ import {ServersService} from '../../servers.service';
   selector: 'app-track-filter',
   template: `
     <form #filtersForm="ngForm">
-      <div class="filter-title">Specify search criteria:</div>
-      <div>
-        <input class="filter-input" placeholder="Correlation field" matInput type="text" name="field"
+      <div class="wrapper">
+        <input class="filter-input wrapper-field" placeholder="Correlation field" matInput type="text" name="field"
                [(ngModel)]="trackFilter.field"/>
-      </div>
-      <div>
-        <input class="filter-input" placeholder="Correlation value" matInput type="text" name="value"
+        <span class="wrapper-glue">=</span>
+        <input class="filter-input wrapper-field" placeholder="Correlation value" matInput type="text" name="value"
                [(ngModel)]="trackFilter.value"/>
       </div>
       <div>
@@ -35,7 +33,7 @@ import {ServersService} from '../../servers.service';
                  [(ngModel)]="trackFilter.stopDateTime">
         </mat-form-field>
 
-        <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track event</button>
+        <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
       </div>
     </form>
   `,
