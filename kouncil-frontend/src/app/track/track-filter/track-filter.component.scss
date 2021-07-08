@@ -15,9 +15,12 @@ form {
   border: 1px solid $main-20;
   border-radius: $default-border-radius;
 
-  .wrapper-field {
+  .filter-input {
     border: none;
-    padding: 0 5px;
+  }
+
+  .wrapper-field, .filter-input > .wrapper-field {
+    border: none;
 
     &:focus-visible {
       outline: none;
@@ -31,6 +34,16 @@ form {
     align-items: center;
     padding: 0 8px;
     color: $main-40;
+  }
+
+  .wrapper-glue-start {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+    color: $main-40;
+    border-bottom-left-radius: $default-border-radius;
+    border-top-left-radius: $default-border-radius;
   }
 
   &:hover {
@@ -59,6 +72,7 @@ form {
   min-width: 100px;
   max-width: 550px;
   height: 40px;
+  padding: 0 8px;
 }
 
 .filter-input:hover {
@@ -78,4 +92,8 @@ form {
   border-radius: $default-border-radius;
   height: 40px;
   margin: 2px 20px 10px 20px;
+}
+
+#topics-select > ::ng-deep .mat-select-trigger {
+  padding: 0;
 }

@@ -27,6 +27,7 @@
     "core-js": "^2.6.12",
     "jquery": "^3.6.0",
     "ngx-json-viewer": "2.4.0",
+    "ngx-mat-select-search": "^3.3.0",
     "ngx-textarea-autosize": "^1.1.1",
     "rxjs": "^6.6.6",
     "rxjs-compat": "^6.6.6",
