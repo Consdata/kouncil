@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
@@ -60,7 +60,7 @@ import {TrackFilter} from '../track-filter/track-filter';
   `,
   styleUrls: ['./track-result.component.scss']
 })
-export class TrackResultComponent implements OnInit {
+export class TrackResultComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -94,6 +94,11 @@ export class TrackResultComponent implements OnInit {
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
     });
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+    this.trackFilterSubscription.unsubscribe();
   }
 
   showMessage(event): void {

@@ -27,8 +27,6 @@ import java.util.stream.IntStream;
 @RestController
 public class TrackController extends AbstractMessagesController {
 
-    private static final int POLL_TIMEOUT = 10000;
-
     public TrackController(KafkaConnectionService kafkaConnectionService) {
         super(kafkaConnectionService);
     }
@@ -78,8 +76,14 @@ public class TrackController extends AbstractMessagesController {
 
                 long startTime = System.nanoTime();
                 List<TopicMessage> candidates = new ArrayList<>();
-                while (falseExists(exhausted)) {
+                int emptyPolls = 0;
+                while (emptyPolls < 3 && falseExists(exhausted)) {
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+                    if (records.isEmpty()) {
+                        emptyPolls++;
+                    } else {
+                        emptyPolls = 0;
+                    }
                     log.debug("TRACK70 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
                     for (ConsumerRecord<String, String> record : records) {
                         if (record.offset() >= endOffsets.get(record.partition())) {

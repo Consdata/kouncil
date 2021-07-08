@@ -23,8 +23,6 @@ import java.util.stream.IntStream;
 @RestController
 public class TopicController extends AbstractMessagesController {
 
-    private static final int POLL_TIMEOUT = 100;
-
     public TopicController(KafkaConnectionService kafkaConnectionService) {
         super(kafkaConnectionService);
     }
