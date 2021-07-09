@@ -18,27 +18,36 @@ import {ServersService} from '../../servers.service';
       </div>
       <div>
         <mat-form-field class="filter-input" floatLabel="never">
-          <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple>
+          <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple>
             <mat-option>
-              <ngx-mat-select-search [formControl]="topicFilterControl" placeholderLabel="Search topics"></ngx-mat-select-search>
+              <ngx-mat-select-search
+                [showToggleAllCheckbox]="true"
+                [toggleAllCheckboxChecked]="trackFilter.topics.length === visibleTopicList.length"
+                (toggleAll)="toggleAllTopics()"
+                [formControl]="topicFilterControl"
+                placeholderLabel="Search topics"
+                noEntriesFoundLabel="No topics found">
+              </ngx-mat-select-search>
             </mat-option>
             <mat-option *ngFor="let topic of visibleTopicList" [value]="topic">{{topic}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="wrapper">
-        <span class="wrapper-glue-start">Track from:</span>
-        <mat-form-field class="filter-input" floatLabel="never">
+        <span class="wrapper-glue-start">Track from</span>
+        <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
           <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
                  [(ngModel)]="trackFilter.startDateTime">
         </mat-form-field>
-        <span class="wrapper-glue">To:</span>
-        <mat-form-field class="filter-input" floatLabel="never">
+        <span class="wrapper-glue">To</span>
+        <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
           <input class="wrapper-field" matInput type="datetime-local" placeholder="End date" name="stopDateTime"
                  [(ngModel)]="trackFilter.stopDateTime">
         </mat-form-field>
       </div>
-      <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
+      <div>
+        <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
+      </div>
     </form>
   `,
   styleUrls: ['./track-filter.component.scss']
@@ -67,8 +76,7 @@ export class TrackFilterComponent implements OnInit {
     });
     const from = new Date();
     from.setMinutes(from.getMinutes() - 5);
-    this.trackFilter = new TrackFilter('', '', from.toISOString().slice(0, 16), new Date().toISOString().slice(0, 16), []);
-
+    this.trackFilter = new TrackFilter('', '', this.localIsoDate(from), this.localIsoDate(), []);
     this.topicFilterControl.valueChanges.pipe().subscribe(() => this.filterTopics());
   }
 
@@ -89,7 +97,28 @@ export class TrackFilterComponent implements OnInit {
     });
   }
 
+  toggleAllTopics() {
+    if (this.trackFilter.topics.length === this.visibleTopicList.length) {
+      this.trackFilter.topics = [];
+    } else if (this.trackFilter.topics.lenght === 0) {
+      this.trackFilter.topics = this.visibleTopicList;
+    } else {
+      this.trackFilter.topics = this.visibleTopicList;
+    }
+  }
+
   setFilter() {
     this.trackService.setTrackFilter(this.trackFilter);
+  }
+
+  localIsoDate(date?: Date) {
+    if (!date) {
+      date = new Date();
+    }
+    const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+    const msLocal = date.getTime() - offsetMs;
+    const dateLocal = new Date(msLocal);
+    const iso = dateLocal.toISOString();
+    return iso.slice(0, 16);
   }
 }

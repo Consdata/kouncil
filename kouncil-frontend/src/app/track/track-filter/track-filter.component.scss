@@ -1,7 +1,7 @@
 @import 'palette';
 
 form {
-  padding: 16px 0;
+  padding: 16px 16px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -41,20 +41,28 @@ form {
     justify-content: center;
     align-items: center;
     padding: 0 8px;
-    color: $main-40;
     border-bottom-left-radius: $default-border-radius;
     border-top-left-radius: $default-border-radius;
+    color: $main-40;
   }
 
   &:hover {
     border: 1px solid $main-40;
     transition: all $default-transition-time;
+
+    .wrapper-glue, .wrapper-glue-start {
+      color: $main-60;
+    }
   }
 
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 3px 1px $blue-60;
     transition: all $default-transition-time;
+
+    .wrapper-glue, .wrapper-glue-start {
+      color: $main-60;
+    }
   }
 }
 
@@ -91,9 +99,48 @@ form {
   color: $main-0;
   border-radius: $default-border-radius;
   height: 40px;
-  margin: 2px 20px 10px 20px;
 }
 
-#topics-select > ::ng-deep .mat-select-trigger {
-  padding: 0;
+#topics-select {
+  ::ng-deep .mat-select-trigger {
+    top: 1px;
+    padding: 0;
+  }
 }
+
+::ng-deep .mat-form-field-label-wrapper {
+  overflow: visible;
+
+  .mat-form-field-label {
+    top: 20px;
+  }
+}
+
+::ng-deep .mat-option.mat-selected:not(.mat-option-disabled) {
+  background: $blue-10;
+
+  .mat-option-text {
+    color: $main-100;
+  }
+
+  .mat-pseudo-checkbox {
+    background: $blue-60;
+  }
+}
+
+.date-picker-form-field {
+
+  ::ng-deep .mat-form-field-infix {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+.date-picker-form-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
