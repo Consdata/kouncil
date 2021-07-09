@@ -11,7 +11,8 @@
                    [headerHeight]="38"
                    [scrollbarH]="false"
                    [scrollbarV]="false"
-                   [columnMode]="'force'">
+                   [columnMode]="'force'"
+                   (activate)="navigateToTrack($event)">
       <ngx-datatable-column prop="key" name="header key"></ngx-datatable-column>
       <ngx-datatable-column prop="value" name="header value"></ngx-datatable-column>
     </ngx-datatable>

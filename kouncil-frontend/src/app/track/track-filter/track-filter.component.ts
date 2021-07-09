@@ -1,15 +1,14 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
-import {TrackFilter} from './track-filter';
 import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 
 @Component({
-  selector: 'app-track-filter',
-  template: `
-    <form #filtersForm="ngForm">
-      <div class="wrapper">
+    selector: 'app-track-filter',
+    template: `
+        <form #filtersForm="ngForm">
+            <div class="wrapper">
         <input class="filter-input wrapper-field" placeholder="Correlation field" matInput type="text" name="field"
                [(ngModel)]="trackFilter.field"/>
         <span class="wrapper-glue">=</span>
@@ -18,7 +17,7 @@ import {ServersService} from '../../servers.service';
       </div>
       <div>
         <mat-form-field class="filter-input" floatLabel="never">
-          <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple>
+                    <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple>
             <mat-option>
               <ngx-mat-select-search
                 [showToggleAllCheckbox]="true"
@@ -29,28 +28,28 @@ import {ServersService} from '../../servers.service';
                 noEntriesFoundLabel="No topics found">
               </ngx-mat-select-search>
             </mat-option>
-            <mat-option *ngFor="let topic of visibleTopicList" [value]="topic">{{topic}}</mat-option>
+                        <mat-option *ngFor="let topic of visibleTopicList" [value]="topic">{{topic}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="wrapper">
         <span class="wrapper-glue-start">Track from</span>
         <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
-          <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
+                    <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
                  [(ngModel)]="trackFilter.startDateTime">
         </mat-form-field>
         <span class="wrapper-glue">To</span>
         <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
-          <input class="wrapper-field" matInput type="datetime-local" placeholder="End date" name="stopDateTime"
+                    <input class="wrapper-field" matInput type="datetime-local" placeholder="End date" name="stopDateTime"
                  [(ngModel)]="trackFilter.stopDateTime">
         </mat-form-field>
       </div>
       <div>
-        <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
-      </div>
-    </form>
-  `,
-  styleUrls: ['./track-filter.component.scss']
+                <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
+            </div>
+        </form>
+    `,
+    styleUrls: ['./track-filter.component.scss']
 })
 export class TrackFilterComponent implements OnInit {
 
@@ -62,7 +61,7 @@ export class TrackFilterComponent implements OnInit {
 
   trackFilter;
 
-  topicFilterControl: FormControl = new FormControl();
+    topicFilterControl: FormControl = new FormControl();
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
@@ -74,9 +73,7 @@ export class TrackFilterComponent implements OnInit {
       this.topicList = topics.topics.map(tm => tm.name);
       this.visibleTopicList = topics.topics.map(tm => tm.name);
     });
-    const from = new Date();
-    from.setMinutes(from.getMinutes() - 5);
-    this.trackFilter = new TrackFilter('', '', this.localIsoDate(from), this.localIsoDate(), []);
+    this.trackFilter = this.trackService.getStoredTrackFilter();
     this.topicFilterControl.valueChanges.pipe().subscribe(() => this.filterTopics());
   }
 
@@ -107,9 +104,9 @@ export class TrackFilterComponent implements OnInit {
     }
   }
 
-  setFilter() {
-    this.trackService.setTrackFilter(this.trackFilter);
-  }
+    setFilter() {
+        this.trackService.setTrackFilter(this.trackFilter);
+    }
 
   localIsoDate(date?: Date) {
     if (!date) {

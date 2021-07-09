@@ -52,13 +52,14 @@ public class KafkaConnectionService {
     }
 
     //we cannot cache this ever
-    public KafkaConsumer<String, String> getKafkaConsumer(String serverId) {
+    public KafkaConsumer<String, String> getKafkaConsumer(String serverId, int limit) {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, limit);
         return new KafkaConsumer<>(props);
     }
 
