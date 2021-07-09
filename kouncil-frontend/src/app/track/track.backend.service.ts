@@ -19,6 +19,7 @@ export class TrackBackendService extends TrackService {
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
+
     const url = '/api/track';
     const params = new HttpParams()
       .set('serverId', serverId)

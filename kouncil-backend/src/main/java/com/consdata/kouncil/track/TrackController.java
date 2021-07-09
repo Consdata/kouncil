@@ -12,6 +12,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +28,11 @@ import java.util.stream.IntStream;
 @RestController
 public class TrackController extends AbstractMessagesController {
 
-    public TrackController(KafkaConnectionService kafkaConnectionService) {
+    private final SimpMessagingTemplate template;
+
+    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate template) {
         super(kafkaConnectionService);
+        this.template = template;
     }
 
     @GetMapping("/api/track")
@@ -111,6 +115,8 @@ public class TrackController extends AbstractMessagesController {
                 }
                 log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
                 messages.addAll(candidates);
+                template.convertAndSend("/topic/track", candidates);
+
             });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
             log.debug("TRACK99 search completed result.size={}", messages.size());
