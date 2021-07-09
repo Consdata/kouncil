@@ -41,9 +41,10 @@ public class TrackController extends AbstractMessagesController {
                                                @RequestParam("value") String value,
                                                @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                                @RequestParam("endTimestampMillis") Long endTimestampMillis,
-                                               @RequestParam("serverId") String serverId) {
-        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}",
-                topicNames, field, value, beginningTimestampMillis, endTimestampMillis);
+                                               @RequestParam("serverId") String serverId,
+                                               @RequestParam(value = "asyncHandle", required = false) String asyncHandle) {
+        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
+                topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
         validateTopics(serverId, topicNames);
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
             List<TopicMessage> messages = new ArrayList<>();
@@ -80,9 +81,10 @@ public class TrackController extends AbstractMessagesController {
                 }
 
                 long startTime = System.nanoTime();
-                List<TopicMessage> candidates = new ArrayList<>();
+
                 int emptyPolls = 0;
                 while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
+                    List<TopicMessage> candidates = new ArrayList<>();
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
                     if (records.isEmpty()) {
                         emptyPolls++;
@@ -112,10 +114,18 @@ public class TrackController extends AbstractMessagesController {
                                     .build());
                         }
                     }
+                    log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
+                    if (!candidates.isEmpty()) {
+                        if (Strings.isNotBlank(asyncHandle)) {
+                            candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
+                            String destination = "/topic/track/" + asyncHandle;
+                            log.debug("TRACK91 async batch send topic={}, destination={}, size={}", t, destination, candidates.size());
+                            template.convertAndSend(destination, candidates);
+                        } else {
+                            messages.addAll(candidates);
+                        }
+                    }
                 }
-                log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
-                messages.addAll(candidates);
-                template.convertAndSend("/topic/track", candidates);
 
             });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));

@@ -11,6 +11,7 @@ import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import {Crypto} from '../../util/crypto';
 
 @Component({
   selector: 'app-track-result',
@@ -80,10 +81,8 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   trackFilterSubscription: Subscription;
   @ViewChild('table') table: any;
   phrase: string;
-
-  webSocketEndPoint = 'http://localhost:8080/ws';
-  topic = '/topic/track';
   stompClient: any;
+  asyncHandle: string;
 
   private static tryParseJson(message): string {
     try {
@@ -102,19 +101,29 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
     });
-    this.websocket();
+    if (this.trackService.isAsyncEnable()) {
+      this.initializeWS();
+    }
   }
 
-  private websocket() {
-    console.log('Initialize WebSocket Connection');
-    const ws = new SockJS(this.webSocketEndPoint);
+  private initializeWS() {
+    console.log('Initialize WebSocket');
+    const ws = new SockJS('/ws');
     this.stompClient = Stomp.over(ws);
+    this.asyncHandle = Crypto.uuidv4();
     const _this = this;
-    this.stompClient.connect({}, function (frame) {
-      _this.stompClient.subscribe(_this.topic, function (sdkEvent) {
+    this.stompClient.connect({}, function () {
+      _this.stompClient.subscribe('/topic/track/' + _this.asyncHandle, function (sdkEvent) {
         _this.onMessageReceived(sdkEvent);
       });
     }, this.errorCallBack);
+  }
+
+  errorCallBack(error) {
+    console.log('WebSocket errorCallBack -> ' + error);
+    setTimeout(() => {
+      this.initializeWS();
+    }, 5000);
   }
 
   ngOnDestroy() {
@@ -126,24 +135,12 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  errorCallBack(error) {
-    console.log('errorCallBack -> ' + error);
-    setTimeout(() => {
-      this.websocket();
-    }, 5000);
-  }
-
   onMessageReceived(message) {
-    console.log('Message from Server :: ', message);
-    this.progressBarService.setProgress(true);
     this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);
-      console.log(items);
       this.allRows = [...this.allRows, ...items];
-      console.log('all', this.allRows);
       this.filterRows();
-      this.progressBarService.setProgress(false);
     });
   }
 
@@ -169,14 +166,14 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   private getEvents(trackFilter: TrackFilter) {
-    //this.progressBarService.setProgress(true);
     this.filteredRows = [];
+    this.allRows = [];
     setTimeout(() => {
-      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter).subscribe(events => {
-        console.log("get events ", events);
-        //this.allRows = events;
-        //this.filterRows();
-        //this.progressBarService.setProgress(false);
+      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle).subscribe(events => {
+        if (events.length > 0) {
+          this.allRows = [...this.allRows, ...events];
+          this.filterRows();
+        }
       });
     });
   }

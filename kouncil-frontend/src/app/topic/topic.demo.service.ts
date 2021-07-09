@@ -6,6 +6,7 @@ import {demoTopics} from '../topics/topics.demo.data';
 import {HttpClient} from '@angular/common/http';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {MessageHeader} from './message-header';
+import {Crypto} from '../util/crypto';
 
 @Injectable({
   providedIn: 'root'
@@ -84,21 +85,13 @@ export class TopicDemoService extends TopicBackendService {
     }
     const pagination = this.paginationChanged$.getValue();
     return new Message(
-      this.uuidv4(),
+      Crypto.uuidv4(),
       TopicDemoService.createRandomEvent(),
       partitionOffsets[partition] - (pagination.size * pagination.pageNumber) - i,
       partition,
       new Date().getTime(),
-      [new MessageHeader('traceId', this.uuidv4())],
+      [new MessageHeader('traceId', Crypto.uuidv4())],
       ''
     );
   }
-
-  private uuidv4(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
 }
