@@ -59,7 +59,8 @@ public class TrackController extends AbstractMessagesController {
                 Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
                 log.debug("TRACK04 endOffsets={}", endOffsets);
 
-                boolean[] exhausted = new boolean[partitionMap.size()];
+                Boolean[] exhausted = new Boolean[partitionMap.size()];
+                Arrays.fill(exhausted, Boolean.FALSE);
                 for (Map.Entry<Integer, TopicPartition> entry : partitionMap.entrySet()) {
                     Integer partitionIndex = entry.getKey();
                     Long startOffsetForPartition = beginningOffsets.get(partitionIndex);
@@ -77,7 +78,7 @@ public class TrackController extends AbstractMessagesController {
                 long startTime = System.nanoTime();
                 List<TopicMessage> candidates = new ArrayList<>();
                 int emptyPolls = 0;
-                while (emptyPolls < 3 && falseExists(exhausted)) {
+                while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
                     if (records.isEmpty()) {
                         emptyPolls++;
@@ -119,14 +120,6 @@ public class TrackController extends AbstractMessagesController {
             }
             return messages;
         }
-    }
-
-    private boolean falseExists(boolean[] exhausted) {
-        log.debug("{}", exhausted);
-        for (boolean b : exhausted) {
-            if (!b) return true;
-        }
-        return false;
     }
 
     private boolean headerMatch(Headers headers, String field, String value) {

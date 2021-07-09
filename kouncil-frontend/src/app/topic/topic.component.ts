@@ -115,7 +115,8 @@ export class TopicComponent implements OnInit, OnDestroy {
                 source: event.row.kouncilValueJson,
                 headers: event.row.headers,
                 key: event.row.kouncilKey,
-                topicName: this.topicName
+                topicName: this.topicName,
+                timestamp: event.row.kouncilTimestampEpoch
             });
         }
     }
