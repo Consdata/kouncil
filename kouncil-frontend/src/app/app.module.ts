@@ -51,12 +51,13 @@ import {environment} from '../environments/environment';
 import {Backend} from './app.backend';
 import {ServersBackendService} from './servers.backend.service';
 import {ServersDemoService} from './servers.demo.service';
-import { TrackComponent } from './track/track.component';
-import { TrackFilterComponent } from './track/track-filter/track-filter.component';
-import { TrackResultComponent } from './track/track-result/track-result.component';
+import {TrackComponent} from './track/track.component';
+import {TrackFilterComponent} from './track/track-filter/track-filter.component';
+import {TrackResultComponent} from './track/track-result/track-result.component';
 import {TrackService} from './track/track.service';
 import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -84,28 +85,29 @@ import {TrackDemoService} from './track/track.demo.service';
     TrackFilterComponent,
     TrackResultComponent
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        RoutingModule,
-        FormsModule,
-        NgxDatatableModule,
-        ClipboardModule,
-        NgxJsonViewerModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDialogModule,
-        MatSnackBarModule,
-        MatSlideToggleModule,
-        MatSelectModule,
-        MatTooltipModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    RoutingModule,
+    FormsModule,
+    NgxDatatableModule,
+    ClipboardModule,
+    NgxJsonViewerModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatSelectModule,
+    NgxMatSelectSearchModule,
+    MatTooltipModule
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
