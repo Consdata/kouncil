@@ -36,8 +36,14 @@ export abstract class TrackService {
       [topicName]);
   }
 
-  getStoredTrackFilter() {
-    if (this.trackFilter === undefined) {
+  getStoredTrackFilter(): TrackFilter {
+    if (this.trackFilter === undefined) {return this.defaultFilter();
+    } else {
+      return this.trackFilter;
+    }
+  }
+
+  defaultFilter(): TrackFilter {
       const from = new Date();
       from.setMinutes(from.getMinutes() - 5);
       return new TrackFilter(
@@ -46,8 +52,5 @@ export abstract class TrackService {
         moment(from).format(this._format),
         moment(new Date()).format(this._format),
         []);
-    } else {
-      return this.trackFilter;
     }
-  }
 }
