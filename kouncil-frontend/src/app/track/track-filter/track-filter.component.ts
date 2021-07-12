@@ -5,10 +5,10 @@ import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 
 @Component({
-    selector: 'app-track-filter',
-    template: `
-        <form #filtersForm="ngForm">
-            <div class="wrapper">
+  selector: 'app-track-filter',
+  template: `
+    <form #filtersForm="ngForm">
+      <div class="wrapper">
         <input class="filter-input wrapper-field" placeholder="Correlation field" matInput type="text" name="field"
                [(ngModel)]="trackFilter.field"/>
         <span class="wrapper-glue">=</span>
@@ -17,7 +17,7 @@ import {ServersService} from '../../servers.service';
       </div>
       <div>
         <mat-form-field class="filter-input" floatLabel="never">
-                    <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple>
+          <mat-select id="topics-select" placeholder="Topics" name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple>
             <mat-option>
               <ngx-mat-select-search
                 [showToggleAllCheckbox]="true"
@@ -28,28 +28,32 @@ import {ServersService} from '../../servers.service';
                 noEntriesFoundLabel="No topics found">
               </ngx-mat-select-search>
             </mat-option>
-                        <mat-option *ngFor="let topic of visibleTopicList" [value]="topic">{{topic}}</mat-option>
+            <mat-option *ngFor="let topic of visibleTopicList" [value]="topic">{{topic}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="wrapper">
-        <span class="wrapper-glue-start">Track from</span>
-        <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
-                    <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
-                 [(ngModel)]="trackFilter.startDateTime">
-        </mat-form-field>
-        <span class="wrapper-glue">To</span>
-        <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
-                    <input class="wrapper-field" matInput type="datetime-local" placeholder="End date" name="stopDateTime"
-                 [(ngModel)]="trackFilter.stopDateTime">
-        </mat-form-field>
+      <div class="form-control">
+        <div class="wrapper" [formControl]="datesControl">
+          <span class="wrapper-glue-start">Track from</span>
+          <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
+            <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
+                   [(ngModel)]="trackFilter.startDateTime">
+          </mat-form-field>
+          <span class="wrapper-glue">to</span>
+          <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
+            <input class="wrapper-field" matInput type="datetime-local" placeholder="End date" name="stopDateTime"
+                   [(ngModel)]="trackFilter.stopDateTime">
+          </mat-form-field>
+        </div>
+        <div class="validation-error" *ngIf="datesControl.invalid">
+          {{datesControl.errors['validation'].message}}
+        </div>
       </div>
-      <div>
-                <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
-            </div>
-        </form>
-    `,
-    styleUrls: ['./track-filter.component.scss']
+      <button mat-button disableRipple class="clear-button" (click)="clearFilter()">Clear</button>
+      <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
+    </form>
+  `,
+  styleUrls: ['./track-filter.component.scss']
 })
 export class TrackFilterComponent implements OnInit {
 
@@ -61,7 +65,9 @@ export class TrackFilterComponent implements OnInit {
 
   trackFilter;
 
-    topicFilterControl: FormControl = new FormControl();
+  topicFilterControl: FormControl = new FormControl();
+
+  datesControl: FormControl = new FormControl();
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
@@ -97,25 +103,33 @@ export class TrackFilterComponent implements OnInit {
   toggleAllTopics() {
     if (this.trackFilter.topics.length === this.visibleTopicList.length) {
       this.trackFilter.topics = [];
-    } else if (this.trackFilter.topics.lenght === 0) {
-      this.trackFilter.topics = this.visibleTopicList;
     } else {
       this.trackFilter.topics = this.visibleTopicList;
     }
   }
 
-    setFilter() {
-        this.trackService.setTrackFilter(this.trackFilter);
+  clearFilter() {
+    this.trackFilter = this.trackService.defaultFilter();
+  }
+
+  setFilter() {
+    if (this.validate()) {
+      this.trackService.setTrackFilter(this.trackFilter);
+    }
+  }
+
+  validate(): boolean {
+    if (this.trackFilter.stopDateTime < this.trackFilter.startDateTime) {
+      this.datesControl.setErrors({
+        validation: {
+          message: 'Invalid date range'
+        }
+      });
+      return false;
     }
 
-  localIsoDate(date?: Date) {
-    if (!date) {
-      date = new Date();
-    }
-    const offsetMs = date.getTimezoneOffset() * 60 * 1000;
-    const msLocal = date.getTime() - offsetMs;
-    const dateLocal = new Date(msLocal);
-    const iso = dateLocal.toISOString();
-    return iso.slice(0, 16);
+    this.datesControl.setErrors(null);
+    return true;
   }
+
 }

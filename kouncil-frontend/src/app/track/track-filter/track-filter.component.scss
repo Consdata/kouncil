@@ -15,6 +15,10 @@ form {
   border: 1px solid $main-20;
   border-radius: $default-border-radius;
 
+  &.ng-invalid {
+    border: 1px solid $red-60;
+  }
+
   .filter-input {
     border: none;
   }
@@ -101,6 +105,15 @@ form {
   height: 40px;
 }
 
+.clear-button {
+  background: $main-0;
+  border: 1px solid $main-20;
+  color: $main-70;
+  border-radius: $default-border-radius;
+  height: 40px;
+
+}
+
 #topics-select {
   ::ng-deep .mat-select-trigger {
     top: 1px;
@@ -144,3 +157,12 @@ form {
   justify-content: center;
 }
 
+.form-control {
+  position: relative;
+  .validation-error {
+    position: absolute;
+    top: 44px;
+    font-size: 12px;
+    color: $red-60;
+  }
+}
