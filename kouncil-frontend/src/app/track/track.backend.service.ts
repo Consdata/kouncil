@@ -18,16 +18,21 @@ export class TrackBackendService extends TrackService {
     return new Date(dateTime).getTime();
   }
 
-  getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
-    const url = '/api/track';
+  getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]> {
+    const url = asyncHandle !== undefined ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))
       .set('field', trackFilter.field)
       .set('value', trackFilter.value)
       .set('beginningTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.startDateTime))
-      .set('endTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.stopDateTime));
+      .set('endTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.stopDateTime))
+      .set('asyncHandle', asyncHandle !== undefined ? asyncHandle : '');
     return this.http.get<Message[]>(url, {params});
+  }
+
+  isAsyncEnable(): boolean {
+    return true;
   }
 
 }

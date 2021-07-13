@@ -21,4 +21,8 @@ export class TrackDemoService extends TrackService {
       new Message('key3', '{"test":"reconciled"}', 1032132132, 1, new Date().getTime(), [new MessageHeader('traceId', '666')], 'reconciled-transactions')]]);
   }
 
+  isAsyncEnable(): boolean {
+    return false;
+  }
+
 }

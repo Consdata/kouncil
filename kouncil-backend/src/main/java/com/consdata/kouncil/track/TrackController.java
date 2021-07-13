@@ -12,12 +12,14 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -27,19 +29,43 @@ import java.util.stream.IntStream;
 @RestController
 public class TrackController extends AbstractMessagesController {
 
-    public TrackController(KafkaConnectionService kafkaConnectionService) {
+    private final SimpMessagingTemplate eventSender;
+
+    private final ExecutorService executor;
+
+    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor) {
         super(kafkaConnectionService);
+        this.eventSender = eventSender;
+        this.executor = executor;
     }
 
-    @GetMapping("/api/track")
-    public List<TopicMessage> getTopicMessages(@RequestParam("topicNames") List<String> topicNames,
+    @GetMapping("/api/track/sync")
+    public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                                @RequestParam("field") String field,
                                                @RequestParam("value") String value,
                                                @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                                @RequestParam("endTimestampMillis") Long endTimestampMillis,
                                                @RequestParam("serverId") String serverId) {
-        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}",
-                topicNames, field, value, beginningTimestampMillis, endTimestampMillis);
+        return getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+    }
+
+    @GetMapping("/api/track/async")
+    public void getAsync(@RequestParam("topicNames") List<String> topicNames,
+                                      @RequestParam("field") String field,
+                                      @RequestParam("value") String value,
+                                      @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
+                                      @RequestParam("endTimestampMillis") Long endTimestampMillis,
+                                      @RequestParam("serverId") String serverId,
+                                      @RequestParam("asyncHandle") String asyncHandle) {
+        executor.submit(() -> {
+            getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+        });
+
+    }
+
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
+        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
+                topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
         validateTopics(serverId, topicNames);
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
             List<TopicMessage> messages = new ArrayList<>();
@@ -76,9 +102,10 @@ public class TrackController extends AbstractMessagesController {
                 }
 
                 long startTime = System.nanoTime();
-                List<TopicMessage> candidates = new ArrayList<>();
+
                 int emptyPolls = 0;
                 while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
+                    List<TopicMessage> candidates = new ArrayList<>();
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
                     if (records.isEmpty()) {
                         emptyPolls++;
@@ -108,9 +135,19 @@ public class TrackController extends AbstractMessagesController {
                                     .build());
                         }
                     }
+                    log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
+                    if (!candidates.isEmpty()) {
+                        if (Strings.isNotBlank(asyncHandle)) {
+                            candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
+                            String destination = "/topic/track/" + asyncHandle;
+                            log.debug("TRACK91 async batch send topic={}, destination={}, size={}", t, destination, candidates.size());
+                            eventSender.convertAndSend(destination, candidates);
+                        } else {
+                            messages.addAll(candidates);
+                        }
+                    }
                 }
-                log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
-                messages.addAll(candidates);
+
             });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
             log.debug("TRACK99 search completed result.size={}", messages.size());

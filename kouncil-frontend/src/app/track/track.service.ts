@@ -17,11 +17,13 @@ export abstract class TrackService {
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
   private readonly _format = 'YYYY-MM-DDTHH:mm';
 
-  abstract getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]>;
+  abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
 
   setTrackFilter(trackFilter: TrackFilter) {
     this.trackFilterChange.next(trackFilter);
   }
+
+  abstract isAsyncEnable(): boolean;
 
   storeTrackFilter(field: string, value: string, timestamp: number, topicName: string) {
     const date = new Date(timestamp);
@@ -35,21 +37,20 @@ export abstract class TrackService {
   }
 
   getStoredTrackFilter(): TrackFilter {
-    if (this.trackFilter === undefined) {
-      return this.defaultFilter();
+    if (this.trackFilter === undefined) {return this.defaultFilter();
     } else {
       return this.trackFilter;
     }
   }
 
   defaultFilter(): TrackFilter {
-    const from = new Date();
-    from.setMinutes(from.getMinutes() - 5);
-    return new TrackFilter(
-      '',
-      '',
-      moment(from).format(this._format),
-      moment(new Date()).format(this._format),
-      []);
-  }
+      const from = new Date();
+      from.setMinutes(from.getMinutes() - 5);
+      return new TrackFilter(
+        '',
+        '',
+        moment(from).format(this._format),
+        moment(new Date()).format(this._format),
+        []);
+    }
 }
