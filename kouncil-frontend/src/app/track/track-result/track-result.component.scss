@@ -1,0 +1,12 @@
+::ng-deep .datatable-scroll, ::ng-deep .datatable-body-row, ::ng-deep .datatable-row-wrapper {
+  // ngx datable sets its width through 'style' attribute, hence the 'important'
+  width: 100% !important;
+}
+
+::ng-deep .datatable-body-row {
+  border-bottom: none;
+}
+
+::ng-deep .page-count {
+  padding: 0 24px;
+}
