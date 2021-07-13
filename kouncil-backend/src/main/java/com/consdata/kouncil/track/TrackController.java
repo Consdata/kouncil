@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -28,21 +29,41 @@ import java.util.stream.IntStream;
 @RestController
 public class TrackController extends AbstractMessagesController {
 
-    private final SimpMessagingTemplate template;
+    private final SimpMessagingTemplate eventSender;
 
-    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate template) {
+    private final ExecutorService executor;
+
+    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor) {
         super(kafkaConnectionService);
-        this.template = template;
+        this.eventSender = eventSender;
+        this.executor = executor;
     }
 
-    @GetMapping("/api/track")
-    public List<TopicMessage> getTopicMessages(@RequestParam("topicNames") List<String> topicNames,
+    @GetMapping("/api/track/sync")
+    public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                                @RequestParam("field") String field,
                                                @RequestParam("value") String value,
                                                @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                                @RequestParam("endTimestampMillis") Long endTimestampMillis,
-                                               @RequestParam("serverId") String serverId,
-                                               @RequestParam(value = "asyncHandle", required = false) String asyncHandle) {
+                                               @RequestParam("serverId") String serverId) {
+        return getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+    }
+
+    @GetMapping("/api/track/async")
+    public void getAsync(@RequestParam("topicNames") List<String> topicNames,
+                                      @RequestParam("field") String field,
+                                      @RequestParam("value") String value,
+                                      @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
+                                      @RequestParam("endTimestampMillis") Long endTimestampMillis,
+                                      @RequestParam("serverId") String serverId,
+                                      @RequestParam("asyncHandle") String asyncHandle) {
+        executor.submit(() -> {
+            getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+        });
+
+    }
+
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
         log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
                 topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
         validateTopics(serverId, topicNames);
@@ -120,7 +141,7 @@ public class TrackController extends AbstractMessagesController {
                             candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
                             String destination = "/topic/track/" + asyncHandle;
                             log.debug("TRACK91 async batch send topic={}, destination={}, size={}", t, destination, candidates.size());
-                            template.convertAndSend(destination, candidates);
+                            eventSender.convertAndSend(destination, candidates);
                         } else {
                             messages.addAll(candidates);
                         }

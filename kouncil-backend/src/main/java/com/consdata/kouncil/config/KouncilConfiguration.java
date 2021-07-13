@@ -18,6 +18,8 @@ import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
@@ -164,6 +166,11 @@ public class KouncilConfiguration {
     @Bean
     public HttpTraceRepository httpTraceRepository() {
         return new InMemoryHttpTraceRepository();
+    }
+
+    @Bean("fixedThreadPool")
+    public ExecutorService executor() {
+        return Executors.newFixedThreadPool(10);
     }
 
 }

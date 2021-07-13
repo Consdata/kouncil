@@ -170,7 +170,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.allRows = [];
     setTimeout(() => {
       this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle).subscribe(events => {
-        if (events.length > 0) {
+        if (events !== undefined && events.length > 0) {
           this.allRows = [...this.allRows, ...events];
           this.filterRows();
         }

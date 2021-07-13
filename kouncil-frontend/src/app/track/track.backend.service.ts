@@ -19,7 +19,7 @@ export class TrackBackendService extends TrackService {
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]> {
-    const url = '/api/track';
+    const url = asyncHandle !== undefined ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))
