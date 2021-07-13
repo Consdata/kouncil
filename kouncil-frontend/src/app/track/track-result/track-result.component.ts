@@ -16,50 +16,48 @@ import {Crypto} from '../../util/crypto';
 @Component({
   selector: 'app-track-result',
   template: `
-    <div class="topic">
-      <div class="topic-table-area">
-        <ng-template #noDataPlaceholder>
-          <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
-        </ng-template>
-        <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
-                       class="topic-table material expandable"
-                       [rows]="filteredRows"
-                       [rowHeight]="48"
-                       [headerHeight]="48"
-                       [footerHeight]="80"
-                       [scrollbarH]="true"
-                       [scrollbarV]="true"
-                       [columnMode]="'force'"
-                       [loadingIndicator]="isLoading()"
-                       (activate)="showMessage($event)"
-                       #table>
-          <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="topic" name="topic" [width]="190">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{value}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="partition" name="partition" [width]="190">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{value}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="offset" name="offset" [width]="190">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{value}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column prop="key" name="Key" [width]="190">
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{value}}
-            </ng-template>
-          </ngx-datatable-column>
-        </ngx-datatable>
-      </div>
+    <div class="track">
+      <ng-template #noDataPlaceholder>
+        <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
+      </ng-template>
+      <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+                     class="track-table material expandable"
+                     [rows]="filteredRows"
+                     [rowHeight]="48"
+                     [headerHeight]="48"
+                     [footerHeight]="80"
+                     [scrollbarH]="true"
+                     [scrollbarV]="true"
+                     [columnMode]="'force'"
+                     [loadingIndicator]="isLoading()"
+                     (activate)="showMessage($event)"
+                     #table>
+        <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="topic" name="topic" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="partition" name="partition" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="offset" name="offset" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="key" name="key" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
   `,
   styleUrls: ['./track-result.component.scss']

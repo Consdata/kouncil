@@ -8,55 +8,56 @@ import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
 
 @Component({
-    selector: 'app-message-view',
-    templateUrl: './message-view.component.html',
-    styleUrls: ['./message-view.component.scss']
+  selector: 'app-message-view',
+  templateUrl: './message-view.component.html',
+  styleUrls: ['./message-view.component.scss']
 })
 export class MessageViewComponent implements OnInit {
-    public isAnimationDone = false;
+  public isAnimationDone = false;
 
-    constructor(
-        private drawerService: DrawerService,
-        private router: Router,
-        private trackService: TrackService,
-        private dialogRef: MatDialogRef<MessageViewComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: {
-            topicName: string,
-            key: string,
-            source: string,
-            headers: MessageHeader[],
-            timestamp: number
-        }) {
-    }
+  constructor(
+    private drawerService: DrawerService,
+    private router: Router,
+    private trackService: TrackService,
+    private dialogRef: MatDialogRef<MessageViewComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {
+      topicName: string,
+      key: string,
+      source: string,
+      headers: MessageHeader[],
+      timestamp: number
+    }) {
+  }
 
-    formatJson(object) {
-        return JSON.stringify(object, null, 2);
-    }
+  formatJson(object) {
+    return JSON.stringify(object, null, 2);
+  }
 
-    resend() {
-        this.dialogRef.close();
-        this.drawerService.openDrawerWithPadding(SendComponent, {
-            topicName: this.data.topicName,
-            key: this.data.key,
-            source: this.data.source,
-            headers: this.data.headers
-        });
-    }
+  resend() {
+    this.dialogRef.close();
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: this.data.topicName,
+      key: this.data.key,
+      source: this.data.source,
+      headers: this.data.headers
+    });
+  }
 
-    ngOnInit(): void {
-        // ngx datatable gets its width completely wrong
-        // if displayed before container reaches its final size
-        this.dialogRef.afterOpened().pipe(first()).subscribe(() => {
-            this.isAnimationDone = true;
-        });
-    }
+  ngOnInit(): void {
+    // ngx datatable gets its width completely wrong
+    // if displayed before container reaches its final size
+    this.dialogRef.afterOpened().pipe(first()).subscribe(() => {
+      this.isAnimationDone = true;
+    });
+  }
 
-    navigateToTrack(event): void {
-        const element = event.event.target as HTMLElement;
-        if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
-            this.trackService.storeTrackFilter(event.row.key, event.row.value, this.data.timestamp, this.data.topicName);
-            this.router.navigate(['/track']);
-        }
+  navigateToTrack(event): void {
+    const element = event.event.target as HTMLElement;
+    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
+      this.dialogRef.close();
+      this.trackService.storeTrackFilter(event.row.key, event.row.value, this.data.timestamp, this.data.topicName);
+      this.router.navigate(['/track']);
     }
+  }
 }
 
