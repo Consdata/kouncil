@@ -3,6 +3,8 @@ package com.consdata.kouncil.track;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.topic.TopicMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -16,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import java.time.Duration;
 import java.util.*;
@@ -33,43 +36,65 @@ public class TrackController extends AbstractMessagesController {
 
     private final ExecutorService executor;
 
-    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor) {
+    private final WebSocketMessageBrokerStats webSocketMessageBrokerStats;
+
+    private final DestinationStore destinationStore;
+
+    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor, WebSocketMessageBrokerStats webSocketMessageBrokerStats, DestinationStore destinationStore) {
         super(kafkaConnectionService);
         this.eventSender = eventSender;
         this.executor = executor;
+        this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
+        this.destinationStore = destinationStore;
+    }
+
+    @GetMapping("/api/track/stats")
+    public String printStats() throws JsonProcessingException {
+        WebSocketStats wss = WebSocketStats.builder()
+                .wsSession(webSocketMessageBrokerStats.getWebSocketSessionStatsInfo())
+                .taskScheduler(webSocketMessageBrokerStats.getSockJsTaskSchedulerStatsInfo())
+                .clientInbound(webSocketMessageBrokerStats.getClientInboundExecutorStatsInfo())
+                .clientOutbound(webSocketMessageBrokerStats.getClientOutboundExecutorStatsInfo())
+                .destinations(destinationStore.getActiveDestinations())
+                .build();
+        String result = new ObjectMapper().writeValueAsString(wss);
+        log.debug(result);
+        return result;
     }
 
     @GetMapping("/api/track/sync")
     public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
-                                               @RequestParam("field") String field,
-                                               @RequestParam("value") String value,
-                                               @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
-                                               @RequestParam("endTimestampMillis") Long endTimestampMillis,
-                                               @RequestParam("serverId") String serverId) {
+                                      @RequestParam("field") String field,
+                                      @RequestParam("value") String value,
+                                      @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
+                                      @RequestParam("endTimestampMillis") Long endTimestampMillis,
+                                      @RequestParam("serverId") String serverId) {
         return getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
     }
 
     @GetMapping("/api/track/async")
     public void getAsync(@RequestParam("topicNames") List<String> topicNames,
-                                      @RequestParam("field") String field,
-                                      @RequestParam("value") String value,
-                                      @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
-                                      @RequestParam("endTimestampMillis") Long endTimestampMillis,
-                                      @RequestParam("serverId") String serverId,
-                                      @RequestParam("asyncHandle") String asyncHandle) {
-        executor.submit(() -> {
-            getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
-        });
-
+                         @RequestParam("field") String field,
+                         @RequestParam("value") String value,
+                         @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
+                         @RequestParam("endTimestampMillis") Long endTimestampMillis,
+                         @RequestParam("serverId") String serverId,
+                         @RequestParam("asyncHandle") String asyncHandle) {
+        executor.submit(() -> getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
     }
 
     private List<TopicMessage> getEvents(List<String> topicNames, String field, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
         log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
                 topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
         validateTopics(serverId, topicNames);
+        String destination = "/topic/track/" + asyncHandle;
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
             List<TopicMessage> messages = new ArrayList<>();
-            topicNames.forEach(t -> {
+            for (String t : topicNames) {
+                if (Strings.isNotBlank(asyncHandle) && !destinationStore.destinationIsActive(destination)) {
+                    log.warn("Client disconnection detected topic={}, destination={}", t, destination);
+                    break;
+                }
                 Map<Integer, TopicPartition> partitionMap;
                 Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p));
                 List<PartitionInfo> partitionInfos = consumer.partitionsFor(t);
@@ -113,25 +138,25 @@ public class TrackController extends AbstractMessagesController {
                         emptyPolls = 0;
                     }
                     log.debug("TRACK70 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
-                    for (ConsumerRecord<String, String> record : records) {
-                        if (record.offset() >= endOffsets.get(record.partition())) {
-                            if (!exhausted[record.partition()]) {
-                                log.debug("TRACK24 topic={}, partition={} exhausted", t, record.partition());
-                                exhausted[record.partition()] = true;
+                    for (ConsumerRecord<String, String> consumerRecord : records) {
+                        if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
+                            if (Boolean.FALSE.equals(exhausted[consumerRecord.partition()])) {
+                                log.debug("TRACK24 topic={}, partition={} exhausted", t, consumerRecord.partition());
+                                exhausted[consumerRecord.partition()] = true;
                             }
                             continue;
                         }
                         if (Strings.isBlank(field)
-                                || (Strings.isNotBlank(field) && Strings.isNotBlank(value) && headerMatch(record.headers(), field, value))) {
+                                || (Strings.isNotBlank(field) && Strings.isNotBlank(value) && headerMatch(consumerRecord.headers(), field, value))) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(t)
-                                    .key(record.key())
-                                    .value(record.value())
-                                    .offset(record.offset())
-                                    .partition(record.partition())
-                                    .timestamp(record.timestamp())
-                                    .headers(mapHeaders(record.headers()))
+                                    .key(consumerRecord.key())
+                                    .value(consumerRecord.value())
+                                    .offset(consumerRecord.offset())
+                                    .partition(consumerRecord.partition())
+                                    .timestamp(consumerRecord.timestamp())
+                                    .headers(mapHeaders(consumerRecord.headers()))
                                     .build());
                         }
                     }
@@ -139,7 +164,6 @@ public class TrackController extends AbstractMessagesController {
                     if (!candidates.isEmpty()) {
                         if (Strings.isNotBlank(asyncHandle)) {
                             candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
-                            String destination = "/topic/track/" + asyncHandle;
                             log.debug("TRACK91 async batch send topic={}, destination={}, size={}", t, destination, candidates.size());
                             eventSender.convertAndSend(destination, candidates);
                         } else {
@@ -147,8 +171,8 @@ public class TrackController extends AbstractMessagesController {
                         }
                     }
                 }
+            }
 
-            });
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
             log.debug("TRACK99 search completed result.size={}", messages.size());
             if (messages.size() > 1000) {
@@ -167,6 +191,5 @@ public class TrackController extends AbstractMessagesController {
         }
         return false;
     }
-
 
 }
