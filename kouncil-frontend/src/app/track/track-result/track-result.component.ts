@@ -18,42 +18,51 @@ import {Crypto} from '../../util/crypto';
   template: `
     <div class="track">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
+        <app-no-data-placeholder
+          [objectTypeName]="'Message'"></app-no-data-placeholder>
       </ng-template>
-      <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
-                     class="track-table material expandable"
-                     [rows]="filteredRows"
-                     [rowHeight]="48"
-                     [headerHeight]="48"
-                     [footerHeight]="80"
-                     [scrollbarH]="true"
-                     [scrollbarV]="true"
-                     [columnMode]="'force'"
-                     [loadingIndicator]="isLoading()"
-                     (activate)="showMessage($event)"
-                     #table>
-        <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
+      <ngx-datatable
+        *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+        class="track-table material expandable"
+        [rows]="filteredRows"
+        [rowHeight]="48"
+        [headerHeight]="48"
+        [footerHeight]="80"
+        [scrollbarH]="true"
+        [scrollbarV]="true"
+        [columnMode]="'force'"
+        [loadingIndicator]="isLoading()"
+        (activate)="showMessage($event)"
+        #table>
+        <ngx-datatable-column prop="timestamp" name="timestamp"
+                              [width]="190">
+          <ng-template let-value="value"
+                       ngx-datatable-cell-template>
             {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="topic" name="topic" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-template let-value="value"
+                       ngx-datatable-cell-template>
             {{value}}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="partition" name="partition" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
+        <ngx-datatable-column prop="partition" name="partition"
+                              [width]="190">
+          <ng-template let-value="value"
+                       ngx-datatable-cell-template>
             {{value}}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="offset" name="offset" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-template let-value="value"
+                       ngx-datatable-cell-template>
             {{value}}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="key" name="key" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-template let-value="value"
+                       ngx-datatable-cell-template>
             {{value}}
           </ng-template>
         </ngx-datatable-column>
@@ -64,15 +73,6 @@ import {Crypto} from '../../util/crypto';
 })
 export class TrackResultComponent implements OnInit, OnDestroy {
 
-  constructor(private route: ActivatedRoute,
-              private searchService: SearchService,
-              private titleService: Title,
-              private progressBarService: ProgressBarService,
-              private trackService: TrackService,
-              private drawerService: DrawerService,
-              private servers: ServersService) {
-  }
-
   filteredRows = [];
   allRows = [];
   searchSubscription: Subscription;
@@ -82,12 +82,25 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   stompClient: any;
   asyncHandle: string;
 
+  constructor(private route: ActivatedRoute,
+              private searchService: SearchService,
+              private titleService: Title,
+              private progressBarService: ProgressBarService,
+              private trackService: TrackService,
+              private drawerService: DrawerService,
+              private servers: ServersService) {
+  }
+
   private static tryParseJson(message): string {
     try {
       return JSON.parse(message);
     } catch (e) {
       return message;
     }
+  }
+
+  private static getDestination(asyncHandle: string): string {
+    return '/topic/track/' + asyncHandle;
   }
 
   ngOnInit(): void {
@@ -104,19 +117,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initializeWS() {
-    console.log('Initialize WebSocket');
-    const ws = new SockJS('/ws');
-    this.stompClient = Stomp.over(ws);
-    this.asyncHandle = Crypto.uuidv4();
-    const _this = this;
-    this.stompClient.connect({}, function () {
-      _this.stompClient.subscribe('/topic/track/' + _this.asyncHandle, function (sdkEvent) {
-        _this.onMessageReceived(sdkEvent);
-      });
-    }, this.errorCallBack);
-  }
-
   errorCallBack(error) {
     console.log('WebSocket errorCallBack -> ' + error);
     setTimeout(() => {
@@ -128,6 +128,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.searchSubscription.unsubscribe();
     this.trackFilterSubscription.unsubscribe();
     if (this.stompClient !== null) {
+      this.stompClient.unsubscribe(TrackResultComponent.getDestination(this.asyncHandle));
       this.stompClient.disconnect();
       console.log('WebSocket disconnected');
     }
@@ -153,14 +154,27 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
+  isLoading(): boolean {
+    return this.progressBarService.progressSub.getValue();
+  }
+
+  private initializeWS() {
+    console.log('Initialize WebSocket');
+    const ws = new SockJS('/ws');
+    this.stompClient = Stomp.over(ws);
+    this.asyncHandle = Crypto.uuidv4();
+    const _this = this;
+    this.stompClient.connect({}, function () {
+      _this.stompClient.subscribe(TrackResultComponent.getDestination(_this.asyncHandle), function (sdkEvent) {
+        _this.onMessageReceived(sdkEvent);
+      });
+    }, this.errorCallBack);
+  }
+
   private filterRows() {
     this.filteredRows = this.allRows.filter((row) => {
       return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
     });
-  }
-
-  isLoading(): boolean {
-    return this.progressBarService.progressSub.getValue();
   }
 
   private getEvents(trackFilter: TrackFilter) {

@@ -1,4 +1,4 @@
-package pl.ynleborg.websock;
+package com.consdata.kouncil.track;
 
 import lombok.Builder;
 import lombok.Data;
