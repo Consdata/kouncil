@@ -3,6 +3,6 @@ export class TrackFilter {
               public value: string,
               public startDateTime: string,
               public stopDateTime: string,
-              public topics: String[]) {
+              public topics: string[]) {
   }
 }
