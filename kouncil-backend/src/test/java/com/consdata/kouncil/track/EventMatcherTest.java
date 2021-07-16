@@ -118,8 +118,25 @@ class EventMatcherTest {
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
     }
 
+    @Test
+    void should_handle_null_header_or_record_value() {
+        // given
+        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", null, null);
+
+        // when & then
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+    }
+
     private ConsumerRecord<String, String> prepareConsumerRecord(String headerKey, String headerValue, String recordValue) {
-        Headers headers = new RecordHeaders(Arrays.array(new RecordHeader(headerKey, headerValue.getBytes(StandardCharsets.UTF_8))));
+        Headers headers = new RecordHeaders(Arrays.array(new RecordHeader(headerKey, headerValue != null ? headerValue.getBytes(StandardCharsets.UTF_8) : null)));
         return new ConsumerRecord<>("", 0, 0, 0, TimestampType.NO_TIMESTAMP_TYPE, 0L, 0, 0, "key", recordValue, headers);
     }
 }

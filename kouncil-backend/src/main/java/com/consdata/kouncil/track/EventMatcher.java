@@ -15,14 +15,14 @@ public class EventMatcher {
         if (Strings.isNotBlank(field)) {
             return headerMatch(field, operator, filterValue, consumerRecord.headers());
         } else {
-            return plainValueMatch(operator, filterValue, consumerRecord.value());
+            return plainValueMatch(operator, filterValue, consumerRecord.value() != null ? consumerRecord.value() : "");
         }
     }
 
     private boolean headerMatch(String field, TrackOperator operator, String filterValue, Headers headers) {
         for (Header header : headers) {
             if (field.equals(header.key())) {
-                return plainValueMatch(operator, filterValue, new String(header.value()));
+                return plainValueMatch(operator, filterValue, header.value() != null ? new String(header.value()) : "");
             }
         }
         return false;
