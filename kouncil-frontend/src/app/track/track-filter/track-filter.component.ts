@@ -3,6 +3,7 @@ import {TrackService} from '../track.service';
 import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
+import {TrackFilter} from './track-filter';
 
 @Component({
   selector: 'app-track-filter',
@@ -63,7 +64,7 @@ export class TrackFilterComponent implements OnInit {
 
   visibleTopicList = [];
 
-  trackFilter;
+  trackFilter: TrackFilter;
 
   topicFilterControl: FormControl = new FormControl();
 
