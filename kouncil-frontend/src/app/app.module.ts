@@ -58,6 +58,7 @@ import {TrackService} from './track/track.service';
 import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
     FileSizePipe,
     TrackComponent,
     TrackFilterComponent,
-    TrackResultComponent
+    TrackResultComponent,
+    EnumToArrayPipe,
   ],
   imports: [
     BrowserModule,

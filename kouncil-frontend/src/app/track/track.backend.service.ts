@@ -24,6 +24,7 @@ export class TrackBackendService extends TrackService {
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))
       .set('field', trackFilter.field)
+      .set('operator', trackFilter.operator)
       .set('value', trackFilter.value)
       .set('beginningTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.startDateTime))
       .set('endTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.stopDateTime))

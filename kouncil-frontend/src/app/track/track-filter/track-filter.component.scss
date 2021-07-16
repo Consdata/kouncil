@@ -50,6 +50,13 @@ form {
     color: $main-40;
   }
 
+  .wrapper-select {
+    color: $main-40;
+    height: 1px;
+    top: -6px;
+    padding: 0 0;
+  }
+
   &:hover {
     border: 1px solid $main-40;
     transition: all $default-transition-time;

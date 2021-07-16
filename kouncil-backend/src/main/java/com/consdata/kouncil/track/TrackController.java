@@ -65,27 +65,29 @@ public class TrackController extends AbstractMessagesController {
     @GetMapping("/api/track/sync")
     public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                       @RequestParam("field") String field,
+                                      @RequestParam("operator") String operator,
                                       @RequestParam("value") String value,
                                       @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                       @RequestParam("endTimestampMillis") Long endTimestampMillis,
                                       @RequestParam("serverId") String serverId) {
-        return getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+        return getEvents(topicNames, field, operator, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
     }
 
     @GetMapping("/api/track/async")
     public void getAsync(@RequestParam("topicNames") List<String> topicNames,
                          @RequestParam("field") String field,
+                         @RequestParam("operator") String operator,
                          @RequestParam("value") String value,
                          @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                          @RequestParam("endTimestampMillis") Long endTimestampMillis,
                          @RequestParam("serverId") String serverId,
                          @RequestParam("asyncHandle") String asyncHandle) {
-        executor.submit(() -> getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
+        executor.submit(() -> getEvents(topicNames, field, operator, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
     }
 
-    private List<TopicMessage> getEvents(List<String> topicNames, String field, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
-        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
-                topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operator, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
+        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
+                topicNames, field, operator, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
         validateTopics(serverId, topicNames);
         String destination = "/topic/track/" + asyncHandle;
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
@@ -146,8 +148,7 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        if (Strings.isBlank(field)
-                                || (Strings.isNotBlank(field) && Strings.isNotBlank(value) && headerMatch(consumerRecord.headers(), field, value))) {
+                        if (filterMatch(field, operator, value, consumerRecord)) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(t)
@@ -181,6 +182,13 @@ public class TrackController extends AbstractMessagesController {
             }
             return messages;
         }
+    }
+
+    private boolean filterMatch(String field, String operator, String value, ConsumerRecord<String, String> consumerRecord) {
+        TrackOperator trackOperator = TrackOperator.valueOf(operator);
+        log.debug("AAAAAAAAAAAAAAAAAAAAaa {}", trackOperator);
+        return Strings.isBlank(field)
+                || (Strings.isNotBlank(field) && Strings.isNotBlank(value) && headerMatch(consumerRecord.headers(), field, value));
     }
 
     private boolean headerMatch(Headers headers, String field, String value) {

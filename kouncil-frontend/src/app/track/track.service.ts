@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
-import {TrackFilter} from './track-filter/track-filter';
+import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import * as moment from 'moment';
 
 @Injectable({
@@ -30,6 +30,7 @@ export abstract class TrackService {
     date.setMinutes(date.getMinutes() + 1);
     this.trackFilter = new TrackFilter(
       field,
+      TrackOperator['~'],
       value,
       moment(new Date(timestamp)).format(this._format),
       moment(date).format(this._format),
@@ -48,6 +49,7 @@ export abstract class TrackService {
       from.setMinutes(from.getMinutes() - 5);
       return new TrackFilter(
         '',
+        TrackOperator['~'],
         '',
         moment(from).format(this._format),
         moment(new Date()).format(this._format),
