@@ -94,7 +94,6 @@ export class TrackFilterComponent implements OnInit {
   }
 
   filterTopics() {
-
     if (!this.topicList) {
       return;
     }
@@ -124,7 +123,6 @@ export class TrackFilterComponent implements OnInit {
   }
 
   setFilter() {
-    console.log(this.trackFilter);
     if (this.validate()) {
       this.trackService.setTrackFilter(this.trackFilter);
     }

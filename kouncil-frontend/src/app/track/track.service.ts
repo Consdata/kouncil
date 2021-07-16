@@ -30,7 +30,7 @@ export abstract class TrackService {
     date.setMinutes(date.getMinutes() + 1);
     this.trackFilter = new TrackFilter(
       field,
-      TrackOperator['~'],
+      TrackOperator['is'],
       value,
       moment(new Date(timestamp)).format(this._format),
       moment(date).format(this._format),
