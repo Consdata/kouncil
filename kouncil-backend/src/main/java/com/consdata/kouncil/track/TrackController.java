@@ -11,8 +11,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +38,15 @@ public class TrackController extends AbstractMessagesController {
 
     private final DestinationStore destinationStore;
 
-    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor, WebSocketMessageBrokerStats webSocketMessageBrokerStats, DestinationStore destinationStore) {
+    private final EventMatcher eventMatcher;
+
+    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor, WebSocketMessageBrokerStats webSocketMessageBrokerStats, DestinationStore destinationStore, EventMatcher eventMatcher) {
         super(kafkaConnectionService);
         this.eventSender = eventSender;
         this.executor = executor;
         this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
         this.destinationStore = destinationStore;
+        this.eventMatcher = eventMatcher;
     }
 
     @GetMapping("/api/track/stats")
@@ -65,27 +66,30 @@ public class TrackController extends AbstractMessagesController {
     @GetMapping("/api/track/sync")
     public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                       @RequestParam("field") String field,
+                                      @RequestParam("operator") String operatorParam,
                                       @RequestParam("value") String value,
                                       @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                       @RequestParam("endTimestampMillis") Long endTimestampMillis,
                                       @RequestParam("serverId") String serverId) {
-        return getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+        return getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
     }
 
     @GetMapping("/api/track/async")
     public void getAsync(@RequestParam("topicNames") List<String> topicNames,
                          @RequestParam("field") String field,
+                         @RequestParam("operator") String operatorParam,
                          @RequestParam("value") String value,
                          @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                          @RequestParam("endTimestampMillis") Long endTimestampMillis,
                          @RequestParam("serverId") String serverId,
                          @RequestParam("asyncHandle") String asyncHandle) {
-        executor.submit(() -> getEvents(topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
+        executor.submit(() -> getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
     }
 
-    private List<TopicMessage> getEvents(List<String> topicNames, String field, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
-        log.debug("TRACK01 topicNames={}, field={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
-                topicNames, field, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operatorParam, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
+        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
+                topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+        TrackOperator trackOperator = TrackOperator.fromValue(operatorParam);
         validateTopics(serverId, topicNames);
         String destination = "/topic/track/" + asyncHandle;
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
@@ -146,8 +150,7 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        if (Strings.isBlank(field)
-                                || (Strings.isNotBlank(field) && Strings.isNotBlank(value) && headerMatch(consumerRecord.headers(), field, value))) {
+                        if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord)) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(t)
@@ -183,13 +186,5 @@ public class TrackController extends AbstractMessagesController {
         }
     }
 
-    private boolean headerMatch(Headers headers, String field, String value) {
-        for (Header header : headers) {
-            if (field.equals(header.key()) && new String(header.value()).contains(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 }
