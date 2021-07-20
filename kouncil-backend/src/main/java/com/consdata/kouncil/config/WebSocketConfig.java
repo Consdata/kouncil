@@ -52,17 +52,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void onSubscribed(SessionSubscribeEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         log.debug("[Subscribed] {}, {}", sha.getSessionId(), sha.getDestination());
-        destinationStore.registerDestination(sha.getDestination());
+        destinationStore.registerDestination(sha.getSessionId(), sha.getDestination());
     }
 
-    /**
-     * Destination is not present in unsubscribe event so as a workaround, destination
-     * is passed from frontend as subscriptionId :/
-     */
     @EventListener
     public void onUnsubscribed(SessionUnsubscribeEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        log.debug("[Unsubscribed] {}, {}", sha.getSessionId(), sha.getSubscriptionId());
-        destinationStore.unregisterDestination(sha.getSubscriptionId());
+        log.debug("[Unsubscribed] {}", sha.getSessionId());
+        destinationStore.unregisterDestination(sha.getSessionId());
     }
 }

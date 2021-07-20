@@ -114,9 +114,10 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     });
     if (this.trackService.isAsyncEnable()) {
       this.asyncHandle = Crypto.uuidv4();
-      this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle)).subscribe((message) => {
-        this.onMessageReceived(message);
-      });
+      this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle))
+        .subscribe((message) => {
+          this.onMessageReceived(message);
+        });
     }
   }
 
