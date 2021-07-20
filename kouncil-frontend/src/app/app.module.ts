@@ -60,6 +60,7 @@ import {TrackDemoService} from './track/track.demo.service';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@stomp/ng2-stompjs';
 import {RxStompConfig} from './rx-stomp.config';
+import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import {RxStompConfig} from './rx-stomp.config';
     FileSizePipe,
     TrackComponent,
     TrackFilterComponent,
-    TrackResultComponent
+    TrackResultComponent,
+    EnumToArrayPipe,
   ],
   imports: [
     BrowserModule,
