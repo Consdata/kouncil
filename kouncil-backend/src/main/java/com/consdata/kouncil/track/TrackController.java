@@ -10,7 +10,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,7 +69,7 @@ public class TrackController extends AbstractMessagesController {
                                       @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                       @RequestParam("endTimestampMillis") Long endTimestampMillis,
                                       @RequestParam("serverId") String serverId) {
-        return getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+        return getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, new SyncTrackStrategy());
     }
 
     @GetMapping("/api/track/async")
@@ -82,17 +81,16 @@ public class TrackController extends AbstractMessagesController {
                          @RequestParam("endTimestampMillis") Long endTimestampMillis,
                          @RequestParam("serverId") String serverId,
                          @RequestParam("asyncHandle") String asyncHandle) {
-        executor.submit(() -> getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
+        executor.submit(() -> getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, new AsyncTrackStrategy("/topic/track/" + asyncHandle, eventSender, destinationStore)));
     }
 
-    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operatorParam, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
-        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
-                topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operatorParam, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, TrackStrategy trackStrategy) {
+        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}",
+                topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId);
         TrackOperator trackOperator = TrackOperator.fromValue(operatorParam);
         validateTopics(serverId, topicNames);
-        String destination = "/topic/track/" + asyncHandle;
+
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
-            List<TopicMessage> messageList = new ArrayList<>();
             List<TrackTopicMetadata> metadataList = prepareMetadata(topicNames, beginningTimestampMillis, endTimestampMillis, consumer);
             metadataList.sort(Comparator.comparing(TrackTopicMetadata::getTrackSize));
             log.debug("TRACK20 topic={}", metadataList);
@@ -102,9 +100,8 @@ public class TrackController extends AbstractMessagesController {
                 long startTime = System.nanoTime();
                 int emptyPolls = 0;
                 while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
-                    if (Strings.isNotBlank(asyncHandle) && !destinationStore.destinationIsActive(destination)) {
-                        log.warn("Client disconnection detected topic={}, destination={}", m.getTopicName(), destination);
-                        return Collections.emptyList();
+                    if (trackStrategy.shouldStopTracking()) {
+                        return trackStrategy.processFinalResult();
                     }
                     List<TopicMessage> candidates = new ArrayList<>();
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
@@ -115,7 +112,6 @@ public class TrackController extends AbstractMessagesController {
                     }
                     log.debug("TRACK70 topic={} poll took={}ms, returned {} records", m.getTopicName(), (System.nanoTime() - startTime) / 1000000, records.count());
                     for (ConsumerRecord<String, String> consumerRecord : records) {
-                        log.info("AAAAAAA {}", consumerRecord.offset());
                         if (consumerRecord.offset() >= m.getEndOffsets().get(consumerRecord.partition())) {
                             if (Boolean.FALSE.equals(exhausted[consumerRecord.partition()])) {
                                 log.debug("TRACK24 topic={}, partition={} exhausted", m.getTopicName(), consumerRecord.partition());
@@ -137,25 +133,11 @@ public class TrackController extends AbstractMessagesController {
                         }
                     }
                     log.debug("TRACK90 topic={}, poll completed candidates.size={}", m.getTopicName(), candidates.size());
-                    if (!candidates.isEmpty()) {
-                        if (Strings.isNotBlank(asyncHandle)) {
-                            candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
-                            log.debug("TRACK91 topic={}, async batch send destination={}, size={}", m.getTopicName(), destination, candidates.size());
-                            eventSender.convertAndSend(destination, candidates);
-                        } else {
-                            messageList.addAll(candidates);
-                        }
-                    }
+                    trackStrategy.processCandidates(candidates);
                 }
             }
 
-            messageList.sort(Comparator.comparing(TopicMessage::getTimestamp));
-            log.debug("TRACK99 search completed result.size={}", messageList.size());
-            if (messageList.size() > 1000) {
-                log.warn("Result to large for browser to handle!");
-                return messageList.subList(0, 1000);
-            }
-            return messageList;
+            return trackStrategy.processFinalResult();
         }
     }
 
