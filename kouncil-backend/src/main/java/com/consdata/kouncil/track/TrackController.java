@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +20,12 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
 @RestController
+@SuppressWarnings("java:S6212") //val
 public class TrackController extends AbstractMessagesController {
 
     private final SimpMessagingTemplate eventSender;
@@ -71,7 +69,7 @@ public class TrackController extends AbstractMessagesController {
                                       @RequestParam("beginningTimestampMillis") Long beginningTimestampMillis,
                                       @RequestParam("endTimestampMillis") Long endTimestampMillis,
                                       @RequestParam("serverId") String serverId) {
-        return getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, null);
+        return getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, new SyncTrackStrategy());
     }
 
     @GetMapping("/api/track/async")
@@ -83,57 +81,28 @@ public class TrackController extends AbstractMessagesController {
                          @RequestParam("endTimestampMillis") Long endTimestampMillis,
                          @RequestParam("serverId") String serverId,
                          @RequestParam("asyncHandle") String asyncHandle) {
-        executor.submit(() -> getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle));
+        executor.submit(() -> getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, new AsyncTrackStrategy("/topic/track/" + asyncHandle, eventSender, destinationStore)));
     }
 
-    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operatorParam, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, String asyncHandle) {
-        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}, asyncHandle={}",
-                topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, asyncHandle);
+    private List<TopicMessage> getEvents(List<String> topicNames, String field, String operatorParam, String value, Long beginningTimestampMillis, Long endTimestampMillis, String serverId, TrackStrategy trackStrategy) {
+        log.debug("TRACK01 topicNames={}, field={}, operator={}, value={}, beginningTimestampMillis={}, endTimestampMillis={}, serverId={}",
+                topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId);
         TrackOperator trackOperator = TrackOperator.fromValue(operatorParam);
         validateTopics(serverId, topicNames);
-        String destination = "/topic/track/" + asyncHandle;
+
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
-            List<TopicMessage> messages = new ArrayList<>();
-            for (String t : topicNames) {
-                if (Strings.isNotBlank(asyncHandle) && !destinationStore.destinationIsActive(destination)) {
-                    log.warn("Client disconnection detected topic={}, destination={}", t, destination);
-                    break;
-                }
-                Map<Integer, TopicPartition> partitionMap;
-                Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p));
-                List<PartitionInfo> partitionInfos = consumer.partitionsFor(t);
-                partitionMap = IntStream.rangeClosed(0, partitionInfos.size() - 1)
-                        .boxed()
-                        .collect(integerMapCollector);
+            List<TrackTopicMetadata> metadataList = prepareMetadata(topicNames, beginningTimestampMillis, endTimestampMillis, consumer);
+            metadataList.sort(Comparator.comparing(TrackTopicMetadata::getTrackSize));
+            log.debug("TRACK20 topic={}", metadataList);
 
-                consumer.assign(partitionMap.values());
-
-                Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
-                log.debug("TRACK03 beginningOffsets={}", beginningOffsets);
-
-                Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
-                log.debug("TRACK04 endOffsets={}", endOffsets);
-
-                Boolean[] exhausted = new Boolean[partitionMap.size()];
-                Arrays.fill(exhausted, Boolean.FALSE);
-                for (Map.Entry<Integer, TopicPartition> entry : partitionMap.entrySet()) {
-                    Integer partitionIndex = entry.getKey();
-                    Long startOffsetForPartition = beginningOffsets.get(partitionIndex);
-                    log.debug("TRACK50 partition={}, startOffsetForPartition={}", partitionIndex, startOffsetForPartition);
-                    if (startOffsetForPartition < 0) {
-                        log.debug("TRACK51 startOffsetForPartition is -1, seekToEnd, topic={}, partition={}", t, partitionIndex);
-                        consumer.seekToEnd(Collections.singletonList(partitionMap.get(partitionIndex)));
-                        exhausted[partitionIndex] = true;
-                    } else {
-                        log.debug("TRACK52 topic={}, partition={}, startOffsetForPartition={}", t, partitionIndex, startOffsetForPartition);
-                        consumer.seek(partitionMap.get(partitionIndex), startOffsetForPartition);
-                    }
-                }
-
+            for (TrackTopicMetadata m : metadataList) {
+                Boolean[] exhausted = positionConsumer(consumer, m);
                 long startTime = System.nanoTime();
-
                 int emptyPolls = 0;
                 while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
+                    if (trackStrategy.shouldStopTracking()) {
+                        return trackStrategy.processFinalResult();
+                    }
                     List<TopicMessage> candidates = new ArrayList<>();
                     ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
                     if (records.isEmpty()) {
@@ -141,11 +110,11 @@ public class TrackController extends AbstractMessagesController {
                     } else {
                         emptyPolls = 0;
                     }
-                    log.debug("TRACK70 poll took={}ms, returned {} records for topic {}", (System.nanoTime() - startTime) / 1000000, records.count(), t);
+                    log.debug("TRACK70 topic={} poll took={}ms, returned {} records", m.getTopicName(), (System.nanoTime() - startTime) / 1000000, records.count());
                     for (ConsumerRecord<String, String> consumerRecord : records) {
-                        if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
+                        if (consumerRecord.offset() >= m.getEndOffsets().get(consumerRecord.partition())) {
                             if (Boolean.FALSE.equals(exhausted[consumerRecord.partition()])) {
-                                log.debug("TRACK24 topic={}, partition={} exhausted", t, consumerRecord.partition());
+                                log.debug("TRACK24 topic={}, partition={} exhausted", m.getTopicName(), consumerRecord.partition());
                                 exhausted[consumerRecord.partition()] = true;
                             }
                             continue;
@@ -153,7 +122,7 @@ public class TrackController extends AbstractMessagesController {
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord)) {
                             candidates.add(TopicMessage
                                     .builder()
-                                    .topic(t)
+                                    .topic(m.getTopicName())
                                     .key(consumerRecord.key())
                                     .value(consumerRecord.value())
                                     .offset(consumerRecord.offset())
@@ -163,28 +132,64 @@ public class TrackController extends AbstractMessagesController {
                                     .build());
                         }
                     }
-                    log.debug("TRACK90 poll completed topic={}, candidates.size={}", t, candidates.size());
-                    if (!candidates.isEmpty()) {
-                        if (Strings.isNotBlank(asyncHandle)) {
-                            candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
-                            log.debug("TRACK91 async batch send topic={}, destination={}, size={}", t, destination, candidates.size());
-                            eventSender.convertAndSend(destination, candidates);
-                        } else {
-                            messages.addAll(candidates);
-                        }
-                    }
+                    log.debug("TRACK90 topic={}, poll completed candidates.size={}", m.getTopicName(), candidates.size());
+                    trackStrategy.processCandidates(candidates);
                 }
             }
 
-            messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
-            log.debug("TRACK99 search completed result.size={}", messages.size());
-            if (messages.size() > 1000) {
-                log.warn("Result to large for browser to handle!");
-                return messages.subList(0, 1000);
-            }
-            return messages;
+            return trackStrategy.processFinalResult();
         }
     }
 
+    private Boolean[] positionConsumer(KafkaConsumer<String, String> consumer, TrackTopicMetadata m) {
+        consumer.assign(m.getPartitions().values());
+        Boolean[] exhausted = new Boolean[m.getPartitions().size()];
+        Arrays.fill(exhausted, Boolean.FALSE);
+        for (Map.Entry<Integer, TopicPartition> entry : m.getPartitions().entrySet()) {
+            Integer partitionIndex = entry.getKey();
+            Long startOffsetForPartition = m.getBeginningOffsets().get(partitionIndex);
+            log.debug("TRACK50 topic={}, partition={}, startOffsetForPartition={}", m.getTopicName(), partitionIndex, startOffsetForPartition);
+            if (startOffsetForPartition < 0) {
+                log.debug("TRACK51 topic={}, partition={} startOffsetForPartition is -1, seekToEnd", m.getTopicName(), partitionIndex);
+                consumer.seekToEnd(Collections.singletonList(m.getPartitions().get(partitionIndex)));
+                exhausted[partitionIndex] = true;
+            } else {
+                log.debug("TRACK52 topic={}, partition={}, startOffsetForPartition={}", m.getTopicName(), partitionIndex, startOffsetForPartition);
+                consumer.seek(m.getPartitions().get(partitionIndex), startOffsetForPartition);
+            }
+        }
+        return exhausted;
+    }
 
+    private List<TrackTopicMetadata> prepareMetadata(List<String> topicNames, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
+        List<TrackTopicMetadata> metadataList = new ArrayList<>();
+        for (String t : topicNames) {
+            Map<Integer, TopicPartition> partitions = IntStream.rangeClosed(0, consumer.partitionsFor(t).size() - 1).boxed().collect(Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p)));
+
+            consumer.assign(partitions.values());
+
+            Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitions.values());
+            log.debug("TRACK10 topic={}, beginningOffsets={}", t, beginningOffsets);
+
+            Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitions.values());
+            log.debug("TRACK11 topic={}, endOffsets={}", t, endOffsets);
+            metadataList.add(TrackTopicMetadata.builder()
+                    .topicName(t)
+                    .partitions(partitions)
+                    .beginningOffsets(beginningOffsets)
+                    .endOffsets(endOffsets)
+                    .trackSize(calculateTrackSize(beginningOffsets, endOffsets))
+                    .build());
+        }
+        return metadataList;
+    }
+
+    private Long calculateTrackSize(Map<Integer, Long> beginningOffsets, Map<Integer, Long> endOffsets) {
+        long size = 0L;
+        for (Map.Entry<Integer, Long> entry : endOffsets.entrySet()) {
+            size += entry.getValue() - beginningOffsets.get(entry.getKey());
+        }
+        return size;
+
+    }
 }

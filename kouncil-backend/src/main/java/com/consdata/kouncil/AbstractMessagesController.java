@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AbstractMessagesController {
 
-    protected static final int POLL_TIMEOUT = 100;
+    protected static final int POLL_TIMEOUT = 1000;
     protected final KafkaConnectionService kafkaConnectionService;
 
     protected Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, KafkaConsumer<String, String> consumer, Collection<TopicPartition> topicPartitions) {
