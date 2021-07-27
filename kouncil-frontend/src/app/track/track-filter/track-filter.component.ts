@@ -4,7 +4,6 @@ import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 import {TrackFilter, TrackOperator} from './track-filter';
-
 @Component({
   selector: 'app-track-filter',
   template: `
@@ -58,7 +57,7 @@ import {TrackFilter, TrackOperator} from './track-filter';
         </div>
       </div>
       <button mat-button disableRipple class="clear-button" (click)="clearFilter()">Clear</button>
-      <button mat-button disableRipple class="filter-button" (click)="setFilter()">Track events</button>
+      <button mat-button disableRipple class="filter-button" [class.spinner]="loading" [disabled]="loading" (click)="setFilter()">Track events</button>
     </form>
   `,
   styleUrls: ['./track-filter.component.scss']
@@ -79,6 +78,8 @@ export class TrackFilterComponent implements OnInit {
 
   datesControl: FormControl = new FormControl();
 
+  loading = false;
+
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
               private servers: ServersService) {
@@ -91,6 +92,9 @@ export class TrackFilterComponent implements OnInit {
     });
     this.trackFilter = this.trackService.getStoredTrackFilter();
     this.topicFilterControl.valueChanges.pipe().subscribe(() => this.filterTopics());
+    this.trackService.trackFinished.subscribe(e => {
+      this.loading = false;
+    });
   }
 
   filterTopics() {
@@ -124,6 +128,7 @@ export class TrackFilterComponent implements OnInit {
 
   setFilter() {
     if (this.validate()) {
+      this.loading = true;
       this.trackService.setTrackFilter(this.trackFilter);
     }
   }

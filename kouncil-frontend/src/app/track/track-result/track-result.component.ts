@@ -131,6 +131,9 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);
+      if (items.length === 0) {
+        this.trackService.trackFinished.emit();
+      }
       this.allRows = [...this.allRows, ...items];
       this.filterRows();
     });

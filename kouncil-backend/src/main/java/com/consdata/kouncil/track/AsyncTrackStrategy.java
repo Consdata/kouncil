@@ -42,6 +42,8 @@ public class AsyncTrackStrategy implements TrackStrategy {
 
     @Override
     public List<TopicMessage> processFinalResult() {
+        //sending empty list just to notify frontent about end of processing
+        eventSender.convertAndSend(destination, Collections.emptyList());
         return Collections.emptyList();
     }
 }
