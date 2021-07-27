@@ -9,7 +9,8 @@ public enum TrackOperator {
     LIKE("0"),
     NOT_LIKE("1"),
     IS("2"),
-    NOT_IS("3");
+    NOT_IS("3"),
+    REGEX("4");
 
     private static final Map<String, TrackOperator> MAP_VALUES = Stream.of(values())
             .collect(Collectors.toMap(TrackOperator::getFrontendIndex, Function.identity()));

@@ -12,5 +12,6 @@ export enum TrackOperator {
   '~',
   '!~',
   'is',
-  'is not'
+  'is not',
+  'regex'
 }

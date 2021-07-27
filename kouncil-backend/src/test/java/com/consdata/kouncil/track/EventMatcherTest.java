@@ -85,6 +85,23 @@ class EventMatcherTest {
     }
 
     @Test
+    void should_match_with_REGEX() {
+        // given
+        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+
+        // when & then
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*e.*", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*u", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "u.*", candidate)).isFalse();
+
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u.*", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "u.*", candidate)).isFalse();
+    }
+
+    @Test
     void should_handle_empty_filter_value() {
         // given
         ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
@@ -94,11 +111,13 @@ class EventMatcherTest {
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isFalse();
 
         assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isFalse();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isFalse();
     }
 
     @Test
@@ -111,11 +130,13 @@ class EventMatcherTest {
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isFalse();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isTrue();
 
         assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isFalse();
         assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isTrue();
     }
 
     @Test
@@ -128,11 +149,13 @@ class EventMatcherTest {
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isFalse();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isTrue();
 
         assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isFalse();
         assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
         assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isTrue();
     }
 
     private ConsumerRecord<String, String> prepareConsumerRecord(String headerKey, String headerValue, String recordValue) {
