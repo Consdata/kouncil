@@ -99,12 +99,12 @@ public class TrackController extends AbstractMessagesController {
                 Boolean[] exhausted = positionConsumer(consumer, m);
                 long startTime = System.nanoTime();
                 int emptyPolls = 0;
-                while (emptyPolls < 3 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
+                while (emptyPolls < 5 && Arrays.stream(exhausted).anyMatch(x -> !x)) {
                     if (trackStrategy.shouldStopTracking()) {
                         return trackStrategy.processFinalResult();
                     }
                     List<TopicMessage> candidates = new ArrayList<>();
-                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_TIMEOUT));
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100L * (emptyPolls + 1)));
                     if (records.isEmpty()) {
                         emptyPolls++;
                     } else {
@@ -169,10 +169,7 @@ public class TrackController extends AbstractMessagesController {
             consumer.assign(partitions.values());
 
             Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitions.values());
-            log.debug("TRACK10 topic={}, beginningOffsets={}", t, beginningOffsets);
-
             Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitions.values());
-            log.debug("TRACK11 topic={}, endOffsets={}", t, endOffsets);
             metadataList.add(TrackTopicMetadata.builder()
                     .topicName(t)
                     .partitions(partitions)

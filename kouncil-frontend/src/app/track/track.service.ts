@@ -3,19 +3,18 @@ import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
 import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import * as moment from 'moment';
+import { EventEmitter } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class TrackService {
 
-  protected constructor() {
-  }
-
   private trackFilter: TrackFilter;
   private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
   private readonly _format = 'YYYY-MM-DDTHH:mm';
+  trackFinished = new EventEmitter<any>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
 
