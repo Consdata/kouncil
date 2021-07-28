@@ -10,3 +10,13 @@
 ::ng-deep .page-count {
   padding: 0 24px;
 }
+
+
+.track {
+  ::ng-deep .datatable-body {
+    // ngx datable sets its height through 'style' attribute, hence the 'importants'
+    min-height: calc(100% - 122px) !important;
+    height: calc(100% - 122px) !important;
+  }
+
+}

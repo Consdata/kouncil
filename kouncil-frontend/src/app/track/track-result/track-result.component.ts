@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
@@ -11,14 +11,14 @@ import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {Crypto} from '../../util/crypto';
+import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
 
 @Component({
   selector: 'app-track-result',
   template: `
     <div class="track">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder
-          [objectTypeName]="'Message'"></app-no-data-placeholder>
+        <app-no-data-placeholder [objectTypeName]="'Message'" #noDataPlaceholderComponent></app-no-data-placeholder>
       </ng-template>
       <ngx-datatable
         *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
@@ -26,7 +26,7 @@ import {Crypto} from '../../util/crypto';
         [rows]="filteredRows"
         [rowHeight]="48"
         [headerHeight]="48"
-        [footerHeight]="80"
+        [footerHeight]="0"
         [scrollbarH]="true"
         [scrollbarV]="true"
         [columnMode]="'force'"
@@ -68,11 +68,13 @@ import {Crypto} from '../../util/crypto';
       </ngx-datatable>
     </div>
   `,
-  styleUrls: ['./track-result.component.scss']
+  styleUrls: ['./track-result.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush // otherwise ngx datatable flickers like hell
 })
 export class TrackResultComponent implements OnInit, OnDestroy {
 
   @ViewChild('table') table: any;
+  @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent: NoDataPlaceholderComponent;
   searchSubscription: Subscription;
   trackFilterSubscription: Subscription;
   topicSubscription: Subscription;
@@ -88,7 +90,8 @@ export class TrackResultComponent implements OnInit, OnDestroy {
               private trackService: TrackService,
               private drawerService: DrawerService,
               private servers: ServersService,
-              private rxStompService: RxStompService) {
+              private rxStompService: RxStompService,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   private static tryParseJson(message): string {
@@ -155,11 +158,18 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.filteredRows = this.allRows.filter((row) => {
       return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
     });
+
+    this.changeDetectorRef.detectChanges();
+    if (!!this.noDataPlaceholderComponent) {
+      this.noDataPlaceholderComponent.currentPhrase = this.phrase;
+      this.noDataPlaceholderComponent.detectChanges();
+    }
   }
 
   private getEvents(trackFilter: TrackFilter) {
     this.filteredRows = [];
     this.allRows = [];
+    this.changeDetectorRef.detectChanges();
     setTimeout(() => {
       this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle).subscribe(events => {
         if (events && events.length > 0) {
