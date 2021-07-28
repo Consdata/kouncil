@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
-[Kouncil](https://kouncil.io) lets you manage your Kafka clusters using a modern web interface. It's [free & open source](#license), [feature-rich](#features) and [easy to set up](#quick-start)! 
+[Kouncil](https://kouncil.io) lets you manage your Kafka clusters using a modern web interface. It's free & open source, [feature-rich](#features) and [easy to set up](#quick-start)! 
 
 Here are some of the main features. For a more comprehensive list check out the [features section](#features).
 * Advanced record browsing in table format
