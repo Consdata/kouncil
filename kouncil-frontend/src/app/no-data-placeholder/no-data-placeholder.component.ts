@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {SearchService} from '../search.service';
 import {Subscription} from 'rxjs';
@@ -17,7 +17,8 @@ export class NoDataPlaceholderComponent implements OnInit, OnDestroy {
   currentPhrase = '';
 
   constructor(private progressBarService: ProgressBarService,
-              private searchService: SearchService) {
+              private searchService: SearchService,
+              private changeDetectionRef: ChangeDetectorRef) {
     this.currentPhrase = searchService.getCurrentPhrase();
     this.phrase$ = searchService.getState().subscribe(phrase => {
       this.currentPhrase = phrase;
@@ -33,5 +34,9 @@ export class NoDataPlaceholderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.phrase$.unsubscribe();
+  }
+
+  detectChanges(): void {
+    this.changeDetectionRef.detectChanges();
   }
 }
