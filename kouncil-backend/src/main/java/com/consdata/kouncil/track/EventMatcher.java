@@ -28,16 +28,18 @@ public class EventMatcher {
         return false;
     }
 
-    private boolean plainValueMatch(TrackOperator operator, String filterValue, String headerValue) {
+    private boolean plainValueMatch(TrackOperator operator, String filterValue, String searchingForValue) {
         switch (operator) {
             case LIKE:
-                return headerValue.contains(filterValue);
+                return searchingForValue.contains(filterValue);
             case NOT_LIKE:
-                return !headerValue.contains(filterValue);
+                return !searchingForValue.contains(filterValue);
             case IS:
-                return headerValue.compareTo(filterValue) == 0;
+                return searchingForValue.compareTo(filterValue) == 0;
             case NOT_IS:
-                return headerValue.compareTo(filterValue) != 0;
+                return searchingForValue.compareTo(filterValue) != 0;
+            case REGEX:
+                return searchingForValue.matches(filterValue);
         }
         return false;
     }
