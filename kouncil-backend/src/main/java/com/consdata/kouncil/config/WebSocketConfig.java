@@ -17,6 +17,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 @Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
+@SuppressWarnings("java:S6212") //val
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final DestinationStore destinationStore;
@@ -33,7 +34,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:4200", "http://localhost:8080");
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("http://localhost:*", "https://kouncil.consdata.local");
     }
 
     @EventListener
