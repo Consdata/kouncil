@@ -1,0 +1,28 @@
+@import 'palette';
+
+:host {
+  width: 100%;
+
+  div {
+    width: calc(100% - 48px);
+    height: 42px;
+    background-color: $blue-70;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 24px;
+
+    a, a:visited, a:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .mat-icon {
+      color: white;
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
