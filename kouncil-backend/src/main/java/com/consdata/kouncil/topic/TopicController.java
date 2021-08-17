@@ -160,7 +160,7 @@ public class TopicController extends AbstractMessagesController {
 
     private ConsumerRecords<String, String> getConsumerRecords(KafkaConsumer<String, String> consumer) {
         long startTime = System.nanoTime();
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
         log.debug("TCM40 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
         return records;
     }
