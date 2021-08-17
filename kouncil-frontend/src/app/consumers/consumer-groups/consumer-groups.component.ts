@@ -35,12 +35,12 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   filtered: ConsumerGroup[] = [];
   @ViewChild('table') private table: ElementRef;
 
-  private subscription: Subscription;
+  private searchSubscription: Subscription;
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
-    this.subscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
       });
@@ -58,7 +58,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.searchSubscription.unsubscribe();
+    this.searchService.clearCurrentPhrase();
   }
 
   private filter(phrase?) {

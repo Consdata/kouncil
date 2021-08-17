@@ -126,6 +126,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
+    this.searchService.clearCurrentPhrase();
     this.trackFilterSubscription.unsubscribe();
     this.topicSubscription.unsubscribe();
   }

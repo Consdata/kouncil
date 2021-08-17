@@ -82,6 +82,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.searchSubscription.unsubscribe();
+        this.searchService.clearCurrentPhrase();
         this.jsonToGridSubscription.unsubscribe();
         this.paused = true;
     }
