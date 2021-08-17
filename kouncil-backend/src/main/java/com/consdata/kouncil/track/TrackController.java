@@ -91,11 +91,11 @@ public class TrackController extends AbstractMessagesController {
         validateTopics(serverId, topicNames);
 
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
-            List<TrackTopicMetadata> metadataList = prepareMetadata(topicNames, beginningTimestampMillis, endTimestampMillis, consumer);
-            metadataList.sort(Comparator.comparing(TrackTopicMetadata::getTrackSize));
-            log.debug("TRACK20 topic={}", metadataList);
+            List<TopicMetadata> metadataList = prepareMetadata(topicNames, beginningTimestampMillis, endTimestampMillis, consumer);
+            metadataList.sort(Comparator.comparing(TopicMetadata::getAllPartitionRangeSize));
+            log.debug("TRACK20 metadata={}", metadataList);
 
-            for (TrackTopicMetadata m : metadataList) {
+            for (TopicMetadata m : metadataList) {
                 Boolean[] exhausted = positionConsumer(consumer, m);
                 long startTime = System.nanoTime();
                 int emptyPolls = 0;
@@ -141,7 +141,7 @@ public class TrackController extends AbstractMessagesController {
         }
     }
 
-    private Boolean[] positionConsumer(KafkaConsumer<String, String> consumer, TrackTopicMetadata m) {
+    private Boolean[] positionConsumer(KafkaConsumer<String, String> consumer, TopicMetadata m) {
         consumer.assign(m.getPartitions().values());
         Boolean[] exhausted = new Boolean[m.getPartitions().size()];
         Arrays.fill(exhausted, Boolean.FALSE);
@@ -161,8 +161,8 @@ public class TrackController extends AbstractMessagesController {
         return exhausted;
     }
 
-    private List<TrackTopicMetadata> prepareMetadata(List<String> topicNames, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
-        List<TrackTopicMetadata> metadataList = new ArrayList<>();
+    private List<TopicMetadata> prepareMetadata(List<String> topicNames, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
+        List<TopicMetadata> metadataList = new ArrayList<>();
         for (String t : topicNames) {
             Map<Integer, TopicPartition> partitions = IntStream.rangeClosed(0, consumer.partitionsFor(t).size() - 1).boxed().collect(Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p)));
 
@@ -170,23 +170,14 @@ public class TrackController extends AbstractMessagesController {
 
             Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitions.values());
             Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitions.values());
-            metadataList.add(TrackTopicMetadata.builder()
+            metadataList.add(TopicMetadata.builder()
                     .topicName(t)
                     .partitions(partitions)
                     .beginningOffsets(beginningOffsets)
                     .endOffsets(endOffsets)
-                    .trackSize(calculateTrackSize(beginningOffsets, endOffsets))
                     .build());
         }
         return metadataList;
     }
 
-    private Long calculateTrackSize(Map<Integer, Long> beginningOffsets, Map<Integer, Long> endOffsets) {
-        long size = 0L;
-        for (Map.Entry<Integer, Long> entry : endOffsets.entrySet()) {
-            size += entry.getValue() - beginningOffsets.get(entry.getKey());
-        }
-        return size;
-
-    }
 }

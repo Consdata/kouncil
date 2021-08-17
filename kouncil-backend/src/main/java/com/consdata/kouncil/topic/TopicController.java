@@ -3,6 +3,7 @@ package com.consdata.kouncil.topic;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @RestController
+@SuppressWarnings("java:S6212") //val
 public class TopicController extends AbstractMessagesController {
 
     public TopicController(KafkaConnectionService kafkaConnectionService) {
@@ -41,43 +43,31 @@ public class TopicController extends AbstractMessagesController {
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, limit)) {
-            Map<Integer, TopicPartition> partitionMap;
-            Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(topicName, p));
-            if (partitions.equalsIgnoreCase("all")) {
-                List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-                partitionMap = IntStream.rangeClosed(0, partitionInfos.size() - 1)
-                        .boxed()
-                        .collect(integerMapCollector);
-            } else {
-                partitionMap = Arrays.stream(partitions.split(","))
-                        .mapToInt(Integer::parseInt)
-                        .boxed()
-                        .collect(integerMapCollector);
-            }
+            TopicMetadata metadata = prepareMetadata(topicName, partitions, beginningTimestampMillis, endTimestampMillis, consumer);
+            log.debug("TCM20 metadata={}", metadata);
 
-            consumer.assign(partitionMap.values());
-
-            Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
-            log.debug("TCM03 beginningOffsets={}", beginningOffsets);
-
-            Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
-            log.debug("TCM04 endOffsets={}", endOffsets);
             List<TopicMessage> messages = new ArrayList<>();
-            for (Map.Entry<Integer, TopicPartition> entry : partitionMap.entrySet()) {
+            for (Map.Entry<Integer, TopicPartition> entry : metadata.getPartitions().entrySet()) {
 
                 Integer partitionIndex = entry.getKey();
                 TopicPartition partition = entry.getValue();
                 consumer.assign(Collections.singletonList(partition));
 
-                Long startOffsetForPartition = beginningOffsets.get(partitionIndex);
-                log.debug("TCM50 partition={}, startOffsetForPartition={}", partitionIndex, startOffsetForPartition);
+                Long startOffsetForPartition = metadata.getBeginningOffsets().get(partitionIndex);
+                Long endOffsetForPartition = metadata.getEndOffsets().get(partitionIndex);
+                log.debug("TCM50 partition={}, startOffsetForPartition={}, endOffsetForPartition={}", partitionIndex, startOffsetForPartition, endOffsetForPartition);
                 if (startOffsetForPartition < 0) {
                     log.debug("TCM51 startOffsetForPartition is -1, seekToEnd");
                     consumer.seekToEnd(Collections.singletonList(partition));
                     continue;
                 }
 
-                long position = endOffsets.get(partitionIndex) - limit * (page - 1);
+                if (metadata.getPartitionRangeSize(partitionIndex) == 0) {
+                    log.debug("TCM52 no new messages");
+                    continue;
+                }
+
+                long position = endOffsetForPartition - limit * (page - 1);
                 log.debug("TCM60 partition={}, position={}", partitionIndex, position);
                 long seekTo = position - limit;
                 if (seekTo > startOffsetForPartition) {
@@ -87,22 +77,49 @@ public class TopicController extends AbstractMessagesController {
                     log.debug("TCM62 partition={}, seekTo startOffset={}", partitionIndex, startOffsetForPartition);
                     consumer.seek(partition, startOffsetForPartition);
                 }
-                pollMessages(limit, consumer, endOffsets, messages);
+                pollMessages(limit, consumer, metadata.getEndOffsets(), messages);
             }
 
             log.debug("TCM90 poll completed records.size={}", messages.size());
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
 
-            long totalResult = endOffsets.keySet().stream().map(index -> endOffsets.get(index) - beginningOffsets.get(index)).reduce(0L, Long::max);
+            long totalResult = metadata.getEndOffsets().keySet().stream().map(index -> metadata.getEndOffsets().get(index) - metadata.getBeginningOffsets().get(index)).reduce(0L, Long::max);
             TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
                     .messages(messages)
-                    .partitionOffsets(beginningOffsets)
-                    .partitionEndOffsets(endOffsets)
+                    .partitionOffsets(metadata.getBeginningOffsets())
+                    .partitionEndOffsets(metadata.getEndOffsets())
                     .totalResults(totalResult)
                     .build();
             log.debug("TCM99 topicName={}, partition={}, page={} topicMessages.size={}, totalResult={}", topicName, partitions, page, topicMessagesDto.getMessages().size(), totalResult);
             return topicMessagesDto;
         }
+    }
+
+    private TopicMetadata prepareMetadata(String topicName, String partitions, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
+        Map<Integer, TopicPartition> partitionMap;
+        Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(topicName, p));
+        if (partitions.equalsIgnoreCase("all")) {
+            List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
+            partitionMap = IntStream.rangeClosed(0, partitionInfos.size() - 1)
+                    .boxed()
+                    .collect(integerMapCollector);
+        } else {
+            partitionMap = Arrays.stream(partitions.split(","))
+                    .mapToInt(Integer::parseInt)
+                    .boxed()
+                    .collect(integerMapCollector);
+        }
+
+        consumer.assign(partitionMap.values());
+
+        Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
+        Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
+        return TopicMetadata.builder()
+                .topicName(topicName)
+                .partitions(partitionMap)
+                .beginningOffsets(beginningOffsets)
+                .endOffsets(endOffsets)
+                .build();
     }
 
     /**
@@ -119,9 +136,9 @@ public class TopicController extends AbstractMessagesController {
             } else {
                 emptyPolls = 0;
             }
-            for (ConsumerRecord<String, String> record : records) {
-                if (record.offset() >= endOffsets.get(record.partition())) {
-                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", record.partition(), record.offset(), endOffsets.get(record.partition()));
+            for (ConsumerRecord<String, String> consumerRecord : records) {
+                if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
+                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffsets.get(consumerRecord.partition()));
                     messegesCount = limit;
                     continue;
                 }
@@ -129,12 +146,12 @@ public class TopicController extends AbstractMessagesController {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
-                            .key(record.key())
-                            .value(record.value())
-                            .offset(record.offset())
-                            .partition(record.partition())
-                            .timestamp(record.timestamp())
-                            .headers(mapHeaders(record.headers()))
+                            .key(consumerRecord.key())
+                            .value(consumerRecord.value())
+                            .offset(consumerRecord.offset())
+                            .partition(consumerRecord.partition())
+                            .timestamp(consumerRecord.timestamp())
+                            .headers(mapHeaders(consumerRecord.headers()))
                             .build());
                 }
             }
