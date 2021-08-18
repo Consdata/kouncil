@@ -18,7 +18,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   groupId: string;
   allAssignments: ConsumerGroupOffset[];
   filteredAssignments: ConsumerGroupOffset[];
-  private subscription: Subscription;
+  private searchSubscription: Subscription;
   phrase: string;
   paused: boolean;
   lastLags: IHash = {};
@@ -38,7 +38,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       this.getConsumerGroup();
     });
 
-    this.subscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getState().subscribe(
       phrase => {
         this.phrase = phrase;
         this.filter();
@@ -46,8 +46,9 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+    this.searchService.clearCurrentPhrase();
     this.paused = true;
-    this.subscription.unsubscribe();
   }
 
   isLoading(): boolean {

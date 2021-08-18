@@ -34,12 +34,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
   filtered: TopicMetadata[] = [];
   @ViewChild('table') private table: ElementRef;
 
-  private subscription: Subscription;
+  private searchSubscription: Subscription;
 
   ngOnInit() {
     this.progressBarService.setProgress(true);
     this.loadTopics();
-    this.subscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getState().subscribe(
       phrase => {
         this.filter(phrase);
       });
@@ -57,7 +57,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.searchSubscription.unsubscribe();
+    this.searchService.clearCurrentPhrase();
   }
 
   private filter(phrase?) {

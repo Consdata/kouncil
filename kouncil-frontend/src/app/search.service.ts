@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Subject ,  Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 
 @Injectable()
 export class SearchService {
@@ -18,6 +18,10 @@ export class SearchService {
 
   getCurrentPhrase() {
     return this.currentPhrase;
+  }
+
+  clearCurrentPhrase() {
+    this.currentPhrase = '';
   }
 
 }
