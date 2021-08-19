@@ -8,11 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -175,7 +177,13 @@ public class TopicController extends AbstractMessagesController {
         validateTopics(serverId, Collections.singletonList(topicName));
         KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         for (int i = 0; i < count; i++) {
-            kafkaTemplate.send(topicName, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
+            ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, replaceTokens(message.getKey(), i), replaceTokens(message.getValue(), i));
+            for (TopicMessageHeader header : message.getHeaders()) {
+                producerRecord
+                        .headers()
+                        .add(replaceTokens(header.getKey(), i), header.getValue() != null ? replaceTokens(header.getValue(), i).getBytes(StandardCharsets.UTF_8) : null);
+            }
+            kafkaTemplate.send(producerRecord);
         }
         kafkaTemplate.flush();
         log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);

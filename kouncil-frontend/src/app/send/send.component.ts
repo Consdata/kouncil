@@ -1,4 +1,4 @@
-import {Component, Inject, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message} from 'app/topic/message';
 import {FormControl, Validators} from '@angular/forms';
@@ -7,17 +7,18 @@ import {first} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from '../servers.service';
+import {MessageHeader} from '../topic/message-header';
 
 @Component({
   selector: 'app-send',
   templateUrl: './send.component.html',
   styleUrls: ['./send.component.scss']
 })
-export class SendComponent implements OnChanges {
+export class SendComponent {
 
   @ViewChild('sendForm') sendForm: any;
 
-  message: Message = new Message('', '', null, null, null, [],'');
+  message: Message;
 
   countControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
@@ -29,26 +30,24 @@ export class SendComponent implements OnChanges {
               @Inject(MAT_DIALOG_DATA) public data: {
                 topicName: string,
                 key: string,
-                source: string
+                source: string,
+                headers: MessageHeader[]
               }) {
     console.log(this.data);
-    this.message.key = this.data.key;
-    this.message.value = JSON.stringify(this.data.source, null, 2);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.key) {
-      this.message.key = changes.key.currentValue;
-    }
-    if (changes.value) {
-      this.message.value = changes.value.currentValue;
-    }
+    this.message = new Message(
+      this.data.key,
+      JSON.stringify(this.data.source, null, 2),
+      null,
+      null,
+      null,
+      this.data.headers,
+      this.data.topicName);
   }
 
   onSubmit() {
     this.sendService.send(this.servers.getSelectedServerId(), this.data.topicName, this.countControl.value, this.message)
       .pipe(first())
-      .subscribe(data => {
+      .subscribe(() => {
         this.dialog.closeAll();
         this.resetForm();
         this.snackbar.open(`Successfully sent to ${this.data.topicName}`, '', {
@@ -68,13 +67,17 @@ export class SendComponent implements OnChanges {
     }
   }
 
-  cancel() {
-    this.dialog.closeAll();
-    this.resetForm();
-  }
-
   resetForm() {
     this.sendForm.reset({value: '', key: ''});
     this.countControl.reset(1);
   }
+
+  addHeader() {
+    this.message.headers.push(new MessageHeader('', ''));
+  }
+
+  removeHeader(i: number) {
+    this.message.headers.splice(i, 1);
+  }
+
 }

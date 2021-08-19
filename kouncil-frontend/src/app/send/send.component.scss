@@ -1,5 +1,17 @@
 @import 'palette';
 
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-right: 20px;
+  margin-bottom: 4px;
+
+  .small-button {
+    margin-top: 8px;
+  }
+}
+
 .count {
   display: flex;
   flex-direction: row;
@@ -19,17 +31,16 @@
     border: none;
     padding: 0 32px 0 8px;
   }
+}
 
-  button {
-    color: $main-60;
-    line-height: 22px;
-    margin-right: 8px;
-    min-width: 24px;
-    width: 24px;
-    height: 24px;
-    border: 1px solid $main-20;
-    background: $main-10;
-    padding: 0;
-  }
-
+.small-button {
+  color: $main-60;
+  line-height: 22px;
+  margin-right: 8px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid $main-20;
+  background: $main-10;
+  padding: 0;
 }
