@@ -36,6 +36,7 @@ public class TopicController extends AbstractMessagesController {
                                              @RequestParam("limit") String limitParam,
                                              @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
                                              @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
+                                             @RequestParam(value = "offset", required = false) Long offset,
                                              @RequestParam("serverId") String serverId) {
         log.debug("TCM01 topicName={}, partitions={}, pageParam={}, limit={}, beginningTimestampMillis={}, endTimestampMillis={}",
                 topicName, partitions, pageParam, limitParam, beginningTimestampMillis, endTimestampMillis);
@@ -43,7 +44,7 @@ public class TopicController extends AbstractMessagesController {
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
         try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, limit)) {
-            TopicMetadata metadata = prepareMetadata(topicName, partitions, beginningTimestampMillis, endTimestampMillis, consumer);
+            TopicMetadata metadata = prepareMetadata(topicName, partitions, beginningTimestampMillis, endTimestampMillis, offset, consumer);
             log.debug("TCM20 metadata={}", metadata);
 
             List<TopicMessage> messages = new ArrayList<>();
@@ -95,7 +96,13 @@ public class TopicController extends AbstractMessagesController {
         }
     }
 
-    private TopicMetadata prepareMetadata(String topicName, String partitions, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
+    private TopicMetadata prepareMetadata(
+            String topicName,
+            String partitions,
+            Long beginningTimestampMillis,
+            Long endTimestampMillis,
+            Long offset,
+            KafkaConsumer<String, String> consumer) {
         Map<Integer, TopicPartition> partitionMap;
         Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(topicName, p));
         if (partitions.equalsIgnoreCase("all")) {
@@ -112,8 +119,8 @@ public class TopicController extends AbstractMessagesController {
 
         consumer.assign(partitionMap.values());
 
-        Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitionMap.values());
-        Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitionMap.values());
+        Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, offset, consumer, partitionMap.values());
+        Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, offset, consumer, partitionMap.values());
         return TopicMetadata.builder()
                 .topicName(topicName)
                 .partitions(partitionMap)

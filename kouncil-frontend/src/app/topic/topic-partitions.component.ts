@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from './topic.service';
 import {MatSelectChange} from '@angular/material/select';
 import {ServersService} from '../servers.service';
@@ -21,6 +21,8 @@ export class TopicPartitionsComponent {
 
   @Input() topicName: string;
 
+  @Output() partitionSelected = new EventEmitter<any>();
+
   selectedPartition = this.ALL_PARTITIONS;
 
   partitions = [];
@@ -34,6 +36,7 @@ export class TopicPartitionsComponent {
   togglePartition(partition: MatSelectChange): void {
     const value = partition.value;
     this.selectedPartition = value;
+    this.partitionSelected.emit();
     if (value === this.ALL_PARTITIONS) {
       this.topicService.selectAllPartitions(this.servers.getSelectedServerId(), this.topicName);
     } else {

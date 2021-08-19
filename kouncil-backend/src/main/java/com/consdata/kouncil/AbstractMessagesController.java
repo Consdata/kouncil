@@ -20,11 +20,13 @@ public class AbstractMessagesController {
 
     protected final KafkaConnectionService kafkaConnectionService;
 
-    protected Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, KafkaConsumer<String, String> consumer, Collection<TopicPartition> topicPartitions) {
+    protected Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<String, String> consumer, Collection<TopicPartition> topicPartitions) {
         final Map<Integer, Long> endOffsets;
         final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
                 .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
-        if (endTimestampMillis != null) {
+        if (offset != null) {
+            return topicPartitions.stream().map(TopicPartition::partition).collect(Collectors.toMap(p -> p, p -> offset + 1));
+        } else if (endTimestampMillis != null) {
             Map<TopicPartition, Long> endTimestamps = topicPartitions.stream()
                     .collect(Collectors.toMap(Function.identity(), ignore -> endTimestampMillis + 1));
             endOffsets = consumer.offsetsForTimes(endTimestamps).entrySet().stream()
@@ -38,9 +40,15 @@ public class AbstractMessagesController {
         return endOffsets;
     }
 
-    protected Map<Integer, Long> calculateBeginningOffsets(Long beginningTimestampMillis, KafkaConsumer<String, String> consumer, Collection<TopicPartition> topicPartitions) {
+    protected Map<Integer, Long> calculateBeginningOffsets(
+            Long beginningTimestampMillis,
+            Long offset,
+            KafkaConsumer<String, String> consumer,
+            Collection<TopicPartition> topicPartitions) {
         Map<Integer, Long> beginningOffsets;
-        if (beginningTimestampMillis != null) {
+        if (offset != null) {
+            return topicPartitions.stream().map(TopicPartition::partition).collect(Collectors.toMap(p -> p, p -> offset));
+        } else if (beginningTimestampMillis != null) {
             Map<TopicPartition, Long> beginningTimestamps = topicPartitions.stream()
                     .collect(Collectors.toMap(Function.identity(), ignore -> beginningTimestampMillis));
             beginningOffsets = consumer.offsetsForTimes(beginningTimestamps).entrySet().stream()
