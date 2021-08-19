@@ -136,7 +136,7 @@ docker run -p 80:8080 -v /home/users/test/Kouncil/config/:/config/ consdata/koun
 
 Format of `kouncil.yaml` is described below.
 
-#### Avanced config example
+#### Advanced config example
 
 ```yaml
 kouncil:
@@ -240,6 +240,10 @@ kouncil:
 ```
 
 In the case of both simple and advanced configuration being present, the advanced configuration takes precedence.
+
+### WebSocket allowed origins configuration
+By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, passing allowedOrigins parameter like that: ```allowedOrigins=http://localhost:*, https://yourdomain.com```
+
 
 ## Local Development
 For the backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.

@@ -2,6 +2,7 @@ package com.consdata.kouncil.config;
 
 import com.consdata.kouncil.track.DestinationStore;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -14,6 +15,9 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,6 +25,8 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final DestinationStore destinationStore;
+    @Value("${allowedOrigins:*}")
+    private List<String> allowedOrigins = new ArrayList<>();
 
     public WebSocketConfig(DestinationStore destinationStore) {
         this.destinationStore = destinationStore;
@@ -34,8 +40,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        log.debug("allowedOrigins={}", allowedOrigins);
+        if (allowedOrigins.contains("*")) {
+            log.warn("Allowed origin pattern set to *. Consider narrowing down.");
+        }
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("http://localhost:*", "https://kouncil.consdata.local");
+                .setAllowedOriginPatterns(allowedOrigins.toArray(String[]::new));
     }
 
     @EventListener
