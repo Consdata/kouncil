@@ -242,7 +242,7 @@ kouncil:
 In the case of both simple and advanced configuration being present, the advanced configuration takes precedence.
 
 ### WebSocket allowed origins configuration
-By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, passing allowedOrigins parameter like that: ```allowedOrigins=http://localhost:*, https://yourdomain.com```
+By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that: ```allowedOrigins=http://localhost:*, https://yourdomain.com```
 
 
 ## Local Development
