@@ -168,8 +168,8 @@ public class TrackController extends AbstractMessagesController {
 
             consumer.assign(partitions.values());
 
-            Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, consumer, partitions.values());
-            Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, consumer, partitions.values());
+            Map<Integer, Long> beginningOffsets = calculateBeginningOffsets(beginningTimestampMillis, null, consumer, partitions.values());
+            Map<Integer, Long> endOffsets = calculateEndOffsets(endTimestampMillis, null, consumer, partitions.values());
             metadataList.add(TopicMetadata.builder()
                     .topicName(t)
                     .partitions(partitions)

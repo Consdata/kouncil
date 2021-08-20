@@ -13,7 +13,7 @@ export class TopicService {
   constructor() {
   }
 
-  getMessages(serverId: string, topicName: string) {
+  getMessages(serverId: string, topicName: string, offset?: number) {
   }
 
   selectPartition(serverId: string, partition: number, topicName: string) {
@@ -31,6 +31,10 @@ export class TopicService {
   }
 
   paginateMessages(serverId: string, event: any, topicName: string) {
+    return undefined;
+  }
+
+  goToOffset(serverId: string, topicName: string, offset: number) {
     return undefined;
   }
 

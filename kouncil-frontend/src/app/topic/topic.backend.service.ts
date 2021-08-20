@@ -23,7 +23,7 @@ export class TopicBackendService implements TopicService {
     this.initPaging();
   }
 
-  getMessages(serverId: string, topicName: string) {
+  getMessages(serverId: string, topicName: string, offset?: number) {
     let url;
     if (typeof this.selectedPartition !== 'undefined') {
       url = `/api/topic/messages/${topicName}/${this.selectedPartition}`;
@@ -31,10 +31,13 @@ export class TopicBackendService implements TopicService {
       url = `/api/topic/messages/${topicName}/all`;
     }
     const paging = this.paginationChanged$.getValue();
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('serverId', serverId)
       .set('page', String(paging.pageNumber))
       .set('limit', String(paging.size));
+    if (!!offset || offset === 0) {
+      params = params.set('offset', String(offset));
+    }
 
     this.http.get(url, {params}).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
@@ -91,5 +94,9 @@ export class TopicBackendService implements TopicService {
 
   getPagination$(): Observable<Page> {
     return this.paginationChanged$.asObservable();
+  }
+
+  goToOffset(serverId: string, topicName: string, offset: number) {
+    this.getMessages(serverId, topicName, offset);
   }
 }

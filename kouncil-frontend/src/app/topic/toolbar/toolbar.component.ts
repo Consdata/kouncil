@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {TopicService} from '../topic.service';
+import {ServersService} from '../../servers.service';
 
 @Component({
   selector: 'app-kafka-toolbar',
@@ -14,8 +16,9 @@ export class ToolbarComponent {
 
   liveState = false;
   showHeaderColumns = true;
+  offset: number;
 
-  constructor() {
+  constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
   toggleLive() {
@@ -24,6 +27,14 @@ export class ToolbarComponent {
     } else {
       this.toggleLiveEvent.emit(LiveUpdateState.PAUSE);
     }
+  }
+
+  goToOffset() {
+    this.topicService.goToOffset(this.servers.getSelectedServerId(), this.name, this.offset);
+  }
+
+  clearOffset() {
+    this.offset = undefined;
   }
 
   openSendPopup() {

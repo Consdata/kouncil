@@ -8,6 +8,10 @@
     Live update
     <div class="circle"></div>
   </mat-slide-toggle>
-  <topic-partitions [topicName]="name"></topic-partitions>
+  <topic-partitions [topicName]="name" (partitionSelected)="clearOffset()"></topic-partitions>
+  <div class="offset-wrapper">
+    <input class="offset-input" placeholder="Offset" matInput type="number" min="0" name="value" [(ngModel)]="offset"/>
+    <button mat-button class="action offset-search-button" (click)="goToOffset()"><span class="search-icon"></span></button>
+  </div>
   <button mat-button class="action" (click)="openSendPopup()">Send event</button>
 </div>
