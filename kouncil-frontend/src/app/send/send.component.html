@@ -16,8 +16,8 @@
       <button type="button" class="small-button" mat-button disableRipple (click)="addHeader()">+</button>
     </div>
     <div class="header" *ngFor="let header of message.headers; let i = index">
-      <input class="header" [(ngModel)]="header.key" matInput type="text" name="header key {{i}}">
-      <input class="header" [(ngModel)]="header.value" matInput type="text" name="header value {{i}}"/>
+      <input class="header" [(ngModel)]="header.key" placeholder="Header key" matInput type="text" name="header-key-{{i}}">
+      <input class="header" [(ngModel)]="header.value" placeholder="Header value" matInput type="text" name="header-value-{{i}}"/>
       <button type="button" class="small-button" mat-button disableRipple (click)="removeHeader(i)">-</button>
     </div>
 
