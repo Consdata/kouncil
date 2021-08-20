@@ -6,6 +6,8 @@ import {MessageHeader} from '../message-header';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Clipboard} from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-message-view',
@@ -19,6 +21,8 @@ export class MessageViewComponent implements OnInit {
     private drawerService: DrawerService,
     private router: Router,
     private trackService: TrackService,
+    public snackBar: MatSnackBar,
+    private clipboard: Clipboard,
     private dialogRef: MatDialogRef<MessageViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       topicName: string,
@@ -29,8 +33,12 @@ export class MessageViewComponent implements OnInit {
     }) {
   }
 
-  formatJson(object) {
-    return JSON.stringify(object, null, 2);
+  copyToClipboard(object) {
+    this.clipboard.copy(JSON.stringify(object, null, 2));
+    this.snackBar.open('Copied successfully', '', {
+      duration: 1000,
+      panelClass: ['snackbar-info', 'snackbar']
+    });
   }
 
   resend() {
@@ -59,5 +67,5 @@ export class MessageViewComponent implements OnInit {
       this.router.navigate(['/track']);
     }
   }
-}
 
+}
