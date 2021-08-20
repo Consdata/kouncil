@@ -124,7 +124,8 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     openSendPopup() {
         this.drawerService.openDrawerWithPadding(SendComponent, {
-            topicName: this.topicName
+            topicName: this.topicName,
+            headers: []
         });
     }
 
