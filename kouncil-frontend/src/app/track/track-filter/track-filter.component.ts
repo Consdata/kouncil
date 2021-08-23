@@ -40,7 +40,7 @@ import {TrackFilter, TrackOperator} from './track-filter';
         </mat-form-field>
       </div>
       <div class="form-control">
-        <div class="wrapper" [formControl]="datesControl">
+        <div class="wrapper" ngDefaultControl [formControl]="datesControl">
           <span class="wrapper-glue-start">Track from</span>
           <mat-form-field class="filter-input date-picker-form-field" floatLabel="never">
             <input class="wrapper-field" matInput type="datetime-local" placeholder="Start date" name="startDateTime"
