@@ -4,7 +4,7 @@ import {Page} from './page';
 import {ServersService} from '../servers.service';
 
 @Component({
-  selector: 'topic-pagination',
+  selector: 'app-topic-pagination',
   template: `
     <div class="kafka-topic-footer">
       <div class="kafka-topic-footer-pager-item">

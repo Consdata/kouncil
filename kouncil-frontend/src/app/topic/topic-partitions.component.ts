@@ -4,7 +4,7 @@ import {MatSelectChange} from '@angular/material/select';
 import {ServersService} from '../servers.service';
 
 @Component({
-  selector: 'topic-partitions',
+  selector: 'app-topic-partitions',
   template: `
     <mat-form-field>
       <mat-select class="select" [(value)]="selectedPartition" (selectionChange)="togglePartition($event)">
