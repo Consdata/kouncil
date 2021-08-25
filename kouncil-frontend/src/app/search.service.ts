@@ -5,23 +5,20 @@ import {Observable, Subject} from 'rxjs';
 export class SearchService {
 
   private phrase = new Subject<string>();
-  private currentPhrase;
+  private currentPhraseStore = {};
+  currentPhrase: string;
+  currentTabName: string;
 
-  setState(state: string) {
-    this.phrase.next(state);
+  phraseChangeHandle(state: string) {
     this.currentPhrase = state;
+    this.currentPhraseStore[this.currentTabName] = state;
+    this.phrase.next(state);
   }
 
-  getState(): Observable<string> {
+  getPhraseState(currentTabName: string): Observable<string> {
+    this.currentTabName = currentTabName;
+    this.currentPhrase = this.currentPhraseStore[currentTabName] ? this.currentPhraseStore[currentTabName] : '';
     return this.phrase.asObservable();
-  }
-
-  getCurrentPhrase() {
-    return this.currentPhrase;
-  }
-
-  clearCurrentPhrase() {
-    this.currentPhrase = '';
   }
 
 }

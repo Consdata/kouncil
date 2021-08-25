@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SearchService} from 'app/search.service';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {ConsumerGroupOffset, ConsumerGroupResponse} from 'app/consumers/consumer-group/consumer-group';
+import {ConsumerGroupOffset} from 'app/consumers/consumer-group/consumer-group';
 import {ProgressBarService} from '../../util/progress-bar.service';
 import {ConsumerGroupService} from './consumer-group.service';
 import {first} from 'rxjs/operators';
@@ -19,7 +19,6 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   allAssignments: ConsumerGroupOffset[];
   filteredAssignments: ConsumerGroupOffset[];
   private searchSubscription: Subscription;
-  phrase: string;
   paused: boolean;
   lastLags: IHash = {};
 
@@ -38,16 +37,14 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       this.getConsumerGroup();
     });
 
-    this.searchSubscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getPhraseState('consumer-group').subscribe(
       phrase => {
-        this.phrase = phrase;
-        this.filter();
+        this.filter(phrase);
       });
   }
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
-    this.searchService.clearCurrentPhrase();
     this.paused = true;
   }
 
@@ -62,17 +59,17 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.consumerGroupService.getConsumerGroup(this.servers.getSelectedServerId(), this.groupId)
       .pipe(first())
       .subscribe(data => {
-        this.allAssignments = (<ConsumerGroupResponse>data).consumerGroupOffset;
+        this.allAssignments = data.consumerGroupOffset;
         this.calculateLags();
-        this.filter();
+        this.filter(this.searchService.currentPhrase);
         this.progressBarService.setProgress(false);
         setTimeout(() => this.getConsumerGroup(), 1000);
       });
   }
 
-  private filter() {
+  private filter(phrase: string) {
     this.filteredAssignments = this.allAssignments.filter((consumerGroupOffset) => {
-      return !this.phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
+      return !phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
   }
 

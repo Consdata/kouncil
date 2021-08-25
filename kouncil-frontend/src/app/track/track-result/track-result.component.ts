@@ -80,7 +80,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   topicSubscription: Subscription;
   filteredRows = [];
   allRows = [];
-  phrase: string;
   asyncHandle: string;
 
   constructor(private route: ActivatedRoute,
@@ -107,10 +106,9 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchSubscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getPhraseState('track').subscribe(
       phrase => {
-        this.phrase = phrase;
-        this.filterRows();
+        this.filterRows(phrase);
       });
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
@@ -126,7 +124,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
-    this.searchService.clearCurrentPhrase();
     this.trackFilterSubscription.unsubscribe();
     this.topicSubscription.unsubscribe();
   }
@@ -139,7 +136,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
         this.trackService.trackFinished.emit();
       }
       this.allRows = [...this.allRows, ...items];
-      this.filterRows();
+      this.filterRows(this.searchService.currentPhrase);
     });
   }
 
@@ -158,14 +155,14 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     return this.progressBarService.progressSub.getValue();
   }
 
-  private filterRows() {
+  private filterRows(phrase: string) {
     this.filteredRows = this.allRows.filter((row) => {
-      return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
+      return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
 
     this.changeDetectorRef.detectChanges();
     if (!!this.noDataPlaceholderComponent) {
-      this.noDataPlaceholderComponent.currentPhrase = this.phrase;
+      this.noDataPlaceholderComponent.currentPhrase = this.searchService.currentPhrase;
       this.noDataPlaceholderComponent.detectChanges();
     }
   }
@@ -178,7 +175,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle).subscribe(events => {
         if (events && events.length > 0) {
           this.allRows = [...this.allRows, ...events];
-          this.filterRows();
+          this.filterRows(this.searchService.currentPhrase);
         }
       });
     });
