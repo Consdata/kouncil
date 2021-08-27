@@ -16,15 +16,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   @ViewChild('searchInput', {static: true}) private searchInputElementRef: ElementRef;
 
-  phrase: string;
   backendVersion$: Observable<string>;
 
-  constructor(private searchService: SearchService,
+  constructor(public searchService: SearchService,
               private router: Router,
               private http: HttpClient,
               public servers: ServersService) {
-    router.events.subscribe((val) => {
-      this.searchInputElementRef.nativeElement.value = '';
+    router.events.subscribe(() => {
       this.searchInputElementRef.nativeElement.focus();
     });
   }
@@ -52,6 +50,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   onPhraseChange(phrase: string) {
-    this.searchService.setState(phrase);
+    this.searchService.phraseChangeHandle(phrase);
   }
 }

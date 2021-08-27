@@ -20,6 +20,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
   styleUrls: ['./consumer-groups.component.scss']
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortPipe: ArraySortPipe,
@@ -40,7 +41,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
-    this.searchSubscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getPhraseState('consumer-groups').subscribe(
       phrase => {
         this.filter(phrase);
       });
@@ -52,17 +53,16 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
         this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
-        this.filter();
+        this.filter(this.searchService.currentPhrase);
         this.progressBarService.setProgress(false);
       });
   }
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
-    this.searchService.clearCurrentPhrase();
   }
 
-  private filter(phrase?) {
+  private filter(phrase: string) {
     this.filtered = this.consumerGroups.filter((consumerGroup) => {
       return !phrase || consumerGroup.groupId.indexOf(phrase) > -1;
     });
@@ -74,7 +74,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.favouritesService.updateFavourites(row, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
       this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
-      this.filter(this.searchService.getCurrentPhrase());
+      this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
     });
   }

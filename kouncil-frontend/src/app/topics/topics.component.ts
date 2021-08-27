@@ -39,7 +39,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.progressBarService.setProgress(true);
     this.loadTopics();
-    this.searchSubscription = this.searchService.getState().subscribe(
+    this.searchSubscription = this.searchService.getPhraseState('topics').subscribe(
       phrase => {
         this.filter(phrase);
       });
@@ -51,17 +51,16 @@ export class TopicsComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
         this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-        this.filter();
+        this.filter(this.searchService.currentPhrase);
         this.progressBarService.setProgress(false);
       });
   }
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
-    this.searchService.clearCurrentPhrase();
   }
 
-  private filter(phrase?) {
+  private filter(phrase: string) {
     this.filtered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
@@ -73,7 +72,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.favouritesService.updateFavourites(row, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
       this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-      this.filter(this.searchService.getCurrentPhrase());
+      this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
     });
   }

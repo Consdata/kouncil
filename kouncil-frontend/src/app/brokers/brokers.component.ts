@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {SearchService} from 'app/search.service';
-import {Brokers} from 'app/brokers/brokers';
-import {Broker, BrokerConfig} from 'app/brokers/broker';
+import {Broker} from 'app/brokers/broker';
 import {Subscription} from 'rxjs';
 import {ProgressBarService} from 'app/util/progress-bar.service';
 import {BrokerService} from './broker.service';
@@ -11,7 +10,7 @@ import {DrawerService} from '../util/drawer.service';
 import {ServersService} from '../servers.service';
 
 @Component({
-  selector: 'kafka-brokers',
+  selector: 'app-kafka-brokers',
   templateUrl: './brokers.component.html',
   styleUrls: ['./brokers.component.scss']
 })
@@ -28,7 +27,6 @@ export class BrokersComponent implements OnInit {
   allBrokers: Broker[];
   filteredBrokers: Broker[];
   private subscription: Subscription;
-  phrase: string;
   showJmxStats = false;
 
   ngOnInit() {
@@ -36,16 +34,15 @@ export class BrokersComponent implements OnInit {
     this.brokerService.getBrokers(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
-        this.allBrokers = (<Brokers>data).brokers;
-        this.filterRows();
+        this.allBrokers = data.brokers;
+        this.filterRows(this.searchService.currentPhrase);
         this.filterJmxDetails();
         this.progressBarService.setProgress(false);
       });
 
-    this.subscription = this.searchService.getState().subscribe(
+    this.subscription = this.searchService.getPhraseState('brokers').subscribe(
       phrase => {
-        this.phrase = phrase;
-        this.filterRows();
+        this.filterRows(phrase);
       });
   }
 
@@ -53,9 +50,9 @@ export class BrokersComponent implements OnInit {
     this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
   }
 
-  private filterRows() {
+  private filterRows(phrase: string) {
     this.filteredBrokers = this.allBrokers.filter((broker) => {
-      return !this.phrase || JSON.stringify(broker).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
+      return !phrase || JSON.stringify(broker).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
   }
 
@@ -64,9 +61,8 @@ export class BrokersComponent implements OnInit {
       this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())
         .subscribe(data => {
-          const brokerConfig = <BrokerConfig[]>data;
           this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
-            config: brokerConfig
+            config: data
           });
         });
     }

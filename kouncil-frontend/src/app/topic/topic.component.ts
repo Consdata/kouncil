@@ -34,7 +34,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     searchSubscription: Subscription;
 
     paused: boolean;
-    phrase: string;
 
     jsonToGridSubscription: Subscription;
     paging$: Observable<Page>;
@@ -73,16 +72,14 @@ export class TopicComponent implements OnInit, OnDestroy {
             this.paused = true;
         });
 
-        this.searchSubscription = this.searchService.getState().subscribe(
+        this.searchSubscription = this.searchService.getPhraseState('topic').subscribe(
             phrase => {
-                this.phrase = phrase;
-                this.filterRows();
+                this.filterRows(phrase);
             });
     }
 
     ngOnDestroy() {
         this.searchSubscription.unsubscribe();
-        this.searchService.clearCurrentPhrase();
         this.jsonToGridSubscription.unsubscribe();
         this.paused = true;
     }
@@ -200,12 +197,12 @@ export class TopicComponent implements OnInit, OnDestroy {
             this.columns = this.nonHeaderColumns;
         }
         this.allRows = [...this.jsonGrid.getRows()];
-        this.filterRows();
+        this.filterRows(this.searchService.currentPhrase);
     }
 
-    private filterRows() {
+    private filterRows(phrase: string) {
         this.filteredRows = this.allRows.filter((row) => {
-            return !this.phrase || JSON.stringify(row).toLowerCase().indexOf(this.phrase.toLowerCase()) > -1;
+            return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
         });
     }
 
