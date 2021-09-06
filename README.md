@@ -21,6 +21,7 @@ Here are some of the main features. For a more comprehensive list check out the 
   - [Multiple cluster support](#multiple-cluster-support)
   - [Consumer monitoring](#consumer-monitoring)
   - [Cluster monitoring](#cluster-monitoring)
+  - [Event Tracking](#event-tracking)
 - [Deployment](#deployment)
   - [Simple configuration](#docker---simple-configuration)
   - [Advanced configuration](#docker---advanced-configuration)
@@ -83,6 +84,12 @@ Monitoring your cluster's health can be as important as monitoring your consumer
   <img src=".github/img/kouncil_brokers.png" width="820">
 </p>
 
+### Event Tracking
+Event Tracking enables monitoring and visualizing the path of a given event or process by means of Kafka topics.
+
+<p align="left">
+  <img src=".github/img/kouncil_event_tracking.png" width="820">
+</p>
 
 ## Deployment
 
