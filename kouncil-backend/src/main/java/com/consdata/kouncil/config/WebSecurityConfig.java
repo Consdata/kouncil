@@ -15,6 +15,6 @@ public class WebSecurityConfig extends
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.info("Configuring spring security");
-        http.headers().contentSecurityPolicy("script-src 'self'");
+        http.csrf().disable().headers().contentSecurityPolicy("script-src 'self'");
     }
 }
