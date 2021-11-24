@@ -7,7 +7,7 @@
 
   <mat-divider [vertical]="true"></mat-divider>
 
-  <button class="menu-button" mat-button disableRipple onClick="window.open('//github.com/consdata/kouncil')">
+  <button class="menu-button" mat-button disableRipple (click)=goToGithub()>
       Documentation
       <mat-icon aria-hidden="false">open_in_new</mat-icon>
   </button>

@@ -52,4 +52,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   onPhraseChange(phrase: string) {
     this.searchService.phraseChangeHandle(phrase);
   }
+
+  goToGithub() {
+    window.open('https://github.com/consdata/kouncil', '_blank');
+  }
 }
