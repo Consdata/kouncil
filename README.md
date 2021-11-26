@@ -1,6 +1,6 @@
 ![Kouncil](.github/img/jumbo.png)
 
-# Kouncil
+# Kouncil for Apache Kafka
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
