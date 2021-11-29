@@ -5,12 +5,12 @@
 Our Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's total free, open source kafka web UI, [feature-rich](#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to find troubleshoot faster and deliver optimal solutions. Yoy can easily monitoring brokers and theirs condition, consumer groups and the speed of their operation along with the current lag or view the content of topics live.
 
 Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a more comprehensive list check out the [features section](#features).
-*** Advanced record browsing in table format
+* Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
 * Consumer group monitoring
-* Event Tracking**
-* 
+* Event Tracking
+
 ![Kouncil](.github/img/jumbo.png)
 
 ## Table of Contents
