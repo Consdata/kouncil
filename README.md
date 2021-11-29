@@ -1,5 +1,3 @@
-![Kouncil](.github/img/jumbo.png)
-
 # Kouncil for Apache Kafka
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
@@ -11,6 +9,8 @@ Here are some of the main features. For a more comprehensive list check out the 
 * Multiple cluster support
 * Cluster monitoring
 * Consumer group monitoring
+
+![Kouncil](.github/img/jumbo.png)
 
 ## Table of Contents
 
