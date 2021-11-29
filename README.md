@@ -31,8 +31,6 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 
 ## Quick start
 
-Kouncil for Apache Kafka is hosted here: https://hub.docker.com/r/consdata/kouncil.
-
 The easiest way to start working with Kouncil is by using Docker:
 
 ```bash
@@ -43,6 +41,8 @@ There is only one required environment variable, `bootstrapServers`, which shoul
 Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
 After the `docker run` command head to [http://localhost](http://localhost).
+
+Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
 For more advanced configuration consult the [Deployment](#deployment) section.
 
