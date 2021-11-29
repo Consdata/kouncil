@@ -10,8 +10,8 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 * Cluster monitoring
 * Consumer group monitoring
 * Event Tracking
-
 ![Kouncil](.github/img/jumbo.png)
+
 
 ## Table of Contents
 
