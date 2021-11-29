@@ -47,7 +47,7 @@ For more advanced configuration consult the [Deployment](#deployment) section.
 
 ## Demo app
 
-If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app/)
+If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site and option for download Kouncil for Apache Kafka,  can be found [here](https://kouncil-demo.web.app/)
 
 ## Features
 
