@@ -1,16 +1,17 @@
-![Kouncil](.github/img/jumbo.png)
-
-# Kouncil
+# Kouncil for Apache Kafka
 [![Build Status](https://travis-ci.com/Consdata/kouncil.svg?branch=master)](https://travis-ci.com/Consdata/kouncil)
 [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
-[Kouncil](https://kouncil.io) lets you manage your Kafka clusters using a modern web interface. It's free & open source, [feature-rich](#features) and [easy to set up](#quick-start)! 
+Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
 
-Here are some of the main features. For a more comprehensive list check out the [features section](#features).
+Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a more comprehensive list check out the [features section](#features).
 * Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
 * Consumer group monitoring
+* Event Tracking
+
+![Kouncil](.github/img/jumbo.png)
 
 ## Table of Contents
 
@@ -40,6 +41,8 @@ There is only one required environment variable, `bootstrapServers`, which shoul
 Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
 
 After the `docker run` command head to [http://localhost](http://localhost).
+
+Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
 For more advanced configuration consult the [Deployment](#deployment) section.
 
