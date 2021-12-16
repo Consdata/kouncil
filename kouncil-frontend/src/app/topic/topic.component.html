@@ -4,7 +4,9 @@
       <app-kafka-toolbar [name]="topicName"
                          (toggleLiveEvent)="toggleLiveEventHandler($event)"
                          (openSendPopupEvent)="openSendPopup()"
-                         (toggleHeadersEvent)="toggleHeadersEventHandler($event)"></app-kafka-toolbar>
+                         (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
+                         (toggleJsonEvent)="toggleJsonEventHandler($event)">
+      </app-kafka-toolbar>
     </div>
 
     <ng-template #noDataPlaceholder>
