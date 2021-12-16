@@ -1,6 +1,7 @@
 package com.consdata.kouncil.config;
 
 import lombok.*;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class ClusterConfig {
     private String jmxUser;
 
     private String jmxPassword;
+
+    private KafkaProperties kafka = new KafkaProperties();
 
     @Singular
     private List<BrokerConfig> brokers;

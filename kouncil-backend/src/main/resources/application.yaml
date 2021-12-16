@@ -8,3 +8,25 @@ logging:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     com.consdata.kouncil: DEBUG
     org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
+
+# SSL example
+# Addresses specified in /etc/hosts or in DNS may not work with SSL
+# Workaround: use explicit IP address or set property ssl.endpoint.identification.algorithm to empty string
+#kouncil:
+#  clusters:
+#    - name: DEV1
+#      kafka:
+#        security:
+#          protocol: SSL
+#        ssl:
+#          protocol: SSL
+#          key-store-location: file:///home/user/key-store.jks
+#          trust-store-location: file:///home/user/trust-store.jks
+#          key-password: ExampleKeyPassword123
+#          key-store-password: ExampleKeyStorePassword123
+#          trust-store-password: ExampleTrustStorePassword123
+#      brokers:
+#        - host: 127.0.0.1
+#          port: 9092
+#        - host: 127.0.0.1
+#          port: 9093

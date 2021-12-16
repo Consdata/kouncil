@@ -33,7 +33,7 @@ public class KafkaConnectionService {
 
     public KafkaTemplate<String, String> getKafkaTemplate(String serverId) {
         if (!kafkaTemplates.containsKey(serverId)) {
-            Map<String, Object> props = new HashMap<>();
+            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildProducerProperties();
             props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -44,8 +44,8 @@ public class KafkaConnectionService {
 
     public AdminClient getAdminClient(String serverId) {
         if (!adminClients.containsKey(serverId)) {
-            Properties props = new Properties();
-            props.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
+            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
+            props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             adminClients.put(serverId, AdminClient.create(props));
         }
         return adminClients.get(serverId);
@@ -53,7 +53,7 @@ public class KafkaConnectionService {
 
     //we cannot cache this ever
     public KafkaConsumer<String, String> getKafkaConsumer(String serverId, int limit) {
-        Properties props = new Properties();
+        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
