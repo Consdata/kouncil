@@ -1384,10 +1384,10 @@
   resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-6.1.2.tgz#4ac3c380e8d1de1da94a3623d404e67de69dd01e"
   integrity sha512-FHDTrIFM5Ospi4L3Xhj6v2+NzCVAeNDcBe95YjUWhWiRMrBF6uN3I7AUOlRgT6jU/2WQvvYK8ZaIxFfxFp+uHQ==
 
-"@swimlane/ngx-datatable@^19.0.0":
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-19.0.0.tgz#7eed84ba276ebb9e4761233f8ac95d38fdff45b7"
-  integrity sha512-S8eknIQeZtr5aPZgBUItHmt+aQwrI32Hm3jvrxqJXK9J43oDzhIKT2qR1rre3s0XlBn6Zl8LAbmlKotQ5nnxnQ==
+"@swimlane/ngx-datatable@^20.0.0":
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-20.0.0.tgz#843933b6015be46d9625e04afde6ac1030d303f3"
+  integrity sha512-fok9xzOA5UqhmoRKHpEz25k2wXD/ZGtAAeTQqkn/FpyLgPtdWV2OF/wNIyIZaDJ8jBlNoeHTnJnkDONnFGV93A==
   dependencies:
     tslib "^2.0.0"
 
