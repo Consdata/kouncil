@@ -117,6 +117,7 @@ public class KouncilConfiguration {
                 ClusterConfig simpleClusterConfig = ClusterConfig
                         .builder()
                         .name(clusterId)
+                        .kafka(new KafkaProperties())
                         .broker(BrokerConfig
                                 .builder()
                                 .host(brokerHost)
