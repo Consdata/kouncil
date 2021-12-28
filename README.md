@@ -16,6 +16,7 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 ## Table of Contents
 
 - [Quick start](#quick-start)
+- [Roadmap](#roadmap)
 - [Demo app](#demo-app)
 - [Main features](#features)
   - [Advanced record browsing in table format](#advanced-record-browsing-in-table-format)
@@ -45,6 +46,17 @@ After the `docker run` command head to [http://localhost](http://localhost).
 Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
 For more advanced configuration consult the [Deployment](#deployment) section.
+
+## Roadmap
+
+| Version                                                                                                                            | Content                                                                                                                                                                                                                                                                                                                                                              |
+|------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <b>UI Tweaks Part 1</b>  <br> A handful of fixes based on the most frequently reported comments from our users <br> mid January'21 | <ul> <li> Better logs on broker unavailability <li> Broker config - table improvements </li> <li> Consumer group - Improved lag tracking </li> <li> Consumer group - colour coded </li> <li> Event tracking - date format </li> <li> Event tracking - topic order </li> <li> Event tracking - web socket toggle </li> <li> Tables - Stick it to the left </li> </ul> |
+| <b> Not Only JSON </b>  <br> This version will bring the remaining popular message formats <br> end February'21                    | <ul> <li> Schema Registry </li> <li> Avro consumer</li> <li> Avro producer</li><li>Protobuf consumer</li><li>Protobuf producer</li><li>Plaintext handling</li> </ul>                                                                                                                                                                                                 |
+| <b> Security </b>  <br> Extended Kafka and Kouncil security support <br> mid March'21                                              | <ul> <li> SSL support</li> <li> JAAS authentication </li> <li> LDAP authentication</li>   </ul>                                                                                                                                                                                                                                                                      |
+| <b> Cloud </b> <br>Easy way of deploying Kouncil to the cloud<br> end March'21                                                     | <ul> <li>K8s support - helm chart</li>  <li> Terraform (GCP, AWS, Azure) </li> </ul>                                                                                                                                                                                                                                                                                 |
+| <b> UI Tweaks Part 2 </b> <br>Second batch of frontend improvements<br>end April'21                                                | <ul> <li>Broker list - overview</li> <li>Event tracking - additional columns </li>  <li>Tables - column auto adjustment </li>  <li>Consumer Group - Lag preview </li>  </li>                                                                                                                                                                                         |
+
 
 ## Demo app
 
