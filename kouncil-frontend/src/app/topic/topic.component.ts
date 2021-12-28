@@ -25,9 +25,12 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     topicName: string;
     columns = [];
-    nonHeaderColumns = [];
-    allColumns = [];
+    commonColumns = [];
+    headerColumns = [];
+    jsonColumns = [];
+    valueColumns = [];
     showHeaderColumns = true;
+    showJsonColumns = true;
     allRows = [];
     filteredRows = [];
 
@@ -110,7 +113,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     showMessage(event): void {
         if (event.type === 'click') {
             this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-                source: event.row.kouncilValueJson,
+                source: event.row.kouncilValueJson || event.row.kouncilValue,
                 headers: event.row.headers,
                 key: event.row.kouncilKey,
                 topicName: this.topicName,
@@ -139,8 +142,8 @@ export class TopicComponent implements OnInit, OnDestroy {
         }));
         this.jsonGrid.replaceObjects(values);
 
-        const columns = [];
-        columns.push({
+        this.commonColumns =[];
+        this.commonColumns.push({
             width: 100,
             resizable: true,
             sortable: true,
@@ -149,7 +152,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             name: 'partition',
             prop: 'kouncilPartition'
         });
-        columns.push({
+        this.commonColumns.push({
             width: 100,
             resizable: true,
             sortable: true,
@@ -158,7 +161,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             name: 'offset',
             prop: 'kouncilOffset'
         });
-        columns.push({
+        this.commonColumns.push({
             width: 200,
             resizable: true,
             sortable: true,
@@ -167,7 +170,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             name: 'key',
             prop: 'kouncilKey'
         });
-        columns.push({
+        this.commonColumns.push({
             width: 180,
             resizable: true,
             sortable: true,
@@ -176,8 +179,18 @@ export class TopicComponent implements OnInit, OnDestroy {
             name: 'timestamp',
             prop: 'kouncilTimestamp'
         });
+        this.valueColumns = [{
+            width: 200,
+            resizable: true,
+            sortable: true,
+            draggable: true,
+            canAutoResize: true,
+            name: 'value',
+            prop: 'kouncilValue'
+        }];
+        let gridColumns = [];
         Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
-                columns.push({
+            gridColumns.push({
                     canAutoResize: true,
                     prop: column.name,
                     name: column.name,
@@ -187,15 +200,15 @@ export class TopicComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.allColumns = columns;
-        this.nonHeaderColumns = columns.filter(c => {
+        this.jsonColumns = gridColumns.filter(c => {
             return !c.name.startsWith('H[');
         });
-        if (this.showHeaderColumns) {
-            this.columns = this.allColumns;
-        } else {
-            this.columns = this.nonHeaderColumns;
-        }
+        this.headerColumns = gridColumns.filter(c => {
+            return c.name.startsWith('H[');
+        });
+
+        this.refreshColumns();
+
         this.allRows = [...this.jsonGrid.getRows()];
         this.filterRows(this.searchService.currentPhrase);
     }
@@ -212,10 +225,26 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     toggleHeadersEventHandler(showHeaderColumns: boolean): void {
         this.showHeaderColumns = showHeaderColumns;
-        if (this.showHeaderColumns) {
-            this.columns = this.allColumns;
-        } else {
-            this.columns = this.nonHeaderColumns;
-        }
+        this.refreshColumns();
     }
+
+    toggleJsonEventHandler(showJsonColumns: boolean): void {
+        this.showJsonColumns = showJsonColumns;
+        this.refreshColumns();
+    }
+
+    refreshColumns() {
+        let columns = [...this.commonColumns];
+        if (this.showHeaderColumns) {
+            columns = columns.concat(this.headerColumns);
+        } 
+        if (this.showJsonColumns) {
+            columns = columns.concat(this.jsonColumns);
+        }
+        else {
+            columns = columns.concat(this.valueColumns);
+        }
+        this.columns = columns;
+    }
+    
 }

@@ -72,7 +72,7 @@ public class ConsumerGroupController {
                     });
                 })));
 
-        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(kouncilConfiguration.getServerByClusterId(serverId))) {
+        try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(serverId)) {
             List<TopicPartition> partitions = result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList());
             Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(partitions);
             result.getConsumerGroupOffset().forEach(consumerGroupOffset -> {
@@ -93,9 +93,9 @@ public class ConsumerGroupController {
         kafkaConnectionService.getAdminClient(serverId).deleteConsumerGroups(Collections.singletonList(groupId));
     }
 
-    private KafkaConsumer<String, String> createConsumer(String bootstrapServer) {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+    private KafkaConsumer<String, String> createConsumer(String serverId) {
+        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getServerByClusterId(serverId));
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());

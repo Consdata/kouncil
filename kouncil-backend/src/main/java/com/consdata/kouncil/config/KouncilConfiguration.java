@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -56,6 +57,10 @@ public class KouncilConfiguration {
                     .map(BrokerConfig::getAddress)
                     .orElseThrow(() -> new KouncilRuntimeException("Broker not found"));
         }
+    }
+
+    public KafkaProperties getKafkaProperties(String clusterId) {
+        return clusterConfig.get(clusterId).getKafka();
     }
 
     public Optional<BrokerConfig> getBrokerConfigFromCluster(String clusterId, String host, int port) {

@@ -13,9 +13,11 @@ export class ToolbarComponent {
   @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter();
   @Output() openSendPopupEvent: EventEmitter<any> = new EventEmitter();
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter();
+  @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter();
 
   liveState = false;
   showHeaderColumns = true;
+  showJsonColumns = true;
   offset: number;
 
   constructor(private topicService: TopicService, private servers: ServersService) {
@@ -43,6 +45,10 @@ export class ToolbarComponent {
 
   toggleHeaders() {
     this.toggleHeadersEvent.emit(this.showHeaderColumns);
+  }
+
+  toggleJson() {
+    this.toggleJsonEvent.emit(this.showJsonColumns);
   }
 }
 
