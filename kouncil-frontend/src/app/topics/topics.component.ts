@@ -66,7 +66,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFavouriteClick(row) {
+  onFavouriteClick(event: MouseEvent, row: TopicMetadata): void {
+    event.preventDefault();
     this.progressBarService.setProgress(true);
     this.filtered = [];
     setTimeout(() => {

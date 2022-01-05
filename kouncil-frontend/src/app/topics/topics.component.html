@@ -28,17 +28,20 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="name" name="Name" [width]="500">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <mat-icon class="ngx-star-favourite" *ngIf="row.group === 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
-        <mat-icon class="ngx-star-favourite gray" *ngIf="row.group !== 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
-        <span [routerLink]="['/topics/messages', value]">{{value}}</span>
+    <ngx-datatable-column name="Name" cellClass="datatable-cell-wrapper" [width]="500">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
+          <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+          {{row.name}}
+        </a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="partitions" name="Partitions" [width]="150">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value}}
+    <ngx-datatable-column name="Partitions" cellClass="datatable-cell-wrapper" [width]="150">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
+          {{row.partitions}}
+        </a>
       </ng-template>
     </ngx-datatable-column>
 
