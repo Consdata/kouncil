@@ -56,7 +56,7 @@ import {TrackFilter, TrackOperator} from './track-filter';
           {{datesControl.errors['validation'].message}}
         </div>
       </div>
-      <button mat-button disableRipple class="clear-button" (click)="clearFilter()">Clear</button>
+      <button mat-button disableRipple class="clear-button" type="button" (click)="clearFilter()">Clear</button>
       <button mat-button disableRipple class="filter-button" [class.spinner]="loading" [disabled]="loading" (click)="setFilter()">Track events</button>
     </form>
   `,
