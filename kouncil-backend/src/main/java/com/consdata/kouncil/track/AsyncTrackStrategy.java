@@ -14,6 +14,7 @@ public class AsyncTrackStrategy implements TrackStrategy {
     private final SimpMessagingTemplate eventSender;
     private final String destination;
     private final DestinationStore destinationStore;
+    private int totalSend = 0;
 
     public AsyncTrackStrategy(String destination, SimpMessagingTemplate eventSender, DestinationStore destinationStore) {
         this.eventSender = eventSender;
@@ -23,10 +24,10 @@ public class AsyncTrackStrategy implements TrackStrategy {
 
     @Override
     public boolean shouldStopTracking() {
-        if (destinationStore.destinationIsActive(destination)) {
+        if (destinationStore.destinationIsActive(destination) && totalSend < EVENTS_SANITY_LIMIT) {
             return false;
         } else {
-            log.warn("Client disconnection detected destination={}", destination);
+            log.warn("Client disconnection detected OR result is to large for the browser to handle! destination={}, totalSend={}", destination, totalSend);
             return true;
         }
     }
@@ -35,14 +36,15 @@ public class AsyncTrackStrategy implements TrackStrategy {
     public void processCandidates(List<TopicMessage> candidates) {
         if (!candidates.isEmpty()) {
             candidates.sort(Comparator.comparing(TopicMessage::getTimestamp));
-            log.debug("TRACK91 async batch send destination={}, size={}", destination, candidates.size());
+            log.debug("TRACK91 async batch send destination={}, size={}, totalSend={}", destination, candidates.size(), totalSend);
             eventSender.convertAndSend(destination, candidates);
+            totalSend += candidates.size();
         }
     }
 
     @Override
     public List<TopicMessage> processFinalResult() {
-        //sending empty list just to notify frontent about end of processing
+        //sending empty list just to notify frontend about end of processing
         eventSender.convertAndSend(destination, Collections.emptyList());
         return Collections.emptyList();
     }

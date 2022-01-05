@@ -13,9 +13,9 @@ public class SyncTrackStrategy implements TrackStrategy {
 
     @Override
     public boolean shouldStopTracking() {
-        if (messageList.size() > 5000) {
-            log.warn("Result to large for browser to handle!");
-            messageList = messageList.subList(0, 5000);
+        if (messageList.size() > EVENTS_SANITY_LIMIT) {
+            log.warn("Result is to large for the browser to handle!");
+            messageList = messageList.subList(0, 1000);
             return true;
         } else {
             return false;
