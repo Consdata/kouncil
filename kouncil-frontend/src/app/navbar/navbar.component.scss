@@ -27,6 +27,8 @@ mat-divider {
 }
 
 .menu-button {
+  display: flex;
+  align-items: center;
   height: 100%;
   border-radius: 0;
   padding: 0;
