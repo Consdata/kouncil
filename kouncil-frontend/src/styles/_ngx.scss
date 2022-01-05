@@ -62,26 +62,6 @@ ngx-datatable.ngx-datatable {
   border-top: 1px solid $main-20;
   border-bottom: 1px solid $main-20;
   margin-bottom: -1px;
-
-  .ngx-action-button {
-    visibility: hidden;
-    background: $main-100;
-    color: $main-text-light-color;
-    font-size: 14px;
-    border-radius: $default-border-radius;
-    height: 32px;
-    border: none;
-    padding: 4px 10px;
-    cursor: pointer;
-  }
-
-  &:hover {
-    background: $main-10;
-
-    .ngx-action-button {
-      visibility: visible;
-    }
-  }
 }
 
 .ngx-actions-column {
