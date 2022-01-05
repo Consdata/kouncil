@@ -14,22 +14,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Service
 public class KafkaConnectionService {
 
+    protected static final String RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE = "5000";
+    protected static final String RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE = "10000";
     private final KouncilConfiguration kouncilConfiguration;
+    //we can cache this
+    private final Map<String, KafkaTemplate<String, String>> kafkaTemplates = new HashMap<>();
+    //we can cache this
+    private final Map<String, AdminClient> adminClients = new HashMap<>();
 
     public KafkaConnectionService(KouncilConfiguration kouncilConfiguration) {
         this.kouncilConfiguration = kouncilConfiguration;
     }
-
-    //we can cache this
-    private final Map<String, KafkaTemplate<String, String>> kafkaTemplates = new HashMap<>();
-
-    //we can cache this
-    private final Map<String, AdminClient> adminClients = new HashMap<>();
 
     public KafkaTemplate<String, String> getKafkaTemplate(String serverId) {
         if (!kafkaTemplates.containsKey(serverId)) {
@@ -37,6 +36,8 @@ public class KafkaConnectionService {
             props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
+            props.put(ProducerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
             kafkaTemplates.put(serverId, new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props)));
         }
         return kafkaTemplates.get(serverId);
@@ -46,6 +47,8 @@ public class KafkaConnectionService {
         if (!adminClients.containsKey(serverId)) {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
             props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
+            props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
+            props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
             adminClients.put(serverId, AdminClient.create(props));
         }
         return adminClients.get(serverId);
@@ -60,6 +63,8 @@ public class KafkaConnectionService {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, limit);
+        props.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
+        props.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
         return new KafkaConsumer<>(props);
     }
 
