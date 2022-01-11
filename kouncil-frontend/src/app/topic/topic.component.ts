@@ -149,6 +149,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             sortable: true,
             draggable: true,
             canAutoResize: true,
+            frozenLeft: true,
             name: 'partition',
             prop: 'kouncilPartition'
         });
@@ -158,6 +159,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             sortable: true,
             draggable: true,
             canAutoResize: true,
+            frozenLeft: true,
             name: 'offset',
             prop: 'kouncilOffset'
         });
@@ -167,6 +169,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             sortable: true,
             draggable: true,
             canAutoResize: true,
+            frozenLeft: true,
             name: 'key',
             prop: 'kouncilKey'
         });
@@ -176,6 +179,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             sortable: true,
             draggable: true,
             canAutoResize: true,
+            frozenLeft: true,
             name: 'timestamp',
             prop: 'kouncilTimestamp'
         });
@@ -237,7 +241,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         let columns = [...this.commonColumns];
         if (this.showHeaderColumns) {
             columns = columns.concat(this.headerColumns);
-        } 
+        }
         if (this.showJsonColumns) {
             columns = columns.concat(this.jsonColumns);
         }
@@ -246,5 +250,5 @@ export class TopicComponent implements OnInit, OnDestroy {
         }
         this.columns = columns;
     }
-    
+
 }
