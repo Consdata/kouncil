@@ -1,5 +1,5 @@
-<div [class.cached-value]="showCachedValue()" *ngIf="row">
-  {{ getValue() }}
+<div [class.cached-value]="showCachedValue()" *ngIf="row" title="{{getValue()}}">
+  {{getValue()}}
 </div>
 <div class="last-seen" *ngIf="showLastSeenTimestamp && showCachedValue()">
   Last seen: {{cachedData.lastSeenTimestamp}}
