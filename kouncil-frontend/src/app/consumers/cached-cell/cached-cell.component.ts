@@ -1,31 +1,38 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ConsumerGroupOffset} from "../consumer-group/consumer-group";
-import {ServersService} from "../../servers.service";
+import {Component, Input} from '@angular/core';
+import {ConsumerGroupOffset} from '../consumer-group/consumer-group';
+import {ServersService} from '../../servers.service';
+import {CachedCellData} from './cached-cell-data';
+import * as moment from 'moment';
 
 @Component({
   selector: 'cached-cell',
   templateUrl: './cached-cell.component.html',
   styleUrls: ['./cached-cell.component.scss']
 })
-export class CachedCellComponent implements OnInit {
+export class CachedCellComponent {
 
-  @Input()
-  public property: string;
+  private readonly LAST_SEEN_DATE_FORMAT = 'YYYY-MM-DD HH:mm:SS';
 
-  private cachedValue: string;
+  public cachedData: CachedCellData;
 
   private _row: ConsumerGroupOffset;
 
   @Input()
+  public showLastSeenTimestamp: boolean = false;
+
+  @Input()
+  public property: string;
+
+  @Input()
   public set row(newRow: ConsumerGroupOffset) {
     if (this.shouldBeCached(newRow)) {
-      this.cacheValue();
+      this.cacheData();
     }
 
     this._row = newRow;
 
-    if (!this.cachedValue) {
-      this.readCachedValue();
+    if (!this.cachedData) {
+      this.readCachedData();
     }
   };
 
@@ -35,22 +42,23 @@ export class CachedCellComponent implements OnInit {
 
   constructor(private servers: ServersService) { }
 
-  public ngOnInit(): void { }
-
-  private readCachedValue(): void {
-    const newCachedValue: string = localStorage.getItem(this.getLocalStorageKey());
-    if (newCachedValue) {
-      this.cachedValue = newCachedValue;
-    }
-  }
-
   private shouldBeCached(newRow: ConsumerGroupOffset): boolean {
     return this.row && this.row[this.property] && !newRow[this.property];
   }
 
-  private cacheValue(): void {
-    this.cachedValue = this.row[this.property];
-    localStorage.setItem(this.getLocalStorageKey(), this.cachedValue);
+  private cacheData(): void {
+    this.cachedData = {
+      cachedValue: this.row[this.property],
+      lastSeenTimestamp: moment().format(this.LAST_SEEN_DATE_FORMAT)
+    };
+    localStorage.setItem(this.getLocalStorageKey(), JSON.stringify(this.cachedData));
+  }
+
+  private readCachedData(): void {
+    const newCachedData: string = localStorage.getItem(this.getLocalStorageKey());
+    if (newCachedData) {
+      this.cachedData = JSON.parse(newCachedData);
+    }
   }
 
   private getLocalStorageKey(): string {
@@ -60,6 +68,10 @@ export class CachedCellComponent implements OnInit {
   public getValue(): string {
     return this._row[this.property]
       ? this._row[this.property]
-      : this.cachedValue ?? '';
+      : this.cachedData?.cachedValue ?? '';
+  }
+
+  public showCachedValue(): boolean {
+    return !this.row[this.property];
   }
 }

@@ -3,3 +3,10 @@
 .cached-value {
   color: $main-40;
 }
+
+.last-seen {
+  line-height: 8px;
+  font-size: 10px;
+  position: absolute;
+  color: $main-40;
+}
