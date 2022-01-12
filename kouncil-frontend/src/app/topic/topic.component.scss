@@ -18,6 +18,7 @@
   ::ng-deep datatable-body-row {
     .datatable-row-left {
       background-color: $main-0;
+      border-right: 1px solid $main-20;
     }
 
     &:hover {
@@ -30,10 +31,15 @@
   ::ng-deep datatable-header {
     padding: 0;
 
-    .datatable-row-left {
-      background-color: $main-10;
-      padding-left: 24px;
-      margin-right: 24px;
+    .datatable-header-inner {
+      height: 100%;
+
+      .datatable-row-left {
+        background-color: $main-10;
+        border-right: 1px solid $main-20;
+        padding-left: 24px;
+        margin-right: 24px;
+      }
     }
   }
 
