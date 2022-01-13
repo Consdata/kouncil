@@ -11,7 +11,9 @@ import * as moment from 'moment';
 })
 export class CachedCellComponent {
 
-  private readonly LAST_SEEN_DATE_FORMAT = 'YYYY-MM-DD HH:mm:SS';
+  private readonly LAST_SEEN_DATE_FORMAT: string = 'YYYY-MM-DD HH:mm:SS';
+
+  private readonly NO_DATA_LABEL: string = 'NO DATA';
 
   public cachedData: CachedCellData;
 
@@ -66,12 +68,16 @@ export class CachedCellComponent {
   }
 
   public getValue(): string {
-    return this._row[this.property]
-      ? this._row[this.property]
-      : this.cachedData?.cachedValue ?? '';
+    return this.row[this.property]
+      ? this.row[this.property]
+      : this.cachedData?.cachedValue ?? this.NO_DATA_LABEL;
   }
 
   public showCachedValue(): boolean {
     return !this.row[this.property];
+  }
+
+  public showLastSeenTimestampLabel(): boolean {
+    return this.showLastSeenTimestamp && this.showCachedValue() && !!this.cachedData?.lastSeenTimestamp;
   }
 }
