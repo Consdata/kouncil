@@ -47,8 +47,8 @@
 
     <ngx-datatable-column cellClass="ngx-actions-column" [width]="240"
                           [sortable]="false" [resizeable]="false" [canAutoResize]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]">
           <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
         </a>
       </ng-template>
