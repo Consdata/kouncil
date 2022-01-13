@@ -62,6 +62,7 @@ import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@s
 import {RxStompConfig} from './rx-stomp.config';
 import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
 import { DemoComponent } from './demo/demo.component';
+import { CachedCellComponent } from './consumers/cached-cell/cached-cell.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import { DemoComponent } from './demo/demo.component';
     TrackResultComponent,
     EnumToArrayPipe,
     DemoComponent,
+    CachedCellComponent,
   ],
   imports: [
     BrowserModule,
