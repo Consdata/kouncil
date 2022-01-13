@@ -53,18 +53,18 @@ export class CachedCellComponent {
       cachedValue: newRow[this.property],
       lastSeenTimestamp: moment().format(this.LAST_SEEN_DATE_FORMAT)
     };
-    localStorage.setItem(this.getLocalStorageKey(), JSON.stringify(this.cachedData));
+    localStorage.setItem(this.getLocalStorageKey(newRow), JSON.stringify(this.cachedData));
   }
 
   private readCachedData(): void {
-    const newCachedData: string = localStorage.getItem(this.getLocalStorageKey());
+    const newCachedData: string = localStorage.getItem(this.getLocalStorageKey(this.row));
     if (newCachedData) {
       this.cachedData = JSON.parse(newCachedData);
     }
   }
 
-  private getLocalStorageKey(): string {
-    return `${this.servers.getSelectedServerId()}_${this.row.topic}_${this.row.partition}_${this.property}`;
+  private getLocalStorageKey(row: ConsumerGroupOffset): string {
+    return `${this.servers.getSelectedServerId()}_${row.topic}_${row.partition}_${this.property}`;
   }
 
   public getValue(): string {
