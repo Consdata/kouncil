@@ -45,7 +45,7 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="groupId" name="GroupId" cellClass="ngx-actions-column" [width]="240"
+    <ngx-datatable-column cellClass="ngx-actions-column" [width]="240"
                           [sortable]="false" [resizeable]="false" [canAutoResize]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
