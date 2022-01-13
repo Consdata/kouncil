@@ -12,8 +12,36 @@
   height: 100% ;
 }
 
-.topic-table {
+:host .topic-table {
   height: calc(100% - 88px);
+
+  ::ng-deep datatable-body-row {
+    .datatable-row-left {
+      background-color: $main-0;
+      border-right: 1px solid $main-20;
+    }
+
+    &:hover {
+      .datatable-row-left {
+        background-color: $main-10;
+      }
+    }
+  }
+
+  ::ng-deep datatable-header {
+    padding: 0;
+
+    .datatable-header-inner {
+      height: 100%;
+
+      .datatable-row-left {
+        background-color: $main-10;
+        border-right: 1px solid $main-20;
+        padding-left: 24px;
+        margin-right: 24px;
+      }
+    }
+  }
 
   ::ng-deep .datatable-body-row {
     border-bottom: none;
