@@ -28,7 +28,7 @@ export class CachedCellComponent {
   @Input()
   public set row(newRow: ConsumerGroupOffset) {
     if (this.shouldBeCached(newRow)) {
-      this.cacheData();
+      this.cacheData(newRow);
     }
 
     this._row = newRow;
@@ -45,12 +45,12 @@ export class CachedCellComponent {
   constructor(private servers: ServersService) { }
 
   private shouldBeCached(newRow: ConsumerGroupOffset): boolean {
-    return this.row && this.row[this.property] && !newRow[this.property];
+    return newRow[this.property] && (!this.row || newRow[this.property] != this.row[this.property]);
   }
 
-  private cacheData(): void {
+  private cacheData(newRow: ConsumerGroupOffset): void {
     this.cachedData = {
-      cachedValue: this.row[this.property],
+      cachedValue: newRow[this.property],
       lastSeenTimestamp: moment().format(this.LAST_SEEN_DATE_FORMAT)
     };
     localStorage.setItem(this.getLocalStorageKey(), JSON.stringify(this.cachedData));
