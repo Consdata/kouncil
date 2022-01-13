@@ -11,7 +11,7 @@ import * as moment from 'moment';
 })
 export class CachedCellComponent {
 
-  private readonly LAST_SEEN_DATE_FORMAT: string = 'YYYY-MM-DD HH:mm:SS';
+  private readonly LAST_SEEN_DATE_FORMAT: string = 'YYYY-MM-DD HH:mm:ss';
 
   private readonly NO_DATA_LABEL: string = 'NO DATA';
 
