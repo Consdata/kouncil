@@ -56,6 +56,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     if (this.paused) {
       return;
     }
+
     this.consumerGroupService.getConsumerGroup(this.servers.getSelectedServerId(), this.groupId)
       .pipe(first())
       .subscribe(data => {
@@ -77,7 +78,8 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.allAssignments.forEach(assignment => {
       const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
       assignment.lag = lag;
-      assignment.pace = lag - this.lastLags[this.getKey(assignment)];
+      const pace: number = lag - this.lastLags[this.getKey(assignment)];
+      assignment.pace = isNaN(pace) ? 0 : pace;
       this.lastLags[this.getKey(assignment)] = lag;
     });
   }
