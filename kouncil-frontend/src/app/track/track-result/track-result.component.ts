@@ -75,9 +75,9 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   @ViewChild('table') table: any;
   @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent: NoDataPlaceholderComponent;
-  searchSubscription: Subscription;
-  trackFilterSubscription: Subscription;
-  topicSubscription: Subscription;
+  searchSubscription?: Subscription;
+  trackFilterSubscription?: Subscription;
+  topicSubscription?: Subscription;
   filteredRows = [];
   allRows = [];
   asyncHandle: string;
@@ -123,9 +123,9 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.searchSubscription.unsubscribe();
-    this.trackFilterSubscription.unsubscribe();
-    this.topicSubscription.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+    this.trackFilterSubscription?.unsubscribe();
+    this.topicSubscription?.unsubscribe();
   }
 
   onMessageReceived(message) {

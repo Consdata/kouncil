@@ -7,8 +7,8 @@ import {concatMap, delay, finalize} from 'rxjs/operators';
 import {Crypto} from '../util/crypto';
 import {RandomUtils} from '../util/random-utils';
 import {demoTopics} from '../topics/topics.demo.data';
-import * as moment from 'moment';
 import {MessageHeader} from '../topic/message-header';
+import {parse} from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +48,9 @@ export class TrackDemoService extends TrackService {
       topic = demoTopics[Math.floor(Math.random() * demoTopics.length)];
     }
     const partition = RandomUtils.randomInt(0, topic.partitions);
-    const fromDate = moment(trackFilter.startDateTime, moment.HTML5_FMT.DATETIME_LOCAL).toDate();
-    const toDate = moment(trackFilter.stopDateTime, moment.HTML5_FMT.DATETIME_LOCAL).toDate();
+    const fromDate = parse(trackFilter.startDateTime, this._format, new Date());
+    const toDate = parse(trackFilter.stopDateTime, this._format, new Date());
+
     const date = RandomUtils.randomDate(fromDate, toDate).getTime();
 
     const headers = [
