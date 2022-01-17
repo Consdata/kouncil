@@ -77,13 +77,13 @@ import {switchMap, tap} from 'rxjs/operators';
 })
 export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
+  private searchSubscription?: Subscription;
+  private intervalSubscription?: Subscription;
   groupId: string;
   allAssignments: ConsumerGroupOffset[];
   filteredAssignments: ConsumerGroupOffset[];
   paused: boolean;
   lastLags: IHash = {};
-  private searchSubscription?: Subscription;
-  private intervalSubscription?: Subscription;
 
   constructor(private searchService: SearchService,
               private route: ActivatedRoute,
