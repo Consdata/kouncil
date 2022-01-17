@@ -45,35 +45,30 @@ export class CachedCellService implements OnDestroy {
     }
     const newValue = customerGroupOffset[this.property];
     if (newValue) {
-      this._vm$.next(
-        {
-          ...this._vm$.getValue(),
-          realValue: newValue
-        });
-      console.log('save cache', newValue);
+      if (newValue != this._vm$.value.realValue) {
+        this._vm$.next(
+          {
+            ...this._vm$.value,
+            realValue: newValue
+          });
+      }
       this.cacheData(customerGroupOffset);
     } else {
-      console.log('read from cache');
-      if (!!this._vm$.getValue().cache) {
+      if (!!this._vm$.value.cache) {
         this.readCachedData(customerGroupOffset);
       }
     }
   }
 
-  private cacheData(newRow: ConsumerGroupOffset): void {
-    this._vm$.next(
-      {
-        ...this._vm$.getValue(),
-        cache: {
-          value: newRow[this.property],
-          lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
-        }
-      });
-    localStorage.setItem(this.calcStorageKey(newRow), JSON.stringify(this._vm$.getValue().cache));
+  private cacheData(customerGroupOffset: ConsumerGroupOffset): void {
+    localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
+      value: customerGroupOffset[this.property],
+      lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
+    }));
   }
 
-  private readCachedData(newRow: ConsumerGroupOffset): void {
-    const newCachedData: string = localStorage.getItem(this.calcStorageKey(newRow));
+  private readCachedData(customerGroupOffset: ConsumerGroupOffset): void {
+    const newCachedData: string = localStorage.getItem(this.calcStorageKey(customerGroupOffset));
     if (newCachedData) {
       const cachedCellData: CachedCellData = JSON.parse(newCachedData);
       this._vm$.next(
@@ -84,8 +79,8 @@ export class CachedCellService implements OnDestroy {
     }
   }
 
-  private calcStorageKey(row: ConsumerGroupOffset): string {
-    return `${this.servers.getSelectedServerId()}_${row.topic}_${row.partition}_${this.property}`;
+  private calcStorageKey(customerGroupOffset: ConsumerGroupOffset): string {
+    return `${this.servers.getSelectedServerId()}_${customerGroupOffset.topic}_${customerGroupOffset.partition}_${this.property}`;
   }
 
 }
