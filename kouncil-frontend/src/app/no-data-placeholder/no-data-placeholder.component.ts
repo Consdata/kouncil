@@ -4,7 +4,13 @@ import {SearchService} from '../search.service';
 
 @Component({
   selector: 'app-no-data-placeholder',
-  templateUrl: './no-data-placeholder.component.html',
+  template: `
+    <div *ngIf="isNotLoading()" class="no-data-wrapper">
+      <mat-icon>search_off</mat-icon>
+      <div class="no-data-label">No data to display</div>
+      <div class="no-data-comment" *ngIf="currentPhrase">{{objectTypeName}} "{{currentPhrase}}" not found</div>
+    </div>
+  `,
   styleUrls: ['./no-data-placeholder.component.scss']
 })
 export class NoDataPlaceholderComponent {

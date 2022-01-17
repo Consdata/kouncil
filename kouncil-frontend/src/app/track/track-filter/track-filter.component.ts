@@ -13,7 +13,7 @@ import {TrackFilter, TrackOperator} from './track-filter';
                [(ngModel)]="trackFilter.field"/>
         <mat-form-field class="filter-input wrapper-select" floatLabel="never">
           <mat-select name="operator" [(ngModel)]="trackFilter.operator">
-            <mat-option *ngFor="let operator of operators| enumToArray" [value]="operator.index">
+            <mat-option *ngFor="let operator of operators | enumToArray" [value]="operator.index">
               {{operator.name}}
             </mat-option>
           </mat-select>

@@ -1,19 +1,21 @@
 @import 'palette';
 
-.kafka-topics {
-  height: 100%;
-  overflow-y: auto;
-}
+:host {
+  .kafka-topics {
+    height: 100%;
+    overflow-y: auto;
+  }
 
-.datatable-cell-anchor {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  color: inherit;
-}
+  .datatable-cell-anchor {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
 
-:host ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label  {
-  width: 100%;
-  height: 100%;
+  ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label {
+    width: 100%;
+    height: 100%;
+  }
 }
