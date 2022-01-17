@@ -41,7 +41,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     jsonToGridSubscription: Subscription;
     paging$: Observable<Page>;
     @ViewChild('table') table: any;
-    @ViewChild('expandColumnTemplate', {static: true}) expandColumnTemplate: any;
     @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
 
     constructor(private route: ActivatedRoute,
