@@ -1,9 +1,8 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
 import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import * as moment from 'moment';
-import { EventEmitter } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -37,21 +36,22 @@ export abstract class TrackService {
   }
 
   getStoredTrackFilter(): TrackFilter {
-    if (this.trackFilter === undefined) {return this.defaultFilter();
+    if (this.trackFilter === undefined) {
+      return this.defaultFilter();
     } else {
       return this.trackFilter;
     }
   }
 
   defaultFilter(): TrackFilter {
-      const from = new Date();
-      from.setMinutes(from.getMinutes() - 5);
-      return new TrackFilter(
-        '',
-        TrackOperator['~'],
-        '',
-        moment(from).format(this._format),
-        moment(new Date()).format(this._format),
-        []);
-    }
+    const from = new Date();
+    from.setMinutes(from.getMinutes() - 5);
+    return new TrackFilter(
+      '',
+      TrackOperator['~'],
+      '',
+      moment(from).format(this._format),
+      moment(new Date()).format(this._format),
+      []);
+  }
 }

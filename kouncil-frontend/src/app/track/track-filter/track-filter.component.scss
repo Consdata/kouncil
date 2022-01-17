@@ -1,196 +1,201 @@
 @import 'palette';
 
-form {
-  padding: 16px 16px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-
-  &.ng-invalid {
-    border: 1px solid $red-60;
+:host {
+  form {
+    padding: 16px 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
   }
 
-  .filter-input {
-    border: none;
-  }
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid $main-20;
+    border-radius: $default-border-radius;
 
-  .wrapper-field, .filter-input > .wrapper-field {
-    border: none;
+    &.ng-invalid {
+      border: 1px solid $red-60;
+    }
+
+    .filter-input {
+      border: none;
+    }
+
+    .wrapper-field, .filter-input > .wrapper-field {
+      border: none;
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    .wrapper-glue {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 8px;
+      color: $main-40;
+    }
+
+    .wrapper-glue-start {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 8px;
+      border-bottom-left-radius: $default-border-radius;
+      border-top-left-radius: $default-border-radius;
+      color: $main-40;
+    }
+
+    .wrapper-select {
+      color: $main-40;
+      height: 1px;
+      top: -6px;
+      padding: 0 0;
+    }
+
+    &:hover {
+      border: 1px solid $main-40;
+      transition: all $default-transition-time;
+
+      .wrapper-glue, .wrapper-glue-start {
+        color: $main-60;
+      }
+    }
 
     &:focus-visible {
       outline: none;
-      box-shadow: none;
+      box-shadow: 0 0 3px 1px $blue-60;
+      transition: all $default-transition-time;
+
+      .wrapper-glue, .wrapper-glue-start {
+        color: $main-60;
+      }
     }
   }
 
-  .wrapper-glue {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .filter-title {
+    margin: 2px 20px 2px 20px;
+    font-size: 14px;
+  }
+
+  .filter-input {
+    background: $main-0;
+    border: 1px solid $main-20;
+    border-radius: $default-border-radius;
+    font-size: 14px;
+    line-height: $default-line-height;
+    min-width: 100px;
+    max-width: 550px;
+    height: 40px;
     padding: 0 8px;
-    color: $main-40;
   }
 
-  .wrapper-glue-start {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 8px;
-    border-bottom-left-radius: $default-border-radius;
-    border-top-left-radius: $default-border-radius;
-    color: $main-40;
-  }
-
-  .wrapper-select {
-    color: $main-40;
-    height: 1px;
-    top: -6px;
-    padding: 0 0;
-  }
-
-  &:hover {
+  .filter-input:hover {
     border: 1px solid $main-40;
     transition: all $default-transition-time;
-
-    .wrapper-glue, .wrapper-glue-start {
-      color: $main-60;
-    }
   }
 
-  &:focus-visible {
+  .filter-input:focus-visible {
     outline: none;
     box-shadow: 0 0 3px 1px $blue-60;
     transition: all $default-transition-time;
+  }
 
-    .wrapper-glue, .wrapper-glue-start {
-      color: $main-60;
+  .filter-button {
+    background: $main-100;
+    color: $main-0;
+    border-radius: $default-border-radius;
+    height: 40px;
+    width: 120px;
+  }
+
+  @keyframes spinner {
+    to {
+      transform: rotate(360deg);
     }
   }
-}
 
-.filter-title {
-  margin: 2px 20px 2px 20px;
-  font-size: 14px;
-}
-
-.filter-input {
-  background: $main-0;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  font-size: 14px;
-  line-height: $default-line-height;
-  min-width: 100px;
-  max-width: 550px;
-  height: 40px;
-  padding: 0 8px;
-}
-
-.filter-input:hover {
-  border: 1px solid $main-40;
-  transition: all $default-transition-time;
-}
-
-.filter-input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 3px 1px $blue-60;
-  transition: all $default-transition-time;
-}
-
-.filter-button {
-  background: $main-100;
-  color: $main-0;
-  border-radius: $default-border-radius;
-  height: 40px;
-  width: 120px;
-}
-
-@keyframes spinner {
-  to {transform: rotate(360deg);}
-}
-
-.spinner:before {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin-top: -10px;
-  margin-left: -10px;
-  border-radius: 50%;
-  border: 2px solid #ffffff;
-  border-top-color: #000000;
-  animation: spinner .8s linear infinite;
-}
-
-.clear-button {
-  background: $main-0;
-  border: 1px solid $main-20;
-  color: $main-70;
-  border-radius: $default-border-radius;
-  height: 40px;
-
-}
-
-#topics-select {
-  ::ng-deep .mat-select-trigger {
-    top: 1px;
-    padding: 0;
-  }
-}
-
-::ng-deep .mat-form-field-label-wrapper {
-  overflow: visible;
-
-  .mat-form-field-label {
-    top: 20px;
-  }
-}
-
-::ng-deep .mat-option.mat-selected:not(.mat-option-disabled) {
-  background: $blue-10;
-
-  .mat-option-text {
-    color: $main-100;
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #000000;
+    animation: spinner .8s linear infinite;
   }
 
-  .mat-pseudo-checkbox {
-    background: $blue-60;
+  .clear-button {
+    background: $main-0;
+    border: 1px solid $main-20;
+    color: $main-70;
+    border-radius: $default-border-radius;
+    height: 40px;
+
   }
-}
 
-.date-picker-form-field {
+  #topics-select {
+    ::ng-deep .mat-select-trigger {
+      top: 1px;
+      padding: 0;
+    }
+  }
 
-  ::ng-deep .mat-form-field-infix {
+  ::ng-deep .mat-form-field-label-wrapper {
+    overflow: visible;
+
+    .mat-form-field-label {
+      top: 20px;
+    }
+  }
+
+  ::ng-deep .mat-option.mat-selected:not(.mat-option-disabled) {
+    background: $blue-10;
+
+    .mat-option-text {
+      color: $main-100;
+    }
+
+    .mat-pseudo-checkbox {
+      background: $blue-60;
+    }
+  }
+
+  .date-picker-form-field {
+
+    ::ng-deep .mat-form-field-infix {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0;
+    }
+  }
+
+  .date-picker-form-field {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0;
   }
-}
 
-.date-picker-form-field {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+  .form-control {
+    position: relative;
 
-.form-control {
-  position: relative;
-  .validation-error {
-    position: absolute;
-    top: 44px;
-    font-size: 12px;
-    color: $red-60;
+    .validation-error {
+      position: absolute;
+      top: 44px;
+      font-size: 12px;
+      color: $red-60;
+    }
   }
 }

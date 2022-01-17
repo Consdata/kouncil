@@ -1,123 +1,125 @@
 @import 'palette';
 
-mat-toolbar {
-  height: 72px;
-  border-bottom: 1px solid $main-20;
-}
-
-.kouncil-logo {
-  margin-left: 8px;
-  margin-right: 16px;
-  color: $main-100;
-  font-weight: 700;
-  font-size: 24px;
-}
-
-mat-toolbar {
-  background: $main-0;
-}
-
-::ng-deep .mat-divider-vertical {
-  border-right-color: $main-20;
-  height: $default-line-height;
-}
-
-mat-divider {
-  margin: 0 16px;
-}
-
-.menu-button {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  border-radius: 0;
-  padding: 0;
-  margin: 0 16px;
-  min-width: 32px;
-  color: $main-60;
-
-  &:focus {
-    background: transparent;
+:host {
+  mat-toolbar {
+    height: 72px;
+    border-bottom: 1px solid $main-20;
   }
 
-  &.active {
-    border-bottom: 2px solid $main-text-color;
+  .kouncil-logo {
+    margin-left: 8px;
+    margin-right: 16px;
     color: $main-100;
+    font-weight: 700;
+    font-size: 24px;
   }
-}
 
-.search-input {
-  background: $main-0;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  padding: 8px 8px 8px 40px;
-  font-size: 14px;
-  line-height: $default-line-height;
-  min-width: 400px;
-}
-
-.search-input:hover {
-  border: 1px solid $main-40;
-  transition: all $default-transition-time;
-}
-
-.search-input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 3px 1px $blue-60;
-  transition: all $default-transition-time;
-}
-
-.search {
-  display: inline-block;
-  position: relative;
-}
-
-.search::after {
-  content: '/';
-  position: absolute;
-  right: 12px;
-  top: 8px;
-  background-color: $main-10;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  color: $main-50;
-  padding: 0 9px;
-  font-size: 14px;
-  line-height: $default-line-height;
-}
-
-.search::before {
-  content: '\26B2';
-  transform: rotate(-45deg);
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  color: $main-50;
-  padding: 0 6px;
-  font-size: 24px;
-  line-height: $default-line-height;
-}
-
-.servers-form-field {
-  margin-left: 16px;
-  min-width: 300px;
-  max-width: 300px;
-}
-
-.servers {
-  ::ng-deep .mat-select-value-text {
-    padding-left: 32px;
+  mat-toolbar {
+    background: $main-0;
   }
-}
 
-.servers::before {
-  content: '\e1db';
-  position: absolute;
-  left: 8px;
-  top: 18px;
-  color: $main-50;
-  padding: 0 6px;
-  font-size: 24px;
-  line-height: $default-line-height;
-  font-family: 'Material Icons';
+  ::ng-deep .mat-divider-vertical {
+    border-right-color: $main-20;
+    height: $default-line-height;
+  }
+
+  mat-divider {
+    margin: 0 16px;
+  }
+
+  .menu-button {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-radius: 0;
+    padding: 0;
+    margin: 0 16px;
+    min-width: 32px;
+    color: $main-60;
+
+    &:focus {
+      background: transparent;
+    }
+
+    &.active {
+      border-bottom: 2px solid $main-text-color;
+      color: $main-100;
+    }
+  }
+
+  .search-input {
+    background: $main-0;
+    border: 1px solid $main-20;
+    border-radius: $default-border-radius;
+    padding: 8px 8px 8px 40px;
+    font-size: 14px;
+    line-height: $default-line-height;
+    min-width: 400px;
+  }
+
+  .search-input:hover {
+    border: 1px solid $main-40;
+    transition: all $default-transition-time;
+  }
+
+  .search-input:focus-visible {
+    outline: none;
+    box-shadow: 0 0 3px 1px $blue-60;
+    transition: all $default-transition-time;
+  }
+
+  .search {
+    display: inline-block;
+    position: relative;
+  }
+
+  .search::after {
+    content: '/';
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    background-color: $main-10;
+    border: 1px solid $main-20;
+    border-radius: $default-border-radius;
+    color: $main-50;
+    padding: 0 9px;
+    font-size: 14px;
+    line-height: $default-line-height;
+  }
+
+  .search::before {
+    content: '\26B2';
+    transform: rotate(-45deg);
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    color: $main-50;
+    padding: 0 6px;
+    font-size: 24px;
+    line-height: $default-line-height;
+  }
+
+  .servers-form-field {
+    margin-left: 16px;
+    min-width: 300px;
+    max-width: 300px;
+  }
+
+  .servers {
+    ::ng-deep .mat-select-value-text {
+      padding-left: 32px;
+    }
+  }
+
+  .servers::before {
+    content: '\e1db';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    color: $main-50;
+    padding: 0 6px;
+    font-size: 24px;
+    line-height: $default-line-height;
+    font-family: 'Material Icons';
+  }
 }

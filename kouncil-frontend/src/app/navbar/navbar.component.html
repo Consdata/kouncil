@@ -1,15 +1,18 @@
 <mat-toolbar>
-  <img src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo" *ngIf="backendVersion$ | async as backendVersion" matTooltip="{{backendVersion}}"/>
+  <img *ngIf="backendVersion$ | async as backendVersion"
+       src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
+       matTooltip="{{backendVersion}}"/>
   <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/topics']">Topics</a>
   <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/brokers']">Brokers</a>
-  <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumer Groups</a>
+  <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumer
+    Groups</a>
   <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/track']">Track</a>
 
   <mat-divider [vertical]="true"></mat-divider>
 
   <button class="menu-button" mat-button disableRipple (click)=goToGithub()>
-      Documentation
-      <mat-icon aria-hidden="false">open_in_new</mat-icon>
+    Documentation
+    <mat-icon aria-hidden="false">open_in_new</mat-icon>
   </button>
 
   <span class="spacer"></span>
@@ -30,7 +33,8 @@
       class="select servers"
       [(value)]="servers.selectedServerId"
       (selectionChange)="serverSelectionChanged()">
-      <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{s.serverId}} - {{s.label}}</mat-option>
+      <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{s.serverId}}
+        - {{s.label}}</mat-option>
     </mat-select>
   </mat-form-field>
 </mat-toolbar>

@@ -6,7 +6,14 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'cached-cell',
-  templateUrl: './cached-cell.component.html',
+  template: `
+    <div [class.cached-value]="showCachedValue()" *ngIf="row" title="{{getValue()}}">
+      {{getValue()}}
+    </div>
+    <div class="last-seen" *ngIf="showLastSeenTimestampLabel()" title="{{cachedData.lastSeenTimestamp}}">
+      Last seen: {{cachedData.lastSeenTimestamp}}
+    </div>
+  `,
   styleUrls: ['./cached-cell.component.scss']
 })
 export class CachedCellComponent {
@@ -42,7 +49,8 @@ export class CachedCellComponent {
     return this._row;
   }
 
-  constructor(private servers: ServersService) { }
+  constructor(private servers: ServersService) {
+  }
 
   private shouldBeCached(newRow: ConsumerGroupOffset): boolean {
     return newRow[this.property] && (!this.row || newRow[this.property] != this.row[this.property]);
