@@ -1,4 +1,4 @@
 export interface CachedCellData {
-  cachedValue: string;
+  value: string;
   lastSeenTimestamp: string;
 }
