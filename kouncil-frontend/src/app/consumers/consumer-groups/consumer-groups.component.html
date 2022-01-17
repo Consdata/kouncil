@@ -28,26 +28,28 @@
       </ng-template>
     </ngx-datatable-group-header>
 
-    <ngx-datatable-column prop="groupId" name="Group id" [width]="500">
+    <ngx-datatable-column prop="groupId" name="Group id" cellClass="datatable-cell-wrapper" [width]="500">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <mat-icon class="ngx-star-favourite" *ngIf="row.group === 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
-        <mat-icon class="ngx-star-favourite gray" *ngIf="row.group !== 'FAVOURITES'" (click)="onFavouriteClick(row)">star</mat-icon>
-        <span [routerLink]="['/consumer-groups/', value]">{{value}}</span>
+        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
+          <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+          {{value}}
+        </a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column prop="status" name="Status" [width]="190">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value}}
+    <ngx-datatable-column prop="status" name="Status" cellClass="datatable-cell-wrapper" [width]="190">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]">
+          {{value}}
+        </a>
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column cellClass="ngx-actions-column" name="" prop="groupId"
-                          [width]="240" [sortable]="false" [resizeable]="false" [canAutoResize]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
+    <ngx-datatable-column cellClass="ngx-actions-column" [width]="240"
+                          [sortable]="false" [resizeable]="false" [canAutoResize]="false">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+          <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
       </ng-template>
     </ngx-datatable-column>
-
   </ngx-datatable>
 </div>
