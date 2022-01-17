@@ -17,7 +17,7 @@ export class CachedCellService implements OnDestroy {
   private property: string;
 
   private _vm$: BehaviorSubject<CachedCellDataViewModel> = new BehaviorSubject<CachedCellDataViewModel>({
-    realValue: '',
+    realValue: null,
     cache: {
       value: null,
       lastSeenTimestamp: null

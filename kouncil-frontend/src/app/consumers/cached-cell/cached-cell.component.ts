@@ -12,9 +12,7 @@ import {Observable} from 'rxjs';
         {{vm.realValue}}
       </div>
       <ng-template #cacheTemplate>
-        <div *ngIf="!vm.cache.value"
-             class="cached-value">NO CACHED DATA
-        </div>
+        <div *ngIf="!vm.cache.value" class="cached-value">NO CACHED DATA</div>
         <ng-container *ngIf="vm.cache.value">
           <div class="cached-value"
                title="{{vm.cache.value}}">
@@ -51,6 +49,5 @@ export class CachedCellComponent {
 
   constructor(private cachedCellService: CachedCellService) {
   }
-
 
 }
