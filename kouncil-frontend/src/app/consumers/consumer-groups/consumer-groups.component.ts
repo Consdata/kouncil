@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
-import {ConsumerGroup} from 'app/consumers/consumer-groups/consumer-groups';
+import {ConsumerGroup, ConsumerGroupsResponse} from 'app/consumers/consumer-groups/consumer-groups';
 import {ProgressBarService} from 'app/util/progress-bar.service';
 import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
@@ -50,7 +50,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   private loadConsumerGroups() {
     this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
-      .subscribe(data => {
+      .subscribe((data: ConsumerGroupsResponse) => {
         this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
         this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter(this.searchService.currentPhrase);

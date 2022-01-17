@@ -1,9 +1,6 @@
 @import 'palette';
 
-:host ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label {
-  width: 100%;
-  height: 100%;
-
+:host {
   .kafka-topics {
     height: 100%;
     overflow-y: auto;
@@ -17,4 +14,8 @@
     color: inherit;
   }
 
+  ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label {
+    width: 100%;
+    height: 100%;
+  }
 }

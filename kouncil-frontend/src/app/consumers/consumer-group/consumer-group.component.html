@@ -32,17 +32,17 @@
     <ngx-datatable-column prop="partition" name="partition"></ngx-datatable-column>
     <ngx-datatable-column prop="offset" name="offset">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value | number }}
+        {{ value | number }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="endOffset" name="endOffset">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value | number }}
+        {{ value | number }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="lag" name="lag">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{value | number }}
+        {{ value | number }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="pace" name="pace">
@@ -51,8 +51,8 @@
         <ng-template #noPace>=</ng-template>
         <ng-template #paceBlock>
           <div *ngIf="value > 0; then upperArrowBlock else downArrowBlock"></div>
-          <ng-template #upperArrowBlock>↑ ({{value | number }})</ng-template>
-          <ng-template #downArrowBlock>↓ ({{value | number }})</ng-template>
+          <ng-template #upperArrowBlock>↑ ({{ value | number }})</ng-template>
+          <ng-template #downArrowBlock>↓ ({{ value | number }})</ng-template>
         </ng-template>
       </ng-template>
     </ngx-datatable-column>

@@ -2,17 +2,17 @@
 
 :host {
   position: relative;
-}
 
-.cached-value {
-  color: $main-40;
-}
+  .cached-value {
+    color: $main-40;
+  }
 
-.last-seen {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  line-height: 8px;
-  font-size: 10px;
-  color: $main-40;
+  .last-seen {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    line-height: 8px;
+    font-size: 10px;
+    color: $main-40;
+  }
 }
