@@ -238,7 +238,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       name: 'value',
       prop: 'kouncilValue'
     }];
-    let gridColumns = [];
+    const gridColumns = [];
     Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
         gridColumns.push({
           canAutoResize: true,
