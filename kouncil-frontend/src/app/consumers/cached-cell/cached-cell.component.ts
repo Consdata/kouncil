@@ -40,12 +40,12 @@ export class CachedCellComponent {
   @Input()
   public set property(property: string) {
     this.cachedCellService.setProperty(property);
-  };
+  }
 
   @Input()
   public set row(newRow: ConsumerGroupOffset) {
     this.cachedCellService.setRow(newRow);
-  };
+  }
 
   constructor(private cachedCellService: CachedCellService) {
   }

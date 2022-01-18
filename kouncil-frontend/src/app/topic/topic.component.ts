@@ -141,7 +141,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         }));
         this.jsonGrid.replaceObjects(values);
 
-        this.commonColumns =[];
+        this.commonColumns = [];
         this.commonColumns.push({
             width: 100,
             resizable: true,
@@ -191,7 +191,7 @@ export class TopicComponent implements OnInit, OnDestroy {
             name: 'value',
             prop: 'kouncilValue'
         }];
-        let gridColumns = [];
+        const gridColumns = [];
         Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
             gridColumns.push({
                     canAutoResize: true,
@@ -243,8 +243,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         }
         if (this.showJsonColumns) {
             columns = columns.concat(this.jsonColumns);
-        }
-        else {
+        } else {
             columns = columns.concat(this.valueColumns);
         }
         this.columns = columns;

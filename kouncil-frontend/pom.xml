@@ -40,6 +40,16 @@
           </execution>
 
           <execution>
+            <id>yarn run build</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <configuration>
+              <arguments>build</arguments>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>yarn run test</id>
             <goals>
               <goal>yarn</goal>
@@ -50,12 +60,12 @@
           </execution>
 
           <execution>
-            <id>yarn run build</id>
+            <id>yarn run lint</id>
             <goals>
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <arguments>build</arguments>
+              <arguments>lint</arguments>
             </configuration>
           </execution>
 

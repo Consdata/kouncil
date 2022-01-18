@@ -12,7 +12,7 @@ export abstract class TrackService {
   private trackFilter: TrackFilter;
   private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
-  protected readonly _format = "yyyy-MM-dd'T'HH:mm";
+  protected readonly _format = 'yyyy-MM-dd\'T\'HH:mm';
   trackFinished = new EventEmitter<any>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
