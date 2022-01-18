@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -11,6 +11,7 @@ import {Component, Input} from '@angular/core';
       <div class="name">{{name}}</div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent {

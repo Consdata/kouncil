@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SearchService} from 'app/search.service';
-import {interval, Subscription} from 'rxjs';
+import {interval, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {ConsumerGroupOffset, ConsumerGroupResponse} from 'app/consumers/consumer-group/consumer-group';
 import {ProgressBarService} from '../../util/progress-bar.service';
@@ -25,7 +25,7 @@ import {switchMap, tap} from 'rxjs/operators';
                      [scrollbarH]="false"
                      [scrollbarV]="false"
                      [columnMode]="'force'"
-                     [loadingIndicator]="isLoading()"
+                     [loadingIndicator]="loading$ | async"
                      #table>
         <ngx-datatable-column prop="clientId" name="clientId">
           <ng-template let-row="row" ngx-datatable-cell-template>
@@ -84,6 +84,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   filteredAssignments: ConsumerGroupOffset[];
   paused: boolean;
   lastLags: IHash = {};
+  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   constructor(private searchService: SearchService,
               private route: ActivatedRoute,
@@ -110,10 +111,6 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.searchSubscription?.unsubscribe();
     this.intervalSubscription?.unsubscribe();
     this.paused = true;
-  }
-
-  isLoading(): boolean {
-    return this.progressBarService.progressSub.getValue();
   }
 
   private getConsumerGroup() {
