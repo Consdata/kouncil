@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
 import {TrackFilter, TrackOperator} from './track-filter/track-filter';
-import * as moment from 'moment';
+import {addMinutes, format} from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export abstract class TrackService {
   private trackFilter: TrackFilter;
   private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
-  private readonly _format = 'YYYY-MM-DDTHH:mm';
+  protected readonly _format = "yyyy-MM-dd'T'HH:mm";
   trackFinished = new EventEmitter<any>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
@@ -24,21 +24,21 @@ export abstract class TrackService {
   abstract isAsyncEnable(): boolean;
 
   storeTrackFilter(field: string, value: string, timestamp: number, topicName: string) {
-    const date = new Date(timestamp);
-    date.setMinutes(date.getMinutes() + 1);
     this.trackFilter = new TrackFilter(
       field,
       TrackOperator['is'],
       value,
-      moment(new Date(timestamp)).format(this._format),
-      moment(date).format(this._format),
+      format(new Date(), this._format),
+      format(addMinutes(new Date(), 1), this._format),
       [topicName]);
   }
 
   getStoredTrackFilter(): TrackFilter {
     if (this.trackFilter === undefined) {
+      console.log('trackFilter', this.defaultFilter());
       return this.defaultFilter();
     } else {
+      console.log('trackFilter', this.trackFilter);
       return this.trackFilter;
     }
   }
@@ -50,8 +50,8 @@ export abstract class TrackService {
       '',
       TrackOperator['~'],
       '',
-      moment(from).format(this._format),
-      moment(new Date()).format(this._format),
+      format(from, this._format),
+      format(new Date(), this._format),
       []);
   }
 }
