@@ -116,4 +116,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   customSort(event) {
     this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
+
+  getStatusClass(status: string): string {
+    return `status-${ status.toLowerCase() }`;
+  }
 }
