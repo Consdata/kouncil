@@ -10,9 +10,6 @@ describe('ToolbarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-
-      ],
       providers: [
         TopicService,
         ServersService
