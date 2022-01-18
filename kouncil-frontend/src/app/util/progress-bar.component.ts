@@ -1,30 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ProgressBarService} from './progress-bar.service';
-import {delay} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-progress-bar',
-  template: `<div *ngIf="progress" class="kafka-progress"></div>`
+  template: `
+    <div *ngIf="loading$ | async"
+         class="kafka-progress">
+    </div>
+  `
 })
-export class ProgressBarComponent implements OnInit, OnDestroy {
-  progress: boolean;
+export class ProgressBarComponent {
+
+  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   constructor(private progressBarService: ProgressBarService) {
   }
 
-  ngOnInit(): void {
-    this.listenToProgress();
-  }
-
-  ngOnDestroy(): void {
-    this.progressBarService.progressSub.unsubscribe();
-  }
-
-  private listenToProgress() {
-    this.progressBarService.progressSub
-      .pipe(delay(0))
-      .subscribe((progress) => {
-        this.progress = progress;
-      });
-  }
 }

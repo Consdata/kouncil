@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
 import {Title} from '@angular/platform-browser';
@@ -30,7 +30,7 @@ import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-plac
         [scrollbarH]="true"
         [scrollbarV]="true"
         [columnMode]="'force'"
-        [loadingIndicator]="isLoading()"
+        [loadingIndicator]="loading$ | async"
         (activate)="showMessage($event)"
         #table>
         <ngx-datatable-column prop="timestamp" name="timestamp"
@@ -81,6 +81,8 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   filteredRows = [];
   allRows = [];
   asyncHandle: string;
+
+  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -149,10 +151,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
         topicName: event.row.topic
       });
     }
-  }
-
-  isLoading(): boolean {
-    return this.progressBarService.progressSub.getValue();
   }
 
   private filterRows(phrase: string) {
