@@ -16,238 +16,280 @@ import {ServersService} from '../servers.service';
 import {LiveUpdateState} from './toolbar/toolbar.component';
 
 @Component({
-    selector: 'app-topic',
-    templateUrl: './topic.component.html',
-    styleUrls: ['./topic.component.scss'],
-    providers: [JsonGrid, DatePipe, topicServiceProvider]
+  selector: 'app-topic',
+  template: `
+    <div class="topic">
+      <div class="topic-table-area">
+        <div class="topic-toolbar-area">
+          <app-kafka-toolbar [name]="topicName"
+                             (toggleLiveEvent)="toggleLiveEventHandler($event)"
+                             (openSendPopupEvent)="openSendPopup()"
+                             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
+                             (toggleJsonEvent)="toggleJsonEventHandler($event)">
+          </app-kafka-toolbar>
+        </div>
+
+        <ng-template #noDataPlaceholder>
+          <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
+        </ng-template>
+        <ngx-datatable *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+                       class="topic-table material expandable"
+                       [rows]="filteredRows"
+                       [columns]="columns"
+                       [rowHeight]="48"
+                       [headerHeight]="48"
+                       [footerHeight]="80"
+                       [scrollbarH]="true"
+                       [scrollbarV]="true"
+                       [columnMode]="'force'"
+                       [rowClass]="getRowClass"
+                       [loadingIndicator]="loading$ | async"
+                       (activate)="showMessage($event)"
+                       #table>
+
+          <ngx-datatable-footer>
+            <ng-template ngx-datatable-footer-template>
+              <app-topic-pagination class="topic-pagination" [paging]="paging$ | async"
+                                    [topicName]="topicName"></app-topic-pagination>
+            </ng-template>
+          </ngx-datatable-footer>
+        </ngx-datatable>
+      </div>
+
+      <ng-template #headerTemplate let-column="column" let-sort="sortFn">
+    <span class="datatable-header-cell-wrapper datatable-header-cell-label" title="{{column.name}}"
+          (click)="sort()">{{column.nameShort}}</span>
+      </ng-template>
+
+    </div>
+  `,
+  styleUrls: ['./topic.component.scss'],
+  providers: [JsonGrid, DatePipe, topicServiceProvider]
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-    topicName: string;
-    columns = [];
-    commonColumns = [];
-    headerColumns = [];
-    jsonColumns = [];
-    valueColumns = [];
-    showHeaderColumns = true;
-    showJsonColumns = true;
-    allRows = [];
-    filteredRows = [];
+  topicName: string;
+  columns = [];
+  commonColumns = [];
+  headerColumns = [];
+  jsonColumns = [];
+  valueColumns = [];
+  showHeaderColumns = true;
+  showJsonColumns = true;
+  allRows = [];
+  filteredRows = [];
 
-    searchSubscription: Subscription;
+  searchSubscription: Subscription;
 
-    paused: boolean;
+  paused: boolean;
 
-    jsonToGridSubscription: Subscription;
-    paging$: Observable<Page>;
-    @ViewChild('table') table: any;
-    @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+  jsonToGridSubscription: Subscription;
+  paging$: Observable<Page>;
+  loading$: Observable<boolean> = this.progressBarService.loading$;
 
-    constructor(private route: ActivatedRoute,
-                private searchService: SearchService,
-                private jsonGrid: JsonGrid,
-                private titleService: Title,
-                private progressBarService: ProgressBarService,
-                private topicService: TopicService,
-                private drawerService: DrawerService,
-                private servers: ServersService) {
-        this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
-            this.jsonToGrid(value);
+  @ViewChild('table') table: any;
+  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+
+  constructor(private route: ActivatedRoute,
+              private searchService: SearchService,
+              private jsonGrid: JsonGrid,
+              private titleService: Title,
+              private progressBarService: ProgressBarService,
+              private topicService: TopicService,
+              private drawerService: DrawerService,
+              private servers: ServersService) {
+    this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
+      this.jsonToGrid(value);
+    });
+    this.paging$ = this.topicService.getPagination$();
+  }
+
+  private static tryParseJson(message) {
+    try {
+      return JSON.parse(message);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  ngOnInit() {
+    this.progressBarService.setProgress(true);
+    this.route.params.subscribe(params => {
+      this.topicName = params['topic'];
+      this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
+      this.titleService.setTitle(this.topicName + ' Kouncil');
+      this.paused = true;
+    });
+
+    this.searchSubscription = this.searchService.getPhraseState('topic').subscribe(
+      phrase => {
+        this.filterRows(phrase);
+      });
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+    this.jsonToGridSubscription.unsubscribe();
+    this.paused = true;
+  }
+
+  getMessagesDelta() {
+    if (this.paused) {
+      return;
+    }
+    this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
+    setTimeout(() => this.getMessagesDelta(), 1000);
+  }
+
+  getRowClass = (row) => {
+    return {
+      'kafka-row-delta': row['fresh']
+    };
+  }
+
+  toggleLiveEventHandler(action: LiveUpdateState) {
+    if (LiveUpdateState.PAUSE === action) {
+      this.paused = true;
+    } else if (LiveUpdateState.PLAY === action) {
+      this.paused = false;
+      this.getMessagesDelta();
+    }
+  }
+
+  showMessage(event): void {
+    if (event.type === 'click') {
+      this.drawerService.openDrawerWithPadding(MessageViewComponent, {
+        source: event.row.kouncilValueJson || event.row.kouncilValue,
+        headers: event.row.headers,
+        key: event.row.kouncilKey,
+        topicName: this.topicName,
+        timestamp: event.row.kouncilTimestampEpoch
+      });
+    }
+  }
+
+  openSendPopup() {
+    this.drawerService.openDrawerWithPadding(SendComponent, {
+      topicName: this.topicName,
+      headers: []
+    });
+  }
+
+  private jsonToGrid(topicMessages: TopicMessages) {
+    const values = [];
+    topicMessages.messages.forEach(message => values.push({
+      value: message.value,
+      valueJson: TopicComponent.tryParseJson(message.value),
+      partition: message.partition,
+      offset: message.offset,
+      key: message.key,
+      timestamp: message.timestamp,
+      headers: message.headers
+    }));
+    this.jsonGrid.replaceObjects(values);
+
+    this.commonColumns = [];
+    this.commonColumns.push({
+      width: 100,
+      resizable: true,
+      sortable: true,
+      draggable: true,
+      canAutoResize: true,
+      frozenLeft: true,
+      name: 'partition',
+      prop: 'kouncilPartition'
+    });
+    this.commonColumns.push({
+      width: 100,
+      resizable: true,
+      sortable: true,
+      draggable: true,
+      canAutoResize: true,
+      frozenLeft: true,
+      name: 'offset',
+      prop: 'kouncilOffset'
+    });
+    this.commonColumns.push({
+      width: 200,
+      resizable: true,
+      sortable: true,
+      draggable: true,
+      canAutoResize: true,
+      frozenLeft: true,
+      name: 'key',
+      prop: 'kouncilKey'
+    });
+    this.commonColumns.push({
+      width: 180,
+      resizable: true,
+      sortable: true,
+      draggable: true,
+      canAutoResize: true,
+      frozenLeft: true,
+      name: 'timestamp',
+      prop: 'kouncilTimestamp'
+    });
+    this.valueColumns = [{
+      width: 200,
+      resizable: true,
+      sortable: true,
+      draggable: true,
+      canAutoResize: true,
+      name: 'value',
+      prop: 'kouncilValue'
+    }];
+    let gridColumns = [];
+    Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
+        gridColumns.push({
+          canAutoResize: true,
+          prop: column.name,
+          name: column.name,
+          nameShort: column.nameShort,
+          headerTemplate: this.headerTemplate
         });
-        this.paging$ = this.topicService.getPagination$();
+      }
+    );
+
+    this.jsonColumns = gridColumns.filter(c => {
+      return !c.name.startsWith('H[');
+    });
+    this.headerColumns = gridColumns.filter(c => {
+      return c.name.startsWith('H[');
+    });
+
+    this.refreshColumns();
+
+    this.allRows = [...this.jsonGrid.getRows()];
+    this.filterRows(this.searchService.currentPhrase);
+  }
+
+  private filterRows(phrase: string) {
+    this.filteredRows = this.allRows.filter((row) => {
+      return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
+    });
+  }
+
+  toggleHeadersEventHandler(showHeaderColumns: boolean): void {
+    this.showHeaderColumns = showHeaderColumns;
+    this.refreshColumns();
+  }
+
+  toggleJsonEventHandler(showJsonColumns: boolean): void {
+    this.showJsonColumns = showJsonColumns;
+    this.refreshColumns();
+  }
+
+  refreshColumns() {
+    let columns = [...this.commonColumns];
+    if (this.showHeaderColumns) {
+      columns = columns.concat(this.headerColumns);
     }
-
-    private static tryParseJson(message) {
-        try {
-            return JSON.parse(message);
-        } catch (e) {
-            return null;
-        }
+    if (this.showJsonColumns) {
+      columns = columns.concat(this.jsonColumns);
+    } else {
+      columns = columns.concat(this.valueColumns);
     }
-
-    ngOnInit() {
-        this.progressBarService.setProgress(true);
-        this.route.params.subscribe(params => {
-            this.topicName = params['topic'];
-            this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
-            this.titleService.setTitle(this.topicName + ' Kouncil');
-            this.paused = true;
-        });
-
-        this.searchSubscription = this.searchService.getPhraseState('topic').subscribe(
-            phrase => {
-                this.filterRows(phrase);
-            });
-    }
-
-    ngOnDestroy() {
-        this.searchSubscription.unsubscribe();
-        this.jsonToGridSubscription.unsubscribe();
-        this.paused = true;
-    }
-
-    getMessagesDelta() {
-        if (this.paused) {
-            return;
-        }
-        this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
-        setTimeout(() => this.getMessagesDelta(), 1000);
-    }
-
-    getRowClass = (row) => {
-        return {
-            'kafka-row-delta': row['fresh']
-        };
-    }
-
-    toggleLiveEventHandler(action: LiveUpdateState) {
-        if (LiveUpdateState.PAUSE === action) {
-            this.paused = true;
-        } else if (LiveUpdateState.PLAY === action) {
-            this.paused = false;
-            this.getMessagesDelta();
-        }
-    }
-
-    showMessage(event): void {
-        if (event.type === 'click') {
-            this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-                source: event.row.kouncilValueJson || event.row.kouncilValue,
-                headers: event.row.headers,
-                key: event.row.kouncilKey,
-                topicName: this.topicName,
-                timestamp: event.row.kouncilTimestampEpoch
-            });
-        }
-    }
-
-    openSendPopup() {
-        this.drawerService.openDrawerWithPadding(SendComponent, {
-            topicName: this.topicName,
-            headers: []
-        });
-    }
-
-    private jsonToGrid(topicMessages: TopicMessages) {
-        const values = [];
-        topicMessages.messages.forEach(message => values.push({
-            value: message.value,
-            valueJson: TopicComponent.tryParseJson(message.value),
-            partition: message.partition,
-            offset: message.offset,
-            key: message.key,
-            timestamp: message.timestamp,
-            headers: message.headers
-        }));
-        this.jsonGrid.replaceObjects(values);
-
-        this.commonColumns =[];
-        this.commonColumns.push({
-            width: 100,
-            resizable: true,
-            sortable: true,
-            draggable: true,
-            canAutoResize: true,
-            frozenLeft: true,
-            name: 'partition',
-            prop: 'kouncilPartition'
-        });
-        this.commonColumns.push({
-            width: 100,
-            resizable: true,
-            sortable: true,
-            draggable: true,
-            canAutoResize: true,
-            frozenLeft: true,
-            name: 'offset',
-            prop: 'kouncilOffset'
-        });
-        this.commonColumns.push({
-            width: 200,
-            resizable: true,
-            sortable: true,
-            draggable: true,
-            canAutoResize: true,
-            frozenLeft: true,
-            name: 'key',
-            prop: 'kouncilKey'
-        });
-        this.commonColumns.push({
-            width: 180,
-            resizable: true,
-            sortable: true,
-            draggable: true,
-            canAutoResize: true,
-            frozenLeft: true,
-            name: 'timestamp',
-            prop: 'kouncilTimestamp'
-        });
-        this.valueColumns = [{
-            width: 200,
-            resizable: true,
-            sortable: true,
-            draggable: true,
-            canAutoResize: true,
-            name: 'value',
-            prop: 'kouncilValue'
-        }];
-        let gridColumns = [];
-        Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
-            gridColumns.push({
-                    canAutoResize: true,
-                    prop: column.name,
-                    name: column.name,
-                    nameShort: column.nameShort,
-                    headerTemplate: this.headerTemplate
-                });
-            }
-        );
-
-        this.jsonColumns = gridColumns.filter(c => {
-            return !c.name.startsWith('H[');
-        });
-        this.headerColumns = gridColumns.filter(c => {
-            return c.name.startsWith('H[');
-        });
-
-        this.refreshColumns();
-
-        this.allRows = [...this.jsonGrid.getRows()];
-        this.filterRows(this.searchService.currentPhrase);
-    }
-
-    private filterRows(phrase: string) {
-        this.filteredRows = this.allRows.filter((row) => {
-            return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
-        });
-    }
-
-    isLoading(): boolean {
-        return this.progressBarService.progressSub.getValue();
-    }
-
-    toggleHeadersEventHandler(showHeaderColumns: boolean): void {
-        this.showHeaderColumns = showHeaderColumns;
-        this.refreshColumns();
-    }
-
-    toggleJsonEventHandler(showJsonColumns: boolean): void {
-        this.showJsonColumns = showJsonColumns;
-        this.refreshColumns();
-    }
-
-    refreshColumns() {
-        let columns = [...this.commonColumns];
-        if (this.showHeaderColumns) {
-            columns = columns.concat(this.headerColumns);
-        }
-        if (this.showJsonColumns) {
-            columns = columns.concat(this.jsonColumns);
-        }
-        else {
-            columns = columns.concat(this.valueColumns);
-        }
-        this.columns = columns;
-    }
+    this.columns = columns;
+  }
 
 }

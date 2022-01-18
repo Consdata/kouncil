@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'app-demo',
-  templateUrl: './demo.component.html',
+  template: `
+    <div>
+      This is a demo version of Kouncil. Get the full version at&nbsp;<a href="https://kouncil.io" target="_blank">kouncil.io</a>
+      <mat-icon aria-hidden="false">open_in_new</mat-icon>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./demo.component.scss']
 })
-export class DemoComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class DemoComponent {
 }
