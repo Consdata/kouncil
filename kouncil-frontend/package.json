@@ -25,6 +25,7 @@
     "@stomp/ng2-stompjs": "^8.0.0",
     "@swimlane/ngx-datatable": "^20.0.0",
     "core-js": "^3.20.3",
+    "eslint": "^8.7.0",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "ngx-json-viewer": "3.0.2",
