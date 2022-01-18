@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
@@ -25,4 +26,28 @@ jobs:
           distribution: 'adopt'
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml     
       - name: Build Project and Image
-        run: ./mvnw test 
+        run: ./mvnw test
+        
+  run-lint-and-tests:
+    name: run lint and yarn test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          
+      - name: Install Node.js dependencies
+        run: npm ci
+        
+      - name: Run linter
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+      - run: yarn install
+      - run: yarn test
+          
