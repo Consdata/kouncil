@@ -14,6 +14,7 @@ import {MessageViewComponent} from './message/message-view.component';
 import {DrawerService} from '../util/drawer.service';
 import {ServersService} from '../servers.service';
 import {LiveUpdateState} from './toolbar/toolbar.component';
+import {TableColumn} from '@swimlane/ngx-datatable/lib/types/table-column.type';
 
 @Component({
   selector: 'app-topic',
@@ -69,15 +70,15 @@ import {LiveUpdateState} from './toolbar/toolbar.component';
 export class TopicComponent implements OnInit, OnDestroy {
 
   topicName: string;
-  columns = [];
-  commonColumns = [];
-  headerColumns = [];
-  jsonColumns = [];
-  valueColumns = [];
-  showHeaderColumns = true;
-  showJsonColumns = true;
-  allRows = [];
-  filteredRows = [];
+  columns: TableColumn[] = [];
+  commonColumns: TableColumn[] = [];
+  headerColumns: TableColumn[] = [];
+  jsonColumns: TableColumn[] = [];
+  valueColumns: TableColumn[] = [];
+  showHeaderColumns: boolean = true;
+  showJsonColumns: boolean = true;
+  allRows: unknown[] = [];
+  filteredRows: unknown[] = [];
 
   searchSubscription: Subscription;
 
@@ -191,7 +192,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.commonColumns = [];
     this.commonColumns.push({
       width: 100,
-      resizable: true,
+      resizeable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
@@ -201,7 +202,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     this.commonColumns.push({
       width: 100,
-      resizable: true,
+      resizeable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
@@ -211,7 +212,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     this.commonColumns.push({
       width: 200,
-      resizable: true,
+      resizeable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
@@ -221,7 +222,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     this.commonColumns.push({
       width: 180,
-      resizable: true,
+      resizeable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
@@ -231,7 +232,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
     this.valueColumns = [{
       width: 200,
-      resizable: true,
+      resizeable: true,
       sortable: true,
       draggable: true,
       canAutoResize: true,
@@ -280,7 +281,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   refreshColumns(): void {
-    let columns = [...this.commonColumns];
+    let columns: TableColumn[] = [...this.commonColumns];
     if (this.showHeaderColumns) {
       columns = columns.concat(this.headerColumns);
     }

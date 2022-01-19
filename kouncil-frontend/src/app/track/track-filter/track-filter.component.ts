@@ -4,6 +4,7 @@ import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 import {TrackFilter, TrackOperator} from './track-filter';
+import {Topics} from '../../topics/topics';
 
 @Component({
   selector: 'app-track-filter',
@@ -71,16 +72,11 @@ export class TrackFilterComponent implements OnInit {
 
   operators = TrackOperator;
 
-  topicList = [];
-
-  visibleTopicList = [];
-
+  topicList: string[] = [];
+  visibleTopicList: string[] = [];
   trackFilter: TrackFilter;
-
   topicFilterControl: FormControl = new FormControl();
-
   datesControl: FormControl = new FormControl();
-
   loading: boolean = false;
 
   constructor(private trackService: TrackService,
@@ -89,10 +85,11 @@ export class TrackFilterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.topicsService.getTopics(this.servers.getSelectedServerId()).subscribe(topics => {
-      this.topicList = topics.topics.map(tm => tm.name);
-      this.visibleTopicList = topics.topics.map(tm => tm.name);
-    });
+    this.topicsService.getTopics(this.servers.getSelectedServerId())
+      .subscribe((topics: Topics) => {
+        this.topicList = topics.topics.map(tm => tm.name);
+        this.visibleTopicList = topics.topics.map(tm => tm.name);
+      });
     this.trackFilter = this.trackService.getStoredTrackFilter();
     this.topicFilterControl.valueChanges.pipe().subscribe(() => this.filterTopics());
     this.trackService.trackFinished.subscribe(e => {
