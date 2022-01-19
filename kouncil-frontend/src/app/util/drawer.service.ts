@@ -11,19 +11,19 @@ export class DrawerService {
   constructor(private dialog: MatDialog) {
   }
 
-  openDrawerWithPadding<T, R = any>(component: ComponentType<T>, data: any): MatDialogRef<T, R> {
-    return this.open(component, data, ['app-drawer', 'dialog-with-padding']);
+  openDrawerWithPadding<T, R = any>(component: ComponentType<T>, data: any, width?: string): MatDialogRef<T, R> {
+    return this.open(component, data, ['app-drawer', 'dialog-with-padding'], width);
   }
 
-  openDrawerWithoutPadding<T, R = any>(component: ComponentType<T>, data: any): MatDialogRef<T, R> {
-    return this.open(component, data, ['app-drawer']);
+  openDrawerWithoutPadding<T, R = any>(component: ComponentType<T>, data: any, width?: string): MatDialogRef<T, R> {
+    return this.open(component, data, ['app-drawer'], width);
   }
 
-  open<T, R = any>(component: ComponentType<T>, data: any, panelClass: string[]): MatDialogRef<T, R> {
+  open<T, R = any>(component: ComponentType<T>, data: any, panelClass: string[], width?: string): MatDialogRef<T, R> {
     return this.dialog.open(component, {
       data: data,
       height: '100%',
-      width: '787px',
+      width: width ?? '787px',
       position: {
         right: '0px'
       },

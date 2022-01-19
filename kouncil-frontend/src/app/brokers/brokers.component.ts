@@ -62,10 +62,8 @@ export class BrokersComponent implements OnInit {
         .subscribe(data => {
           this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
             config: data
-          });
+          }, '987px');
         });
     }
-
-
   }
 }
