@@ -3,6 +3,7 @@ import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
 import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import {addMinutes, format} from 'date-fns';
+import {TRACK_DATE_FORMAT} from './track-date-format';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,6 @@ export abstract class TrackService {
   private trackFilter: TrackFilter;
   private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
-  protected readonly _format: string = 'yyyy-MM-dd\'T\'HH:mm';
   trackFinished: EventEmitter<void> = new EventEmitter<void>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
@@ -28,17 +28,15 @@ export abstract class TrackService {
       field,
       TrackOperator['is'],
       value,
-      format(new Date(), this._format),
-      format(addMinutes(new Date(), 1), this._format),
+      format(new Date(timestamp), TRACK_DATE_FORMAT),
+      format(addMinutes(new Date(timestamp), 1), TRACK_DATE_FORMAT),
       [topicName]);
   }
 
   getStoredTrackFilter(): TrackFilter {
     if (this.trackFilter === undefined) {
-      console.log('trackFilter', this.defaultFilter());
       return this.defaultFilter();
     } else {
-      console.log('trackFilter', this.trackFilter);
       return this.trackFilter;
     }
   }
@@ -50,8 +48,8 @@ export abstract class TrackService {
       '',
       TrackOperator['~'],
       '',
-      format(from, this._format),
-      format(new Date(), this._format),
+      format(from, TRACK_DATE_FORMAT),
+      format(new Date(), TRACK_DATE_FORMAT),
       []);
   }
 }

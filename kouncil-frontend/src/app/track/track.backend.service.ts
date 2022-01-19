@@ -4,6 +4,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Message} from '../topic/message';
 import {Observable} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
+import {parse} from 'date-fns';
+import {TRACK_DATE_FORMAT} from './track-date-format';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,7 @@ export class TrackBackendService extends TrackService {
   }
 
   private static convertToTimestamp(dateTime: string): number {
-    return new Date(dateTime).getTime();
+    return parse(dateTime, TRACK_DATE_FORMAT, new Date()).getTime();
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]> {

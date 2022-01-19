@@ -9,6 +9,7 @@ import {RandomUtils} from '../util/random-utils';
 import {demoTopics} from '../topics/topics.demo.data';
 import {MessageHeader} from '../topic/message-header';
 import {parse} from 'date-fns';
+import {TRACK_DATE_FORMAT} from './track-date-format';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +49,8 @@ export class TrackDemoService extends TrackService {
       topic = demoTopics[Math.floor(Math.random() * demoTopics.length)];
     }
     const partition = RandomUtils.randomInt(0, topic.partitions);
-    const fromDate = parse(trackFilter.startDateTime, this._format, new Date());
-    const toDate = parse(trackFilter.stopDateTime, this._format, new Date());
+    const fromDate = parse(trackFilter.startDateTime, TRACK_DATE_FORMAT, new Date());
+    const toDate = parse(trackFilter.stopDateTime, TRACK_DATE_FORMAT, new Date());
 
     const date = RandomUtils.randomDate(fromDate, toDate).getTime();
 
