@@ -16,7 +16,7 @@
     "downlevelIteration": true,
     "strict": true,
     "noImplicitAny": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,

@@ -83,7 +83,7 @@ export class TopicComponent implements OnInit, OnDestroy {
   allRows: unknown[] = [];
   filteredRows: unknown[] = [];
 
-  searchSubscription: Subscription;
+  searchSubscription?: Subscription;
 
   paused: boolean;
 
@@ -132,8 +132,8 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.searchSubscription.unsubscribe();
-    this.jsonToGridSubscription.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+    this.jsonToGridSubscription?.unsubscribe();
     this.paused = true;
   }
 
