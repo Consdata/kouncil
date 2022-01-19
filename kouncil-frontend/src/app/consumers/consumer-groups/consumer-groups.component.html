@@ -39,7 +39,7 @@
 
     <ngx-datatable-column prop="status" name="Status" cellClass="datatable-cell-wrapper" [width]="190">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]">
+        <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]" [ngClass]="getStatusClass(value)">
           {{value}}
         </a>
       </ng-template>
