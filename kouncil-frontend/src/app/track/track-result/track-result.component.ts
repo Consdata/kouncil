@@ -12,6 +12,7 @@ import {TrackFilter} from '../track-filter/track-filter';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {Crypto} from '../../util/crypto';
 import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
+import {Message} from '../../topic/message';
 
 @Component({
   selector: 'app-track-result',
@@ -73,13 +74,12 @@ import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-plac
 })
 export class TrackResultComponent implements OnInit, OnDestroy {
 
-  @ViewChild('table') table: any;
   @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent: NoDataPlaceholderComponent;
   searchSubscription?: Subscription;
   trackFilterSubscription?: Subscription;
   topicSubscription?: Subscription;
-  filteredRows = [];
-  allRows = [];
+  filteredRows: unknown[] = [];
+  allRows: unknown[] = [];
   asyncHandle: string;
 
   loading$: Observable<boolean> = this.progressBarService.loading$;
@@ -153,7 +153,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  private filterRows(phrase: string) {
+  private filterRows(phrase: string): void {
     this.filteredRows = this.allRows.filter((row) => {
       return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
@@ -170,12 +170,13 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.allRows = [];
     this.changeDetectorRef.detectChanges();
     setTimeout(() => {
-      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle).subscribe(events => {
-        if (events && events.length > 0) {
-          this.allRows = [...this.allRows, ...events];
-          this.filterRows(this.searchService.currentPhrase);
-        }
-      });
+      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle)
+        .subscribe((events: Message[]) => {
+          if (events && events.length > 0) {
+            this.allRows = [...this.allRows, ...events];
+            this.filterRows(this.searchService.currentPhrase);
+          }
+        });
     });
   }
 

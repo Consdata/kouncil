@@ -30,11 +30,11 @@ export class TopicService {
     return undefined;
   }
 
-  paginateMessages(serverId: string, event: any, topicName: string) {
+  paginateMessages(serverId: string, event: any, topicName: string): void {
     return undefined;
   }
 
-  goToOffset(serverId: string, topicName: string, offset: number) {
+  goToOffset(serverId: string, topicName: string, offset: number): void {
     return undefined;
   }
 

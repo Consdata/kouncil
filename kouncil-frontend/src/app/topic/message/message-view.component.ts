@@ -15,7 +15,7 @@ import {Clipboard} from '@angular/cdk/clipboard';
   styleUrls: ['./message-view.component.scss']
 })
 export class MessageViewComponent implements OnInit {
-  public isAnimationDone = false;
+  public isAnimationDone: boolean = false;
 
   constructor(
     private drawerService: DrawerService,

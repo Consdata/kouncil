@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SearchService} from 'app/search.service';
 import {Broker} from 'app/brokers/broker';
 import {Subscription} from 'rxjs';
@@ -23,11 +23,10 @@ export class BrokersComponent implements OnInit {
               private servers: ServersService) {
   }
 
-  @ViewChild('table') table: any;
   allBrokers: Broker[];
   filteredBrokers: Broker[];
   private subscription: Subscription;
-  showJmxStats = false;
+  showJmxStats: boolean = false;
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
