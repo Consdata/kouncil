@@ -18,7 +18,7 @@ export class ToolbarComponent {
   liveState: boolean = false;
   showHeaderColumns: boolean = true;
   showJsonColumns: boolean = true;
-  offset: number;
+  offset?: number;
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }

@@ -3,7 +3,7 @@ export class Broker {
   host: string;
   port: number;
   rack: string;
-  config: BrokerConfig[];
+  config?: BrokerConfig[] | null;
   jmxStats: boolean;
   system?: string;
   availableProcessors?: number;
@@ -14,7 +14,7 @@ export class Broker {
 
 export class BrokerConfig {
   name: string;
-  value: string;
+  value?: string | undefined | null;
   source: string;
   isSensitive: boolean;
   isReadOnly: boolean;

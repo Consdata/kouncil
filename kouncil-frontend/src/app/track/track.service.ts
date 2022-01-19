@@ -5,9 +5,7 @@ import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import {addMinutes, format} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export abstract class TrackService {
 
   private trackFilter: TrackFilter;

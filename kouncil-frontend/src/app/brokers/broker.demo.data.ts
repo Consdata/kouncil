@@ -1,4 +1,6 @@
-export const demoBrokers = [{
+import {Broker, BrokerConfig} from './broker';
+
+export const demoBrokers: Broker[] = [{
   id: '1001',
   host: '192.168.10.1',
   port: 9002,
@@ -36,7 +38,8 @@ export const demoBrokers = [{
   totalMem: 6442450944
 }];
 
-export const demoBrokerConfig = [{
+
+export const demoBrokerConfig: BrokerConfig[] = [{
   'name': 'advertised.host.name',
   'value': null,
   'source': 'DEFAULT_CONFIG',

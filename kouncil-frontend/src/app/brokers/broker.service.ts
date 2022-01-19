@@ -6,16 +6,14 @@ import {BrokerBackendService} from './broker.backend.service';
 import {BrokerDemoService} from './broker.demo.service';
 import {environment} from '../../environments/environment';
 import {Backend} from '../app.backend';
+import {Injectable} from '@angular/core';
 
-export class BrokerService {
+@Injectable()
+export abstract class BrokerService {
 
-  getBrokers(serverId: string): Observable<Brokers> {
-    return undefined;
-  }
+  abstract getBrokers(serverId: string): Observable<Brokers>;
 
-  getBrokerConfig(serverId: string, id: string): Observable<BrokerConfig[]> {
-    return undefined;
-  }
+  abstract getBrokerConfig(serverId: string, id: string): Observable<BrokerConfig[]>;
 
 }
 

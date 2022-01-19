@@ -39,7 +39,7 @@ export class TopicBackendService implements TopicService {
       params = params.set('offset', String(offset));
     }
 
-    this.http.get(url, {params}).subscribe((data: TopicMessages) => {
+    this.http.get<TopicMessages>(url, {params}).subscribe((data: TopicMessages) => {
       this.processMessagesData(data);
     });
   }

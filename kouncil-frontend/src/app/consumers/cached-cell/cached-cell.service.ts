@@ -6,7 +6,7 @@ import {ServersService} from '../../servers.service';
 import {format} from 'date-fns';
 
 export interface CachedCellDataViewModel {
-  realValue: string;
+  realValue: string | null;
   cache: CachedCellData;
 }
 
@@ -68,7 +68,7 @@ export class CachedCellService implements OnDestroy {
   }
 
   private readCachedData(customerGroupOffset: ConsumerGroupOffset): void {
-    const newCachedData: string = localStorage.getItem(this.calcStorageKey(customerGroupOffset));
+    const newCachedData: string | null = localStorage.getItem(this.calcStorageKey(customerGroupOffset));
     if (newCachedData) {
       const cachedCellData: CachedCellData = JSON.parse(newCachedData);
       this._vm$.next(
