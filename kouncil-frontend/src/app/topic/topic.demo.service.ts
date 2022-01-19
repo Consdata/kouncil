@@ -18,7 +18,7 @@ export class TopicDemoService extends TopicBackendService {
     super(http, progressBarService);
   }
 
-  getMessages(serverId: string, topicName: string, offset?: number) {
+  getMessages(serverId: string, topicName: string, offset?: number): void {
     const partitionOffsets = {};
     let totalResults = 0;
     const partitions = demoTopics.filter(t => t.name === topicName)[0].partitions;

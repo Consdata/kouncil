@@ -29,7 +29,7 @@ export class BrokersComponent implements OnInit {
   private subscription: Subscription;
   showJmxStats = false;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.brokerService.getBrokers(this.servers.getSelectedServerId())
       .pipe(first())
@@ -46,17 +46,17 @@ export class BrokersComponent implements OnInit {
       });
   }
 
-  private filterJmxDetails() {
+  private filterJmxDetails(): void {
     this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
   }
 
-  private filterRows(phrase: string) {
+  private filterRows(phrase: string): void {
     this.filteredBrokers = this.allBrokers.filter((broker) => {
       return !phrase || JSON.stringify(broker).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
   }
 
-  showBrokerDetails(event) {
+  showBrokerDetails(event): void {
     if (event.type === 'click') {
       this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())

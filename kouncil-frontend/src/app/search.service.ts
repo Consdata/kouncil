@@ -9,7 +9,7 @@ export class SearchService {
   currentPhrase: string;
   currentTabName: string;
 
-  phraseChangeHandle(state: string) {
+  phraseChangeHandle(state: string): void {
     this.currentPhrase = state;
     this.currentPhraseStore[this.currentTabName] = state;
     this.phrase.next(state);

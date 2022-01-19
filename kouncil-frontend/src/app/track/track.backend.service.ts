@@ -14,7 +14,7 @@ export class TrackBackendService extends TrackService {
     super();
   }
 
-  private static convertToTimestamp(dateTime: string) {
+  private static convertToTimestamp(dateTime: string): number {
     return new Date(dateTime).getTime();
   }
 

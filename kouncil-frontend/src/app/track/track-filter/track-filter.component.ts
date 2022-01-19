@@ -4,6 +4,7 @@ import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 import {TrackFilter, TrackOperator} from './track-filter';
+
 @Component({
   selector: 'app-track-filter',
   template: `
@@ -57,7 +58,9 @@ import {TrackFilter, TrackOperator} from './track-filter';
         </div>
       </div>
       <button mat-button disableRipple class="clear-button" type="button" (click)="clearFilter()">Clear</button>
-      <button mat-button disableRipple class="filter-button" [class.spinner]="loading" [disabled]="loading" (click)="setFilter()">Track events</button>
+      <button mat-button disableRipple class="filter-button" [class.spinner]="loading" [disabled]="loading"
+              (click)="setFilter()">Track events
+      </button>
     </form>
   `,
   styleUrls: ['./track-filter.component.scss']
@@ -78,7 +81,7 @@ export class TrackFilterComponent implements OnInit {
 
   datesControl: FormControl = new FormControl();
 
-  loading = false;
+  loading: boolean = false;
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
@@ -97,7 +100,7 @@ export class TrackFilterComponent implements OnInit {
     });
   }
 
-  filterTopics() {
+  filterTopics(): void {
     if (!this.topicList) {
       return;
     }
@@ -114,7 +117,7 @@ export class TrackFilterComponent implements OnInit {
     });
   }
 
-  toggleAllTopics() {
+  toggleAllTopics(): void {
     if (this.trackFilter.topics.length === this.visibleTopicList.length) {
       this.trackFilter.topics = [];
     } else {
@@ -122,11 +125,11 @@ export class TrackFilterComponent implements OnInit {
     }
   }
 
-  clearFilter() {
+  clearFilter(): void {
     this.trackFilter = this.trackService.defaultFilter();
   }
 
-  setFilter() {
+  setFilter(): void {
     if (this.validate()) {
       this.loading = true;
       this.trackService.setTrackFilter(this.trackFilter);

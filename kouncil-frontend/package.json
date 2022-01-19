@@ -6,9 +6,8 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --configuration production",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint": "tslint -c tslint.json 'src/**/*.ts?(x)'"
   },
   "private": true,
   "dependencies": {

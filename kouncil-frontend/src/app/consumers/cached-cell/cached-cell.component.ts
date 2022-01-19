@@ -4,7 +4,7 @@ import {CachedCellDataViewModel, CachedCellService} from './cached-cell.service'
 import {Observable} from 'rxjs';
 
 @Component({
-  selector: 'cached-cell',
+  selector: 'app-cached-cell',
   template: `
     <ng-container *ngIf="(vm$ | async) as vm">
       <div *ngIf="vm.realValue; else cacheTemplate"
@@ -40,12 +40,12 @@ export class CachedCellComponent {
   @Input()
   public set property(property: string) {
     this.cachedCellService.setProperty(property);
-  };
+  }
 
   @Input()
   public set row(newRow: ConsumerGroupOffset) {
     this.cachedCellService.setRow(newRow);
-  };
+  }
 
   constructor(private cachedCellService: CachedCellService) {
   }

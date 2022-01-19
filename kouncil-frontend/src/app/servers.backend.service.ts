@@ -10,7 +10,7 @@ export class ServersBackendService extends ServersService {
     super();
   }
 
-  load() {
+  load(): Promise<unknown> {
     return new Promise((resolve) => {
       this.http.get(`/api/connection`).subscribe(
         value => {

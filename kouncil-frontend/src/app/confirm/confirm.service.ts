@@ -11,7 +11,7 @@ export class ConfirmService {
   constructor(private dialog: MatDialog) {
   }
 
-  openConfirmDialog(objectType: string, objectName: string): Observable<any> {
+  openConfirmDialog(objectType: string, objectName: string): Observable<unknown> {
     return this.dialog.open(ConfirmComponent, {
       width: '600px',
       panelClass: ['confirm', 'dialog-with-padding'],

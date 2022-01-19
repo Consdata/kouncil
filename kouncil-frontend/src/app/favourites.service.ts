@@ -20,7 +20,7 @@ export class FavouritesService {
     return serverId + ';' + token;
   }
 
-  public updateFavourites(row: Favouritable, favouritesKey: string, serverId: string) {
+  public updateFavourites(row: Favouritable, favouritesKey: string, serverId: string): void {
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     if (row.group === FavouritesGroup.GROUP_FAVOURITES) {
       favourites.splice(favourites.indexOf(FavouritesService.favouriteKey(row.caption(), serverId)), 1);
@@ -30,7 +30,7 @@ export class FavouritesService {
     localStorage.setItem(favouritesKey, favourites.join());
   }
 
-  public applyFavourites(elements: Favouritable[], favouritesKey: string, serverId: string) {
+  public applyFavourites(elements: Favouritable[], favouritesKey: string, serverId: string): void {
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     elements.forEach(element => {
       element.group = favourites.indexOf(FavouritesService.favouriteKey(element.caption(), serverId)) > -1

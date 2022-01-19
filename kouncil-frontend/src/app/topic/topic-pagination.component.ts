@@ -41,11 +41,11 @@ export class TopicPaginationComponent {
   constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
-  paginateMessages($event: any) {
+  paginateMessages($event: any): void {
     this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
   }
 
-  getMessages() {
+  getMessages(): void {
     this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
   }
 }

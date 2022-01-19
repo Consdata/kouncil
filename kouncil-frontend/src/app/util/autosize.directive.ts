@@ -12,11 +12,11 @@ export class AutosizeDirective implements AfterContentChecked {
     this.resize();
   }
 
-  public ngAfterContentChecked() {
+  public ngAfterContentChecked(): void {
     this.resize();
   }
 
-  public resize() {
+  public resize(): void {
     const style = this.element.nativeElement.style;
     style.overflow = 'hidden';
     style.height = 'auto';

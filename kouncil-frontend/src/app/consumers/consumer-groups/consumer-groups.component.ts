@@ -38,7 +38,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   private searchSubscription: Subscription;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
     this.searchSubscription = this.searchService.getPhraseState('consumer-groups').subscribe(
@@ -47,7 +47,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadConsumerGroups() {
+  private loadConsumerGroups(): void {
     this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: ConsumerGroupsResponse) => {
@@ -58,17 +58,17 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.searchSubscription.unsubscribe();
   }
 
-  private filter(phrase: string) {
+  private filter(phrase: string): void {
     this.filtered = this.consumerGroups.filter((consumerGroup) => {
       return !phrase || consumerGroup.groupId.indexOf(phrase) > -1;
     });
   }
 
-  onFavouriteClick(event: MouseEvent, row) {
+  onFavouriteClick(event: MouseEvent, row): void {
     event.preventDefault();
     this.progressBarService.setProgress(true);
     this.filtered = [];
@@ -80,7 +80,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteConsumerGroup(value) {
+  deleteConsumerGroup(value: string): void {
     this.confirmService.openConfirmDialog('consumer group', value)
       .pipe(first())
       .subscribe((confirmed) => {
@@ -113,7 +113,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     }
   }
 
-  customSort(event) {
+  customSort(event): void {
     this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 

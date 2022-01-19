@@ -1,5 +1,5 @@
-import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class ProgressBarService {
     return this.progressSub.asObservable();
   }
 
-  setProgress(progress: boolean) {
+  setProgress(progress: boolean): void {
     this.progressSub.next(progress);
   }
 }

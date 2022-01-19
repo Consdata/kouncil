@@ -124,13 +124,13 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.searchSubscription?.unsubscribe();
     this.trackFilterSubscription?.unsubscribe();
     this.topicSubscription?.unsubscribe();
   }
 
-  onMessageReceived(message) {
+  onMessageReceived(message): void {
     this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);
@@ -165,7 +165,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getEvents(trackFilter: TrackFilter) {
+  private getEvents(trackFilter: TrackFilter): void {
     this.filteredRows = [];
     this.allRows = [];
     this.changeDetectorRef.detectChanges();

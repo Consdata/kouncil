@@ -3,11 +3,11 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {CachedCellData} from './cached-cell-data';
 import {ConsumerGroupOffset} from '../consumer-group/consumer-group';
 import {ServersService} from '../../servers.service';
-import {format} from 'date-fns'
+import {format} from 'date-fns';
 
 export interface CachedCellDataViewModel {
-  realValue: string,
-  cache: CachedCellData
+  realValue: string;
+  cache: CachedCellData;
 }
 
 @Injectable()
@@ -35,17 +35,17 @@ export class CachedCellService implements OnDestroy {
     this._vm$.complete();
   }
 
-  setProperty(property: string) {
+  setProperty(property: string): void {
     this.property = property;
   }
 
-  setRow(customerGroupOffset: ConsumerGroupOffset) {
+  setRow(customerGroupOffset: ConsumerGroupOffset): void {
     if (!this.property) {
       return;
     }
     const newValue = customerGroupOffset[this.property];
     if (newValue) {
-      if (newValue != this._vm$.value.realValue) {
+      if (newValue !== this._vm$.value.realValue) {
         this._vm$.next(
           {
             ...this._vm$.value,
