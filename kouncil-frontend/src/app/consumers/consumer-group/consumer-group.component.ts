@@ -29,17 +29,17 @@ import {switchMap, tap} from 'rxjs/operators';
                      #table>
         <ngx-datatable-column prop="clientId" name="clientId">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <cached-cell [property]="'clientId'" [row]="row" [showLastSeenTimestamp]="true"></cached-cell>
+            <app-cached-cell [property]="'clientId'" [row]="row" [showLastSeenTimestamp]="true"></app-cached-cell>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="consumerId" name="consumerId">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <cached-cell [property]="'consumerId'" [row]="row"></cached-cell>
+            <app-cached-cell [property]="'consumerId'" [row]="row"></app-cached-cell>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="host" name="host">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <cached-cell [property]="'host'" [row]="row"></cached-cell>
+            <app-cached-cell [property]="'host'" [row]="row"></app-cached-cell>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="topic" name="topic"></ngx-datatable-column>

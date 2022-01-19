@@ -4,7 +4,7 @@ import {CachedCellDataViewModel, CachedCellService} from './cached-cell.service'
 import {Observable} from 'rxjs';
 
 @Component({
-  selector: 'cached-cell',
+  selector: 'app-cached-cell',
   template: `
     <ng-container *ngIf="(vm$ | async) as vm">
       <div *ngIf="vm.realValue; else cacheTemplate"
