@@ -44,7 +44,7 @@ export class SendComponent {
       this.data.topicName);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.sendService.send(this.servers.getSelectedServerId(), this.data.topicName, this.countControl.value, this.message)
       .pipe(first())
       .subscribe(() => {
@@ -57,26 +57,26 @@ export class SendComponent {
       });
   }
 
-  increaseCount() {
+  increaseCount(): void {
     this.countControl.setValue(this.countControl.value + 1);
   }
 
-  decreaseCount() {
+  decreaseCount(): void {
     if (this.countControl.value > 1) {
       this.countControl.setValue(this.countControl.value - 1);
     }
   }
 
-  resetForm() {
+  resetForm(): void {
     this.sendForm.reset({value: '', key: ''});
     this.countControl.reset(1);
   }
 
-  addHeader() {
+  addHeader(): void {
     this.message.headers.push(new MessageHeader('', ''));
   }
 
-  removeHeader(i: number) {
+  removeHeader(i: number): void {
     this.message.headers.splice(i, 1);
   }
 

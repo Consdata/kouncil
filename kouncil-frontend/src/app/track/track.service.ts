@@ -12,18 +12,18 @@ export abstract class TrackService {
   private trackFilter: TrackFilter;
   private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
   trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
-  protected readonly _format = 'yyyy-MM-dd\'T\'HH:mm';
-  trackFinished = new EventEmitter<any>();
+  protected readonly _format: string = 'yyyy-MM-dd\'T\'HH:mm';
+  trackFinished: EventEmitter<void> = new EventEmitter<void>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]>;
 
-  setTrackFilter(trackFilter: TrackFilter) {
+  setTrackFilter(trackFilter: TrackFilter): void {
     this.trackFilterChange.next(trackFilter);
   }
 
   abstract isAsyncEnable(): boolean;
 
-  storeTrackFilter(field: string, value: string, timestamp: number, topicName: string) {
+  storeTrackFilter(field: string, value: string, timestamp: number, topicName: string): void {
     this.trackFilter = new TrackFilter(
       field,
       TrackOperator['is'],

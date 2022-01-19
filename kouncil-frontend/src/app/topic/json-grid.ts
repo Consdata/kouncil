@@ -17,7 +17,7 @@ export class JsonGrid {
   private columnNames = new Set<string>();
   private rows: any[] = [];
 
-  private static isScalar(propertyValue: any) {
+  private static isScalar(propertyValue: any): boolean {
     return typeof propertyValue === 'string'
       || typeof propertyValue === 'number'
       || typeof propertyValue === 'boolean';
@@ -46,7 +46,7 @@ export class JsonGrid {
       try {
         const row = {};
         if (object.headers) {
-          object.headers.forEach( header => {
+          object.headers.forEach(header => {
             const headerPath = 'H[' + header.key + ']';
             row[headerPath] = header.value;
             this.addColumn(headerPath);
@@ -124,11 +124,11 @@ export class JsonGrid {
     }).join('.');
   }
 
-  private limitRows() {
+  private limitRows(): void {
     this.rows.splice(JsonGrid.ROWS_LIMIT, this.rows.length - JsonGrid.ROWS_LIMIT);
   }
 
-  private sortColumns() {
+  private sortColumns(): void {
     const sorted = new Set<Column>();
     Array.from(this.columns.values()).forEach(column => {
       if (column.name.startsWith('H[')) {
@@ -148,18 +148,18 @@ export class JsonGrid {
     this.columns = sorted;
   }
 
-  private flagFreshRows(freshMessageTimestamp: number) {
+  private flagFreshRows(freshMessageTimestamp: number): void {
     this.rows.forEach(row => {
       row['fresh'] = row['kouncilTimestampEpoch'] > freshMessageTimestamp;
     });
   }
 
-  private formatTimestamp(timestamp: number) {
+  private formatTimestamp(timestamp: number): string {
     return this.datePipe.transform(new Date(timestamp), 'yyyy-MM-dd HH:mm:ss.SSS');
   }
 
 
-  private addColumn(name: string) {
+  private addColumn(name: string): void {
     if (!this.columnNames.has(name)) {
       this.columnNames.add(name);
       this.columns.add(new Column(name, this.shortenPath(name)));

@@ -93,7 +93,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
               private servers: ServersService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.paused = false;
     this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
@@ -107,13 +107,13 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.searchSubscription?.unsubscribe();
     this.intervalSubscription?.unsubscribe();
     this.paused = true;
   }
 
-  private getConsumerGroup() {
+  private getConsumerGroup(): void {
     if (this.paused) {
       return;
     }
@@ -132,13 +132,13 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       ).subscribe();
   }
 
-  private filter(phrase: string) {
+  private filter(phrase: string): void {
     this.filteredAssignments = this.allAssignments.filter((consumerGroupOffset) => {
       return !phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
   }
 
-  private calculateLags() {
+  private calculateLags(): void {
     this.allAssignments.forEach(assignment => {
       const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
       assignment.lag = lag;
@@ -148,7 +148,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getKey(assignment: ConsumerGroupOffset) {
+  private getKey(assignment: ConsumerGroupOffset): string {
     return this.servers.getSelectedServerId() + assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
   }
 }

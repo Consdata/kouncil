@@ -36,7 +36,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   private searchSubscription: Subscription;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadTopics();
     this.searchSubscription = this.searchService.getPhraseState('topics').subscribe(
@@ -45,7 +45,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadTopics() {
+  private loadTopics(): void {
     this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
@@ -56,11 +56,11 @@ export class TopicsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.searchSubscription.unsubscribe();
   }
 
-  private filter(phrase: string) {
+  private filter(phrase: string): void {
     this.filtered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
@@ -85,13 +85,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSendPopup(name: string) {
+  openSendPopup(name: string): void {
     this.drawerService.openDrawerWithPadding(SendComponent, {
       topicName: name
     });
   }
 
-  customSort(event) {
+  customSort(event): void {
     this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
 }

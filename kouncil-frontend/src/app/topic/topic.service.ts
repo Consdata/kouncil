@@ -13,13 +13,13 @@ export class TopicService {
   constructor() {
   }
 
-  getMessages(serverId: string, topicName: string, offset?: number) {
+  getMessages(serverId: string, topicName: string, offset?: number): void {
   }
 
-  selectPartition(serverId: string, partition: number, topicName: string) {
+  selectPartition(serverId: string, partition: number, topicName: string): void {
   }
 
-  selectAllPartitions(serverId: string, topicName: string) {
+  selectAllPartitions(serverId: string, topicName: string): void {
   }
 
   getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {

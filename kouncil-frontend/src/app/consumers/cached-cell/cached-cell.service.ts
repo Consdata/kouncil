@@ -35,11 +35,11 @@ export class CachedCellService implements OnDestroy {
     this._vm$.complete();
   }
 
-  setProperty(property: string) {
+  setProperty(property: string): void {
     this.property = property;
   }
 
-  setRow(customerGroupOffset: ConsumerGroupOffset) {
+  setRow(customerGroupOffset: ConsumerGroupOffset): void {
     if (!this.property) {
       return;
     }

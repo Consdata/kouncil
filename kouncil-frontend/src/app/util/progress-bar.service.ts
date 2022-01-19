@@ -11,7 +11,7 @@ export class ProgressBarService {
     return this.progressSub.asObservable();
   }
 
-  setProgress(progress: boolean) {
+  setProgress(progress: boolean): void {
     this.progressSub.next(progress);
   }
 }

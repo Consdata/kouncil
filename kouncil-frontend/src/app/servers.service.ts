@@ -5,12 +5,13 @@ import {Server} from './server';
 export abstract class ServersService {
   servers: Server[] = [];
   selectedServerId: string;
+
   protected constructor() {
   }
 
   abstract load();
 
-  getSelectedServerId() {
+  getSelectedServerId(): string {
     return this.selectedServerId;
   }
 

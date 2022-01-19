@@ -21,7 +21,7 @@ export class NoDataPlaceholderComponent {
 
   @Input() objectTypeName: string;
 
-  currentPhrase = '';
+  currentPhrase: string = '';
 
   constructor(private progressBarService: ProgressBarService,
               private searchService: SearchService,

@@ -69,7 +69,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public serverSelectionChanged() {
+  public serverSelectionChanged(): void {
     localStorage.setItem('lastSelectedServer', this.servers.getSelectedServerId());
     this.router.navigate([this.router.url]);
   }
@@ -78,7 +78,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.searchInputElementRef.nativeElement.focus();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     switch (environment.backend) {
       case Backend.SERVER: {
         this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
@@ -91,11 +91,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onPhraseChange(phrase: string) {
+  onPhraseChange(phrase: string): void {
     this.searchService.phraseChangeHandle(phrase);
   }
 
-  goToGithub() {
+  goToGithub(): void {
     window.open('https://github.com/consdata/kouncil', '_blank');
   }
 }

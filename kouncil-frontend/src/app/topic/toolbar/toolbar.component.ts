@@ -10,20 +10,20 @@ import {ServersService} from '../../servers.service';
 export class ToolbarComponent {
 
   @Input() name: string;
-  @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter();
-  @Output() openSendPopupEvent: EventEmitter<any> = new EventEmitter();
-  @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter();
-  @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter();
+  @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter<LiveUpdateState>();
+  @Output() openSendPopupEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  liveState = false;
-  showHeaderColumns = true;
-  showJsonColumns = true;
+  liveState: boolean = false;
+  showHeaderColumns: boolean = true;
+  showJsonColumns: boolean = true;
   offset: number;
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
-  toggleLive() {
+  toggleLive(): void {
     if (this.liveState) {
       this.toggleLiveEvent.emit(LiveUpdateState.PLAY);
     } else {
@@ -31,23 +31,23 @@ export class ToolbarComponent {
     }
   }
 
-  goToOffset() {
+  goToOffset(): void {
     this.topicService.goToOffset(this.servers.getSelectedServerId(), this.name, this.offset);
   }
 
-  clearOffset() {
+  clearOffset(): void {
     this.offset = undefined;
   }
 
-  openSendPopup() {
+  openSendPopup(): void {
     this.openSendPopupEvent.emit();
   }
 
-  toggleHeaders() {
+  toggleHeaders(): void {
     this.toggleHeadersEvent.emit(this.showHeaderColumns);
   }
 
-  toggleJson() {
+  toggleJson(): void {
     this.toggleJsonEvent.emit(this.showJsonColumns);
   }
 }

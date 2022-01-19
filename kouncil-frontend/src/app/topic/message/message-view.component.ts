@@ -33,7 +33,7 @@ export class MessageViewComponent implements OnInit {
     }) {
   }
 
-  copyToClipboard(object) {
+  copyToClipboard(object): void {
     this.clipboard.copy(JSON.stringify(object, null, 2));
     this.snackBar.open('Copied successfully', '', {
       duration: 1000,
@@ -41,7 +41,7 @@ export class MessageViewComponent implements OnInit {
     });
   }
 
-  resend() {
+  resend(): void {
     this.dialogRef.close();
     this.drawerService.openDrawerWithPadding(SendComponent, {
       topicName: this.data.topicName,

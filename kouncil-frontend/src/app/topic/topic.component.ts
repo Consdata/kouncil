@@ -112,7 +112,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.topicName = params['topic'];
@@ -127,13 +127,13 @@ export class TopicComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.searchSubscription.unsubscribe();
     this.jsonToGridSubscription.unsubscribe();
     this.paused = true;
   }
 
-  getMessagesDelta() {
+  getMessagesDelta(): void {
     if (this.paused) {
       return;
     }
@@ -141,13 +141,13 @@ export class TopicComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
-  getRowClass = (row) => {
+  getRowClass: (row) => { 'kafka-row-delta': any } = (row) => {
     return {
       'kafka-row-delta': row['fresh']
     };
   }
 
-  toggleLiveEventHandler(action: LiveUpdateState) {
+  toggleLiveEventHandler(action: LiveUpdateState): void {
     if (LiveUpdateState.PAUSE === action) {
       this.paused = true;
     } else if (LiveUpdateState.PLAY === action) {
@@ -168,14 +168,14 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSendPopup() {
+  openSendPopup(): void {
     this.drawerService.openDrawerWithPadding(SendComponent, {
       topicName: this.topicName,
       headers: []
     });
   }
 
-  private jsonToGrid(topicMessages: TopicMessages) {
+  private jsonToGrid(topicMessages: TopicMessages): void {
     const values = [];
     topicMessages.messages.forEach(message => values.push({
       value: message.value,
@@ -263,7 +263,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows(this.searchService.currentPhrase);
   }
 
-  private filterRows(phrase: string) {
+  private filterRows(phrase: string): void {
     this.filteredRows = this.allRows.filter((row) => {
       return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });
@@ -279,7 +279,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.refreshColumns();
   }
 
-  refreshColumns() {
+  refreshColumns(): void {
     let columns = [...this.commonColumns];
     if (this.showHeaderColumns) {
       columns = columns.concat(this.headerColumns);
