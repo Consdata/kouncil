@@ -22,7 +22,6 @@ import {ProgressBarComponent} from './util/progress-bar.component';
 import {NoDataPlaceholderComponent} from './no-data-placeholder/no-data-placeholder.component';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
-import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
@@ -61,8 +60,9 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@stomp/ng2-stompjs';
 import {RxStompConfig} from './rx-stomp.config';
 import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
-import { DemoComponent } from './demo/demo.component';
-import { CachedCellComponent } from './consumers/cached-cell/cached-cell.component';
+import {DemoComponent} from './demo/demo.component';
+import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
+import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 
 @NgModule({
   declarations: [

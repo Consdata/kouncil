@@ -6,7 +6,7 @@ import {ServersService} from '../../servers.service';
 import {format} from 'date-fns';
 
 export interface CachedCellDataViewModel {
-  realValue: string;
+  realValue: string | null;
   cache: CachedCellData;
 }
 
@@ -14,7 +14,7 @@ export interface CachedCellDataViewModel {
 export class CachedCellService implements OnDestroy {
   private readonly LAST_SEEN_DATE_FORMAT: string = 'yyyy-MM-dd HH:mm:ss';
 
-  private property: string;
+  private property?: string;
 
   private _vm$: BehaviorSubject<CachedCellDataViewModel> = new BehaviorSubject<CachedCellDataViewModel>({
     realValue: null,
@@ -61,14 +61,16 @@ export class CachedCellService implements OnDestroy {
   }
 
   private cacheData(customerGroupOffset: ConsumerGroupOffset): void {
-    localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
-      value: customerGroupOffset[this.property],
-      lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
-    }));
+    if (this.property) {
+      localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
+        value: customerGroupOffset[this.property],
+        lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
+      }));
+    }
   }
 
   private readCachedData(customerGroupOffset: ConsumerGroupOffset): void {
-    const newCachedData: string = localStorage.getItem(this.calcStorageKey(customerGroupOffset));
+    const newCachedData: string | null = localStorage.getItem(this.calcStorageKey(customerGroupOffset));
     if (newCachedData) {
       const cachedCellData: CachedCellData = JSON.parse(newCachedData);
       this._vm$.next(

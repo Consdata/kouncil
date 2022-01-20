@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {from, Observable} from 'rxjs';
 import {ConsumerGroupsResponse} from './consumer-groups';
 import {demoConsumerGroups} from './consumer-groups.demo.data';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ConsumerGroupsDemoService implements ConsumerGroupsService {
 
-  constructor() { }
+  constructor() {
+  }
 
   deleteConsumerGroup(value: string): Observable<Object> {
     demoConsumerGroups.forEach((consumerGroup, index) => {

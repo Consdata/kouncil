@@ -68,20 +68,21 @@ import {Topics} from '../../topics/topics';
 })
 export class TrackFilterComponent implements OnInit {
 
-  @ViewChild('filtersForm', {static: false}) filtersForm: NgForm;
+  @ViewChild('filtersForm', {static: false}) filtersForm?: NgForm;
 
   operators = TrackOperator;
 
   topicList: string[] = [];
   visibleTopicList: string[] = [];
-  trackFilter: TrackFilter;
   topicFilterControl: FormControl = new FormControl();
   datesControl: FormControl = new FormControl();
   loading: boolean = false;
+  trackFilter: TrackFilter;
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
               private servers: ServersService) {
+    this.trackFilter = this.trackService.getStoredTrackFilter();
   }
 
   ngOnInit(): void {
@@ -115,10 +116,12 @@ export class TrackFilterComponent implements OnInit {
   }
 
   toggleAllTopics(): void {
-    if (this.trackFilter.topics.length === this.visibleTopicList.length) {
-      this.trackFilter.topics = [];
-    } else {
-      this.trackFilter.topics = this.visibleTopicList;
+    if (this.trackFilter) {
+      if (this.trackFilter.topics.length === this.visibleTopicList.length) {
+        this.trackFilter.topics = [];
+      } else {
+        this.trackFilter.topics = this.visibleTopicList;
+      }
     }
   }
 
@@ -129,18 +132,22 @@ export class TrackFilterComponent implements OnInit {
   setFilter(): void {
     if (this.validate()) {
       this.loading = true;
-      this.trackService.setTrackFilter(this.trackFilter);
+      if (this.trackFilter) {
+        this.trackService.setTrackFilter(this.trackFilter);
+      }
     }
   }
 
   validate(): boolean {
-    if (this.trackFilter.stopDateTime < this.trackFilter.startDateTime) {
-      this.datesControl.setErrors({
-        validation: {
-          message: 'Invalid date range'
-        }
-      });
-      return false;
+    if (this.trackFilter) {
+      if (this.trackFilter.stopDateTime < this.trackFilter.startDateTime) {
+        this.datesControl.setErrors({
+          validation: {
+            message: 'Invalid date range'
+          }
+        });
+        return false;
+      }
     }
 
     this.datesControl.setErrors(null);

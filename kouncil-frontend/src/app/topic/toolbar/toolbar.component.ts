@@ -9,7 +9,7 @@ import {ServersService} from '../../servers.service';
 })
 export class ToolbarComponent {
 
-  @Input() name: string;
+  @Input() name?: string;
   @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter<LiveUpdateState>();
   @Output() openSendPopupEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -18,7 +18,7 @@ export class ToolbarComponent {
   liveState: boolean = false;
   showHeaderColumns: boolean = true;
   showJsonColumns: boolean = true;
-  offset: number;
+  offset?: number;
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }

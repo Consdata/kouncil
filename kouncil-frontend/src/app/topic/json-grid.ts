@@ -1,5 +1,6 @@
 import {DatePipe} from '@angular/common';
 import {Injectable} from '@angular/core';
+import {JsonGridData} from './json-grid-data';
 
 @Injectable()
 export class JsonGrid {
@@ -39,7 +40,7 @@ export class JsonGrid {
     }
   }
 
-  replaceObjects(objects: any[]) {
+  replaceObjects(objects: JsonGridData[]) {
     this.rows.length = 0;
     const firstLoad = this.rows.length === 0;
     objects.forEach(object => {
@@ -72,8 +73,10 @@ export class JsonGrid {
     });
     this.limitRows();
     if (!firstLoad) {
-      const freshMessageTimestamp = objects[0].timestamp - JsonGrid.FRESH_ROWS_TIMEOUT_MILLIS;
-      this.flagFreshRows(freshMessageTimestamp);
+      if (objects.length > 0 && objects[0].timestamp) {
+        const freshMessageTimestamp = objects[0].timestamp - JsonGrid.FRESH_ROWS_TIMEOUT_MILLIS;
+        this.flagFreshRows(freshMessageTimestamp);
+      }
     }
     this.sortColumns();
   }
@@ -154,7 +157,10 @@ export class JsonGrid {
     });
   }
 
-  private formatTimestamp(timestamp: number): string {
+  private formatTimestamp(timestamp: number | null): string | null {
+    if (timestamp == null) {
+      return null;
+    }
     return this.datePipe.transform(new Date(timestamp), 'yyyy-MM-dd HH:mm:ss.SSS');
   }
 

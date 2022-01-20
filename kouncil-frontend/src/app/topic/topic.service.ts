@@ -1,46 +1,32 @@
 import {TopicMessages} from './topic-messages';
 import {Observable} from 'rxjs';
-import {Page} from './page';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Backend} from '../app.backend';
 import {TopicBackendService} from './topic.backend.service';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicDemoService} from './topic.demo.service';
+import {Page} from './page';
+import {Injectable} from '@angular/core';
 
-export class TopicService {
+@Injectable()
+export abstract class TopicService {
 
-  constructor() {
-  }
+  abstract getMessages(serverId: string, topicName: string, offset?: number): void;
 
-  getMessages(serverId: string, topicName: string, offset?: number): void {
-  }
+  abstract selectPartition(serverId: string, partition: number, topicName: string): void;
 
-  selectPartition(serverId: string, partition: number, topicName: string): void {
-  }
+  abstract selectAllPartitions(serverId: string, topicName: string): void ;
 
-  selectAllPartitions(serverId: string, topicName: string): void {
-  }
+  abstract getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages>;
 
-  getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {
-    return undefined;
-  }
+  abstract getNumberOfPartitionsObservable(): Observable<number>;
 
-  getNumberOfPartitionsObservable(): Observable<number> {
-    return undefined;
-  }
+  abstract paginateMessages(serverId: string, event: any, topicName: string): void;
 
-  paginateMessages(serverId: string, event: any, topicName: string): void {
-    return undefined;
-  }
+  abstract goToOffset(serverId: string, topicName: string, offset?: number): void;
 
-  goToOffset(serverId: string, topicName: string, offset: number): void {
-    return undefined;
-  }
-
-  getPagination$(): Observable<Page> {
-    return undefined;
-  }
+  abstract getPagination$(): Observable<Page>;
 }
 
 export function topicServiceFactory(http: HttpClient, progressBarService: ProgressBarService): TopicService {

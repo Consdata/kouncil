@@ -1,6 +1,7 @@
 import {FavouritesGroup} from './favourites-group';
 
 export interface Favouritable {
-  group: FavouritesGroup;
+  group: FavouritesGroup | null;
+
   caption(): string;
 }

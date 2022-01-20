@@ -7,17 +7,10 @@ import {Backend} from '../app.backend';
 import {TopicsBackendService} from './topics.backend.service';
 import {TopicsDemoService} from './topics.demo.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class TopicsService {
+@Injectable()
+export abstract class TopicsService {
 
-  constructor() {
-  }
-
-  getTopics(serverId: string): Observable<Topics> {
-    return null;
-  }
+  abstract getTopics(serverId: string): Observable<Topics>;
 }
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {

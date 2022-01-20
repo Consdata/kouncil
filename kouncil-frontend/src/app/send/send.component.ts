@@ -19,8 +19,7 @@ export class SendComponent {
   @ViewChild('sendForm') sendForm: any;
 
   message: Message;
-
-  countControl = new FormControl(1, [Validators.min(1), Validators.required]);
+  countControl: FormControl = new FormControl(1, [Validators.min(1), Validators.required]);
 
   constructor(private http: HttpClient,
               private sendService: SendService,

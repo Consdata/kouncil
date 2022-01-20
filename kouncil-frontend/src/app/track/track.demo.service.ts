@@ -11,9 +11,7 @@ import {MessageHeader} from '../topic/message-header';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TrackDemoService extends TrackService {
 
   constructor() {
@@ -24,7 +22,7 @@ export class TrackDemoService extends TrackService {
     const numberOfMessages = RandomUtils.randomInt(3, 10);
     const traceId = Math.random().toString(36).slice(2);
     const userId = RandomUtils.randomInt(100000000, 200000000).toString(10);
-    const answer = [];
+    const answer: Message[] = [];
     for (let i = 0; i < numberOfMessages; i++) {
       answer.push(this.generateMessage(trackFilter, traceId, userId));
     }

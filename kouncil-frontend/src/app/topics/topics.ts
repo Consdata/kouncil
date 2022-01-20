@@ -2,7 +2,7 @@ import {FavouritesGroup} from '../favourites-group';
 import {Favouritable} from '../favouritable';
 
 export class TopicMetadata implements Favouritable {
-  constructor(public partitions: number, public group: FavouritesGroup, public name: string) {
+  constructor(public partitions: number, public group: (FavouritesGroup | null), public name: string) {
   }
 
   public caption(): string {
@@ -10,6 +10,6 @@ export class TopicMetadata implements Favouritable {
   }
 }
 
-export class Topics {
+export interface Topics {
   topics: TopicMetadata[];
 }

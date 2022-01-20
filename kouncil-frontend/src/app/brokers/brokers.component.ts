@@ -23,9 +23,9 @@ export class BrokersComponent implements OnInit {
               private servers: ServersService) {
   }
 
-  allBrokers: Broker[];
-  filteredBrokers: Broker[];
-  private subscription: Subscription;
+  allBrokers?: Broker[];
+  filteredBrokers?: Broker[];
+  private subscription?: Subscription;
   showJmxStats: boolean = false;
 
   ngOnInit(): void {
@@ -46,13 +46,17 @@ export class BrokersComponent implements OnInit {
   }
 
   private filterJmxDetails(): void {
-    this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
+    if (this.filteredBrokers) {
+      this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
+    }
   }
 
-  private filterRows(phrase: string): void {
-    this.filteredBrokers = this.allBrokers.filter((broker) => {
-      return !phrase || JSON.stringify(broker).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
-    });
+  private filterRows(phrase?: string): void {
+    if (this.allBrokers) {
+      this.filteredBrokers = this.allBrokers.filter((broker) => {
+        return !phrase || JSON.stringify(broker).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
+      });
+    }
   }
 
   showBrokerDetails(event): void {

@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TopicMetadata} from 'app/topics/topics';
+import {TopicMetadata, Topics} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
@@ -32,9 +32,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
-  @ViewChild('table') private table: ElementRef;
+  @ViewChild('table') private table?: ElementRef;
 
-  private searchSubscription: Subscription;
+  private searchSubscription?: Subscription;
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
@@ -48,7 +48,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   private loadTopics(): void {
     this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
-      .subscribe(data => {
+      .subscribe((data: Topics) => {
         this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
         this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter(this.searchService.currentPhrase);
@@ -57,10 +57,10 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.searchSubscription.unsubscribe();
+    this.searchSubscription?.unsubscribe();
   }
 
-  private filter(phrase: string): void {
+  private filter(phrase?: string): void {
     this.filtered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });
@@ -86,12 +86,11 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   openSendPopup(name: string): void {
-    this.drawerService.openDrawerWithPadding(SendComponent, {
-      topicName: name
-    });
+    this.drawerService.openDrawerWithPadding(SendComponent, {topicName: name});
   }
 
   customSort(event): void {
     this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }
+
 }

@@ -1,5 +1,5 @@
-export class Page {
+export interface Page {
   size: number;
   pageNumber: number;
-  totalElements: number;
+  totalElements?: number;
 }

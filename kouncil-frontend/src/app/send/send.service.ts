@@ -7,17 +7,10 @@ import {Backend} from '../app.backend';
 import {SendBackendService} from './send.backend.service';
 import {SendDemoService} from './send.demo.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class SendService {
+@Injectable()
+export abstract class SendService {
 
-  constructor() {
-  }
-
-  send(serverId: string, topic: string, count: number, message: Message): Observable<Object> {
-    return undefined;
-  }
+  abstract send(serverId: string, topic: string, count: number, message: Message): Observable<Object>;
 
 }
 

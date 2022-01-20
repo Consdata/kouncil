@@ -20,7 +20,7 @@ export class TrackBackendService extends TrackService {
     return parse(dateTime, TRACK_DATE_FORMAT, new Date()).getTime();
   }
 
-  getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle: string): Observable<Message[]> {
+  getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]> {
     const url = asyncHandle !== undefined ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)

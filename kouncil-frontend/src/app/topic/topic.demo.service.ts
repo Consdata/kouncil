@@ -9,9 +9,7 @@ import {MessageHeader} from './message-header';
 import {Crypto} from '../util/crypto';
 import {RandomUtils} from '../util/random-utils';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TopicDemoService extends TopicBackendService {
 
   constructor(public http: HttpClient, public progressBarService: ProgressBarService) {

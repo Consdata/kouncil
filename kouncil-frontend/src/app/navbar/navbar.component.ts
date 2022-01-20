@@ -56,16 +56,16 @@ import {ServersService} from '../servers.service';
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('searchInput', {static: true}) private searchInputElementRef: ElementRef;
+  @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 
-  backendVersion$: Observable<string>;
+  backendVersion$?: Observable<string>;
 
   constructor(public searchService: SearchService,
               private router: Router,
               private http: HttpClient,
               public servers: ServersService) {
     router.events.subscribe(() => {
-      this.searchInputElementRef.nativeElement.focus();
+      this.searchInputElementRef?.nativeElement.focus();
     });
   }
 
@@ -75,7 +75,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.searchInputElementRef.nativeElement.focus();
+    this.searchInputElementRef?.nativeElement.focus();
   }
 
   ngOnInit(): void {

@@ -9,7 +9,7 @@ export class FavouritesService {
 
   private static parseFavourites(favouritesKey: string): string[] {
     const favouritesStr = localStorage.getItem(favouritesKey);
-    let favourites = [];
+    let favourites: string[] = [];
     if (favouritesStr) {
       favourites = favouritesStr.split(',');
     }
@@ -31,13 +31,16 @@ export class FavouritesService {
   }
 
   public applyFavourites(elements: Favouritable[], favouritesKey: string, serverId: string): void {
+    if (!elements) {
+      return;
+    }
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     elements.forEach(element => {
       element.group = favourites.indexOf(FavouritesService.favouriteKey(element.caption(), serverId)) > -1
         ? FavouritesGroup.GROUP_FAVOURITES
         : FavouritesGroup.GROUP_ALL;
     });
-    elements.sort((a, b) => {
+    elements.sort((a: Favouritable, b: Favouritable) => {
       if (a.group === b.group) {
         return a.caption().localeCompare(b.caption());
       } else if (a.group === FavouritesGroup.GROUP_FAVOURITES) {
@@ -45,6 +48,7 @@ export class FavouritesService {
       } else if (b.group === FavouritesGroup.GROUP_FAVOURITES) {
         return 1;
       }
+      return -1;
     });
   }
 }

@@ -15,6 +15,9 @@ import {DrawerService} from '../util/drawer.service';
 import {ServersService} from '../servers.service';
 import {LiveUpdateState} from './toolbar/toolbar.component';
 import {TableColumn} from '@swimlane/ngx-datatable/lib/types/table-column.type';
+import {Message} from './message';
+import {JsonGridData} from './json-grid-data';
+import {CustomTableColumn} from './custom-table-column';
 
 @Component({
   selector: 'app-topic',
@@ -69,7 +72,7 @@ import {TableColumn} from '@swimlane/ngx-datatable/lib/types/table-column.type';
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-  topicName: string;
+  topicName: string = '';
   columns: TableColumn[] = [];
   commonColumns: TableColumn[] = [];
   headerColumns: TableColumn[] = [];
@@ -80,16 +83,16 @@ export class TopicComponent implements OnInit, OnDestroy {
   allRows: unknown[] = [];
   filteredRows: unknown[] = [];
 
-  searchSubscription: Subscription;
+  searchSubscription?: Subscription;
+  jsonToGridSubscription?: Subscription;
 
-  paused: boolean;
+  paused: boolean = false;
 
-  jsonToGridSubscription: Subscription;
-  paging$: Observable<Page>;
+  paging$: Observable<Page> = this.topicService.getPagination$();
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
   @ViewChild('table') table: any;
-  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<any>;
+  @ViewChild('headerTemplate', {static: true}) headerTemplate?: TemplateRef<unknown>;
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -102,14 +105,13 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
-    this.paging$ = this.topicService.getPagination$();
   }
 
-  private static tryParseJson(message) {
+  private static tryParseJson(message): Object {
     try {
       return JSON.parse(message);
     } catch (e) {
-      return null;
+      return {};
     }
   }
 
@@ -129,8 +131,8 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.searchSubscription.unsubscribe();
-    this.jsonToGridSubscription.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+    this.jsonToGridSubscription?.unsubscribe();
     this.paused = true;
   }
 
@@ -177,8 +179,8 @@ export class TopicComponent implements OnInit, OnDestroy {
   }
 
   private jsonToGrid(topicMessages: TopicMessages): void {
-    const values = [];
-    topicMessages.messages.forEach(message => values.push({
+    const values: JsonGridData[] = [];
+    topicMessages.messages.forEach((message: Message) => values.push({
       value: message.value,
       valueJson: TopicComponent.tryParseJson(message.value),
       partition: message.partition,
@@ -239,7 +241,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       name: 'value',
       prop: 'kouncilValue'
     }];
-    const gridColumns = [];
+    const gridColumns: CustomTableColumn[] = [];
     Array.from(this.jsonGrid.getColumns().values()).forEach(column => {
         gridColumns.push({
           canAutoResize: true,
@@ -251,12 +253,12 @@ export class TopicComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.jsonColumns = gridColumns.filter(c => {
-      return !c.name.startsWith('H[');
-    });
-    this.headerColumns = gridColumns.filter(c => {
-      return c.name.startsWith('H[');
-    });
+    this.jsonColumns = gridColumns.filter((c: CustomTableColumn) =>
+      !c.name?.startsWith('H[')
+    );
+    this.headerColumns = gridColumns.filter((c: CustomTableColumn) =>
+      c.name?.startsWith('H[')
+    );
 
     this.refreshColumns();
 
@@ -264,7 +266,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows(this.searchService.currentPhrase);
   }
 
-  private filterRows(phrase: string): void {
+  private filterRows(phrase?: string): void {
     this.filteredRows = this.allRows.filter((row) => {
       return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });

@@ -74,13 +74,13 @@ import {Message} from '../../topic/message';
 })
 export class TrackResultComponent implements OnInit, OnDestroy {
 
-  @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent: NoDataPlaceholderComponent;
+  @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent?: NoDataPlaceholderComponent;
   searchSubscription?: Subscription;
   trackFilterSubscription?: Subscription;
   topicSubscription?: Subscription;
   filteredRows: unknown[] = [];
   allRows: unknown[] = [];
-  asyncHandle: string;
+  asyncHandle?: string;
 
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
@@ -153,7 +153,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  private filterRows(phrase: string): void {
+  private filterRows(phrase?: string): void {
     this.filteredRows = this.allRows.filter((row) => {
       return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });

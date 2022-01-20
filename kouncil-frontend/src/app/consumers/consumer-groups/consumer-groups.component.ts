@@ -34,9 +34,9 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table: ElementRef;
+  @ViewChild('table') private table?: ElementRef;
 
-  private searchSubscription: Subscription;
+  private searchSubscription?: Subscription;
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
@@ -59,10 +59,10 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.searchSubscription.unsubscribe();
+    this.searchSubscription?.unsubscribe();
   }
 
-  private filter(phrase: string): void {
+  private filter(phrase?: string): void {
     this.filtered = this.consumerGroups.filter((consumerGroup) => {
       return !phrase || consumerGroup.groupId.indexOf(phrase) > -1;
     });
@@ -118,6 +118,6 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   getStatusClass(status: string): string {
-    return `status-${ status.toLowerCase() }`;
+    return `status-${status.toLowerCase()}`;
   }
 }

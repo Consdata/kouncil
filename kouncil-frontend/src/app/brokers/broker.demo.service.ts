@@ -5,9 +5,7 @@ import {BrokerConfig} from './broker';
 import {Brokers} from './brokers';
 import {demoBrokerConfig, demoBrokers} from './broker.demo.data';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BrokerDemoService implements BrokerService {
 
   constructor() {
@@ -20,8 +18,6 @@ export class BrokerDemoService implements BrokerService {
   }
 
   getBrokers(): Observable<Brokers> {
-    const brokers = new Brokers();
-    brokers.brokers = demoBrokers;
-    return from([brokers]);
+    return from([{brokers: demoBrokers}]);
   }
 }

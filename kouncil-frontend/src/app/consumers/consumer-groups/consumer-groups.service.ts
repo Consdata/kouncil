@@ -7,21 +7,12 @@ import {Backend} from '../../app.backend';
 import {ConsumerGroupsBackendService} from './consumer-groups.backend.service';
 import {ConsumerGroupsDemoService} from './consumer-groups.demo.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ConsumerGroupsService {
+@Injectable()
+export abstract class ConsumerGroupsService {
 
-  constructor() {
-  }
+  abstract getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse>;
 
-  getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse> {
-    return null;
-  }
-
-  deleteConsumerGroup(serverId: string, value: string): Observable<Object> {
-    return null;
-  }
+  abstract deleteConsumerGroup(serverId: string, value: string): Observable<Object>;
 }
 
 export function consumerGroupsServiceFactory(http: HttpClient): ConsumerGroupsService {
