@@ -31,6 +31,9 @@ export class FavouritesService {
   }
 
   public applyFavourites(elements: Favouritable[], favouritesKey: string, serverId: string): void {
+    if (!elements) {
+      return;
+    }
     const favourites = FavouritesService.parseFavourites(favouritesKey);
     elements.forEach(element => {
       element.group = favourites.indexOf(FavouritesService.favouriteKey(element.caption(), serverId)) > -1

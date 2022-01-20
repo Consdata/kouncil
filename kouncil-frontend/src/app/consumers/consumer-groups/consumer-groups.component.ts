@@ -51,7 +51,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: ConsumerGroupsResponse) => {
-        this.consumerGroups = data.consumerGroups;
+        this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
         this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter(this.searchService.currentPhrase);
         this.progressBarService.setProgress(false);

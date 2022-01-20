@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TopicMetadata} from 'app/topics/topics';
+import {TopicMetadata, Topics} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
 import {SearchService} from 'app/search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
@@ -48,7 +48,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   private loadTopics(): void {
     this.topicsService.getTopics(this.servers.getSelectedServerId())
       .pipe(first())
-      .subscribe(data => {
+      .subscribe((data: Topics) => {
         this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
         this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter(this.searchService.currentPhrase);
