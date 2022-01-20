@@ -19,11 +19,11 @@ export class DrawerService {
     return this.open(component, data, ['app-drawer'], width);
   }
 
-  open<T, R = any>(component: ComponentType<T>, data: any, panelClass: string[], width?: string): MatDialogRef<T, R> {
+  open<T, R = any>(component: ComponentType<T>, data: any, panelClass: string[], width: string = '787px'): MatDialogRef<T, R> {
     return this.dialog.open(component, {
       data: data,
       height: '100%',
-      width: width ?? '787px',
+      width: width,
       position: {
         right: '0px'
       },
