@@ -61,10 +61,12 @@ export class CachedCellService implements OnDestroy {
   }
 
   private cacheData(customerGroupOffset: ConsumerGroupOffset): void {
-    localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
-      value: customerGroupOffset[this.property!],
-      lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
-    }));
+    if (this.property) {
+      localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
+        value: customerGroupOffset[this.property],
+        lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
+      }));
+    }
   }
 
   private readCachedData(customerGroupOffset: ConsumerGroupOffset): void {

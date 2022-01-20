@@ -82,7 +82,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   groupId: string = '';
   allAssignments: ConsumerGroupOffset[] = [];
   filteredAssignments: ConsumerGroupOffset[] = [];
-  paused: boolean = false
+  paused: boolean = false;
   lastLags: IHash = {};
   loading$: Observable<boolean> = this.progressBarService.loading$;
 

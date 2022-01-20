@@ -21,7 +21,7 @@ export class TrackBackendService extends TrackService {
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]> {
-    const url = asyncHandle != undefined ? '/api/track/async' : '/api/track/sync';
+    const url = asyncHandle !== undefined ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))
@@ -30,7 +30,7 @@ export class TrackBackendService extends TrackService {
       .set('value', trackFilter.value)
       .set('beginningTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.startDateTime))
       .set('endTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.stopDateTime))
-      .set('asyncHandle', asyncHandle != undefined ? asyncHandle : '');
+      .set('asyncHandle', asyncHandle !== undefined ? asyncHandle : '');
     return this.http.get<Message[]>(url, {params});
   }
 

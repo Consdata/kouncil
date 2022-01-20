@@ -44,10 +44,14 @@ export class TopicPaginationComponent {
   }
 
   paginateMessages($event: any): void {
-    this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName!);
+    if (this.topicName) {
+      this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
+    }
   }
 
   getMessages(): void {
-    this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName!);
+    if (this.topicName) {
+      this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
+    }
   }
 }

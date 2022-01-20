@@ -88,7 +88,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   paused: boolean = false;
 
-  paging$: Observable<Page> = this.topicService.getPagination$()
+  paging$: Observable<Page> = this.topicService.getPagination$();
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
   @ViewChild('table') table: any;
