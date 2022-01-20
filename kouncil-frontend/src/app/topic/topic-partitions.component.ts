@@ -17,9 +17,9 @@ import {ServersService} from '../servers.service';
 })
 export class TopicPartitionsComponent {
 
-  private ALL_PARTITIONS = 'all';
+  private ALL_PARTITIONS: string = 'all';
 
-  @Input() topicName: string;
+  @Input() topicName?: string;
 
   @Output() partitionSelected = new EventEmitter<any>();
 
@@ -38,9 +38,9 @@ export class TopicPartitionsComponent {
     this.selectedPartition = value;
     this.partitionSelected.emit();
     if (value === this.ALL_PARTITIONS) {
-      this.topicService.selectAllPartitions(this.servers.getSelectedServerId(), this.topicName);
+      this.topicService.selectAllPartitions(this.servers.getSelectedServerId(), this.topicName!);
     } else {
-      this.topicService.selectPartition(this.servers.getSelectedServerId(), parseInt(value, 10), this.topicName);
+      this.topicService.selectPartition(this.servers.getSelectedServerId(), parseInt(value, 10), this.topicName!);
     }
   }
 

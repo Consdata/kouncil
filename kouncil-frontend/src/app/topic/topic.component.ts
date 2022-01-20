@@ -72,7 +72,7 @@ import {CustomTableColumn} from './custom-table-column';
 })
 export class TopicComponent implements OnInit, OnDestroy {
 
-  topicName: string;
+  topicName: string = '';
   columns: TableColumn[] = [];
   commonColumns: TableColumn[] = [];
   headerColumns: TableColumn[] = [];
@@ -84,15 +84,15 @@ export class TopicComponent implements OnInit, OnDestroy {
   filteredRows: unknown[] = [];
 
   searchSubscription?: Subscription;
+  jsonToGridSubscription?: Subscription;
 
-  paused: boolean;
+  paused: boolean = false;
 
-  jsonToGridSubscription: Subscription;
-  paging$: Observable<Page>;
+  paging$: Observable<Page> = this.topicService.getPagination$()
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
   @ViewChild('table') table: any;
-  @ViewChild('headerTemplate', {static: true}) headerTemplate: TemplateRef<unknown>;
+  @ViewChild('headerTemplate', {static: true}) headerTemplate?: TemplateRef<unknown>;
 
   constructor(private route: ActivatedRoute,
               private searchService: SearchService,
@@ -105,7 +105,6 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.jsonToGridSubscription = this.topicService.getConvertTopicMessagesJsonToGridObservable().subscribe(value => {
       this.jsonToGrid(value);
     });
-    this.paging$ = this.topicService.getPagination$();
   }
 
   private static tryParseJson(message): Object {
@@ -267,7 +266,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.filterRows(this.searchService.currentPhrase);
   }
 
-  private filterRows(phrase: string): void {
+  private filterRows(phrase?: string): void {
     this.filteredRows = this.allRows.filter((row) => {
       return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });

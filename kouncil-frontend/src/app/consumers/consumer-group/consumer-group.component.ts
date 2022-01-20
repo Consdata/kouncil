@@ -79,10 +79,10 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
   private searchSubscription?: Subscription;
   private intervalSubscription?: Subscription;
-  groupId: string;
-  allAssignments: ConsumerGroupOffset[];
-  filteredAssignments: ConsumerGroupOffset[];
-  paused: boolean;
+  groupId: string = '';
+  allAssignments: ConsumerGroupOffset[] = [];
+  filteredAssignments: ConsumerGroupOffset[] = [];
+  paused: boolean = false
   lastLags: IHash = {};
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
@@ -94,7 +94,6 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.paused = false;
     this.progressBarService.setProgress(true);
     this.route.params.subscribe(params => {
       this.groupId = params['groupId'];
@@ -132,7 +131,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       ).subscribe();
   }
 
-  private filter(phrase: string): void {
+  private filter(phrase?: string): void {
     this.filteredAssignments = this.allAssignments.filter((consumerGroupOffset) => {
       return !phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
     });

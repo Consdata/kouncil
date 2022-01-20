@@ -13,14 +13,13 @@ export class TopicBackendService implements TopicService {
 
   partitionOffsets: { [key: number]: number } = {};
   partitionEndOffsets: { [key: number]: number } = {};
-  partitions: number[];
-  selectedPartition: string;
+  partitions?: number[];
+  selectedPartition?: string;
   convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
   numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
-  paginationChanged$: BehaviorSubject<Page>;
+  paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
 
   constructor(public http: HttpClient, public progressBarService: ProgressBarService) {
-    this.initPaging();
   }
 
   getMessages(serverId: string, topicName: string, offset?: number): void {
@@ -83,13 +82,6 @@ export class TopicBackendService implements TopicService {
     paging.pageNumber = event.page;
     this.paginationChanged$ = new BehaviorSubject<Page>(paging);
     this.getMessages(serverId, topicName);
-  }
-
-  initPaging(): void {
-    const paging = new Page();
-    paging.pageNumber = 1;
-    paging.size = 10;
-    this.paginationChanged$ = new BehaviorSubject<Page>(paging);
   }
 
   getPagination$(): Observable<Page> {

@@ -6,8 +6,8 @@ export class SearchService {
 
   private phrase = new Subject<string>();
   private currentPhraseStore = {};
-  currentPhrase: string;
-  currentTabName: string;
+  private currentTabName?: string;
+  currentPhrase?: string;
 
   phraseChangeHandle(state: string): void {
     this.currentPhrase = state;

@@ -14,7 +14,7 @@ export interface CachedCellDataViewModel {
 export class CachedCellService implements OnDestroy {
   private readonly LAST_SEEN_DATE_FORMAT: string = 'yyyy-MM-dd HH:mm:ss';
 
-  private property: string;
+  private property?: string;
 
   private _vm$: BehaviorSubject<CachedCellDataViewModel> = new BehaviorSubject<CachedCellDataViewModel>({
     realValue: null,
@@ -62,7 +62,7 @@ export class CachedCellService implements OnDestroy {
 
   private cacheData(customerGroupOffset: ConsumerGroupOffset): void {
     localStorage.setItem(this.calcStorageKey(customerGroupOffset), JSON.stringify({
-      value: customerGroupOffset[this.property],
+      value: customerGroupOffset[this.property!],
       lastSeenTimestamp: format(new Date(), this.LAST_SEEN_DATE_FORMAT)
     }));
   }

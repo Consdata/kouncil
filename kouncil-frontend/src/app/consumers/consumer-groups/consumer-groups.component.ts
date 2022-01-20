@@ -34,7 +34,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table: ElementRef;
+  @ViewChild('table') private table?: ElementRef;
 
   private searchSubscription?: Subscription;
 
@@ -51,7 +51,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: ConsumerGroupsResponse) => {
-        this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
+        this.consumerGroups = data.consumerGroups;
         this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
         this.filter(this.searchService.currentPhrase);
         this.progressBarService.setProgress(false);
@@ -62,7 +62,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.searchSubscription?.unsubscribe();
   }
 
-  private filter(phrase: string): void {
+  private filter(phrase?: string): void {
     this.filtered = this.consumerGroups.filter((consumerGroup) => {
       return !phrase || consumerGroup.groupId.indexOf(phrase) > -1;
     });
@@ -118,6 +118,6 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   getStatusClass(status: string): string {
-    return `status-${ status.toLowerCase() }`;
+    return `status-${status.toLowerCase()}`;
   }
 }

@@ -4,16 +4,13 @@ import {from, Observable} from 'rxjs';
 import {ConsumerGroupResponse} from './consumer-group';
 import {demoConsumerGroup} from './consumer-group.demo.data';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ConsumerGroupDemoService implements ConsumerGroupService {
 
-  constructor() { }
+  constructor() {
+  }
 
   getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
-    const consumerGroupResponse = new ConsumerGroupResponse();
-    consumerGroupResponse.consumerGroupOffset = demoConsumerGroup[groupId];
-    return from([consumerGroupResponse]);
+    return from([{consumerGroupOffset: demoConsumerGroup[groupId]}]);
   }
 }

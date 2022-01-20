@@ -16,8 +16,8 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 })
 export class BreadcrumbComponent {
 
-  @Input() parentLink: string;
-  @Input() parentName: string;
-  @Input() name: string;
+  @Input() parentLink?: string;
+  @Input() parentName?: string;
+  @Input() name?: string;
 
 }

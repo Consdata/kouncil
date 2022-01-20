@@ -32,7 +32,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
-  @ViewChild('table') private table: ElementRef;
+  @ViewChild('table') private table?: ElementRef;
 
   private searchSubscription?: Subscription;
 
@@ -60,7 +60,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.searchSubscription?.unsubscribe();
   }
 
-  private filter(phrase: string): void {
+  private filter(phrase?: string): void {
     this.filtered = this.topics.filter((topicsMetadata) => {
       return !phrase || topicsMetadata.name.indexOf(phrase) > -1;
     });

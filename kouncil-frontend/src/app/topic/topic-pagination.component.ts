@@ -15,16 +15,17 @@ import {ServersService} from '../servers.service';
           [pagerRightArrowIcon]="'datatable-icon-right'"
           [pagerPreviousIcon]="'datatable-icon-prev'"
           [pagerNextIcon]="'datatable-icon-skip'"
-          [page]="paging.pageNumber"
-          [size]="paging.size"
-          [count]="paging.totalElements"
+          [page]="paging?.pageNumber"
+          [size]="paging?.size"
+          [count]="paging?.totalElements"
           (change)="paginateMessages($event)">
         </datatable-pager>
       </div>
       <div class="kafka-topic-footer-pager-item limit">
         <span class="limit-label">Items per partition:</span>
         <mat-form-field class="select-form-field">
-          <mat-select panelClass="select-limit-panel" class="select" [(value)]="paging.size" (selectionChange)="getMessages()">
+          <mat-select panelClass="select-limit-panel" class="select" [(value)]="paging.size"
+                      (selectionChange)="getMessages()">
             <mat-option *ngFor="let limit of pageLimits" [value]="limit">{{limit}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -34,18 +35,19 @@ import {ServersService} from '../servers.service';
 })
 
 export class TopicPaginationComponent {
-  @Input() paging: Page;
-  @Input() topicName: string;
+
+  @Input() paging?: Page;
+  @Input() topicName?: string;
   pageLimits = [1, 5, 10, 20, 50, 100, 500, 1000];
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
   paginateMessages($event: any): void {
-    this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
+    this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName!);
   }
 
   getMessages(): void {
-    this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
+    this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName!);
   }
 }

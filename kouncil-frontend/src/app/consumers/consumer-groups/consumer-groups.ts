@@ -1,14 +1,10 @@
 import {FavouritesGroup} from '../../favourites-group';
 import {Favouritable} from '../../favouritable';
 
-export class ConsumerGroup implements Favouritable {
-  constructor(public groupId: string, public status: string, public group: (FavouritesGroup | null)) {
-  }
-
-  public caption(): string {
-    return this.groupId;
-  }
-
+export interface ConsumerGroup extends Favouritable {
+  groupId: string;
+  status: string;
+  group?: FavouritesGroup | null;
 }
 
 export class ConsumerGroupsResponse {

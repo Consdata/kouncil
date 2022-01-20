@@ -1,4 +1,4 @@
-export class Broker {
+export interface Broker {
   id: string;
   host: string;
   port: number;
@@ -12,7 +12,7 @@ export class Broker {
   totalMem?: number;
 }
 
-export class BrokerConfig {
+export interface BrokerConfig {
   name: string;
   value?: string | undefined | null;
   source: string;

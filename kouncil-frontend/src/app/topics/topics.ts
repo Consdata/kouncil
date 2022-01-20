@@ -10,6 +10,6 @@ export class TopicMetadata implements Favouritable {
   }
 }
 
-export class Topics {
+export interface Topics {
   topics: TopicMetadata[];
 }

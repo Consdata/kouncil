@@ -1,5 +1,5 @@
 import { Broker } from 'app/brokers/broker';
 
-export class Brokers {
+export interface Brokers {
   brokers: Broker[];
 }

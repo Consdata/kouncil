@@ -1,7 +1,6 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrokerConfig} from '../brokers/broker';
-import {DatatableComponent} from '@swimlane/ngx-datatable';
 import {first} from 'rxjs/operators';
 
 @Component({
@@ -35,9 +34,7 @@ import {first} from 'rxjs/operators';
 })
 export class BrokerComponent implements OnInit {
 
-  @ViewChild('brokerConfig') brokerTable: DatatableComponent;
-
-  public isAnimationDone = false;
+  isAnimationDone: boolean = false;
 
   constructor(
     private dialogRef: MatDialogRef<BrokerComponent>,

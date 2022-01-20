@@ -11,9 +11,7 @@ import {MessageHeader} from '../topic/message-header';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TrackDemoService extends TrackService {
 
   constructor() {

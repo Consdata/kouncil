@@ -3,5 +3,5 @@ import {TemplateRef} from '@angular/core';
 
 export interface CustomTableColumn extends TableColumn {
   nameShort: string;
-  headerTemplate: TemplateRef<unknown>;
+  headerTemplate?: TemplateRef<unknown>;
 }

@@ -1,4 +1,4 @@
-export class ConsumerGroupOffset {
+export interface ConsumerGroupOffset {
 
   clientId: string;
   consumerId: string;
@@ -12,6 +12,6 @@ export class ConsumerGroupOffset {
 }
 
 
-export class ConsumerGroupResponse {
+export interface ConsumerGroupResponse {
   consumerGroupOffset: ConsumerGroupOffset[];
 }
