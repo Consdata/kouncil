@@ -159,6 +159,7 @@ public class TopicController extends AbstractMessagesController {
                             .value(consumerRecord.value())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
+                            .topic(consumerRecord.topic())
                             .timestamp(consumerRecord.timestamp())
                             .headers(mapHeaders(consumerRecord.headers()))
                             .build());
