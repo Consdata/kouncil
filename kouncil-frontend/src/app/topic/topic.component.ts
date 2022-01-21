@@ -161,7 +161,6 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   showMessage(event): void {
     if (event.type === 'click') {
-      console.log('event', event);
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
         source: event.row.kouncilValueJson && Object.keys(event.row.kouncilValueJson).length > 0 ?
           event.row.kouncilValueJson : event.row.kouncilValue,
