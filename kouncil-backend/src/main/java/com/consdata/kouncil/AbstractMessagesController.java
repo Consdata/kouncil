@@ -6,7 +6,10 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
+import org.springframework.kafka.support.KafkaHeaders;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,9 +70,20 @@ public class AbstractMessagesController {
     protected List<TopicMessageHeader> mapHeaders(Headers headers) {
         List<TopicMessageHeader> result = new ArrayList<>();
         for (Header header : headers) {
+            String newHeader = null;
+            if (header.value() != null) {
+                ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
+                if (header.key().equals(KafkaHeaders.ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
+                    newHeader = Long.valueOf(byteBuffer.getLong()).toString();
+                } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
+                    newHeader = Integer.valueOf(byteBuffer.getInt()).toString();
+                } else {
+                    newHeader = new String(byteBuffer.array(), StandardCharsets.UTF_8);
+                }
+            }
             result.add(TopicMessageHeader.builder()
                     .key(header.key())
-                    .value(header.value() == null ? null : new String(header.value()))
+                    .value(newHeader)
                     .build());
         }
         return result;
