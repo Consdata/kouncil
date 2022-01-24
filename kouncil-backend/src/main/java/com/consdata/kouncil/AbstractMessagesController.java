@@ -73,7 +73,7 @@ public class AbstractMessagesController {
             String newHeader = null;
             if (header.value() != null) {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
-                if (header.key().equals(KafkaHeaders.ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
+                if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
                     newHeader = Long.valueOf(byteBuffer.getLong()).toString();
                 } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
                     newHeader = Integer.valueOf(byteBuffer.getInt()).toString();
