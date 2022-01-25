@@ -67,23 +67,35 @@ public class AbstractMessagesController {
         return beginningOffsets;
     }
 
+    /*
+     * The reason of this headers value transformation function
+     * is because Spring Boot cannot properly deal with dlq original headers
+     * when the data comes in Long or Integer format (ex. timestamp, partition, offset).
+     * So we need to modify data to String format.
+     */
+    private String transformHeaderValue(Header header) {
+        String headerValue = null;
+        if (header.value() != null) {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
+            if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
+                headerValue = Long.valueOf(byteBuffer.getLong()).toString();
+            } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
+                headerValue = Integer.valueOf(byteBuffer.getInt()).toString();
+            } else {
+                headerValue = new String(byteBuffer.array(), StandardCharsets.UTF_8);
+            }
+        }
+
+        return headerValue;
+    }
+
     protected List<TopicMessageHeader> mapHeaders(Headers headers) {
         List<TopicMessageHeader> result = new ArrayList<>();
         for (Header header : headers) {
-            String newHeader = null;
-            if (header.value() != null) {
-                ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
-                if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
-                    newHeader = Long.valueOf(byteBuffer.getLong()).toString();
-                } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
-                    newHeader = Integer.valueOf(byteBuffer.getInt()).toString();
-                } else {
-                    newHeader = new String(byteBuffer.array(), StandardCharsets.UTF_8);
-                }
-            }
+            String headerValue = transformHeaderValue(header);
             result.add(TopicMessageHeader.builder()
                     .key(header.key())
-                    .value(newHeader)
+                    .value(headerValue)
                     .build());
         }
         return result;
