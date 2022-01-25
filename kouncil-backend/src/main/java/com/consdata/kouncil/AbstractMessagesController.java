@@ -92,10 +92,10 @@ public class AbstractMessagesController {
     protected List<TopicMessageHeader> mapHeaders(Headers headers) {
         List<TopicMessageHeader> result = new ArrayList<>();
         for (Header header : headers) {
-            String newHeader = transformHeaderValue(header);
+            String headerValue = transformHeaderValue(header);
             result.add(TopicMessageHeader.builder()
                     .key(header.key())
-                    .value(newHeader)
+                    .value(headerValue)
                     .build());
         }
         return result;
