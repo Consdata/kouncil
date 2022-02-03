@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
 import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
@@ -63,7 +63,12 @@ import {Topics} from '../../topics/topics';
               (click)="setFilter()">Track events
       </button>
     </form>
-    <mat-slide-toggle [class.active]="asyncModeState === true" disableRipple class="switch" (change)="toggleAsyncMode()" [(ngModel)]="asyncModeState">
+    <mat-slide-toggle
+      [class.active]="asyncModeState === true"
+      disableRipple class="switch"
+      (change)="toggleAsyncMode()"
+      [(ngModel)]="asyncModeState"
+      matTooltip="By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. If this does not work for you, turn it off, but then you have to wait for for the whole search to complete.">
       async
     </mat-slide-toggle>
   `,
@@ -103,7 +108,7 @@ export class TrackFilterComponent implements OnInit {
   }
 
   toggleAsyncMode(): void {
-    this.trackService.toggleAsyncEnabled();
+    this.trackService.toggleAsyncMode();
   }
 
   filterTopics(): void {

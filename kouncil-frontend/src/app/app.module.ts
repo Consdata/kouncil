@@ -151,7 +151,7 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
     }, {
       provide: TrackService,
       useFactory: trackServiceFactory,
-      deps: [HttpClient]
+      deps: [HttpClient, RxStompService]
     }, {
       provide: APP_INITIALIZER,
       useFactory: configProviderFactory,
@@ -187,13 +187,13 @@ export function serverServiceFactory(http: HttpClient): ServersService {
   }
 }
 
-export function trackServiceFactory(http: HttpClient): TrackService {
+export function trackServiceFactory(http: HttpClient, rxStompService: RxStompService): TrackService {
   switch (environment.backend) {
     case Backend.SERVER: {
-      return new TrackBackendService(http);
+      return new TrackBackendService(http, rxStompService);
     }
     case Backend.DEMO: {
-      return new TrackDemoService();
+      return new TrackDemoService(rxStompService);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
+import {InjectableRxStompConfig} from '@stomp/ng2-stompjs';
 import {environment} from '../environments/environment';
 
 export const RxStompConfig: InjectableRxStompConfig = {
@@ -7,6 +7,6 @@ export const RxStompConfig: InjectableRxStompConfig = {
   heartbeatOutgoing: 20000,
   reconnectDelay: 2000,
   debug: (msg: string): void => {
-        console.log(msg);
+    console.log(msg);
   },
 };

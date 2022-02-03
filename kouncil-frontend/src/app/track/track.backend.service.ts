@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
+import {RxStompService} from '@stomp/ng2-stompjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class TrackBackendService extends TrackService {
 
   asyncEnabled: boolean = true;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private rxStompService: RxStompService) {
     super();
   }
 
@@ -40,8 +41,13 @@ export class TrackBackendService extends TrackService {
     return this.asyncEnabled;
   }
 
-  toggleAsyncEnabled() {
+  toggleAsyncMode() {
     this.asyncEnabled = !this.asyncEnabled;
+    if (this.asyncEnabled) {
+      this.rxStompService.activate();
+    } else {
+      this.rxStompService.deactivate();
+    }
   }
 
 }
