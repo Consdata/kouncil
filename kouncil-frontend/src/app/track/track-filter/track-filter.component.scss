@@ -10,6 +10,12 @@
     gap: 16px;
   }
 
+  mat-slide-toggle {
+    position: absolute;
+    right: 0;
+    width: 120px;
+  }
+
   .wrapper {
     display: flex;
     flex-direction: row;

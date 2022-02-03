@@ -20,6 +20,7 @@ export abstract class TrackService {
   }
 
   abstract isAsyncEnable(): boolean;
+  abstract toggleAsyncEnabled();
 
   storeTrackFilter(field: string, value: string, timestamp: number, topicName: string): void {
     this.trackFilter = new TrackFilter(

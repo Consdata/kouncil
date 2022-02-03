@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
 import {FormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
@@ -63,6 +63,9 @@ import {Topics} from '../../topics/topics';
               (click)="setFilter()">Track events
       </button>
     </form>
+    <mat-slide-toggle [class.active]="asyncModeState === true" disableRipple class="switch" (change)="toggleAsyncMode()" [(ngModel)]="asyncModeState">
+      async
+    </mat-slide-toggle>
   `,
   styleUrls: ['./track-filter.component.scss']
 })
@@ -78,6 +81,7 @@ export class TrackFilterComponent implements OnInit {
   datesControl: FormControl = new FormControl();
   loading: boolean = false;
   trackFilter: TrackFilter;
+  asyncModeState: boolean = this.trackService.isAsyncEnable();
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
@@ -96,6 +100,10 @@ export class TrackFilterComponent implements OnInit {
     this.trackService.trackFinished.subscribe(e => {
       this.loading = false;
     });
+  }
+
+  toggleAsyncMode(): void {
+    this.trackService.toggleAsyncEnabled();
   }
 
   filterTopics(): void {

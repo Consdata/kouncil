@@ -35,6 +35,13 @@ export class TrackDemoService extends TrackService {
       }));
   }
 
+  isAsyncEnable(): boolean {
+    return false;
+  }
+
+  toggleAsyncEnabled() {
+  }
+
   private generateMessage(trackFilter: TrackFilter, traceId: string, userId: string): Message {
     const key = Crypto.uuidv4();
     const event = RandomUtils.createRandomEvent();
@@ -61,10 +68,6 @@ export class TrackDemoService extends TrackService {
     }
 
     return new Message(key, event, offset, partition, date, headers, topic.name);
-  }
-
-  isAsyncEnable(): boolean {
-    return false;
   }
 
 }
