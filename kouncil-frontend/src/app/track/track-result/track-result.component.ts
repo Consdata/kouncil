@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
@@ -115,13 +122,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
       this.getEvents(trackFilter);
     });
-    if (this.trackService.isAsyncEnable()) {
-      this.asyncHandle = Crypto.uuidv4();
-      this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle))
-        .subscribe((message) => {
-          this.onMessageReceived(message);
-        });
-    }
   }
 
   ngOnDestroy(): void {
@@ -136,6 +136,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       const items = JSON.parse(message.body);
       if (items.length === 0) {
         this.trackService.trackFinished.emit();
+        this.topicSubscription?.unsubscribe();
       }
       this.allRows = [...this.allRows, ...items];
       this.filterRows(this.searchService.currentPhrase);
@@ -166,6 +167,16 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   private getEvents(trackFilter: TrackFilter): void {
+    if (this.trackService.isAsyncEnable()) {
+      this.asyncHandle = Crypto.uuidv4();
+      this.topicSubscription?.unsubscribe();
+      this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle))
+        .subscribe((message) => {
+          this.onMessageReceived(message);
+        });
+    } else {
+      this.asyncHandle = null;
+    }
     this.filteredRows = [];
     this.allRows = [];
     this.changeDetectorRef.detectChanges();
@@ -175,6 +186,9 @@ export class TrackResultComponent implements OnInit, OnDestroy {
           if (events && events.length > 0) {
             this.allRows = [...this.allRows, ...events];
             this.filterRows(this.searchService.currentPhrase);
+          }
+          if (!this.trackService.isAsyncEnable()) {
+            this.trackService.trackFinished.emit();
           }
         });
     });

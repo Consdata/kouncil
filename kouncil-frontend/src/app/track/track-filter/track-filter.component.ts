@@ -63,6 +63,14 @@ import {Topics} from '../../topics/topics';
               (click)="setFilter()">Track events
       </button>
     </form>
+    <mat-slide-toggle
+      [class.active]="asyncModeState === true"
+      disableRipple class="switch"
+      (change)="toggleAsyncMode()"
+      [(ngModel)]="asyncModeState"
+      matTooltip="By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. If this does not work for you, turn it off, but then you have to wait for for the whole search to complete.">
+      async
+    </mat-slide-toggle>
   `,
   styleUrls: ['./track-filter.component.scss']
 })
@@ -78,6 +86,7 @@ export class TrackFilterComponent implements OnInit {
   datesControl: FormControl = new FormControl();
   loading: boolean = false;
   trackFilter: TrackFilter;
+  asyncModeState: boolean = this.trackService.isAsyncEnable();
 
   constructor(private trackService: TrackService,
               private topicsService: TopicsService,
@@ -96,6 +105,10 @@ export class TrackFilterComponent implements OnInit {
     this.trackService.trackFinished.subscribe(e => {
       this.loading = false;
     });
+  }
+
+  toggleAsyncMode(): void {
+    this.trackService.toggleAsyncMode();
   }
 
   filterTopics(): void {

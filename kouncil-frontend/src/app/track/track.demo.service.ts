@@ -10,12 +10,14 @@ import {demoTopics} from '../topics/topics.demo.data';
 import {MessageHeader} from '../topic/message-header';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
+import {RxStompService} from '@stomp/ng2-stompjs';
 
 @Injectable()
 export class TrackDemoService extends TrackService {
 
-  constructor() {
+  constructor(private rxStompService: RxStompService) {
     super();
+    rxStompService.deactivate();
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
@@ -33,6 +35,13 @@ export class TrackDemoService extends TrackService {
       }), finalize(() => {
         this.trackFinished.emit();
       }));
+  }
+
+  isAsyncEnable(): boolean {
+    return false;
+  }
+
+  toggleAsyncMode() {
   }
 
   private generateMessage(trackFilter: TrackFilter, traceId: string, userId: string): Message {
@@ -61,10 +70,6 @@ export class TrackDemoService extends TrackService {
     }
 
     return new Message(key, event, offset, partition, date, headers, topic.name);
-  }
-
-  isAsyncEnable(): boolean {
-    return false;
   }
 
 }

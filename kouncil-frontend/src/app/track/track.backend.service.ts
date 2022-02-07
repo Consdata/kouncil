@@ -6,13 +6,16 @@ import {Observable} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
+import {RxStompService} from '@stomp/ng2-stompjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrackBackendService extends TrackService {
 
-  constructor(private http: HttpClient) {
+  asyncEnabled: boolean = true;
+
+  constructor(private http: HttpClient, private rxStompService: RxStompService) {
     super();
   }
 
@@ -21,7 +24,7 @@ export class TrackBackendService extends TrackService {
   }
 
   getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]> {
-    const url = asyncHandle !== undefined ? '/api/track/async' : '/api/track/sync';
+    const url = this.asyncEnabled ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))
@@ -30,12 +33,21 @@ export class TrackBackendService extends TrackService {
       .set('value', trackFilter.value)
       .set('beginningTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.startDateTime))
       .set('endTimestampMillis', TrackBackendService.convertToTimestamp(trackFilter.stopDateTime))
-      .set('asyncHandle', asyncHandle !== undefined ? asyncHandle : '');
+      .set('asyncHandle', this.asyncEnabled ? asyncHandle : '');
     return this.http.get<Message[]>(url, {params});
   }
 
   isAsyncEnable(): boolean {
-    return true;
+    return this.asyncEnabled;
+  }
+
+  toggleAsyncMode() {
+    this.asyncEnabled = !this.asyncEnabled;
+    if (this.asyncEnabled) {
+      this.rxStompService.activate();
+    } else {
+      this.rxStompService.deactivate();
+    }
   }
 
 }
