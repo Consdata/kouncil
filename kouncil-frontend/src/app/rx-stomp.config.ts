@@ -7,6 +7,6 @@ export const RxStompConfig: InjectableRxStompConfig = {
   heartbeatOutgoing: 20000,
   reconnectDelay: 2000,
   debug: (msg: string): void => {
-    console.log(msg);
+    console.log('RxStompConfig.debug: msg={}', msg);
   },
 };

@@ -127,7 +127,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.searchSubscription?.unsubscribe();
     this.trackFilterSubscription?.unsubscribe();
-
+    this.topicSubscription?.unsubscribe();
   }
 
   onMessageReceived(message): void {
@@ -169,6 +169,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   private getEvents(trackFilter: TrackFilter): void {
     if (this.trackService.isAsyncEnable()) {
       this.asyncHandle = Crypto.uuidv4();
+      this.topicSubscription?.unsubscribe();
       this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle))
         .subscribe((message) => {
           this.onMessageReceived(message);
