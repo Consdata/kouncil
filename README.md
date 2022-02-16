@@ -1,10 +1,13 @@
-# Kouncil for Apache Kafka
-[![Build Status](https://github.com/Consdata/kouncil/actions/workflows/build.yml/badge.svg)](https://github.com/Consdata/kouncil/actions/workflows/build.yml)
-[![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
+# README
 
-Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
+## Kouncil for Apache Kafka
 
-Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a more comprehensive list check out the [features section](#features).
+[![Build Status](https://github.com/Consdata/kouncil/actions/workflows/build.yml/badge.svg)](https://github.com/Consdata/kouncil/actions/workflows/build.yml) [![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
+
+Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](./#features) and [easy to set up](./#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
+
+Here are some of **the main features of** [**Kouncil**](https://kouncil.io). For a more comprehensive list check out the [features section](./#features).
+
 * Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
@@ -13,30 +16,30 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 
 ![Kouncil](.github/img/jumbo.png)
 
-## Table of Contents
+### Table of Contents
 
-- [Quick start](#quick-start)
-- [Roadmap](#roadmap)
-- [Demo app](#demo-app)
-- [Main features](#features)
-  - [Advanced record browsing in table format](#advanced-record-browsing-in-table-format)
-  - [Multiple cluster support](#multiple-cluster-support)
-  - [Consumer monitoring](#consumer-monitoring)
-  - [Cluster monitoring](#cluster-monitoring)
-  - [Event Tracking](#event-tracking)
-- [Deployment](#deployment)
-  - [Simple configuration](#docker---simple-configuration)
-  - [Advanced configuration](#docker---advanced-configuration)
-- [Local Development](#local-development)
+* [Quick start](./#quick-start)
+* [Roadmap](./#roadmap)
+* [Demo app](./#demo-app)
+* [Main features](./#features)
+  * [Advanced record browsing in table format](./#advanced-record-browsing-in-table-format)
+  * [Multiple cluster support](./#multiple-cluster-support)
+  * [Consumer monitoring](./#consumer-monitoring)
+  * [Cluster monitoring](./#cluster-monitoring)
+  * [Event Tracking](./#event-tracking)
+* [Deployment](./#deployment)
+  * [Simple configuration](./#docker---simple-configuration)
+  * [Advanced configuration](./#docker---advanced-configuration)
+* [Local Development](./#local-development)
 
-
-## Quick start
+### Quick start
 
 The easiest way to start working with Kouncil is by using Docker:
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
 ```
+
 There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`), and you are good to go, Kouncil will automatically do the rest!
 
 Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
@@ -45,76 +48,64 @@ After the `docker run` command head to [http://localhost](http://localhost).
 
 Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
-For more advanced configuration consult the [Deployment](#deployment) section.
+For more advanced configuration consult the [Deployment](./#deployment) section.
 
-## Roadmap
+### Roadmap
 
-| Version                                                                                                                            | Content                                                                                                                                                                                                                                                                                                                                                              | Status |
-|------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--|
-| <b>UI Tweaks Part 1</b>  <br> A handful of fixes based on the most frequently reported comments from our users <br> mid January'21 | <ul> <li> Better logs on broker unavailability <li> Broker config - table improvements </li> <li> Consumer group - Improved lag tracking </li> <li> Consumer group - colour coded </li> <li> Event tracking - date format </li> <li> Event tracking - topic order </li> <li> Event tracking - web socket toggle </li> <li> Tables - Stick it to the left </li> </ul> | Released (1.1) |
-| <b> Not Only JSON </b>  <br> This version will bring the remaining popular message formats <br> end February'21                    | <ul> <li> Schema Registry </li> <li> Avro consumer</li> <li> Avro producer</li><li>Protobuf consumer</li><li>Protobuf producer</li><li>Plaintext handling</li> </ul>                                                                                                                                                                                                 | In progress |
-| <b> Security </b>  <br> Extended Kafka and Kouncil security support <br> mid March'21                                              | <ul> <li> SSL support</li> <li> JAAS authentication </li> <li> LDAP authentication</li> <li> Logged users activity monitoring</li>  </ul>                                                                                                                                                                                                                                                                      | TODO |
-| <b> Cloud </b> <br>Easy way of deploying Kouncil to the cloud<br> end March'21                                                     | <ul> <li>K8s support - helm chart</li>  <li> Terraform (GCP, AWS, Azure) </li> </ul>                                                                                                                                                                                                                                                                                 | TODO |
-| <b> UI Tweaks Part 2 </b> <br>Second batch of frontend improvements<br>end April'21                                                | <ul> <li>Broker list - overview</li> <li>Event tracking - additional columns </li>  <li>Tables - column auto adjustment </li>  <li>Consumer Group - Lag preview </li>  </li>                                                                                                                                                                                         | TODO |
+| Version                                                                                                                                        | Content                                                                                                                                                                                                                                                                                                                                           | Status         |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| <p><strong>UI Tweaks Part 1</strong><br>A handful of fixes based on the most frequently reported comments from our users<br>mid January'21</p> | <ul><li>Better logs on broker unavailability</li><li>Broker config - table improvements</li><li>Consumer group - Improved lag tracking</li><li>Consumer group - colour coded</li><li>Event tracking - date format</li><li>Event tracking - topic order</li><li>Event tracking - web socket toggle</li><li>Tables - Stick it to the left</li></ul> | Released (1.1) |
+| <p><strong>Not Only JSON</strong><br>This version will bring the remaining popular message formats<br>end February'21</p>                      | <ul><li>Schema Registry</li><li>Avro consumer</li><li>Avro producer</li><li>Protobuf consumer</li><li>Protobuf producer</li><li>Plaintext handling</li></ul>                                                                                                                                                                                      | In progress    |
+| <p><strong>Security</strong><br>Extended Kafka and Kouncil security support<br>mid March'21</p>                                                | <ul><li>SSL support</li><li>JAAS authentication</li><li>LDAP authentication</li><li>Logged users activity monitoring</li></ul>                                                                                                                                                                                                                    | TODO           |
+| <p><strong>Cloud</strong><br>Easy way of deploying Kouncil to the cloud<br>end March'21</p>                                                    | <ul><li>K8s support - helm chart</li><li>Terraform (GCP, AWS, Azure)</li></ul>                                                                                                                                                                                                                                                                    | TODO           |
+| <p><strong>UI Tweaks Part 2</strong><br>Second batch of frontend improvements<br>end April'21</p>                                              | <ul><li>Broker list - overview</li><li>Event tracking - additional columns</li><li>Tables - column auto adjustment</li><li>Consumer Group - Lag preview</li></ul>                                                                                                                                                                                 | TODO           |
 
+### Demo app
 
-## Demo app
+If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app)
 
-If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app/)
+### Features
 
-## Features
+Here are some of the main features of Kouncil. This list is not exhaustive, check out our [demo app](https://kouncil-demo.web.app) or [quickly install Kouncil](./#quick-start) to experience them first-hand.
 
-Here are some of the main features of Kouncil. This list is not exhaustive, check out our [demo app](https://kouncil-demo.web.app/) or [quickly install Kouncil](#quick-start) to experience them first-hand.
-
-### Advanced record browsing in table format
+#### Advanced record browsing in table format
 
 Thanks to Kouncil's convenient way of presenting records in table format even large amounts of complex messages can be easily browsed. You can choose between browsing a single partition or a topic as a whole. If you wish to examine any of the messages more closely you can view its source, copy it to clipboard, or even post it again.
 
-<p align="left">
-  <img src=".github/img/kouncil_topic_details_border.png" width="400">
-  <span>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-  </span>
-  <img src=".github/img/kouncil_topic_event_details.png" width="400">
-</p>
+![](.github/img/kouncil\_topic\_details\_border.png)      ![](.github/img/kouncil\_topic\_event\_details.png)
 
-### Multiple cluster support
+#### Multiple cluster support
 
 If your config spans across multiple Kafka clusters it's no problem for Kouncil. You can switch between them at any time, without having to restart or reconfigure anything.
 
-### Consumer monitoring
+#### Consumer monitoring
 
 Monitoring your consumer groups is one of the most important things when dealing with Kafka. Are my consumers even connected to Kafka? Do they process events? If so, how fast? How long until they finish their workload? Kouncil can help you answer all those questions.
 
-<p align="left">
-  <img src=".github/img/kouncil_consumer_group.png" width="820">
-</p>
+![](.github/img/kouncil\_consumer\_group.png)
 
+#### Cluster monitoring
 
-### Cluster monitoring
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](./#docker---advanced-configuration))
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](#docker---advanced-configuration))
+![](.github/img/kouncil\_brokers.png)
 
-<p align="left">
-  <img src=".github/img/kouncil_brokers.png" width="820">
-</p>
+#### Event Tracking
 
-### Event Tracking
 Event Tracking enables monitoring and visualizing the path of a given event or process by means of Kafka topics.
 
-<p align="left">
-  <img src=".github/img/kouncil_event_tracking.png" width="820">
-</p>
+![](.github/img/kouncil\_event\_tracking.png)
 
-## Deployment
+### Deployment
 
 There are two ways in which Kouncil can be configured:
+
 * simple - suitable for most cases, relying solely on `docker run` parameters
 * advanced - suitable for larger configurations. Provided as an external file, and thus can be tracked in version control. It also exposes additional configuration options, which are not available in the simple configuration
 
-### Docker - simple configuration
+#### Docker - simple configuration
 
-Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](#quick-start):
+Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](./#quick-start):
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
@@ -144,7 +135,7 @@ docker run -d -p 7070:8080 -e bootstrapServers="kafka1.cluster.local:9092" consd
 
 That will cause Kouncil to listen on port `7070`.
 
-### Docker - advanced configuration
+#### Docker - advanced configuration
 
 If you have many Kafka clusters, configuring them using `bootstrapServers` may become cumbersome. It is also impossible to express more sophisticated configuration options using such a simple configuration pattern.
 
@@ -158,7 +149,7 @@ docker run -p 80:8080 -v /home/users/test/Kouncil/config/:/config/ consdata/koun
 
 Format of `kouncil.yaml` is described below.
 
-#### Advanced config example
+**Advanced config example**
 
 ```yaml
 kouncil:
@@ -178,9 +169,10 @@ kouncil:
         - host: kouncil.kafka.local
           port: 8002
 ```
+
 This example shows two clusters, named `transaction-cluster` and `kouncil` respectively. Each cluster needs to have its name specified. After that comes a list of brokers that make up this cluster - each of which consisting of the broker's host and port on which it's listening on.
 
-#### Advanced config - JMX monitoring
+**Advanced config - JMX monitoring**
 
 If your Kafka brokers expose JMX metrics Kouncil can take advantage of that, displaying additional metrics. This is done using advanced config, where you can specify JMX parameters for each broker, like so:
 
@@ -199,6 +191,7 @@ kouncil:
           port: 9094
           jmxPort: 5090
 ```
+
 This example assumes that broker does not require any kind of authentication to access JMX metrics - you only need to specify JMX port. If that's not the case, and JMX authentication is turned on, you can also specify JMX user and password:
 
 ```yaml
@@ -222,6 +215,7 @@ kouncil:
           jmxUser: jmxAdmin
           jmxPassword: jmxPassword
 ```
+
 It quickly becomes clear, that in many cases those properties (`jmxPort`, `jmxUser`, `jmxPassword`) will be identical for each of the brokers inside the cluster. For that reason, you can also specify them on a cluster level, and they will propagate to each broker:
 
 ```yaml
@@ -239,6 +233,7 @@ kouncil:
         - host: 192.10.0.3
           port: 9094
 ```
+
 All brokers inside `transaction-cluster` will share the same JMX configuration (`jmxPort` = `5088`, `jmxUser` = `jmxAdmin`, `jmxPassword` = `jmxPassword`).
 
 Propagation of JMX parameters works independently for each of those parameters. For example, each of the brokers may have the same JMX user and password, but different port:
@@ -263,18 +258,20 @@ kouncil:
 
 In the case of both simple and advanced configuration being present, the advanced configuration takes precedence.
 
-### WebSocket allowed origins configuration
-By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that: 
+#### WebSocket allowed origins configuration
 
-```docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest```
+By default, WebSocket allowed origins are set to \*, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 
+`docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest`
 
-## Local Development
-For the backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers.
+### Local Development
 
-For the frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
+For the backend, run KouncilApplication passing parameter `bootstrapServers=localhost:9092` pointing to any of your Kafka brokers.
 
-For the local Kafka with two test topics, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your docker host IP)
+For the frontend, having node and yarn installed, run `yarn` and `yarn start`
+
+For the local Kafka with two test topics, create docker-compose.yml (KAFKA\_ADVERTISED\_HOST\_NAME should match your docker host IP)
+
 ```yaml
 version: '2'
 services:
@@ -294,19 +291,20 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
-run ```docker-compose up -d```
+run `docker-compose up -d`
 
 more info: https://hub.docker.com/r/wurstmeister/kafka/
 
-
-# Release
+## Release
 
 To release just push to release branch:
+
 ```bash
 git push origin master:release
 ```
 
 after a successful release, remember to merge back to master:
+
 ```bash
 git merge origin/release
 ```
