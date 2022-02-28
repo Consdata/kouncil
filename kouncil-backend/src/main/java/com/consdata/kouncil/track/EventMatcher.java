@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EventMatcher {
 
-    public boolean filterMatch(String field, TrackOperator operator, String filterValue, ConsumerRecord<String, String> consumerRecord) {
+    public boolean filterMatch(String field, TrackOperator operator, String filterValue, ConsumerRecord<Bytes, Bytes> consumerRecord) {
         if (Strings.isNotBlank(field)) {
             return headerMatch(field, operator, filterValue, consumerRecord.headers());
         } else {

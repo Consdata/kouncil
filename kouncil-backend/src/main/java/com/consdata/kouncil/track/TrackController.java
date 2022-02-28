@@ -2,6 +2,8 @@ package com.consdata.kouncil.track;
 
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +12,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.utils.Bytes;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +41,14 @@ public class TrackController extends AbstractMessagesController {
 
     private final EventMatcher eventMatcher;
 
-    public TrackController(KafkaConnectionService kafkaConnectionService, SimpMessagingTemplate eventSender, ExecutorService executor, WebSocketMessageBrokerStats webSocketMessageBrokerStats, DestinationStore destinationStore, EventMatcher eventMatcher) {
-        super(kafkaConnectionService);
+    public TrackController(KafkaConnectionService kafkaConnectionService,
+                           SimpMessagingTemplate eventSender,
+                           ExecutorService executor,
+                           WebSocketMessageBrokerStats webSocketMessageBrokerStats,
+                           DestinationStore destinationStore,
+                           EventMatcher eventMatcher,
+                           DeserializationService deserializationService) {
+        super(kafkaConnectionService, deserializationService);
         this.eventSender = eventSender;
         this.executor = executor;
         this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
@@ -90,7 +99,7 @@ public class TrackController extends AbstractMessagesController {
         TrackOperator trackOperator = TrackOperator.fromValue(operatorParam);
         validateTopics(serverId, topicNames);
 
-        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
+        try (KafkaConsumer<Bytes, Bytes> consumer = kafkaConnectionService.getKafkaConsumer(serverId, 5000)) {
             List<TopicMetadata> metadataList = prepareMetadata(topicNames, beginningTimestampMillis, endTimestampMillis, consumer);
             metadataList.sort(Comparator.comparing(TopicMetadata::getAllPartitionRangeSize));
             log.debug("TRACK20 metadata={}", metadataList);
@@ -104,14 +113,14 @@ public class TrackController extends AbstractMessagesController {
                         return trackStrategy.processFinalResult();
                     }
                     List<TopicMessage> candidates = new ArrayList<>();
-                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100L * (emptyPolls + 1)));
+                    ConsumerRecords<Bytes, Bytes> records = consumer.poll(Duration.ofMillis(100L * (emptyPolls + 1)));
                     if (records.isEmpty()) {
                         emptyPolls++;
                     } else {
                         emptyPolls = 0;
                     }
                     log.debug("TRACK70 topic={} poll took={}ms, returned {} records", m.getTopicName(), (System.nanoTime() - startTime) / 1000000, records.count());
-                    for (ConsumerRecord<String, String> consumerRecord : records) {
+                    for (ConsumerRecord<Bytes, Bytes> consumerRecord : records) {
                         if (consumerRecord.offset() >= m.getEndOffsets().get(consumerRecord.partition())) {
                             if (Boolean.FALSE.equals(exhausted[consumerRecord.partition()])) {
                                 log.debug("TRACK24 topic={}, partition={} exhausted", m.getTopicName(), consumerRecord.partition());
@@ -119,12 +128,15 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
+                        DeserializedValue deserializedValue = deserializationService.deserialize(consumerRecord);
+                        // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
+
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord)) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(m.getTopicName())
-                                    .key(consumerRecord.key())
-                                    .value(consumerRecord.value())
+                                    .key(deserializedValue.getDeserializedKey())
+                                    .value(deserializedValue.getDeserializedValue())
                                     .offset(consumerRecord.offset())
                                     .partition(consumerRecord.partition())
                                     .timestamp(consumerRecord.timestamp())
@@ -141,7 +153,7 @@ public class TrackController extends AbstractMessagesController {
         }
     }
 
-    private Boolean[] positionConsumer(KafkaConsumer<String, String> consumer, TopicMetadata m) {
+    private Boolean[] positionConsumer(KafkaConsumer<Bytes, Bytes> consumer, TopicMetadata m) {
         consumer.assign(m.getPartitions().values());
         Boolean[] exhausted = new Boolean[m.getPartitions().size()];
         Arrays.fill(exhausted, Boolean.FALSE);
@@ -161,7 +173,7 @@ public class TrackController extends AbstractMessagesController {
         return exhausted;
     }
 
-    private List<TopicMetadata> prepareMetadata(List<String> topicNames, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<String, String> consumer) {
+    private List<TopicMetadata> prepareMetadata(List<String> topicNames, Long beginningTimestampMillis, Long endTimestampMillis, KafkaConsumer<Bytes, Bytes> consumer) {
         List<TopicMetadata> metadataList = new ArrayList<>();
         for (String t : topicNames) {
             Map<Integer, TopicPartition> partitions = IntStream.rangeClosed(0, consumer.partitionsFor(t).size() - 1).boxed().collect(Collectors.toMap(Function.identity(), p -> new TopicPartition(t, p)));

@@ -3,6 +3,8 @@ package com.consdata.kouncil.topic;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,6 +13,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.utils.Bytes;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +30,9 @@ import java.util.stream.IntStream;
 @SuppressWarnings("java:S6212") //val
 public class TopicController extends AbstractMessagesController {
 
-    public TopicController(KafkaConnectionService kafkaConnectionService) {
-        super(kafkaConnectionService);
+    public TopicController(KafkaConnectionService kafkaConnectionService,
+                           DeserializationService deserializationService) {
+        super(kafkaConnectionService, deserializationService);
     }
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}")
@@ -45,7 +49,7 @@ public class TopicController extends AbstractMessagesController {
         validateTopics(serverId, Collections.singletonList(topicName));
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
-        try (KafkaConsumer<String, String> consumer = kafkaConnectionService.getKafkaConsumer(serverId, limit)) {
+        try (KafkaConsumer<Bytes, Bytes> consumer = kafkaConnectionService.getKafkaConsumer(serverId, limit)) {
             TopicMetadata metadata = prepareMetadata(topicName, partitions, beginningTimestampMillis, endTimestampMillis, offset, consumer);
             log.debug("TCM20 metadata={}", metadata);
 
@@ -104,7 +108,7 @@ public class TopicController extends AbstractMessagesController {
             Long beginningTimestampMillis,
             Long endTimestampMillis,
             Long offset,
-            KafkaConsumer<String, String> consumer) {
+            KafkaConsumer<Bytes, Bytes> consumer) {
         Map<Integer, TopicPartition> partitionMap;
         Collector<Integer, ?, Map<Integer, TopicPartition>> integerMapCollector = Collectors.toMap(Function.identity(), p -> new TopicPartition(topicName, p));
         if (partitions.equalsIgnoreCase("all")) {
@@ -135,28 +139,32 @@ public class TopicController extends AbstractMessagesController {
      * Sometimes poll after seek returns none or few results.
      * So we try to call it until we receive two consecutive empty polls or have enught messages
      */
-    private void pollMessages(int limit, KafkaConsumer<String, String> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
+    private void pollMessages(int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
         int emptyPolls = 0;
         int messegesCount = 0;
         while (emptyPolls < 3 && messegesCount < limit) {
-            ConsumerRecords<String, String> records = getConsumerRecords(consumer);
+            ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer);
             if (records.isEmpty()) {
                 emptyPolls++;
             } else {
                 emptyPolls = 0;
             }
-            for (ConsumerRecord<String, String> consumerRecord : records) {
+            for (ConsumerRecord<Bytes, Bytes> consumerRecord : records) {
                 if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
                     log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffsets.get(consumerRecord.partition()));
                     messegesCount = limit;
                     continue;
                 }
+
+                DeserializedValue deserializedValue = deserializationService.deserialize(consumerRecord);
+                // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
+
                 if (messegesCount < limit) {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
-                            .key(consumerRecord.key())
-                            .value(consumerRecord.value())
+                            .key(deserializedValue.getDeserializedKey())
+                            .value(deserializedValue.getDeserializedValue())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
                             .topic(consumerRecord.topic())
@@ -168,9 +176,9 @@ public class TopicController extends AbstractMessagesController {
         }
     }
 
-    private ConsumerRecords<String, String> getConsumerRecords(KafkaConsumer<String, String> consumer) {
+    private ConsumerRecords<Bytes, Bytes> getConsumerRecords(KafkaConsumer<Bytes, Bytes> consumer) {
         long startTime = System.nanoTime();
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        ConsumerRecords<Bytes, Bytes> records = consumer.poll(Duration.ofMillis(100));
         log.debug("TCM40 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
         return records;
     }

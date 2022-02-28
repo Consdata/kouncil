@@ -12,6 +12,10 @@
         <version>1.2-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <kafka.protobuf.version>7.0.1</kafka.protobuf.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -50,6 +54,13 @@
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>1.1.8.4</version>
+        </dependency>
+
+        <!-- Kafka formatters -->
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-protobuf-serializer</artifactId>
+            <version>${kafka.protobuf.version}</version>
         </dependency>
 
         <!-- swagger -->
