@@ -25,6 +25,8 @@ logging:
 #          key-password: ExampleKeyPassword123
 #          key-store-password: ExampleKeyStorePassword123
 #          trust-store-password: ExampleTrustStorePassword123
+#      schemaRegistry:
+#        url: "http://localhost:8081"
 #      brokers:
 #        - host: 127.0.0.1
 #          port: 9092
