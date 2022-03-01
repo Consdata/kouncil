@@ -14,6 +14,7 @@ public class SerdeService {
     private final ProtobufMessageFormatter protobufMessageFormatter;
     private final AvroMessageFormatter avroMessageFormatter;
     private final JsonSchemaMessageFormatter jsonSchemaMessageFormatter;
+    private final MessageSerde messageSerde;
 
     public SerdeService(
             // SchemaRegistryService schemaRegistryService
@@ -23,18 +24,15 @@ public class SerdeService {
         this.protobufMessageFormatter = new ProtobufMessageFormatter(schemaRegistryClient);
         this.avroMessageFormatter = new AvroMessageFormatter();
         this.jsonSchemaMessageFormatter = new JsonSchemaMessageFormatter();
+        this.messageSerde = schemaRegistryClient == null ? new StringMessageSerde() : new SchemaMessageSerde();
     }
 
     public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message) {
-        MessageSerde messageSerde;
-        if (schemaRegistryClient == null) {
-            messageSerde = new SchemalessMessageSerde();
+        if (messageSerde instanceof StringMessageSerde) {
             return messageSerde.deserialize(message, stringMessageFormatter, stringMessageFormatter);
         } else {
             MessageFormatter keyFormatter = formatter(getFormatForKey(message.topic()));
             MessageFormatter valueFormatter = formatter(getFormatForValue(message.topic()));
-
-            messageSerde = new SchemaMessageSerde(schemaRegistryClient);
             return messageSerde.deserialize(message, keyFormatter, valueFormatter);
         }
     }
