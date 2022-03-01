@@ -42,4 +42,12 @@
 		<module>kouncil-backend</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>confluent</id>
+			<name>confluent</name>
+			<url>https://packages.confluent.io/maven/</url>
+		</repository>
+	</repositories>
+
 </project>
