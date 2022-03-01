@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 @Slf4j
@@ -37,6 +38,9 @@ public class KouncilConfiguration {
 
     @Value("${bootstrapServers:}")
     private List<String> initialBootstrapServers = new ArrayList<>();
+
+    @Value("${schemaRegistryUrl:}")
+    private String schemaRegistryUrl;
 
     private List<ClusterConfig> clusters;
 
@@ -106,7 +110,7 @@ public class KouncilConfiguration {
     }
 
     private void initializeSimpleConfig() {
-        log.info("Using simple Kouncil configuration, {}", initialBootstrapServers);
+        log.info("Using simple Kouncil configuration: bootstrapServers={}, schemaRegistryUrl={}", initialBootstrapServers, schemaRegistryUrl);
         clusterConfig = new HashMap<>();
         for (String initialBootstrapServer : initialBootstrapServers) {
             String clusterId = sanitizeClusterId(initialBootstrapServer);
@@ -124,6 +128,12 @@ public class KouncilConfiguration {
                                 .port(brokerPort)
                                 .build())
                         .build();
+
+                if (isNotBlank(schemaRegistryUrl)) {
+                    simpleClusterConfig.setSchemaRegistry(SchemaRegistryConfig.builder()
+                            .url(schemaRegistryUrl)
+                            .build());
+                }
                 this.clusterConfig.put(clusterId, simpleClusterConfig);
             } else {
                 throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
