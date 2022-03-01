@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <kafka.protobuf.version>7.0.1</kafka.protobuf.version>
+        <confluent.version>7.0.1</confluent.version>
     </properties>
 
     <dependencies>
@@ -56,11 +56,21 @@
             <version>1.1.8.4</version>
         </dependency>
 
-        <!-- Kafka formatters -->
+        <!-- Kafka serializers -->
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-protobuf-serializer</artifactId>
-            <version>${kafka.protobuf.version}</version>
+            <version>${confluent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>${confluent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-json-schema-serializer</artifactId>
+            <version>${confluent.version}</version>
         </dependency>
 
         <!-- swagger -->
