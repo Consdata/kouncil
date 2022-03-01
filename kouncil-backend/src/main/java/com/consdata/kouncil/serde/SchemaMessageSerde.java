@@ -1,17 +1,26 @@
-package com.consdata.kouncil.serde.deserialization;
+package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.formatter.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.ProtobufMessageFormatter;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-public class MessageDeserializer {
+public class SchemaMessageSerde implements MessageSerde {
 
-    public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message) {
+    private final SchemaRegistryClient schemaRegistryClient;
+
+    public SchemaMessageSerde(SchemaRegistryClient schemaRegistryClient) {
+        this.schemaRegistryClient = schemaRegistryClient;
+    }
+
+    @Override
+    public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message,
+                                         MessageFormatter keyFormatter,
+                                         MessageFormatter valueFormatter) {
         var builder = DeserializedValue.builder();
         if (message.key() != null) {
             Optional<Integer> keySchemaId = getSchemaId(message.key());

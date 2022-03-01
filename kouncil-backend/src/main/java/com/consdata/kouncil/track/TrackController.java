@@ -2,8 +2,8 @@ package com.consdata.kouncil.track;
 
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.serde.deserialization.DeserializationService;
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
+import com.consdata.kouncil.serde.SerdeService;
+import com.consdata.kouncil.serde.DeserializedValue;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +47,8 @@ public class TrackController extends AbstractMessagesController {
                            WebSocketMessageBrokerStats webSocketMessageBrokerStats,
                            DestinationStore destinationStore,
                            EventMatcher eventMatcher,
-                           DeserializationService deserializationService) {
-        super(kafkaConnectionService, deserializationService);
+                           SerdeService serdeService) {
+        super(kafkaConnectionService, serdeService);
         this.eventSender = eventSender;
         this.executor = executor;
         this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
@@ -128,7 +128,7 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        DeserializedValue deserializedValue = deserializationService.deserialize(consumerRecord);
+                        DeserializedValue deserializedValue = serdeService.deserialize(consumerRecord);
                         // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedValue.getDeserializedValue())) {

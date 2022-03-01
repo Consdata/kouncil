@@ -4,5 +4,5 @@ public enum MessageFormat {
     JSON_SCHEMA,
     PROTOBUF,
     AVRO,
-    SCHEMALESS
+    STRING
 }

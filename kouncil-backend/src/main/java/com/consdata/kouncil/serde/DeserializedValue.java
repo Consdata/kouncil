@@ -1,6 +1,5 @@
-package com.consdata.kouncil.serde.deserialization;
+package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.serde.MessageFormat;
 import lombok.Builder;
 import lombok.Value;
 

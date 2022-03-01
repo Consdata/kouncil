@@ -3,8 +3,8 @@ package com.consdata.kouncil.topic;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.serde.deserialization.DeserializationService;
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
+import com.consdata.kouncil.serde.SerdeService;
+import com.consdata.kouncil.serde.DeserializedValue;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -31,8 +31,8 @@ import java.util.stream.IntStream;
 public class TopicController extends AbstractMessagesController {
 
     public TopicController(KafkaConnectionService kafkaConnectionService,
-                           DeserializationService deserializationService) {
-        super(kafkaConnectionService, deserializationService);
+                           SerdeService serdeService) {
+        super(kafkaConnectionService, serdeService);
     }
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}")
@@ -156,7 +156,7 @@ public class TopicController extends AbstractMessagesController {
                     continue;
                 }
 
-                DeserializedValue deserializedValue = deserializationService.deserialize(consumerRecord);
+                DeserializedValue deserializedValue = serdeService.deserialize(consumerRecord);
                 // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                 if (messegesCount < limit) {
