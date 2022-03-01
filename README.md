@@ -136,6 +136,12 @@ If you have multiple clusters and wish to manage them all with Kouncil, you can 
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092,kafka1.another.cluster:8001" consdata/kouncil:latest
 ```
 
+If you want to set Schema Registry url use `schemaRegistryUrl` environment variable, for instance:
+```bash
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" -e schemaRegistryUrl="http://schema.registry:8081" consdata/kouncil:latest
+```
+This url will be used for every cluster in `boostrapServers` variable. If you want to be more specific go to [Advanced configuration](#docker---advanced-configuration).
+
 In order to change the port on which Kouncil listens for connections, just modify the `-p` argument, like so:
 
 ```bash
@@ -164,6 +170,8 @@ Format of `kouncil.yaml` is described below.
 kouncil:
   clusters:
     - name: transaction-cluster
+      schemaRegistry:
+        url: "http://schema.registry:8081"
       brokers:
         - host: 192.10.0.1
           port: 9092
@@ -172,6 +180,8 @@ kouncil:
         - host: 192.10.0.3
           port: 9094
     - name: kouncil
+      schemaRegistry:
+        url: "http://another.schema.registry:8081"
       brokers:
         - host: kouncil.kafka.local
           port: 8001

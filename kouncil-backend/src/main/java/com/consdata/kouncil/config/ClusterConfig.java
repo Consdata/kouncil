@@ -13,6 +13,8 @@ public class ClusterConfig {
 
     private String name;
 
+    private SchemaRegistryConfig schemaRegistry;
+
     private Integer jmxPort;
 
     private String jmxUser;
