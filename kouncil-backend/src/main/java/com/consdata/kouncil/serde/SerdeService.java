@@ -1,63 +1,87 @@
 package com.consdata.kouncil.serde;
 
+import com.consdata.kouncil.config.KouncilConfiguration;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
 import com.consdata.kouncil.serde.formatter.*;
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.nio.ByteBuffer;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Service
 public class SerdeService {
-
-    private final SchemaRegistryClient schemaRegistryClient;
+    private final Map<String, ClusterAwareSchema> clusterAwareSchema = new ConcurrentHashMap<>();
+    private final KouncilConfiguration kouncilConfiguration;
     private final StringMessageFormatter stringMessageFormatter;
-    private final ProtobufMessageFormatter protobufMessageFormatter;
-    private final AvroMessageFormatter avroMessageFormatter;
-    private final JsonSchemaMessageFormatter jsonSchemaMessageFormatter;
-    private final MessageSerde messageSerde;
 
-    public SerdeService(
-            // SchemaRegistryService schemaRegistryService
-    ) {
-        this.schemaRegistryClient = null; //schemaRegistryService.createSchemaRegistryClient()
+    public SerdeService(KouncilConfiguration kouncilConfiguration) {
+        this.kouncilConfiguration = kouncilConfiguration;
         this.stringMessageFormatter = new StringMessageFormatter();
-        this.protobufMessageFormatter = new ProtobufMessageFormatter(schemaRegistryClient);
-        this.avroMessageFormatter = new AvroMessageFormatter();
-        this.jsonSchemaMessageFormatter = new JsonSchemaMessageFormatter();
-        this.messageSerde = schemaRegistryClient == null ? new StringMessageSerde() : new SchemaMessageSerde();
     }
 
-    public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message) {
-        if (messageSerde instanceof StringMessageSerde) {
+    @PostConstruct
+    public void init() {
+        this.kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
+            SchemaRegistryService schemaRegistryService = new SchemaRegistryService(clusterValue);
+
+            if (schemaRegistryService.getSchemaRegistryClient() != null) {
+                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryService));
+            }
+        });
+    }
+
+    public DeserializedValue deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
+        ClusterAwareSchema clusterAwareSchema = this.clusterAwareSchema.get(clusterId);
+        MessageSerde messageSerde;
+        if (clusterAwareSchema == null) {
+            messageSerde = new StringMessageSerde();
             return messageSerde.deserialize(message, stringMessageFormatter, stringMessageFormatter);
         } else {
-            MessageFormatter keyFormatter = formatter(getFormatForKey(message.topic()));
-            MessageFormatter valueFormatter = formatter(getFormatForValue(message.topic()));
-            return messageSerde.deserialize(message, keyFormatter, valueFormatter);
+            messageSerde = new SchemaMessageSerde();
+
+            MessageFormat keyMessageFormat = clusterAwareSchema.getSchemaRegistryService().getKeySchemaFormat(
+                    message.topic(),
+                    getSchemaId(message.key()).orElseThrow()
+            );
+
+            MessageFormat valueMessageFormat = clusterAwareSchema.getSchemaRegistryService().getValueSchemaFormat(
+                    message.topic(),
+                    getSchemaId(message.value()).orElseThrow()
+            );
+
+            return messageSerde.deserialize(
+                    message,
+                    clusterAwareSchema.getFormatters().get(keyMessageFormat),
+                    clusterAwareSchema.getFormatters().get(valueMessageFormat)
+            );
         }
     }
 
-    private MessageFormat getFormatForKey(String topic) {
-        // TODO pobranie ze schema registry
-        return MessageFormat.PROTOBUF;
+    /**
+     * Schema identifier is fetched from message, because schema could have changed.
+     * Latest schema may be too new for this record.
+     * @param message
+     * @return schema identifier
+     */
+    private Optional<Integer> getSchemaId(Bytes message) {
+        ByteBuffer buffer = ByteBuffer.wrap(message.get());
+        return buffer.get() == 0 ? Optional.of(buffer.getInt()) : Optional.empty();
     }
 
-    private MessageFormat getFormatForValue(String topic) {
-        // TODO pobranie ze schema registry
-        return MessageFormat.PROTOBUF;
-    }
-
-    private MessageFormatter formatter(MessageFormat messageFormat) {
-        switch (messageFormat) {
-            case STRING:
-                return stringMessageFormatter;
-            case PROTOBUF:
-                return protobufMessageFormatter;
-            case AVRO:
-                return avroMessageFormatter;
-            case JSON_SCHEMA:
-                return jsonSchemaMessageFormatter;
-        }
-        return stringMessageFormatter;
+    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryService schemaRegistryService) {
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.AVRO, new AvroMessageFormatter());
+        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
+        return ClusterAwareSchema.builder()
+                .formatters(formatters)
+                .schemaRegistryService(schemaRegistryService)
+                .build();
     }
 }

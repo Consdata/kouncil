@@ -84,7 +84,7 @@ public class TopicController extends AbstractMessagesController {
                     log.debug("TCM62 partition={}, seekTo startOffset={}", partitionIndex, startOffsetForPartition);
                     consumer.seek(partition, startOffsetForPartition);
                 }
-                pollMessages(limit, consumer, metadata.getEndOffsets(), messages);
+                pollMessages(serverId, limit, consumer, metadata.getEndOffsets(), messages);
             }
 
             log.debug("TCM90 poll completed records.size={}", messages.size());
@@ -139,7 +139,7 @@ public class TopicController extends AbstractMessagesController {
      * Sometimes poll after seek returns none or few results.
      * So we try to call it until we receive two consecutive empty polls or have enught messages
      */
-    private void pollMessages(int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
+    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
         int emptyPolls = 0;
         int messegesCount = 0;
         while (emptyPolls < 3 && messegesCount < limit) {
@@ -156,7 +156,7 @@ public class TopicController extends AbstractMessagesController {
                     continue;
                 }
 
-                DeserializedValue deserializedValue = serdeService.deserialize(consumerRecord);
+                DeserializedValue deserializedValue = serdeService.deserialize(clusterId, consumerRecord);
                 // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                 if (messegesCount < limit) {

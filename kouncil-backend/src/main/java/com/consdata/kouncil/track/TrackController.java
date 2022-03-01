@@ -128,7 +128,7 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        DeserializedValue deserializedValue = serdeService.deserialize(consumerRecord);
+                        DeserializedValue deserializedValue = serdeService.deserialize(serverId, consumerRecord);
                         // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedValue.getDeserializedValue())) {

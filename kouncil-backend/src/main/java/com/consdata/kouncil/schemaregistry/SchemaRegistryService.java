@@ -2,6 +2,7 @@ package com.consdata.kouncil.schemaregistry;
 
 import com.consdata.kouncil.config.ClusterConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig;
+import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.SchemaProvider;
 import io.confluent.kafka.schemaregistry.avro.AvroSchemaProvider;
@@ -10,6 +11,8 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import io.confluent.kafka.schemaregistry.json.JsonSchemaProvider;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchemaProvider;
+import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,6 +23,8 @@ public class SchemaRegistryService {
     private static final int SCHEMA_CACHE_SIZE = 100;
     private static final String KEY_SCHEMA_SUFFIX = "-key";
     private static final String VALUE_SCHEMA_SUFFIX = "-value";
+
+    @Getter
     private final SchemaRegistryClient schemaRegistryClient;
 
     public SchemaRegistryService(ClusterConfig clusterConfig) {
@@ -27,17 +32,27 @@ public class SchemaRegistryService {
                 createSchemaRegistryClient(clusterConfig.getSchemaRegistry()) : null;
     }
 
+    @SneakyThrows
+    public MessageFormat getKeySchemaFormat(String topic, Integer schemaId) {
+        return MessageFormat.valueOf(getKeySchemaBySubjectAndId(topic, schemaId).schemaType());
+    }
+
+    @SneakyThrows
+    public MessageFormat getValueSchemaFormat(String topic, Integer schemaId) {
+        return MessageFormat.valueOf(getValueSchemaBySubjectAndId(topic, schemaId).schemaType());
+    }
+
     /**
      * This method is performance-safe, because uses Schema cache
      */
-    public ParsedSchema getKeySchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
+    private ParsedSchema getKeySchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
         return schemaRegistryClient.getSchemaBySubjectAndId(topic.concat(KEY_SCHEMA_SUFFIX), id);
     }
 
     /**
      * This method is performance-safe, because uses Schema cache
      */
-    public ParsedSchema getValueSchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
+    private ParsedSchema getValueSchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
         return schemaRegistryClient.getSchemaBySubjectAndId(topic.concat(VALUE_SCHEMA_SUFFIX), id);
     }
 
