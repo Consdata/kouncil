@@ -8,33 +8,40 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 public class SchemaMessageSerde {
-    public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message,
-                                         MessageFormatter keyFormatter,
-                                         MessageFormatter valueFormatter) {
+    public DeserializedValue deserialize(ClusterAwareSchema clusterAwareSchema,
+                                          ConsumerRecord<Bytes, Bytes> message) {
         var builder = DeserializedValue.builder();
         if (message.key() != null) {
-            Optional<Integer> keySchemaId = getSchemaId(message.key());
+            Integer keySchemaId = getSchemaIdFromMessage(message.key());
+            MessageFormatter keyFormatter = getFormatter(clusterAwareSchema, message.topic(), true, keySchemaId);
+
             builder.deserializedKey(keyFormatter.format(message.topic(), message.key().get()))
                     .keyFormat(keyFormatter.getFormat())
-                    .keySchemaId(keySchemaId.map(String::valueOf).orElse(null));
+                    .keySchemaId(Optional.ofNullable(keySchemaId).map(String::valueOf).orElse(null));
         }
         if (message.value() != null) {
-            Optional<Integer> valueSchemaId = getSchemaId(message.value());
+            Integer valueSchemaId = getSchemaIdFromMessage(message.value());
+            MessageFormatter valueFormatter = getFormatter(clusterAwareSchema, message.topic(), false, valueSchemaId);
             builder.deserializedValue(valueFormatter.format(message.topic(), message.value().get()))
                     .valueFormat(valueFormatter.getFormat())
-                    .valueSchemaId(valueSchemaId.map(String::valueOf).orElse(null));
+                    .valueSchemaId(Optional.ofNullable(valueSchemaId).map(String::valueOf).orElse(null));
         }
         return builder.build();
     }
 
+    private MessageFormatter getFormatter(ClusterAwareSchema clusterAwareSchema, String topic, boolean isKey, Integer keySchemaId) {
+        MessageFormat messageFormat = Optional.ofNullable(keySchemaId)
+                .map(schemaId -> clusterAwareSchema.getSchemaFormat(topic, schemaId, isKey))
+                .orElse(MessageFormat.STRING);
+        return clusterAwareSchema.getFormatter(messageFormat);
+    }
+
     /**
      * Schema identifier is fetched from message, because schema could have changed.
-     * Latest schema may be too new for this record.
-     * @param message
-     * @return schema identifier
+     * Latest schema may be too new.
      */
-    private Optional<Integer> getSchemaId(Bytes message) {
+    private Integer getSchemaIdFromMessage(Bytes message) {
         ByteBuffer buffer = ByteBuffer.wrap(message.get());
-        return buffer.get() == 0 ? Optional.of(buffer.getInt()) : Optional.empty();
+        return buffer.get() == 0 ? buffer.getInt() : null;
     }
 }

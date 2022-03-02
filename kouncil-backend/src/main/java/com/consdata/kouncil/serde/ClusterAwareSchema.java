@@ -12,4 +12,12 @@ import java.util.EnumMap;
 public class ClusterAwareSchema {
     SchemaRegistryService schemaRegistryService;
     EnumMap<MessageFormat, MessageFormatter> formatters;
+
+    public MessageFormat getSchemaFormat(String topic, Integer schemaId, boolean isKey) {
+        return schemaRegistryService.getSchemaFormat(topic, schemaId, isKey);
+    }
+
+    public MessageFormatter getFormatter(MessageFormat messageFormat) {
+        return formatters.get(messageFormat);
+    }
 }

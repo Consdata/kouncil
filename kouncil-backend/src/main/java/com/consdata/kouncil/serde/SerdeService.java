@@ -8,10 +8,8 @@ import org.apache.kafka.common.utils.Bytes;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -43,36 +41,10 @@ public class SerdeService {
     public DeserializedValue deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
         if (this.clusterAwareSchema.containsKey(clusterId)) {
             ClusterAwareSchema clusterAwareSchema = this.clusterAwareSchema.get(clusterId);
-
-            MessageFormat keyMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
-                    message.topic(), message.key(), true);
-
-            MessageFormat valueMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
-                    message.topic(), message.value(), false);
-
-            return schemaMessageSerde.deserialize(
-                    message,
-                    clusterAwareSchema.getFormatters().get(keyMessageFormat),
-                    clusterAwareSchema.getFormatters().get(valueMessageFormat)
-            );
+            return schemaMessageSerde.deserialize(clusterAwareSchema, message);
         } else {
             return stringMessageSerde.deserialize(message);
         }
-    }
-
-    private MessageFormat getFormat(SchemaRegistryService schemaRegistryService, String topic, Bytes value, boolean isKey) {
-        return getSchemaId(value)
-                .map(schemaId -> schemaRegistryService.getSchemaFormat(topic, schemaId, isKey))
-                .orElse(MessageFormat.STRING);
-    }
-
-    /**
-     * Schema identifier is fetched from message, because schema could have changed.
-     * Latest schema may be too new for this record.
-     */
-    private Optional<Integer> getSchemaId(Bytes message) {
-        ByteBuffer buffer = ByteBuffer.wrap(message.get());
-        return buffer.get() == 0 ? Optional.of(buffer.getInt()) : Optional.empty();
     }
 
     private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryService schemaRegistryService) {
