@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SchemaRegistryService {
     private static final int SCHEMA_CACHE_SIZE = 100;
@@ -33,27 +34,16 @@ public class SchemaRegistryService {
     }
 
     @SneakyThrows
-    public MessageFormat getKeySchemaFormat(String topic, Integer schemaId) {
-        return MessageFormat.valueOf(getKeySchemaBySubjectAndId(topic, schemaId).schemaType());
-    }
-
-    @SneakyThrows
-    public MessageFormat getValueSchemaFormat(String topic, Integer schemaId) {
-        return MessageFormat.valueOf(getValueSchemaBySubjectAndId(topic, schemaId).schemaType());
+    public MessageFormat getSchemaFormat(String topic, Integer schemaId, boolean isKey) {
+        return MessageFormat.valueOf(getSchemaBySubjectAndId(topic, schemaId, isKey).schemaType());
     }
 
     /**
      * This method is performance-safe, because uses Schema cache
      */
-    private ParsedSchema getKeySchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
-        return schemaRegistryClient.getSchemaBySubjectAndId(topic.concat(KEY_SCHEMA_SUFFIX), id);
-    }
-
-    /**
-     * This method is performance-safe, because uses Schema cache
-     */
-    private ParsedSchema getValueSchemaBySubjectAndId(String topic, int id) throws RestClientException, IOException {
-        return schemaRegistryClient.getSchemaBySubjectAndId(topic.concat(VALUE_SCHEMA_SUFFIX), id);
+    private ParsedSchema getSchemaBySubjectAndId(String topic, int id, boolean isKey) throws RestClientException, IOException {
+        final String subjectSuffix = isKey ? KEY_SCHEMA_SUFFIX : VALUE_SCHEMA_SUFFIX;
+        return schemaRegistryClient.getSchemaBySubjectAndId(topic.concat(subjectSuffix), id);
     }
 
     private SchemaRegistryClient createSchemaRegistryClient(SchemaRegistryConfig schemaRegistryConfig) {

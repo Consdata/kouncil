@@ -45,15 +45,11 @@ public class SerdeService {
         } else {
             messageSerde = new SchemaMessageSerde();
 
-            MessageFormat keyMessageFormat = clusterAwareSchema.getSchemaRegistryService().getKeySchemaFormat(
-                    message.topic(),
-                    getSchemaId(message.key()).orElseThrow()
-            );
+            MessageFormat keyMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
+                    message.topic(), message.key(), true);
 
-            MessageFormat valueMessageFormat = clusterAwareSchema.getSchemaRegistryService().getValueSchemaFormat(
-                    message.topic(),
-                    getSchemaId(message.value()).orElseThrow()
-            );
+            MessageFormat valueMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
+                    message.topic(), message.value(), false);
 
             return messageSerde.deserialize(
                     message,
@@ -61,6 +57,12 @@ public class SerdeService {
                     clusterAwareSchema.getFormatters().get(valueMessageFormat)
             );
         }
+    }
+
+    private MessageFormat getFormat(SchemaRegistryService schemaRegistryService, String topic, Bytes value, boolean isKey) {
+        return getSchemaId(value)
+                .map(schemaId -> schemaRegistryService.getSchemaFormat(topic, schemaId, isKey))
+                .orElse(MessageFormat.STRING);
     }
 
     /**
@@ -79,6 +81,7 @@ public class SerdeService {
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter());
         formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
+        formatters.put(MessageFormat.STRING, stringMessageFormatter);
         return ClusterAwareSchema.builder()
                 .formatters(formatters)
                 .schemaRegistryService(schemaRegistryService)
