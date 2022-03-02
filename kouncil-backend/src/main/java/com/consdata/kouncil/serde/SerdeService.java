@@ -19,10 +19,14 @@ public class SerdeService {
     private final Map<String, ClusterAwareSchema> clusterAwareSchema = new ConcurrentHashMap<>();
     private final KouncilConfiguration kouncilConfiguration;
     private final StringMessageFormatter stringMessageFormatter;
+    private final StringMessageSerde stringMessageSerde;
+    private final SchemaMessageSerde schemaMessageSerde;
 
     public SerdeService(KouncilConfiguration kouncilConfiguration) {
         this.kouncilConfiguration = kouncilConfiguration;
         this.stringMessageFormatter = new StringMessageFormatter();
+        this.stringMessageSerde = new StringMessageSerde(stringMessageFormatter);
+        this.schemaMessageSerde = new SchemaMessageSerde();
     }
 
     @PostConstruct
@@ -37,13 +41,8 @@ public class SerdeService {
     }
 
     public DeserializedValue deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
-        ClusterAwareSchema clusterAwareSchema = this.clusterAwareSchema.get(clusterId);
-        MessageSerde messageSerde;
-        if (clusterAwareSchema == null) {
-            messageSerde = new StringMessageSerde();
-            return messageSerde.deserialize(message, stringMessageFormatter, stringMessageFormatter);
-        } else {
-            messageSerde = new SchemaMessageSerde();
+        if (this.clusterAwareSchema.containsKey(clusterId)) {
+            ClusterAwareSchema clusterAwareSchema = this.clusterAwareSchema.get(clusterId);
 
             MessageFormat keyMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
                     message.topic(), message.key(), true);
@@ -51,11 +50,13 @@ public class SerdeService {
             MessageFormat valueMessageFormat = getFormat(clusterAwareSchema.getSchemaRegistryService(),
                     message.topic(), message.value(), false);
 
-            return messageSerde.deserialize(
+            return schemaMessageSerde.deserialize(
                     message,
                     clusterAwareSchema.getFormatters().get(keyMessageFormat),
                     clusterAwareSchema.getFormatters().get(valueMessageFormat)
             );
+        } else {
+            return stringMessageSerde.deserialize(message);
         }
     }
 
@@ -68,8 +69,6 @@ public class SerdeService {
     /**
      * Schema identifier is fetched from message, because schema could have changed.
      * Latest schema may be too new for this record.
-     * @param message
-     * @return schema identifier
      */
     private Optional<Integer> getSchemaId(Bytes message) {
         ByteBuffer buffer = ByteBuffer.wrap(message.get());

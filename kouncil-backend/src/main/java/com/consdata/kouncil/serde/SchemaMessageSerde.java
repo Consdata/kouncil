@@ -7,9 +7,7 @@ import org.apache.kafka.common.utils.Bytes;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-public class SchemaMessageSerde implements MessageSerde {
-
-    @Override
+public class SchemaMessageSerde {
     public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message,
                                          MessageFormatter keyFormatter,
                                          MessageFormatter valueFormatter) {
