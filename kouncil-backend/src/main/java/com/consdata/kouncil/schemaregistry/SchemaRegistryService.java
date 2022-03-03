@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class SchemaRegistryService {
     private static final int SCHEMA_CACHE_SIZE = 100;

@@ -1,10 +1,8 @@
 package com.consdata.kouncil.track;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
