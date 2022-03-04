@@ -1,10 +1,8 @@
 package com.consdata.kouncil.track;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
-import org.apache.kafka.common.record.TimestampType;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -19,147 +17,154 @@ class EventMatcherTest {
     @Test
     void should_match_with_IS() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "test", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "Test", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "atest", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "testerka", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "test", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "Test", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "atest", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "testerka", headers, searchValue)).isFalse();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "value", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "Value", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "avalue", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "valuerka", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "value", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "Value", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "avalue", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "valuerka", headers, searchValue)).isFalse();
     }
 
     @Test
     void should_match_with_NOT_IS() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "test", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "Test", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "atest", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "testerka", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "test", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "Test", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "atest", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "testerka", headers, searchValue)).isTrue();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "value", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "Value", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "avalue", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "valuerka", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "value", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "Value", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "avalue", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "valuerka", headers, searchValue)).isTrue();
     }
 
     @Test
     void should_match_with_LIKE() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "test", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "Test", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "est", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "tes", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "test", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "Test", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "est", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "tes", headers, searchValue)).isTrue();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "value", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "Value", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "lue", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "val", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "value", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "Value", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "lue", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "val", headers, searchValue)).isTrue();
     }
 
     @Test
     void should_match_with_NOT_LIKE() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "test", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "Test", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "est", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "tes", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "test", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "Test", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "est", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "tes", headers, searchValue)).isFalse();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "value", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "Value", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "lue", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "val", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "value", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "Value", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "lue", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "val", headers, searchValue)).isFalse();
     }
 
     @Test
     void should_match_with_REGEX() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*e.*", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*u", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "u.*", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*e.*", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, ".*u", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "u.*", headers, searchValue)).isFalse();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u.*", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "u.*", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u.*", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, ".*u", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "u.*", headers, searchValue)).isFalse();
     }
 
     @Test
     void should_handle_empty_filter_value() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "test", "value");
+        Headers headers = prepareHeaders("header", "test");
+        String searchValue = "value";
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", headers, searchValue)).isFalse();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", headers, searchValue)).isFalse();
     }
 
     @Test
     void should_handle_empty_header_or_record_value() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", "", "");
-
+        Headers headers = prepareHeaders("header", "");
+        String searchValue = "";
+        
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", headers, searchValue)).isTrue();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", headers, searchValue)).isTrue();
     }
 
     @Test
     void should_handle_null_header_or_record_value() {
         // given
-        ConsumerRecord<String, String> candidate = prepareConsumerRecord("header", null, null);
+        Headers headers = prepareHeaders("header", null);
+        String searchValue = null;
 
         // when & then
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("header", TrackOperator.REGEX, "", headers, searchValue)).isTrue();
 
-        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", candidate)).isTrue();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", candidate)).isFalse();
-        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", candidate)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.IS, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_IS, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.LIKE, "", headers, searchValue)).isTrue();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.NOT_LIKE, "", headers, searchValue)).isFalse();
+        assertThat(eventMatcher.filterMatch("", TrackOperator.REGEX, "", headers, searchValue)).isTrue();
     }
 
-    private ConsumerRecord<String, String> prepareConsumerRecord(String headerKey, String headerValue, String recordValue) {
-        Headers headers = new RecordHeaders(Arrays.array(new RecordHeader(headerKey, headerValue != null ? headerValue.getBytes(StandardCharsets.UTF_8) : null)));
-        return new ConsumerRecord<>("", 0, 0, 0, TimestampType.NO_TIMESTAMP_TYPE, 0L, 0, 0, "key", recordValue, headers);
+    private Headers prepareHeaders(String headerKey, String headerValue) {
+        return new RecordHeaders(Arrays.array(new RecordHeader(headerKey, headerValue != null ? headerValue.getBytes(StandardCharsets.UTF_8) : null)));
     }
 }

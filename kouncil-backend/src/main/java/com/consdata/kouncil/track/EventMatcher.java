@@ -1,7 +1,6 @@
 package com.consdata.kouncil.track;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.logging.log4j.util.Strings;
@@ -11,11 +10,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EventMatcher {
 
-    public boolean filterMatch(String field, TrackOperator operator, String filterValue, ConsumerRecord<String, String> consumerRecord) {
+    public boolean filterMatch(String field,
+                               TrackOperator operator,
+                               String filterValue,
+                               Headers headers,
+                               String searchingForValue) {
         if (Strings.isNotBlank(field)) {
-            return headerMatch(field, operator, filterValue, consumerRecord.headers());
+            return headerMatch(field, operator, filterValue, headers);
         } else {
-            return plainValueMatch(operator, filterValue, consumerRecord.value() != null ? consumerRecord.value() : "");
+            return plainValueMatch(operator, filterValue, searchingForValue != null ? searchingForValue : "");
         }
     }
 

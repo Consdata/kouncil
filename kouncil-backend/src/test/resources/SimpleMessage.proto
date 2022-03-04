@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.example.simplemessage;
+option java_outer_classname = "SimpleMessageProtos";
+
+message SimpleMessage {
+  string content = 1;
+  int32 some_number = 2;
+  string received_date = 3;
+}
