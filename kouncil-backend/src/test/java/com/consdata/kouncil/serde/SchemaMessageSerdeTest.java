@@ -17,13 +17,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.EnumMap;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SchemaMessageSerdeTest {
+class SchemaMessageSerdeTest {
     private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[] {0, 0, 0, 0, 1, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private final SchemaMessageSerde schemaMessageSerde = new SchemaMessageSerde();
 
@@ -47,7 +48,7 @@ public class SchemaMessageSerdeTest {
     }
 
     @Test
-    public void should_deserialize_protobuf_message() throws URISyntaxException, IOException {
+    void should_deserialize_protobuf_message() throws URISyntaxException, IOException {
         // given
         when(schemaRegistryService.getSchemaFormat(anyString(), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
 
@@ -64,13 +65,18 @@ public class SchemaMessageSerdeTest {
         assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
 
-        var simpleMessageJsonContent = Files.readString(Paths.get(SchemaMessageSerdeTest.class.getClassLoader()
-                .getResource("SimpleMessage.json").toURI())).trim();
+        var simpleMessageJsonContent = Files.readString(
+                Paths.get(Objects.requireNonNull(
+                        SchemaMessageSerdeTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                )).trim();
         assertThat(deserializedValue.getDeserializedValue()).isEqualTo(simpleMessageJsonContent);
+
+        assertThat(deserializedValue.getKeySchemaId()).isNull();
+        assertThat(deserializedValue.getValueSchemaId()).isEqualTo("1");
     }
 
     @Test
-    public void should_deserialize_string_message() {
+    void should_deserialize_string_message() {
         // given
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
                 new Bytes("lorem".getBytes(StandardCharsets.UTF_8)),
@@ -85,6 +91,9 @@ public class SchemaMessageSerdeTest {
         assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedValue.getDeserializedValue()).isEqualTo("ipsum");
         assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
+        assertThat(deserializedValue.getKeySchemaId()).isNull();
+        assertThat(deserializedValue.getValueSchemaId()).isNull();
+
     }
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
