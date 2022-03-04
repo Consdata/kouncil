@@ -11,14 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +30,6 @@ public class SchemaMessageSerdeTest {
 
     @BeforeEach
     public void before() {
-        when(schemaRegistryService.getSchemaFormat(eq("protobuf"), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
         when(schemaRegistryService.getSchemaRegistryClient()).thenReturn(new MockSchemaRegistry());
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
@@ -47,12 +43,14 @@ public class SchemaMessageSerdeTest {
     }
 
     @Test
-    public void should_deserialize_protobuf_value_message() {
+    public void should_deserialize_protobuf_message() {
         // given
+        when(schemaRegistryService.getSchemaFormat(anyString(), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
 
-        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord("protobuf",
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
                 new Bytes("lorem".getBytes(StandardCharsets.UTF_8)),
-                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES));
+                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES)
+        );
 
         // when
         DeserializedValue deserializedValue = schemaMessageSerde.deserialize(clusterAwareSchema, message);
@@ -61,8 +59,23 @@ public class SchemaMessageSerdeTest {
         assertThat(deserializedValue).isNotNull();
     }
 
-    private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(String topic, Bytes key, Bytes value) {
-        return new ConsumerRecord<>(topic,
+    @Test
+    public void should_deserialize_string_message() {
+        // given
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                new Bytes("lorem".getBytes(StandardCharsets.UTF_8)),
+                new Bytes("ipsum".getBytes(StandardCharsets.UTF_8))
+        );
+
+        // when
+        DeserializedValue deserializedValue = schemaMessageSerde.deserialize(clusterAwareSchema, message);
+
+        // then
+        assertThat(deserializedValue).isNotNull();
+    }
+
+    private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
+        return new ConsumerRecord<>("sometopic",
                 0,
                 0,
                 0,
