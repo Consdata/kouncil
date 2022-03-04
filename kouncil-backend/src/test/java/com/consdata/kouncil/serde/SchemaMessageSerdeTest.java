@@ -11,7 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +47,7 @@ public class SchemaMessageSerdeTest {
     }
 
     @Test
-    public void should_deserialize_protobuf_message() {
+    public void should_deserialize_protobuf_message() throws URISyntaxException, IOException {
         // given
         when(schemaRegistryService.getSchemaFormat(anyString(), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
 
@@ -56,7 +60,13 @@ public class SchemaMessageSerdeTest {
         DeserializedValue deserializedValue = schemaMessageSerde.deserialize(clusterAwareSchema, message);
 
         // then
-        assertThat(deserializedValue).isNotNull();
+        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
+
+        var simpleMessageJsonContent = Files.readString(Paths.get(SchemaMessageSerdeTest.class.getClassLoader()
+                .getResource("SimpleMessage.json").toURI())).trim();
+        assertThat(deserializedValue.getDeserializedValue()).isEqualTo(simpleMessageJsonContent);
     }
 
     @Test
@@ -71,7 +81,10 @@ public class SchemaMessageSerdeTest {
         DeserializedValue deserializedValue = schemaMessageSerde.deserialize(clusterAwareSchema, message);
 
         // then
-        assertThat(deserializedValue).isNotNull();
+        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedValue.getDeserializedValue()).isEqualTo("ipsum");
+        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
     }
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
