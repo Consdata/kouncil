@@ -1,8 +1,10 @@
 package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.config.KouncilConfiguration;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryClientBuilder;
 import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
 import com.consdata.kouncil.serde.formatter.*;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,11 @@ public class SerdeService {
     @PostConstruct
     public void init() {
         this.kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
-            SchemaRegistryService schemaRegistryService = new SchemaRegistryService(clusterValue);
+            SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null ?
+                    SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
 
-            if (schemaRegistryService.getSchemaRegistryClient() != null) {
+            if (schemaRegistryClient != null) {
+                SchemaRegistryService schemaRegistryService = new SchemaRegistryService(schemaRegistryClient);
                 this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryService));
             }
         });

@@ -1,5 +1,6 @@
 package com.consdata.kouncil.serde;
 
+import com.consdata.kouncil.MockSchemaRegistryKouncilClient;
 import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
 import com.consdata.kouncil.serde.formatter.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -35,7 +36,7 @@ class SchemaMessageSerdeTest {
 
     @BeforeEach
     public void before() {
-        when(schemaRegistryService.getSchemaRegistryClient()).thenReturn(new MockSchemaRegistry());
+        when(schemaRegistryService.getSchemaRegistryClient()).thenReturn(new MockSchemaRegistryKouncilClient());
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));

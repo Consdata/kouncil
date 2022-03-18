@@ -1,4 +1,4 @@
-package com.consdata.kouncil.serde;
+package com.consdata.kouncil;
 
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class MockSchemaRegistry implements SchemaRegistryClient {
+public class MockSchemaRegistryKouncilClient implements SchemaRegistryClient {
     @Override
     public Optional<ParsedSchema> parseSchema(String schemaType, String schemaString, List<SchemaReference> references) {
         return Optional.empty();
@@ -41,7 +41,7 @@ public class MockSchemaRegistry implements SchemaRegistryClient {
     public ParsedSchema getSchemaBySubjectAndId(String subject, int id) {
         if (id == 1) {
             // protobuf
-            var protobufSchemaPath = Paths.get(MockSchemaRegistry.class.getClassLoader()
+            var protobufSchemaPath = Paths.get(MockSchemaRegistryKouncilClient.class.getClassLoader()
                     .getResource("SimpleMessage.proto").toURI());
             return new ProtobufSchema(Files.readString(protobufSchemaPath));
         } else if (id == 2) {
