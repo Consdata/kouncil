@@ -83,7 +83,7 @@ public class KouncilConfiguration {
     private boolean compareHosts(String host1, String host2) {
         try {
             InetAddress host1InetAddress = InetAddress.getByName(host1);
-            InetAddress host2InetAddress = InetAddress.getByName(host1);
+            InetAddress host2InetAddress = InetAddress.getByName(host2);
             return host1InetAddress.getHostAddress().equals(host2InetAddress.getHostAddress());
         } catch (UnknownHostException e) {
             log.warn("Could not compare hosts {} - {}", host1, host2, e);
