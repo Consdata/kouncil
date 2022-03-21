@@ -1,5 +1,6 @@
 package com.consdata.kouncil;
 
+import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +60,9 @@ public class MockSchemaRegistryKouncilClient implements SchemaRegistryClient {
     }
 
     @Override
-    public SchemaMetadata getLatestSchemaMetadata(String subject) throws IOException, RestClientException {
-        return null;
+    @SneakyThrows
+    public SchemaMetadata getLatestSchemaMetadata(String subject) {
+        return new SchemaMetadata(1, 1, MessageFormat.PROTOBUF.name(), Collections.emptyList(), "TODO");
     }
 
     @Override
