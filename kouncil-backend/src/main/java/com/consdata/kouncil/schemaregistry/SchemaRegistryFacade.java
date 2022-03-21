@@ -2,6 +2,7 @@ package com.consdata.kouncil.schemaregistry;
 
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
+import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import lombok.Getter;
@@ -30,10 +31,9 @@ public class SchemaRegistryFacade {
      * This method is not using Schema cache to fetch the latest metadata
      */
     @SneakyThrows
-    public ParsedSchema getLatestSchema(String topic, boolean isKey) {
+    public SchemaMetadata getLatestSchemaMetadata(String topic, boolean isKey) {
         final String subject = topic.concat(getSubjectSuffix(isKey));
-        final int schemaId = schemaRegistryClient.getLatestSchemaMetadata(subject).getId();
-        return getSchemaBySubjectAndId(subject, schemaId);
+        return schemaRegistryClient.getLatestSchemaMetadata(subject);
     }
 
     /**

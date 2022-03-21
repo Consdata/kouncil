@@ -27,12 +27,12 @@ public class SchemaRegistryController {
             return SchemasDTO.builder()
                     .keyPlainTextSchema(clusterAwareSchema
                             .getSchemaRegistryFacade()
-                            .getLatestSchema(topicName, true)
-                            .canonicalString())
+                            .getLatestSchemaMetadata(topicName, true)
+                            .getSchema())
                     .valuePlainTextSchema(clusterAwareSchema
                             .getSchemaRegistryFacade()
-                            .getLatestSchema(topicName, false)
-                            .canonicalString())
+                            .getLatestSchemaMetadata(topicName, false)
+                            .getSchema())
                     .build();
         } else {
             log.warn("Schema registry not configured for specified cluster={}", serverId);

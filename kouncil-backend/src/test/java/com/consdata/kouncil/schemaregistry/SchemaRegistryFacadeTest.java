@@ -51,13 +51,12 @@ class SchemaRegistryFacadeTest {
     void should_get_latest_value_schema() {
         // given
         when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-value"))).thenReturn(schemaMetadata);
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        ParsedSchema parsedSchema = schemaRegistryFacade.getLatestSchema("test-topic", false);
+        SchemaMetadata schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", false);
 
         // then
-        assertThat(parsedSchema).isNotNull();
+        assertThat(schemaMetadata).isNotNull();
     }
 
     @Test
@@ -65,13 +64,12 @@ class SchemaRegistryFacadeTest {
     void should_get_latest_key_schema() {
         // given
         when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-key"))).thenReturn(schemaMetadata);
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        ParsedSchema parsedSchema = schemaRegistryFacade.getLatestSchema("test-topic", true);
+        SchemaMetadata schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", true);
 
         // then
-        assertThat(parsedSchema).isNotNull();
+        assertThat(schemaMetadata).isNotNull();
     }
 
     @Test
