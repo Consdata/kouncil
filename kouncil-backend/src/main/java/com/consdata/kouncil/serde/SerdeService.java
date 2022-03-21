@@ -51,6 +51,10 @@ public class SerdeService {
         }
     }
 
+    public ClusterAwareSchema getClusterAwareSchema(String serverId) {
+        return clusterAwareSchema.get(serverId);
+    }
+
     private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryFacade schemaRegistryFacade) {
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
