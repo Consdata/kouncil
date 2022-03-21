@@ -22,13 +22,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SchemaRegistryServiceTest {
+class SchemaRegistryFacadeTest {
 
     @Mock
     private MockSchemaRegistryClient mockSchemaRegistryClient;
 
     @InjectMocks
-    private SchemaRegistryService schemaRegistryService;
+    private SchemaRegistryFacade schemaRegistryFacade;
 
     private SchemaMetadata schemaMetadata;
     private ParsedSchema parsedProtobufSchema;
@@ -40,7 +40,7 @@ class SchemaRegistryServiceTest {
         parsedProtobufSchema = new ProtobufSchema(
                 Files.readString(
                         Paths.get(
-                                SchemaRegistryServiceTest.class.getClassLoader().getResource("SimpleMessage.proto").toURI()
+                                SchemaRegistryFacadeTest.class.getClassLoader().getResource("SimpleMessage.proto").toURI()
                         )
                 )
         );
@@ -54,7 +54,7 @@ class SchemaRegistryServiceTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        ParsedSchema parsedSchema = schemaRegistryService.getLatestSchema("test-topic", false);
+        ParsedSchema parsedSchema = schemaRegistryFacade.getLatestSchema("test-topic", false);
 
         // then
         assertThat(parsedSchema).isNotNull();
@@ -68,7 +68,7 @@ class SchemaRegistryServiceTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        ParsedSchema parsedSchema = schemaRegistryService.getLatestSchema("test-topic", true);
+        ParsedSchema parsedSchema = schemaRegistryFacade.getLatestSchema("test-topic", true);
 
         // then
         assertThat(parsedSchema).isNotNull();
@@ -81,7 +81,7 @@ class SchemaRegistryServiceTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        MessageFormat schemaFormat = schemaRegistryService.getSchemaFormat("test-topic", 1, true);
+        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat("test-topic", 1, true);
 
         // then
         assertThat(schemaFormat).isEqualTo(MessageFormat.PROTOBUF);
@@ -94,7 +94,7 @@ class SchemaRegistryServiceTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        MessageFormat schemaFormat = schemaRegistryService.getSchemaFormat("test-topic", 1, false);
+        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat("test-topic", 1, false);
 
         // then
         assertThat(schemaFormat).isEqualTo(MessageFormat.PROTOBUF);

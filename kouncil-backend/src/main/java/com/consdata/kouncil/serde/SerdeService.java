@@ -2,7 +2,7 @@ package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.schemaregistry.SchemaRegistryClientBuilder;
-import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.formatter.*;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -36,8 +36,8 @@ public class SerdeService {
                     SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
 
             if (schemaRegistryClient != null) {
-                SchemaRegistryService schemaRegistryService = new SchemaRegistryService(schemaRegistryClient);
-                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryService));
+                SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
+                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryFacade));
             }
         });
     }
@@ -51,15 +51,15 @@ public class SerdeService {
         }
     }
 
-    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryService schemaRegistryService) {
+    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryFacade schemaRegistryFacade) {
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter());
         formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
         formatters.put(MessageFormat.STRING, stringMessageFormatter);
         return ClusterAwareSchema.builder()
                 .formatters(formatters)
-                .schemaRegistryService(schemaRegistryService)
+                .schemaRegistryFacade(schemaRegistryFacade)
                 .build();
     }
 }

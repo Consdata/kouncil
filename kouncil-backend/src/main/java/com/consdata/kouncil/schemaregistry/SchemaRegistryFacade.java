@@ -9,14 +9,14 @@ import lombok.SneakyThrows;
 
 import java.io.IOException;
 
-public class SchemaRegistryService {
+public class SchemaRegistryFacade {
     private static final String KEY_SCHEMA_SUFFIX = "-key";
     private static final String VALUE_SCHEMA_SUFFIX = "-value";
 
     @Getter
     private final SchemaRegistryClient schemaRegistryClient;
 
-    public SchemaRegistryService(SchemaRegistryClient schemaRegistryClient) {
+    public SchemaRegistryFacade(SchemaRegistryClient schemaRegistryClient) {
         this.schemaRegistryClient = schemaRegistryClient;
     }
 
