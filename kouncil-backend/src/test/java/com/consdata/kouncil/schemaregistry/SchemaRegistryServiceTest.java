@@ -1,6 +1,5 @@
 package com.consdata.kouncil.schemaregistry;
 
-import com.consdata.kouncil.MockSchemaRegistryKouncilClient;
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
@@ -32,16 +31,16 @@ class SchemaRegistryServiceTest {
     private SchemaRegistryService schemaRegistryService;
 
     private SchemaMetadata schemaMetadata;
-    private ParsedSchema parsedSchema;
+    private ParsedSchema parsedProtobufSchema;
 
     @BeforeEach
     @SneakyThrows
     public void before() {
         schemaMetadata = new SchemaMetadata(1, 1, MessageFormat.PROTOBUF.name(), Collections.emptyList(), "TODO");
-        parsedSchema = new ProtobufSchema(
+        parsedProtobufSchema = new ProtobufSchema(
                 Files.readString(
                         Paths.get(
-                                MockSchemaRegistryKouncilClient.class.getClassLoader().getResource("SimpleMessage.proto").toURI()
+                                SchemaRegistryServiceTest.class.getClassLoader().getResource("SimpleMessage.proto").toURI()
                         )
                 )
         );
@@ -52,7 +51,7 @@ class SchemaRegistryServiceTest {
     void should_get_latest_value_schema() {
         // given
         when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-value"))).thenReturn(schemaMetadata);
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
         ParsedSchema parsedSchema = schemaRegistryService.getLatestSchema("test-topic", false);
@@ -66,7 +65,7 @@ class SchemaRegistryServiceTest {
     void should_get_latest_key_schema() {
         // given
         when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-key"))).thenReturn(schemaMetadata);
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
         ParsedSchema parsedSchema = schemaRegistryService.getLatestSchema("test-topic", true);
@@ -79,7 +78,7 @@ class SchemaRegistryServiceTest {
     @SneakyThrows
     void should_get_key_schema_format() {
         // given
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
         MessageFormat schemaFormat = schemaRegistryService.getSchemaFormat("test-topic", 1, true);
@@ -92,7 +91,7 @@ class SchemaRegistryServiceTest {
     @SneakyThrows
     void should_get_value_schema_format() {
         // given
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
         MessageFormat schemaFormat = schemaRegistryService.getSchemaFormat("test-topic", 1, false);
