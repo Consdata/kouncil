@@ -21,7 +21,7 @@ export class ProtobufUtilsService {
   public fillProtobufSchemaWithData(protobufSchema: string): ProtobufSchemaFields {
     const root = parse(protobufSchema).root;
     const foundTypes = this.traverseTypes(root);
-    return this.fillTypeWithData(foundTypes[0]);
+    return this.fillTypeWithData(foundTypes[0], foundTypes);
   }
 
   private traverseTypes(current: ReflectionObject): Type[] {
@@ -38,15 +38,15 @@ export class ProtobufUtilsService {
     return foundTypes;
   }
 
-  private fillTypeWithData(type: Type): ProtobufSchemaFields {
+  private fillTypeWithData(mainType: Type, foundTypes: Type[]): ProtobufSchemaFields {
     const typeWithData = {};
-    Object.keys(type.fields).forEach((key: string) => {
-      typeWithData[key] = this.getRandomValueBasedOnType(type.fields[key].type);
+    Object.keys(mainType.fields).forEach((key: string) => {
+      typeWithData[key] = this.getRandomValueBasedOnType(mainType.fields[key].type, foundTypes);
     });
     return typeWithData;
   }
 
-  private getRandomValueBasedOnType(type: string): number | string | boolean {
+  private getRandomValueBasedOnType(type: string, foundTypes: Type[]): number | string | boolean | ProtobufSchemaFields {
     if (this.INT_TYPES.includes(type)) {
       return this.getRandomInt();
     }
@@ -62,6 +62,16 @@ export class ProtobufUtilsService {
     if (type === this.BYTES_TYPE) {
       return this.getRandomBytes();
     }
+
+    const subType = this.getFoundSubtype(type, foundTypes);
+    if (subType) {
+      return this.fillTypeWithData(subType, foundTypes);
+    }
+    return type;
+  }
+
+  private getFoundSubtype(type: string, foundTypes: Type[]): Type {
+    return foundTypes.find((foundType: Type) => foundType.name === type);
   }
 
   private getRandomInt(): number {
