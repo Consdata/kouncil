@@ -1,7 +1,10 @@
 package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.formatter.*;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
+import lombok.SneakyThrows;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.utils.Bytes;
@@ -11,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,28 +30,38 @@ class SchemaMessageSerdeTest {
     private final SchemaMessageSerde schemaMessageSerde = new SchemaMessageSerde();
 
     @Mock
-    private SchemaRegistryService schemaRegistryService;
+    private SchemaRegistryFacade schemaRegistryFacade;
 
+    @Mock
+    private SchemaRegistryClient schemaRegistryClient;
     private ClusterAwareSchema clusterAwareSchema;
+    private ProtobufSchema simpleMessageSchema;
 
     @BeforeEach
+    @SneakyThrows
     public void before() {
-        when(schemaRegistryService.getSchemaRegistryClient()).thenReturn(new MockSchemaRegistry());
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         formatters.put(MessageFormat.STRING, new StringMessageFormatter());
 
         clusterAwareSchema = ClusterAwareSchema.builder()
-                .schemaRegistryService(schemaRegistryService)
+                .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build();
+
+        var protobufSchemaPath = Paths.get(SchemaMessageSerdeTest.class.getClassLoader()
+                .getResource("SimpleMessage.proto").toURI());
+        simpleMessageSchema = new ProtobufSchema(Files.readString(protobufSchemaPath));
     }
 
     @Test
-    void should_deserialize_protobuf_message() throws URISyntaxException, IOException {
+    @SneakyThrows
+    void should_deserialize_protobuf_message() {
         // given
-        when(schemaRegistryService.getSchemaFormat(anyString(), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryFacade.getSchemaFormat(anyString(), eq(1), anyBoolean())).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), eq(1))).thenReturn(simpleMessageSchema);
 
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
                 new Bytes("lorem".getBytes(StandardCharsets.UTF_8)),

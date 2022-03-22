@@ -1,8 +1,10 @@
 package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.config.KouncilConfiguration;
-import com.consdata.kouncil.schemaregistry.SchemaRegistryService;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryClientBuilder;
+import com.consdata.kouncil.schemaregistry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.formatter.*;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.stereotype.Service;
@@ -30,10 +32,12 @@ public class SerdeService {
     @PostConstruct
     public void init() {
         this.kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
-            SchemaRegistryService schemaRegistryService = new SchemaRegistryService(clusterValue);
+            SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null ?
+                    SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
 
-            if (schemaRegistryService.getSchemaRegistryClient() != null) {
-                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryService));
+            if (schemaRegistryClient != null) {
+                SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
+                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryFacade));
             }
         });
     }
@@ -47,15 +51,19 @@ public class SerdeService {
         }
     }
 
-    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryService schemaRegistryService) {
+    public ClusterAwareSchema getClusterAwareSchema(String serverId) {
+        return clusterAwareSchema.get(serverId);
+    }
+
+    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryFacade schemaRegistryFacade) {
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryService.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter());
         formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
         formatters.put(MessageFormat.STRING, stringMessageFormatter);
         return ClusterAwareSchema.builder()
                 .formatters(formatters)
-                .schemaRegistryService(schemaRegistryService)
+                .schemaRegistryFacade(schemaRegistryFacade)
                 .build();
     }
 }
