@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { parse, Type, ReflectionObject, Namespace } from 'protobufjs';
+import {parse, Type, ReflectionObject, Namespace, Field} from 'protobufjs';
 
 export interface ProtobufSchemaFields {
-  [key: string]: number | string | boolean;
+  [key: string]: number | string | boolean | ProtobufSchemaFields;
 }
 
 @Injectable({
@@ -40,8 +40,15 @@ export class ProtobufUtilsService {
 
   private fillTypeWithData(mainType: Type, foundTypes: Type[]): ProtobufSchemaFields {
     const typeWithData = {};
-    Object.keys(mainType.fields).forEach((key: string) => {
-      typeWithData[key] = this.getRandomValueBasedOnType(mainType.fields[key].type, foundTypes);
+    mainType.fieldsArray.forEach((field: Field) => {
+      if (field.repeated) {
+        typeWithData[field.name] = [
+          this.getRandomValueBasedOnType(field.type, foundTypes),
+          this.getRandomValueBasedOnType(field.type, foundTypes)
+        ];
+      } else {
+        typeWithData[field.name] = this.getRandomValueBasedOnType(field.type, foundTypes);
+      }
     });
     return typeWithData;
   }

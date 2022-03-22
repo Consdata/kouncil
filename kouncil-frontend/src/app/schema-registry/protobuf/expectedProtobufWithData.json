@@ -1,0 +1,21 @@
+{
+  "stringTest": "abc",
+  "intTest": [
+    123,
+    123
+  ],
+  "booleanTest": false,
+  "bytesTest": "abc",
+  "doubleTest": 123.123,
+  "test1": {
+    "stringTest1": "abc",
+    "test2": [
+      {
+        "doubleTest2": 123.123
+      },
+      {
+        "doubleTest2": 123.123
+      }
+    ]
+  }
+}
