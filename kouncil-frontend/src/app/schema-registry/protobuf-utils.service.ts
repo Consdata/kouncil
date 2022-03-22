@@ -63,15 +63,11 @@ export class ProtobufUtilsService {
       return this.getRandomBytes();
     }
 
-    const subType = this.getFoundSubtype(type, foundTypes);
+    const subType = this.getSubType(type, foundTypes);
     if (subType) {
       return this.fillTypeWithData(subType, foundTypes);
     }
     return type;
-  }
-
-  private getFoundSubtype(type: string, foundTypes: Type[]): Type {
-    return foundTypes.find((foundType: Type) => foundType.name === type);
   }
 
   private getRandomInt(): number {
@@ -92,5 +88,9 @@ export class ProtobufUtilsService {
 
   private getRandomBytes(): string {
     return this.getRandomString();
+  }
+
+  private getSubType(type: string, foundTypes: Type[]): Type {
+    return foundTypes.find((foundType: Type) => foundType.name === type);
   }
 }
