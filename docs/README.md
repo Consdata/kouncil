@@ -1,6 +1,4 @@
 # Kouncil for Apache Kafka
-[![Build Status](https://github.com/Consdata/kouncil/actions/workflows/build.yml/badge.svg)](https://github.com/Consdata/kouncil/actions/workflows/build.yml)
-[![Docker](https://img.shields.io/docker/pulls/consdata/kouncil.svg)](https://hub.docker.com/r/consdata/kouncil)
 
 Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
 
@@ -10,8 +8,6 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 * Cluster monitoring
 * Consumer group monitoring
 * Event Tracking
-
-![Kouncil](.github/img/jumbo.png)
 
 ## Table of Contents
 
@@ -52,10 +48,10 @@ For more advanced configuration consult the [Deployment](#deployment) section.
 | Version                                                                                                                            | Content                                                                                                                                                                                                                                                                                                                                                              | Status |
 |------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--|
 | <b>UI Tweaks Part 1</b>  <br> A handful of fixes based on the most frequently reported comments from our users <br> mid January'21 | <ul> <li> Better logs on broker unavailability <li> Broker config - table improvements </li> <li> Consumer group - Improved lag tracking </li> <li> Consumer group - colour coded </li> <li> Event tracking - date format </li> <li> Event tracking - topic order </li> <li> Event tracking - web socket toggle </li> <li> Tables - Stick it to the left </li> </ul> | Released (1.1) |
-| <b> Not Only JSON </b>  <br> This version will bring the remaining popular message formats <br> end February'21                    | <ul> <li> Schema Registry </li> <li> Avro consumer</li> <li> Avro producer</li><li>Protobuf consumer</li><li>Protobuf producer</li><li>Plaintext handling</li> </ul>                                                                                                                                                                                                 | In progress |
-| <b> Security </b>  <br> Extended Kafka and Kouncil security support <br> mid March'21                                              | <ul> <li> SSL support</li> <li> JAAS authentication </li> <li> LDAP authentication</li> <li> Logged users activity monitoring</li>  </ul>                                                                                                                                                                                                                                                                      | TODO |
-| <b> Cloud </b> <br>Easy way of deploying Kouncil to the cloud<br> end March'21                                                     | <ul> <li>K8s support - helm chart</li>  <li> Terraform (GCP, AWS, Azure) </li> </ul>                                                                                                                                                                                                                                                                                 | TODO |
-| <b> UI Tweaks Part 2 </b> <br>Second batch of frontend improvements<br>end April'21                                                | <ul> <li>Broker list - overview</li> <li>Event tracking - additional columns </li>  <li>Tables - column auto adjustment </li>  <li>Consumer Group - Lag preview </li>  </li>                                                                                                                                                                                         | TODO |
+| <b> Not Only JSON </b>  <br> This version will bring the remaining popular message formats <br> end March'21                    | <ul> <li> Schema Registry </li> <li> Avro consumer</li> <li> Avro producer</li><li>Protobuf consumer</li><li>Protobuf producer</li><li>Plaintext handling</li> </ul>                                                                                                                                                                                                 | In progress |
+| <b> Security </b>  <br> Extended Kafka and Kouncil security support <br> mid April'21                                              | <ul> <li> SSL support</li> <li> JAAS authentication </li> <li> LDAP authentication</li> <li> Logged users activity monitoring</li>  </ul>                                                                                                                                                                                                                                                                      | TODO |
+| <b> Cloud </b> <br>Easy way of deploying Kouncil to the cloud<br> end April'21                                                     | <ul> <li>K8s support - helm chart</li>  <li> Terraform (GCP, AWS, Azure) </li> </ul>                                                                                                                                                                                                                                                                                 | TODO |
+| <b> UI Tweaks Part 2 </b> <br>Second batch of frontend improvements<br>end May'21                                                | <ul> <li>Broker list - overview</li> <li>Event tracking - additional columns </li>  <li>Tables - column auto adjustment </li>  <li>Consumer Group - Lag preview </li>  </li>                                                                                                                                                                                         | TODO |
 
 
 ## Demo app
@@ -136,6 +132,12 @@ If you have multiple clusters and wish to manage them all with Kouncil, you can 
 docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092,kafka1.another.cluster:8001" consdata/kouncil:latest
 ```
 
+If you want to set Schema Registry url use `schemaRegistryUrl` environment variable, for instance:
+```bash
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" -e schemaRegistryUrl="http://schema.registry:8081" consdata/kouncil:latest
+```
+This url will be used for every cluster in `boostrapServers` variable. If you want to be more specific go to [Advanced configuration](#docker---advanced-configuration).
+
 In order to change the port on which Kouncil listens for connections, just modify the `-p` argument, like so:
 
 ```bash
@@ -164,6 +166,8 @@ Format of `kouncil.yaml` is described below.
 kouncil:
   clusters:
     - name: transaction-cluster
+      schemaRegistry:
+        url: "http://schema.registry:8081"
       brokers:
         - host: 192.10.0.1
           port: 9092
@@ -172,6 +176,8 @@ kouncil:
         - host: 192.10.0.3
           port: 9094
     - name: kouncil
+      schemaRegistry:
+        url: "http://another.schema.registry:8081"
       brokers:
         - host: kouncil.kafka.local
           port: 8001
