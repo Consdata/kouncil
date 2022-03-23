@@ -1,7 +1,9 @@
 package com.consdata.kouncil.schemaregistry;
 
 import com.consdata.kouncil.serde.ClusterAwareSchema;
+import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.SerdeService;
+import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,15 +26,13 @@ public class SchemaRegistryController {
                                        @RequestParam String serverId) {
         ClusterAwareSchema clusterAwareSchema = serdeService.getClusterAwareSchema(serverId);
         if (clusterAwareSchema != null) {
+            SchemaMetadata keySchema = clusterAwareSchema.getSchemaRegistryFacade().getLatestSchemaMetadata(topicName, true);
+            SchemaMetadata valueSchema = clusterAwareSchema.getSchemaRegistryFacade().getLatestSchemaMetadata(topicName, false);
             return SchemasDTO.builder()
-                    .keyPlainTextSchema(clusterAwareSchema
-                            .getSchemaRegistryFacade()
-                            .getLatestSchemaMetadata(topicName, true)
-                            .getSchema())
-                    .valuePlainTextSchema(clusterAwareSchema
-                            .getSchemaRegistryFacade()
-                            .getLatestSchemaMetadata(topicName, false)
-                            .getSchema())
+                    .keyMessageFormat(MessageFormat.valueOf(keySchema.getSchemaType()))
+                    .keyPlainTextSchema(keySchema.getSchema())
+                    .valueMessageFormat(MessageFormat.valueOf(valueSchema.getSchemaType()))
+                    .valuePlainTextSchema(valueSchema.getSchema())
                     .build();
         } else {
             log.warn("Schema registry not configured for specified cluster={}", serverId);
