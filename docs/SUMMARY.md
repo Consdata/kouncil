@@ -1,5 +1,5 @@
-# What is Kouncil
-* [What is Kouncil](README.md)
+# Summary
+* [What is Kouncil?](README.md)
 
 ## Getting started
 

@@ -1,6 +1,6 @@
 # Features
 
-Here are some of the main features of Kouncil. This list is not exhaustive, check out our [demo app](https://kouncil-demo.web.app/) or [quickly install Kouncil](#quick-start) to experience them first-hand.
+Here are some of the main features of Kouncil. This list is not exhaustive, check out our [demo app](https://kouncil-demo.web.app/) or [quickly install Kouncil](README.md#quick-start) to experience them first-hand.
 
 ## Advanced record browsing in table format
 
@@ -29,7 +29,7 @@ Monitoring your consumer groups is one of the most important things when dealing
 
 ## Cluster monitoring
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](#docker---advanced-configuration))
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](DEPLOYMENT.md#docker---advanced-configuration))
 
 <p align="left">
   <img src=".github/img/kouncil_brokers.png" width="820">

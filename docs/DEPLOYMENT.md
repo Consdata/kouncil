@@ -6,7 +6,7 @@ There are two ways in which Kouncil can be configured:
 
 ## Docker - simple configuration
 
-Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](#quick-start):
+Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](README.md#quick-start):
 
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
@@ -168,4 +168,6 @@ In the case of both simple and advanced configuration being present, the advance
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 
-```docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest```
+```bash
+docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest
+```
