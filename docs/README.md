@@ -9,6 +9,10 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 * Consumer group monitoring
 * Event Tracking
 
+## Demo app
+
+If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app/)
+
 ## Quick start
 
 The easiest way to start working with Kouncil is by using Docker:
@@ -35,8 +39,3 @@ For more advanced configuration consult the [Deployment](DEPLOYMENT.md#deploymen
 | <b> Security </b>  <br> Extended Kafka and Kouncil security support <br> mid April'21                                              | <ul> <li> SSL support</li> <li> JAAS authentication </li> <li> LDAP authentication</li> <li> Logged users activity monitoring</li>  </ul>                                                                                                                                                                                                                                                                      | TODO |
 | <b> Cloud </b> <br>Easy way of deploying Kouncil to the cloud<br> end April'21                                                     | <ul> <li>K8s support - helm chart</li>  <li> Terraform (GCP, AWS, Azure) </li> </ul>                                                                                                                                                                                                                                                                                 | TODO |
 | <b> UI Tweaks Part 2 </b> <br>Second batch of frontend improvements<br>end May'21                                                | <ul> <li>Broker list - overview</li> <li>Event tracking - additional columns </li>  <li>Tables - column auto adjustment </li>  <li>Consumer Group - Lag preview </li>  </li>                                                                                                                                                                                         | TODO |
-
-
-## Demo app
-
-If you wish to simply check out Kouncil in action, without having to install it, we've prepared a demo site showcasing the main features of Kouncil. The demo site can be found [here](https://kouncil-demo.web.app/)
