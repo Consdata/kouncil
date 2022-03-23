@@ -8,6 +8,8 @@ import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from '../servers.service';
 import {MessageHeader} from '../topic/message-header';
+import {SchemaFacadeService} from '../schema-registry/schema-facade.service';
+import {ExampleSchemaData} from '../schema-registry/schemas.model';
 
 @Component({
   selector: 'app-send',
@@ -26,6 +28,7 @@ export class SendComponent {
               private dialog: MatDialog,
               private snackbar: MatSnackBar,
               private servers: ServersService,
+              private schemaFacade: SchemaFacadeService,
               @Inject(MAT_DIALOG_DATA) public data: {
                 topicName: string,
                 key: string,
@@ -33,9 +36,10 @@ export class SendComponent {
                 headers: MessageHeader[]
               }) {
     console.log(this.data);
+    const exampleData: ExampleSchemaData = schemaFacade.getExampleSchemaData(servers.getSelectedServerId(), data.topicName);
     this.message = new Message(
-      this.data.key,
-      JSON.stringify(this.data.source, null, 2),
+      this.data.key ?? exampleData.exampleKey,
+      this.data.source ? JSON.stringify(this.data.source, null, 2) : exampleData.exampleValue,
       null,
       null,
       null,
