@@ -1,8 +1,8 @@
 # Kouncil for Apache Kafka
 
-Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
+Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface. It's free & open source kafka web UI, [feature-rich](FEATURES.md#features) and [easy to set up](#quick-start)! This simple kafka tool makes your DATA detectible, helps to troubleshoot problems and deliver optimal solutions. Yoy can easily monitor brokers and their condition, consumer groups and their pace along with the current lag or simply view the content of topics in real time.
 
-Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a more comprehensive list check out the [features section](#features).
+Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a more comprehensive list check out the [features section](FEATURES.md#features).
 * Advanced record browsing in table format
 * Multiple cluster support
 * Cluster monitoring
@@ -24,7 +24,7 @@ After the `docker run` command head to [http://localhost](http://localhost).
 
 Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
-For more advanced configuration consult the [Deployment](#deployment) section.
+For more advanced configuration consult the [Deployment](DEPLOYMENT.md#deployment) section.
 
 ## Roadmap
 
