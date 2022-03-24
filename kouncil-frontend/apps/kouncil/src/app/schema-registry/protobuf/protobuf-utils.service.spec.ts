@@ -1,4 +1,4 @@
-import { ProtobufUtilsService } from './protobuf-utils.service';
+import {ProtobufUtilsService} from './protobuf-utils.service';
 import expectedProtobufWithData from './expectedProtobufWithData.json';
 
 const testProtobufSchema = `
@@ -28,9 +28,9 @@ describe('ProtobufUtilsService', () => {
   const service: ProtobufUtilsService = new ProtobufUtilsService();
 
   it('should fill protobuf schema with proper data', () => {
-    spyOn<any>(service, 'getRandomInt').and.returnValue(123);
-    spyOn<any>(service, 'getRandomFloat').and.returnValue(123.123);
-    spyOn<any>(service, 'getRandomString').and.returnValue('abc');
+    service['getRandomInt'] = () => 123;
+    service['getRandomFloat'] = () => 123.123;
+    service['getRandomString'] = () => 'abc';
     const actualProtobufWithData = service.fillProtobufSchemaWithData(testProtobufSchema);
     expect(JSON.stringify(actualProtobufWithData)).toEqual(JSON.stringify(expectedProtobufWithData));
   });
