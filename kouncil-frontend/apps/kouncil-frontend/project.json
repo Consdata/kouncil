@@ -19,11 +19,6 @@
           "apps/kouncil-frontend/src/assets"
         ],
         "styles": ["apps/kouncil-frontend/src/styles.scss"],
-        "stylePreprocessorOptions": {
-          "includePaths": [
-            "src/styles"
-          ]
-        },
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,

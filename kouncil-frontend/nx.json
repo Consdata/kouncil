@@ -1,7 +1,7 @@
 {
   "npmScope": "app",
   "affected": {
-    "defaultBase": "main"
+    "defaultBase": "master"
   },
   "cli": {
     "defaultCollection": "@nrwl/angular",
@@ -35,14 +35,19 @@
       "style": "scss",
       "linter": "eslint",
       "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
+      "e2eTestRunner": "cypress",
+      "prefix": "app"
     },
     "@nrwl/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "jest",
+      "prefix": "pcl"
     },
     "@nrwl/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "displayBlock": true,
+      "inlineTemplate": true,
+      "changeDetection": "OnPush"
     }
   },
   "defaultProject": "kouncil-frontend"
