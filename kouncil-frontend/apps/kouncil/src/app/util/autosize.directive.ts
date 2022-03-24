@@ -1,7 +1,7 @@
 import { AfterContentChecked, Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
-  selector: 'textarea[autosize]'
+  selector: 'app-textarea[autosize]'
 })
 export class AutosizeDirective implements AfterContentChecked {
 

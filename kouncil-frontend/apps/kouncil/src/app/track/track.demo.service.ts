@@ -42,6 +42,7 @@ export class TrackDemoService extends TrackService {
   }
 
   toggleAsyncMode() {
+    // not implemented
   }
 
   private generateMessage(trackFilter: TrackFilter, traceId: string, userId: string): Message {
@@ -65,7 +66,7 @@ export class TrackDemoService extends TrackService {
       new MessageHeader('traceId', traceId),
       new MessageHeader('userId', userId)
     ];
-    if (!!trackFilter.field) {
+    if (trackFilter.field) {
       headers.push(new MessageHeader(trackFilter.field, trackFilter.value));
     }
 

@@ -1,11 +1,11 @@
 export class RandomUtils {
 
   private static createRandomIban(): string {
-    let ktnr, iban;
-    let pruef, pruef2;
-    ktnr = (Math.round(Math.random() * 8999999) + 1000000);
+    let iban;
+    let pruef;
+    const ktnr = (Math.round(Math.random() * 8999999) + 1000000);
     pruef = ((ktnr * 1000000) + 43);
-    pruef2 = pruef % 97;
+    const pruef2 = pruef % 97;
     pruef = 98 - pruef2;
     if (pruef > 9) {
       iban = 'DE';

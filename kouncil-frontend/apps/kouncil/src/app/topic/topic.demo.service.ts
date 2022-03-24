@@ -11,7 +11,7 @@ import {RandomUtils} from '../util/random-utils';
 export class TopicDemoService extends TopicBackendService {
 
   override getMessages(serverId: string, topicName: string, offset?: number): void {
-    const partitionOffsets = {};
+    const partitionOffsets: Record<number, number> = {};
     let totalResults = 0;
     const partitions = demoTopics.filter(t => t.name === topicName)[0].partitions;
     for (let i = 0; i < partitions; i++) {
@@ -31,7 +31,7 @@ export class TopicDemoService extends TopicBackendService {
     this.processMessagesData(data);
   }
 
-  private createRandomMessage(i: number, partitions: number, partitionOffsets: {}, offset?: number): Message {
+  private createRandomMessage(i: number, partitions: number, partitionOffsets: Record<number, number>, offset?: number): Message {
     let partition = RandomUtils.randomInt(0, partitions - 1);
     if (this.selectedPartition !== undefined && this.selectedPartition !== 'all') {
       partition = parseInt(this.selectedPartition, 10);

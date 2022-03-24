@@ -160,7 +160,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     });
 
     this.changeDetectorRef.detectChanges();
-    if (!!this.noDataPlaceholderComponent) {
+    if (this.noDataPlaceholderComponent) {
       this.noDataPlaceholderComponent.currentPhrase = this.searchService.currentPhrase;
       this.noDataPlaceholderComponent.detectChanges();
     }
