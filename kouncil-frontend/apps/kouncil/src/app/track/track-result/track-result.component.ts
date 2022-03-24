@@ -119,7 +119,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
         this.filterRows(phrase);
       });
     this.trackFilterSubscription =
-      this.trackService.trackFilterChange.subscribe((trackFilter) => {
+      this.trackService.trackFilterObservable$.subscribe((trackFilter) => {
         this.getEvents(trackFilter);
       });
   }
@@ -187,7 +187,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
     setTimeout(() => {
       this.trackService
-        .getEvents(
+        .getEvents$(
           this.servers.getSelectedServerId(),
           trackFilter,
           this.asyncHandle

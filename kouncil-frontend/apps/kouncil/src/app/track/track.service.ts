@@ -10,10 +10,10 @@ export abstract class TrackService {
 
   private trackFilter?: TrackFilter;
   private trackFilterChange$: Subject<TrackFilter> = new Subject<TrackFilter>();
-  trackFilterChange: Observable<TrackFilter> = this.trackFilterChange$.asObservable();
+  trackFilterObservable$: Observable<TrackFilter> = this.trackFilterChange$.asObservable();
   trackFinished: EventEmitter<void> = new EventEmitter<void>();
 
-  abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]>;
+  abstract getEvents$(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]>;
 
   setTrackFilter(trackFilter: TrackFilter): void {
     this.trackFilterChange$.next(trackFilter);

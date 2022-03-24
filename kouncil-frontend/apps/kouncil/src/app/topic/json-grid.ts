@@ -99,11 +99,11 @@ export class JsonGrid {
     return this.columns;
   }
 
-  getRows(): any[] {
+  getRows(): unknown[] {
     return this.rows;
   }
 
-  private handleObject(level, value, row, path) {
+  private handleObject(level: number, value: unknown, row: Record<string, unknown>, path: string): void {
     if (level > JsonGrid.MAX_OBJECT_DEPTH) {
       return;
     }

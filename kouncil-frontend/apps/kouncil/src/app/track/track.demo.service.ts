@@ -19,7 +19,7 @@ export class TrackDemoService extends TrackService {
     rxStompService.deactivate();
   }
 
-  getEvents(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
+  getEvents$(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
     const numberOfMessages = RandomUtils.randomInt(3, 10);
     const traceId = Math.random().toString(36).slice(2);
     const userId = RandomUtils.randomInt(100000000, 200000000).toString(10);

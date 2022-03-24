@@ -125,7 +125,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     private servers: ServersService
   ) {
     this.jsonToGridSubscription = this.topicService
-      .getConvertTopicMessagesJsonToGridObservable()
+      .getConvertTopicMessagesJsonToGridObservable$()
       .subscribe((value) => {
         this.jsonToGrid(value);
       });
