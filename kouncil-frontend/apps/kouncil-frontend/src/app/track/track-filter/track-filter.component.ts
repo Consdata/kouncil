@@ -15,7 +15,7 @@ import {Topics} from '../../topics/topics';
                [(ngModel)]="trackFilter.field"/>
         <mat-form-field class="filter-input wrapper-select" floatLabel="never">
           <mat-select name="operator" [(ngModel)]="trackFilter.operator">
-            <mat-option *ngFor="let operator of operators | enumToArray" [value]="operator.index">
+            <mat-option *ngFor="let operator of operators" [value]="operator.index">
               {{operator.name}}
             </mat-option>
           </mat-select>
@@ -78,7 +78,10 @@ export class TrackFilterComponent implements OnInit {
 
   @ViewChild('filtersForm', {static: false}) filtersForm?: NgForm;
 
-  operators = TrackOperator;
+  operators: { name: string; index: number }[] = Object.keys(TrackOperator).filter(e => !isNaN(+e)).map(o => ({
+    index: +o,
+    name: TrackOperator[o]
+  }));
 
   topicList: string[] = [];
   visibleTopicList: string[] = [];
