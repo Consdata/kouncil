@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -24,5 +25,6 @@
     "typeRoots": [
       "node_modules/@types"
     ]
-  }
+  },
+  "exclude": ["node_modules", "tmp"]
 }

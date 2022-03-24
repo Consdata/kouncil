@@ -1,7 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {TopicMetadata, Topics} from 'app/topics/topics';
 import {Subscription} from 'rxjs';
-import {SearchService} from 'app/search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
@@ -11,12 +9,64 @@ import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
 import {FavouritesService} from '../favourites.service';
 import {ServersService} from '../servers.service';
+import {SearchService} from '../search.service';
+import {TopicMetadata, Topics} from './topics';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
 @Component({
   selector: 'app-topics',
-  templateUrl: './topics.component.html',
+  template: `
+    <div class="kafka-topics" *ngIf="filtered">
+      <ng-template #noDataPlaceholder>
+        <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
+      </ng-template>
+      <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
+                     class="topics-table material"
+                     [rows]="filtered"
+                     [rowHeight]="48"
+                     [headerHeight]="24"
+                     [scrollbarH]="false"
+                     [scrollbarV]="false"
+                     [columnMode]="'force'"
+                     [groupRowsBy]="'group'"
+                     [groupExpansionDefault]="true"
+                     [limit]="4"
+                     (sort)="customSort($event)"
+                     (activate)="navigateToTopic($event)"
+                     #table>
+
+        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
+          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template class="datatable-group-header-wrapper">
+            <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All topics'}}</div>
+            <span class="datatable-header-divider"></span>
+            <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
+          <span *ngIf="expanded">HIDE</span>
+          <span *ngIf="!expanded">SHOW</span>
+        </span>
+          </ng-template>
+        </ngx-datatable-group-header>
+
+        <ngx-datatable-column name="Name" cellClass="datatable-cell-wrapper" [width]="500">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
+              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+              {{row.name}}
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Partitions" cellClass="datatable-cell-wrapper" [width]="150">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
+              {{row.partitions}}
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+
+      </ngx-datatable>
+    </div>
+  `,
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {

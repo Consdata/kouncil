@@ -3,8 +3,6 @@ import {TopicMessages} from './topic-messages';
 import {Message} from './message';
 import {TopicBackendService} from './topic.backend.service';
 import {demoTopics} from '../topics/topics.demo.data';
-import {HttpClient} from '@angular/common/http';
-import {ProgressBarService} from '../util/progress-bar.service';
 import {MessageHeader} from './message-header';
 import {Crypto} from '../util/crypto';
 import {RandomUtils} from '../util/random-utils';
@@ -12,11 +10,7 @@ import {RandomUtils} from '../util/random-utils';
 @Injectable()
 export class TopicDemoService extends TopicBackendService {
 
-  constructor(public http: HttpClient, public progressBarService: ProgressBarService) {
-    super(http, progressBarService);
-  }
-
-  getMessages(serverId: string, topicName: string, offset?: number): void {
+  override getMessages(serverId: string, topicName: string, offset?: number): void {
     const partitionOffsets = {};
     let totalResults = 0;
     const partitions = demoTopics.filter(t => t.name === topicName)[0].partitions;

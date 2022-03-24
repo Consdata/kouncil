@@ -1,17 +1,51 @@
 import {Component, OnInit} from '@angular/core';
-import {SearchService} from 'app/search.service';
-import {Broker} from 'app/brokers/broker';
+
 import {Subscription} from 'rxjs';
-import {ProgressBarService} from 'app/util/progress-bar.service';
 import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
 import {BrokerComponent} from '../broker/broker.component';
 import {DrawerService} from '../util/drawer.service';
 import {ServersService} from '../servers.service';
+import {SearchService} from '../search.service';
+import {ProgressBarService} from '../util/progress-bar.service';
+import {Broker} from './broker';
 
 @Component({
   selector: 'app-kafka-brokers',
-  templateUrl: './brokers.component.html',
+  template: `
+    <div class="kafka-brokers">
+      <ng-template #noDataPlaceholder>
+        <app-no-data-placeholder [objectTypeName]="'Broker'"></app-no-data-placeholder>
+      </ng-template>
+      <ngx-datatable *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder"
+                     class="brokers-table material expandable"
+                     [rows]="filteredBrokers"
+                     [rowHeight]="48"
+                     [headerHeight]="48"
+                     [scrollbarH]="false"
+                     [scrollbarV]="false"
+                     [columnMode]="'force'"
+                     (activate)="showBrokerDetails($event)"
+                     #table>
+
+        <ngx-datatable-column [width]="150" prop="id" name="ID"></ngx-datatable-column>
+        <ngx-datatable-column [width]="200" prop="host" name="Host"></ngx-datatable-column>
+        <ngx-datatable-column [width]="150" prop="port" name="Port"></ngx-datatable-column>
+        <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
+        <ngx-datatable-column prop="system" name="System" *ngIf="showJmxStats"></ngx-datatable-column>
+        <ngx-datatable-column prop="availableProcessors" name="CPUs" *ngIf="showJmxStats"></ngx-datatable-column>
+        <ngx-datatable-column prop="systemLoadAverage" name="Load Average" *ngIf="showJmxStats">
+          <ng-template let-value="value" ngx-datatable-cell-template>{{value ? value.toFixed(2) : ''}}</ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="freeMem" name="Free Mem" *ngIf="showJmxStats">
+          <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="totalMem" name="Total Mem" *ngIf="showJmxStats">
+          <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  `,
   styleUrls: ['./brokers.component.scss']
 })
 export class BrokersComponent implements OnInit {

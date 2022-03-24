@@ -1,5 +1,4 @@
-@import 'palette';
-
+@import '../../../styles/palette';
 :host {
   ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label  {
     width: 100%;

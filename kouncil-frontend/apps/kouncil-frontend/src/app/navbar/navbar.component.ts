@@ -1,11 +1,11 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {SearchService} from 'app/search.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Backend} from '../app.backend';
 import {ServersService} from '../servers.service';
+import {SearchService} from '../search.service';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -35,7 +35,7 @@ import {ServersService} from '../servers.service';
           class="search-input"
           type="text"
           placeholder="Search"
-          (input)="onPhraseChange($event.target.value)"
+          (input)="onPhraseChange($any($event).target.value)"
           [(ngModel)]="searchService.currentPhrase"
           #searchInput>
       </div>

@@ -1,7 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "kouncil-frontend": "apps/kouncil-frontend",
-    "kouncil-frontend-e2e": "apps/kouncil-frontend-e2e"
+    "kouncil-frontend": "apps/kouncil-frontend"
   }
 }

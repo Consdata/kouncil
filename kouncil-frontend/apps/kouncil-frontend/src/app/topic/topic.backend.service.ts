@@ -19,7 +19,7 @@ export class TopicBackendService implements TopicService {
   numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
   paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
 
-  constructor(public http: HttpClient, public progressBarService: ProgressBarService) {
+  constructor(protected http: HttpClient, protected progressBarService: ProgressBarService) {
   }
 
   getMessages(serverId: string, topicName: string, offset?: number): void {

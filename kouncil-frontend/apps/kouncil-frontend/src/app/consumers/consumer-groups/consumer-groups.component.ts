@@ -1,8 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {SearchService} from 'app/search.service';
-import {ConsumerGroup, ConsumerGroupsResponse} from 'app/consumers/consumer-groups/consumer-groups';
-import {ProgressBarService} from 'app/util/progress-bar.service';
 import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
@@ -11,12 +8,71 @@ import {ConfirmService} from '../../confirm/confirm.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {FavouritesService} from '../../favourites.service';
 import {ServersService} from '../../servers.service';
+import {SearchService} from '../../search.service';
+import {ProgressBarService} from '../../util/progress-bar.service';
+import {ConsumerGroup, ConsumerGroupsResponse} from './consumer-groups';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
 @Component({
   selector: 'app-kafka-consumer-groups',
-  templateUrl: './consumer-groups.component.html',
+  template:`
+    <div class="kafka-consumer-groups" *ngIf="filtered">
+      <ng-template #noDataPlaceholder>
+        <app-no-data-placeholder [objectTypeName]="'Consumer group'"></app-no-data-placeholder>
+      </ng-template>
+      <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
+                     class="consumer-groups-table material"
+                     [rows]="filtered"
+                     [rowHeight]="48"
+                     [headerHeight]="24"
+                     [scrollbarH]="false"
+                     [scrollbarV]="false"
+                     [columnMode]="'force'"
+                     [groupRowsBy]="'group'"
+                     [groupExpansionDefault]="true"
+                     [limit]="4"
+                     (sort)="customSort($event)"
+                     (activate)="navigateToConsumerGroup($event)"
+                     #table>
+
+        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
+          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+            <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All consumer groups'}}</div>
+            <span class="datatable-header-divider"></span>
+            <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
+          <span *ngIf="expanded">HIDE</span>
+          <span *ngIf="!expanded">SHOW</span>
+        </span>
+          </ng-template>
+        </ngx-datatable-group-header>
+
+        <ngx-datatable-column prop="groupId" name="Group id" cellClass="datatable-cell-wrapper" [width]="500">
+          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
+              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+              {{value}}
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column prop="status" name="Status" cellClass="datatable-cell-wrapper" [width]="190">
+          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]" [ngClass]="getStatusClass(value)">
+              {{value}}
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column cellClass="ngx-actions-column" [width]="240"
+                              [sortable]="false" [resizeable]="false" [canAutoResize]="false">
+          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+            <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  `,
   styleUrls: ['./consumer-groups.component.scss']
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {

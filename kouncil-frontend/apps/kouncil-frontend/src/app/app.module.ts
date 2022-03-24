@@ -1,8 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
-import {NgxDatatableModule} from '@swimlane/ngx-datatable';
-
 import {AppComponent} from './app.component';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
@@ -10,12 +9,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
 import {NavbarComponent} from './navbar/navbar.component';
-import {SearchService} from 'app/search.service';
 import {BrokersComponent} from './brokers/brokers.component';
-import {AutosizeDirective} from 'app/util/autosize.directive';
-import {ConsumerGroupsComponent} from 'app/consumers/consumer-groups/consumer-groups.component';
-import {ConsumerGroupComponent} from 'app/consumers/consumer-group/consumer-group.component';
-import {ToolbarComponent} from 'app/topic/toolbar/toolbar.component';
+import {AutosizeDirective} from './util/autosize.directive';
+import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
+import {ConsumerGroupComponent} from './consumers/consumer-group/consumer-group.component';
+import {ToolbarComponent} from './topic/toolbar/toolbar.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ProgressBarComponent} from './util/progress-bar.component';
@@ -63,6 +61,7 @@ import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
+import {SearchService} from './search.service';
 
 @NgModule({
   declarations: [

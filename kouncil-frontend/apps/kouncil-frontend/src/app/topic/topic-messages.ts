@@ -1,4 +1,4 @@
-import {Message} from 'app/topic/message';
+import {Message} from './message';
 
 export class TopicMessages {
   constructor(public messages: Message[],

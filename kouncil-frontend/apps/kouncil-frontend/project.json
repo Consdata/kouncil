@@ -2,10 +2,10 @@
   "projectType": "application",
   "root": "apps/kouncil-frontend",
   "sourceRoot": "apps/kouncil-frontend/src",
-  "prefix": "myorg",
+  "prefix": "app",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nrwl/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/kouncil-frontend",
@@ -19,7 +19,18 @@
           "apps/kouncil-frontend/src/assets"
         ],
         "styles": ["apps/kouncil-frontend/src/styles.scss"],
-        "scripts": []
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "src/styles"
+          ]
+        },
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
       },
       "configurations": {
         "production": {
@@ -35,10 +46,59 @@
               "maximumError": "4kb"
             }
           ],
+          "optimization": {
+            "scripts": true,
+            "styles": {
+              "minify": true,
+              "inlineCritical": false
+            },
+            "fonts": true
+          },
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
           "fileReplacements": [
             {
               "replace": "apps/kouncil-frontend/src/environments/environment.ts",
               "with": "apps/kouncil-frontend/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "demo": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "optimization": {
+            "scripts": true,
+            "styles": {
+              "minify": true,
+              "inlineCritical": false
+            },
+            "fonts": true
+          },
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/kouncil-frontend/src/environments/environment.ts",
+              "with": "apps/kouncil-frontend/src/environments/environment.demo.ts"
             }
           ],
           "outputHashing": "all"
@@ -55,10 +115,13 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nrwl/angular:webpack-server",
       "configurations": {
         "production": {
           "browserTarget": "kouncil-frontend:build:production"
+        },
+        "demo": {
+          "browserTarget": "kouncil-frontend:build:demo"
         },
         "development": {
           "browserTarget": "kouncil-frontend:build:development"

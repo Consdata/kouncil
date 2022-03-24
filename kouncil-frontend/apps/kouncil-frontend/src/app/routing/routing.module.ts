@@ -1,11 +1,12 @@
 import {Injectable, NgModule} from '@angular/core';
 import {TopicComponent} from '../topic/topic.component';
 import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes} from '@angular/router';
-import {TopicsComponent} from 'app/topics/topics.component';
-import {BrokersComponent} from 'app/brokers/brokers.component';
-import {ConsumerGroupsComponent} from 'app/consumers/consumer-groups/consumer-groups.component';
-import {ConsumerGroupComponent} from 'app/consumers/consumer-group/consumer-group.component';
+
 import {TrackComponent} from '../track/track.component';
+import {BrokersComponent} from '../brokers/brokers.component';
+import {TopicsComponent} from '../topics/topics.component';
+import {ConsumerGroupsComponent} from '../consumers/consumer-groups/consumer-groups.component';
+import {ConsumerGroupComponent} from '../consumers/consumer-group/consumer-group.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {

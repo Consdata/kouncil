@@ -1,4 +1,4 @@
-import { Broker } from 'app/brokers/broker';
+import {Broker} from './broker';
 
 export interface Brokers {
   brokers: Broker[];

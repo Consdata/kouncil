@@ -1,9 +1,6 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {TopicMessages} from 'app/topic/topic-messages';
-import {SearchService} from 'app/search.service';
-import {Observable, Subscription} from 'rxjs';
-import {JsonGrid} from 'app/topic/json-grid';
+
 import {DatePipe} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ProgressBarService} from '../util/progress-bar.service';
@@ -18,6 +15,10 @@ import {TableColumn} from '@swimlane/ngx-datatable/lib/types/table-column.type';
 import {Message} from './message';
 import {JsonGridData} from './json-grid-data';
 import {CustomTableColumn} from './custom-table-column';
+import {Observable, Subscription} from 'rxjs';
+import {SearchService} from '../search.service';
+import {JsonGrid} from './json-grid';
+import {TopicMessages} from './topic-messages';
 
 @Component({
   selector: 'app-topic',
