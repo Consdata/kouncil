@@ -1,13 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Server} from './server';
+import { Injectable } from '@angular/core';
+import { Server } from './server';
 
 @Injectable()
 export abstract class ServersService {
   servers: Server[] = [];
   selectedServerId: string;
-
-  protected constructor() {
-  }
 
   abstract load();
 

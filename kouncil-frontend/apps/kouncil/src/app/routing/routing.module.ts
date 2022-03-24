@@ -1,12 +1,18 @@
-import {Injectable, NgModule} from '@angular/core';
-import {TopicComponent} from '../topic/topic.component';
-import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes} from '@angular/router';
+import { Injectable, NgModule } from '@angular/core';
+import { TopicComponent } from '../topic/topic.component';
+import {
+  ActivatedRouteSnapshot,
+  DetachedRouteHandle,
+  RouteReuseStrategy,
+  RouterModule,
+  Routes,
+} from '@angular/router';
 
-import {TrackComponent} from '../track/track.component';
-import {BrokersComponent} from '../brokers/brokers.component';
-import {TopicsComponent} from '../topics/topics.component';
-import {ConsumerGroupsComponent} from '../consumers/consumer-groups/consumer-groups.component';
-import {ConsumerGroupComponent} from '../consumers/consumer-group/consumer-group.component';
+import { TrackComponent } from '../track/track.component';
+import { BrokersComponent } from '../brokers/brokers.component';
+import { TopicsComponent } from '../topics/topics.component';
+import { ConsumerGroupsComponent } from '../consumers/consumer-groups/consumer-groups.component';
+import { ConsumerGroupComponent } from '../consumers/consumer-group/consumer-group.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -14,7 +20,11 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
     return false;
   }
 
-  store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
+  store(
+    route: ActivatedRouteSnapshot,
+    detachedTree: DetachedRouteHandle
+  ): void {
+    // empty
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
@@ -25,7 +35,10 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
     return null;
   }
 
-  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+  shouldReuseRoute(
+    future: ActivatedRouteSnapshot,
+    curr: ActivatedRouteSnapshot
+  ): boolean {
     return false;
   }
 }
@@ -58,22 +71,25 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'topics',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy', onSameUrlNavigation: 'reload' })
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      relativeLinkResolution: 'legacy',
+      onSameUrlNavigation: 'reload',
+    }),
   ],
-  exports: [
-    RouterModule
-  ],
+  exports: [RouterModule],
   declarations: [],
-  providers: [{
-    provide: RouteReuseStrategy,
-    useClass: ReloadingRouterStrategy
-  }]
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: ReloadingRouterStrategy,
+    },
+  ],
 })
-export class RoutingModule {
-}
+export class RoutingModule {}

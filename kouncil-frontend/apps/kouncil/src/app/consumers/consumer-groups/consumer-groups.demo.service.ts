@@ -1,16 +1,12 @@
-import {Injectable} from '@angular/core';
-import {ConsumerGroupsService} from './consumer-groups.service';
-import {from, Observable} from 'rxjs';
-import {ConsumerGroupsResponse} from './consumer-groups';
-import {demoConsumerGroups} from './consumer-groups.demo.data';
+import { Injectable } from '@angular/core';
+import { ConsumerGroupsService } from './consumer-groups.service';
+import { from, Observable } from 'rxjs';
+import { ConsumerGroupsResponse } from './consumer-groups';
+import { demoConsumerGroups } from './consumer-groups.demo.data';
 
 @Injectable()
 export class ConsumerGroupsDemoService implements ConsumerGroupsService {
-
-  constructor() {
-  }
-
-  deleteConsumerGroup(value: string): Observable<Object> {
+  deleteConsumerGroup(value: string): Observable<Record<string, unknown>> {
     demoConsumerGroups.forEach((consumerGroup, index) => {
       if (consumerGroup.groupId === value) {
         demoConsumerGroups.splice(index, 1);
