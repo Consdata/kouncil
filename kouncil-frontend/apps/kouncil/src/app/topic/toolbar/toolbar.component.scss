@@ -1,0 +1,140 @@
+@import '../../../styles/palette';
+
+:host {
+  width: 100%;
+  height: 40px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+
+  .kafka-toolbar {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    & > * {
+      margin-right: 16px;
+    }
+
+  }
+
+  .switch {
+    color: $main-60;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: $default-border-radius;
+    height: 40px;
+    padding: 0 12px;
+
+    background: $main-0;
+    border: 1px solid $main-20;
+
+    &:hover {
+      border: 1px solid $main-40;
+    }
+
+    ::ng-deep .mat-slide-toggle-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    ::ng-deep .mat-slide-toggle-bar {
+      background: $main-30;
+      height: 16px;
+      width: 30px;
+      padding-right: 1px;
+    }
+
+    ::ng-deep .mat-slide-toggle-ripple {
+      display: none;
+    }
+
+    ::ng-deep .mat-slide-toggle-thumb-container {
+      height: 12px;
+      margin-top: 5px;
+      padding-left: 2px;
+    }
+
+    ::ng-deep .mat-slide-toggle-thumb {
+      width: 11px;
+      height: 11px;
+      background: $main-0;
+    }
+
+    .circle {
+      width: 6px;
+      height: 6px;
+      background: $main-40;
+      border: 5px solid $main-10;
+      border-radius: 50%;
+      margin-left: 12px;
+    }
+
+    &.active {
+      border: 1px solid $blue-30;
+      background: $blue-0;
+      color: $main-100;
+
+      &:hover {
+        border: 1px solid $blue-40;
+      }
+
+      .circle {
+        background: $blue-60;
+        border: 5px solid $blue-10;
+      }
+
+      ::ng-deep .mat-slide-toggle-bar {
+        background: $blue-60;
+      }
+
+      ::ng-deep .mat-slide-toggle-thumb {
+        background: $main-0;
+      }
+    }
+  }
+
+  .action {
+    background: $main-100;
+    color: $main-0;
+    border-radius: $default-border-radius;
+    height: 40px;
+  }
+
+  .offset-wrapper {
+    border: 1px solid $main-20;
+    border-radius: $default-border-radius;
+
+    &:hover {
+      border: 1px solid $main-40;
+      transition: all $default-transition-time;
+    }
+
+    .offset-input {
+      background: $main-0;
+      font-size: 14px;
+      line-height: $default-line-height;
+      min-width: 100px;
+      max-width: 150px;
+      height: 40px;
+      padding: 0 8px;
+    }
+
+    .offset-search-button {
+      min-width: 42px;
+      max-width: 42px;
+      border-radius: 0 $default-border-radius $default-border-radius 0;
+
+      .search-icon::before {
+        content: '\26B2';
+        transform: rotate(-45deg);
+        color: white;
+        position: absolute;
+        left: 12px;
+        top: 2px;
+        font-size: 24px;
+      }
+    }
+  }
+}

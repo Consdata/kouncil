@@ -1,0 +1,13 @@
+@import '../../../styles/palette';
+
+:host {
+  .kafka-consumer-group {
+    overflow-y: auto;
+    height: calc(100% - 22px);
+    padding-top: 22px;
+
+    .brokers-table {
+      width: 100%;
+    }
+  }
+}
