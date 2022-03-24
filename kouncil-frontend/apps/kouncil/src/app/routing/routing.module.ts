@@ -16,28 +16,28 @@ import { ConsumerGroupComponent } from '../consumers/consumer-group/consumer-gro
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
-  shouldDetach(route: ActivatedRouteSnapshot): boolean {
+  shouldDetach(_route: ActivatedRouteSnapshot): boolean {
     return false;
   }
 
   store(
-    route: ActivatedRouteSnapshot,
-    detachedTree: DetachedRouteHandle
+    _route: ActivatedRouteSnapshot,
+    _detachedTree: DetachedRouteHandle
   ): void {
     // empty
   }
 
-  shouldAttach(route: ActivatedRouteSnapshot): boolean {
+  shouldAttach(_route: ActivatedRouteSnapshot): boolean {
     return false;
   }
 
-  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+  retrieve(_route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
     return null;
   }
 
   shouldReuseRoute(
-    future: ActivatedRouteSnapshot,
-    curr: ActivatedRouteSnapshot
+    _future: ActivatedRouteSnapshot,
+    _curr: ActivatedRouteSnapshot
   ): boolean {
     return false;
   }

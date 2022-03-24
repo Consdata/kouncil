@@ -6,11 +6,11 @@ export abstract class ServersService {
   servers: Server[] = [];
   selectedServerId: string;
 
-  abstract load();
-
   getSelectedServerId(): string {
     return this.selectedServerId;
   }
+
+  abstract load(): Promise<boolean>;
 
   getServers(): Server[] {
     return this.servers;

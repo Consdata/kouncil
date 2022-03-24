@@ -10,7 +10,7 @@ import {TopicsDemoService} from './topics.demo.service';
 @Injectable()
 export abstract class TopicsService {
 
-  abstract getTopics(serverId: string): Observable<Topics>;
+  abstract getTopics$(serverId: string): Observable<Topics>;
 }
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {

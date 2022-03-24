@@ -114,7 +114,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchSubscription = this.searchService
-      .getPhraseState('track')
+      .getPhraseState$('track')
       .subscribe((phrase) => {
         this.filterRows(phrase);
       });

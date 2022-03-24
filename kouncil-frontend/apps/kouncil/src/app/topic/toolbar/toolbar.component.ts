@@ -2,6 +2,11 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from '../topic.service';
 import {ServersService} from '../../servers.service';
 
+export enum LiveUpdateState {
+  PLAY = 'play',
+  PAUSE = 'pause'
+}
+
 @Component({
   selector: 'app-kafka-toolbar',
   template:`
@@ -72,9 +77,3 @@ export class ToolbarComponent {
     this.toggleJsonEvent.emit(this.showJsonColumns);
   }
 }
-
-export enum LiveUpdateState {
-  PLAY = 'play',
-  PAUSE = 'pause'
-}
-

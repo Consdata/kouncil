@@ -7,13 +7,13 @@ import { demoBrokerConfig, demoBrokers } from './broker.demo.data';
 
 @Injectable()
 export class BrokerDemoService implements BrokerService {
-  getBrokerConfig(id: string): Observable<BrokerConfig[]> {
+  getBrokerConfig$(_id: string): Observable<BrokerConfig[]> {
     const brokerConfig: BrokerConfig[][] = [];
     brokerConfig.push(demoBrokerConfig);
     return from(brokerConfig);
   }
 
-  getBrokers(): Observable<Brokers> {
+  getBrokers$(): Observable<Brokers> {
     return from([{ brokers: demoBrokers }]);
   }
 }

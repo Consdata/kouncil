@@ -111,7 +111,6 @@ export class TopicComponent implements OnInit, OnDestroy {
   paging$: Observable<Page> = this.topicService.getPagination$();
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
-  @ViewChild('table') table: any;
   @ViewChild('headerTemplate', { static: true })
   headerTemplate?: TemplateRef<unknown>;
 
@@ -132,7 +131,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       });
   }
 
-  private static tryParseJson(message): Record<string, unknown> {
+  private static tryParseJson(message: string): Record<string, unknown> {
     try {
       return JSON.parse(message);
     } catch (e) {
@@ -153,7 +152,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
 
     this.searchSubscription = this.searchService
-      .getPhraseState('topic')
+      .getPhraseState$('topic')
       .subscribe((phrase) => {
         this.filterRows(phrase);
       });

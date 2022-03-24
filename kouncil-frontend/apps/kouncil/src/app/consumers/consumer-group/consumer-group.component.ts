@@ -127,7 +127,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     });
 
     this.searchSubscription = this.searchService
-      .getPhraseState('consumer-group')
+      .getPhraseState$('consumer-group')
       .subscribe((phrase) => {
         this.filter(phrase);
       });
@@ -147,7 +147,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(() =>
           this.consumerGroupService
-            .getConsumerGroup(this.servers.getSelectedServerId(), this.groupId)
+            .getConsumerGroup$(this.servers.getSelectedServerId(), this.groupId)
             .pipe(
               tap((data: ConsumerGroupResponse) => {
                 this.allAssignments = data.consumerGroupOffset;

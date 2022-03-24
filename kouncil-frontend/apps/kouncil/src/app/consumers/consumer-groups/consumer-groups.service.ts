@@ -9,11 +9,11 @@ import { ConsumerGroupsDemoService } from './consumer-groups.demo.service';
 
 @Injectable()
 export abstract class ConsumerGroupsService {
-  abstract getConsumerGroups(
+  abstract getConsumerGroups$(
     serverId: string
   ): Observable<ConsumerGroupsResponse>;
 
-  abstract deleteConsumerGroup(
+  abstract deleteConsumerGroup$(
     serverId: string,
     value: string
   ): Observable<Record<string, unknown>>;

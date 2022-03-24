@@ -9,7 +9,7 @@ import { SendDemoService } from './send.demo.service';
 
 @Injectable()
 export abstract class SendService {
-  abstract send(
+  abstract send$(
     serverId: string,
     topic: string,
     count: number,

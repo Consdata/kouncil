@@ -21,9 +21,9 @@ export class TopicPartitionsComponent {
 
   @Input() topicName?: string;
 
-  @Output() partitionSelected = new EventEmitter<any>();
+  @Output() partitionSelected: EventEmitter<void> = new EventEmitter<void>();
 
-  selectedPartition = this.ALL_PARTITIONS;
+  selectedPartition: string = this.ALL_PARTITIONS;
 
   partitions: number[] = [];
 

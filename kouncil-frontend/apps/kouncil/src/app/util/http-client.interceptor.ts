@@ -24,7 +24,7 @@ export class HttpClientInterceptor implements HttpInterceptor {
             panelClass: ['snackbar-error', 'snackbar']
           });
           this.progressBarService.setProgress(false);
-          return throwError(consoleErrorMessage);
+          return throwError(new Error(consoleErrorMessage));
         })
       );
   }

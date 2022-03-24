@@ -2,19 +2,24 @@ import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { JsonGridData } from './json-grid-data';
 
+export class Column {
+  constructor(public name: string, public nameShort: string) {}
+}
+
 @Injectable()
 export class JsonGrid {
+
+  private static ROWS_LIMIT: number = 1000;
+  private static FRESH_ROWS_TIMEOUT_MILLIS: number = 1000;
+  private static EXPAND_LIST_LIMIT: number = 10;
+  private static EXPAND_OBJECT_LIMIT: number = 100;
+  private static MAX_OBJECT_DEPTH: number = 3;
+
+  private columns: Set<Column> = new Set<Column>();
+  private columnNames: Set<string> = new Set<string>();
+  private rows: unknown[] = [];
+
   constructor(private datePipe: DatePipe) {}
-
-  private static ROWS_LIMIT = 1000;
-  private static FRESH_ROWS_TIMEOUT_MILLIS = 1000;
-  private static EXPAND_LIST_LIMIT = 10;
-  private static EXPAND_OBJECT_LIMIT = 100;
-  private static MAX_OBJECT_DEPTH = 3;
-
-  private columns = new Set<Column>();
-  private columnNames = new Set<string>();
-  private rows: any[] = [];
 
   private static isScalar(propertyValue: any): boolean {
     return (
@@ -43,7 +48,7 @@ export class JsonGrid {
     }
   }
 
-  replaceObjects(objects: JsonGridData[]) {
+  replaceObjects(objects: JsonGridData[]): void {
     this.rows.length = 0;
     const firstLoad = this.rows.length === 0;
     objects.forEach((object) => {
@@ -199,8 +204,4 @@ export class JsonGrid {
       this.columns.add(new Column(name, this.shortenPath(name)));
     }
   }
-}
-
-export class Column {
-  constructor(public name: string, public nameShort: string) {}
 }

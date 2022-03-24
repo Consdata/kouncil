@@ -42,7 +42,7 @@ export class TrackDemoService extends TrackService {
     return false;
   }
 
-  toggleAsyncMode() {
+  toggleAsyncMode(): void {
     // not implemented
   }
 

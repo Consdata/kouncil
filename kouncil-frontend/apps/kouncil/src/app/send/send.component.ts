@@ -165,7 +165,7 @@ export class SendComponent {
 
   onSubmit(): void {
     this.sendService
-      .send(
+      .send$(
         this.servers.getSelectedServerId(),
         this.data.topicName,
         this.countControl.value,

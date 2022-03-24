@@ -10,7 +10,7 @@ import {ConsumerGroupDemoService} from './consumer-group.demo.service';
 @Injectable()
 export abstract class ConsumerGroupService {
 
-  abstract getConsumerGroup(serverId: string, groupId: string): Observable<ConsumerGroupResponse>;
+  abstract getConsumerGroup$(serverId: string, groupId: string): Observable<ConsumerGroupResponse>;
 }
 
 export function consumerGroupServiceFactory(http: HttpClient): ConsumerGroupService {

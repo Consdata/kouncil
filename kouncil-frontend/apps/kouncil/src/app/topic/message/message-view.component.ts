@@ -66,7 +66,7 @@ export class MessageViewComponent implements OnInit {
     }) {
   }
 
-  copyToClipboard(object): void {
+  copyToClipboard(object: string): void {
     this.clipboard.copy(JSON.stringify(object, null, 2));
     this.snackBar.open('Copied successfully', '', {
       duration: 1000,

@@ -5,11 +5,11 @@ import { Message } from '../topic/message';
 
 @Injectable()
 export class SendDemoService implements SendService {
-  send(
-    serverId: string,
-    topic: string,
-    count: number,
-    message: Message
+  send$(
+    _serverId: string,
+    _topic: string,
+    _count: number,
+    _message: Message
   ): Observable<Record<string, unknown>> {
     return from([{}]);
   }

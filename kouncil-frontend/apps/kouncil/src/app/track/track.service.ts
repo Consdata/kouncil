@@ -9,18 +9,18 @@ import {TRACK_DATE_FORMAT} from './track-date-format';
 export abstract class TrackService {
 
   private trackFilter?: TrackFilter;
-  private trackFilterChange: Subject<TrackFilter> = new Subject<TrackFilter>();
-  trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange.asObservable();
+  private trackFilterChange$: Subject<TrackFilter> = new Subject<TrackFilter>();
+  trackFilterChange$: Observable<TrackFilter> = this.trackFilterChange$.asObservable();
   trackFinished: EventEmitter<void> = new EventEmitter<void>();
 
   abstract getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]>;
 
   setTrackFilter(trackFilter: TrackFilter): void {
-    this.trackFilterChange.next(trackFilter);
+    this.trackFilterChange$.next(trackFilter);
   }
 
   abstract isAsyncEnable(): boolean;
-  abstract toggleAsyncMode();
+  abstract toggleAsyncMode(): void;
 
   storeTrackFilter(field: string, value: string, timestamp: number, topicName: string): void {
     this.trackFilter = new TrackFilter(

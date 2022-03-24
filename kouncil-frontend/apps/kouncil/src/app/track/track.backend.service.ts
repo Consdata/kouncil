@@ -41,7 +41,7 @@ export class TrackBackendService extends TrackService {
     return this.asyncEnabled;
   }
 
-  toggleAsyncMode() {
+  toggleAsyncMode(): void {
     this.asyncEnabled = !this.asyncEnabled;
     if (this.asyncEnabled) {
       this.rxStompService.activate();

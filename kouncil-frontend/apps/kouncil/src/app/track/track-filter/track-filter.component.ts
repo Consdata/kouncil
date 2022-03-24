@@ -165,7 +165,7 @@ export class TrackFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.topicsService
-      .getTopics(this.servers.getSelectedServerId())
+      .getTopics$(this.servers.getSelectedServerId())
       .subscribe((topics: Topics) => {
         this.topicList = topics.topics.map((tm) => tm.name);
         this.visibleTopicList = topics.topics.map((tm) => tm.name);

@@ -77,6 +77,12 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
+  consumerGroups: ConsumerGroup[] = [];
+  filtered: ConsumerGroup[] = [];
+  @ViewChild('table') private table?: ElementRef;
+
+  private searchSubscription?: Subscription;
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortService: ArraySortService,
@@ -88,23 +94,17 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private favouritesService: FavouritesService) {
   }
 
-  consumerGroups: ConsumerGroup[] = [];
-  filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table?: ElementRef;
-
-  private searchSubscription?: Subscription;
-
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
-    this.searchSubscription = this.searchService.getPhraseState('consumer-groups').subscribe(
+    this.searchSubscription = this.searchService.getPhraseState$('consumer-groups').subscribe(
       phrase => {
         this.filter(phrase);
       });
   }
 
   private loadConsumerGroups(): void {
-    this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
+    this.consumerGroupsService.getConsumerGroups$(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: ConsumerGroupsResponse) => {
         this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
@@ -137,12 +137,12 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   deleteConsumerGroup(value: string): void {
-    this.confirmService.openConfirmDialog('consumer group', value)
+    this.confirmService.openConfirmDialog$('consumer group', value)
       .pipe(first())
       .subscribe((confirmed) => {
         if (confirmed) {
           this.progressBarService.setProgress(true);
-          this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
+          this.consumerGroupsService.deleteConsumerGroup$(this.servers.getSelectedServerId(), value)
             .pipe(first())
             .subscribe(() => {
               this.loadConsumerGroups();

@@ -6,7 +6,7 @@ import { demoConsumerGroup } from './consumer-group.demo.data';
 
 @Injectable()
 export class ConsumerGroupDemoService implements ConsumerGroupService {
-  getConsumerGroup(
+  getConsumerGroup$(
     serverId: string,
     groupId: string
   ): Observable<ConsumerGroupResponse> {

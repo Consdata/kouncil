@@ -10,7 +10,7 @@ export class SchemaRegistryService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getLatestSchemas(serverId: string, topicName: string): Observable<Schemas> {
+  getLatestSchemas$(serverId: string, topicName: string): Observable<Schemas> {
     const params = new HttpParams().set('serverId', serverId);
     return this.httpClient.get<Schemas>(`/api/schemas/latest/${topicName}`, {params});
   }

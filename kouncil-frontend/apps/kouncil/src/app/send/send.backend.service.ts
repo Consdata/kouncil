@@ -10,7 +10,7 @@ import { Message } from '../topic/message';
 export class SendBackendService implements SendService {
   constructor(private http: HttpClient) {}
 
-  send(
+  send$(
     serverId: string,
     topic: string,
     count: number,

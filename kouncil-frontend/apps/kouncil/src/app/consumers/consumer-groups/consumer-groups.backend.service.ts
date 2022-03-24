@@ -10,7 +10,7 @@ import { ConsumerGroupsResponse } from './consumer-groups';
 export class ConsumerGroupsBackendService implements ConsumerGroupsService {
   constructor(private http: HttpClient) {}
 
-  deleteConsumerGroup(
+  deleteConsumerGroup$(
     serverId: string,
     value: string
   ): Observable<Record<string, unknown>> {
@@ -21,7 +21,7 @@ export class ConsumerGroupsBackendService implements ConsumerGroupsService {
     );
   }
 
-  getConsumerGroups(serverId: string): Observable<ConsumerGroupsResponse> {
+  getConsumerGroups$(serverId: string): Observable<ConsumerGroupsResponse> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.get<ConsumerGroupsResponse>(`/api/consumer-groups`, {
       params,

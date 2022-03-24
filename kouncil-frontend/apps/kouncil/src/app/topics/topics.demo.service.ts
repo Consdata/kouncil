@@ -8,7 +8,7 @@ import { demoTopics } from './topics.demo.data';
   providedIn: 'root',
 })
 export class TopicsDemoService implements TopicsService {
-  getTopics(): Observable<Topics> {
+  getTopics$(): Observable<Topics> {
     return from([{ topics: demoTopics }]);
   }
 }

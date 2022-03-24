@@ -70,6 +70,13 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit, OnDestroy {
+
+  topics: TopicMetadata[] = [];
+  filtered: TopicMetadata[] = [];
+  @ViewChild('table') private table?: ElementRef;
+
+  private searchSubscription?: Subscription;
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private arraySortService: ArraySortService,
@@ -80,23 +87,17 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private favouritesService: FavouritesService) {
   }
 
-  topics: TopicMetadata[] = [];
-  filtered: TopicMetadata[] = [];
-  @ViewChild('table') private table?: ElementRef;
-
-  private searchSubscription?: Subscription;
-
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadTopics();
-    this.searchSubscription = this.searchService.getPhraseState('topics').subscribe(
+    this.searchSubscription = this.searchService.getPhraseState$('topics').subscribe(
       phrase => {
         this.filter(phrase);
       });
   }
 
   private loadTopics(): void {
-    this.topicsService.getTopics(this.servers.getSelectedServerId())
+    this.topicsService.getTopics$(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: Topics) => {
         this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
