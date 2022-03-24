@@ -4086,7 +4086,7 @@ core-js@3.20.3:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.20.3.tgz#c710d0a676e684522f3db4ee84e5e18a9d11d69a"
   integrity sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag==
 
-core-js@^3.20.3, core-js@^3.6.5:
+core-js@3.21.1, core-js@^3.6.5:
   version "3.21.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.1.tgz#f2e0ddc1fc43da6f904706e8e955bc19d06a0d94"
   integrity sha512-FRq5b/VMrWlrmCzwRrpDYNxyHP9BcAZC+xHJaqTgIE5091ZV1NTmyh0sGOg5XqpnHvR0svdy0sv1gWA1zmhxig==
@@ -4340,7 +4340,7 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-date-fns@^2.28.0:
+date-fns@2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
   integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
@@ -7429,7 +7429,7 @@ ngx-json-viewer@3.0.2:
   dependencies:
     tslib "^2.0.0"
 
-ngx-mat-select-search@^4.0.0:
+ngx-mat-select-search@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-4.0.2.tgz#6b185e97cedca8b15108f185dbb0143104e321ff"
   integrity sha512-dandDYng18cv6QaTDfYwiJoAujxaOMKtyLLfAgM3IQ/afXUc8XIBtV4S1gRokz3eGnPMiHmGXEttaOn+srat/g==
@@ -8976,14 +8976,14 @@ rxjs-report-usage@^1.0.4:
     glob "~7.2.0"
     prompts "~2.4.2"
 
-rxjs@6.6.7, rxjs@^6.5.4, rxjs@^6.6.7:
+rxjs@6.6.7, rxjs@^6.5.4:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^7.2.0:
+rxjs@7.5.5, rxjs@^7.2.0:
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
   integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
