@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ProgressBarService} from '../util/progress-bar.service';
-import {ArraySortPipe} from '../util/array-sort.pipe';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
@@ -11,6 +10,7 @@ import {FavouritesService} from '../favourites.service';
 import {ServersService} from '../servers.service';
 import {SearchService} from '../search.service';
 import {TopicMetadata, Topics} from './topics';
+import {ArraySortService} from '../util/array-sort.service';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -72,7 +72,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 export class TopicsComponent implements OnInit, OnDestroy {
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private arraySortPipe: ArraySortPipe,
+              private arraySortService: ArraySortService,
               private topicsService: TopicsService,
               private router: Router,
               private drawerService: DrawerService,
@@ -140,7 +140,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   customSort(event): void {
-    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
+    this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 
 }

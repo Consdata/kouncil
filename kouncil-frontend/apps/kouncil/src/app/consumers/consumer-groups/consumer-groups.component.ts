@@ -1,6 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
@@ -11,6 +10,7 @@ import {ServersService} from '../../servers.service';
 import {SearchService} from '../../search.service';
 import {ProgressBarService} from '../../util/progress-bar.service';
 import {ConsumerGroup, ConsumerGroupsResponse} from './consumer-groups';
+import {ArraySortService} from '../../util/array-sort.service';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -79,7 +79,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private arraySortPipe: ArraySortPipe,
+              private arraySortService: ArraySortService,
               private consumerGroupsService: ConsumerGroupsService,
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
@@ -170,7 +170,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   customSort(event): void {
-    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
+    this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 
   getStatusClass(status: string): string {
