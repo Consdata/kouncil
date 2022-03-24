@@ -1,0 +1,63 @@
+@import '../../../styles/palette';
+
+:host {
+  .mat-dialog-content {
+    height: 100%;
+  }
+
+  .json-details {
+    margin: 24px 0;
+    background: $main-10;
+    overflow: auto;
+    height: 100%;
+  }
+
+  button {
+  }
+
+  ::ng-deep .json-details > section.ngx-json-viewer {
+    overflow: initial;
+    padding: 24px 32px;
+    height: calc(100% - 48px);
+    width: calc(100% - 64px);
+  }
+
+  $green: #127D48;
+
+  $type-colors: (
+    string: $green,
+    number: $green,
+    boolean: $green,
+    date: $green,
+    array: #999,
+    object: #999,
+    function: #999,
+    'null': #fff,
+    undefined: #fff
+  );
+
+  @each $type, $color in $type-colors {
+    ::ng-deep .segment-type-#{$type} > .segment-main > .segment-value {
+      color: $color !important;
+    }
+  }
+
+  ::ng-deep .segment-key {
+    color: $blue-60 !important;
+  }
+
+  .actions {
+    gap: 16px;
+  }
+
+  .headers-table {
+    max-height: 100%;
+
+    .headers-table-detail {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+  }
+}

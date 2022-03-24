@@ -1,0 +1,24 @@
+@import '../../styles/palette';
+
+:host {
+  .broker-details {
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 0 0;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    .drawer-header {
+      padding: 0 32px;
+    }
+
+    .broker-details-table {
+      margin-top: 16px;
+
+      .config-table-detail {
+        overflow-y: auto;
+      }
+
+    }
+  }
+}

@@ -1,0 +1,39 @@
+@import '../../styles/palette';
+
+:host {
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 24px;
+
+    div {
+      font-family: 'Inter';
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .parent {
+      cursor: pointer;
+      color: $main-60;
+    }
+
+    .divider {
+      margin-left: 15px;
+      margin-right: 10px;
+      color: $main-40;
+      height: 18px;
+
+      mat-icon.arrow {
+        margin: 0;
+        width: 16px;
+        height: 18px;
+        font-size: 16px;
+      }
+    }
+
+    .name {
+      color: $main-100;
+    }
+  }
+}
