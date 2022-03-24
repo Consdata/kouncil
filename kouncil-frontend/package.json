@@ -8,7 +8,7 @@
     "start:demo": "nx serve --proxy-config proxy.conf.json  --configuration demo",
     "build": "nx build --configuration production",
     "test": "nx test --watch=false --browsers=ChromeHeadless",
-    "lint": "tslint -c tslint.json 'src/**/*.ts?(x)'"
+    "lint": "yarn lint"
   },
   "private": true,
   "dependencies": {
@@ -68,3 +68,4 @@
     "typescript": "4.5.5"
   }
 }
+
