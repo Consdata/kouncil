@@ -139,7 +139,7 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
 
   private calculateLags(): void {
     this.allAssignments.forEach(assignment => {
-      const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
+      const lag: number = assignment.offset ? assignment.endOffset - assignment.offset : 0;
       assignment.lag = lag;
       const pace: number = lag - this.lastLags[this.getKey(assignment)];
       assignment.pace = isNaN(pace) ? 0 : pace;

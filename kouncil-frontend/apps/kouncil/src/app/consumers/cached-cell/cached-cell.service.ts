@@ -54,7 +54,7 @@ export class CachedCellService implements OnDestroy {
       }
       this.cacheData(customerGroupOffset);
     } else {
-      if (!!this._vm$.value.cache) {
+      if (this._vm$.value.cache) {
         this.readCachedData(customerGroupOffset);
       }
     }
