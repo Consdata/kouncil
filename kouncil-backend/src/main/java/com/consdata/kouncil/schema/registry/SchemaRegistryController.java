@@ -1,8 +1,9 @@
-package com.consdata.kouncil.schemaregistry;
+package com.consdata.kouncil.schema.registry;
 
-import com.consdata.kouncil.serde.ClusterAwareSchema;
+import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
+import com.consdata.kouncil.schema.SchemasDTO;
+import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.serde.MessageFormat;
-import com.consdata.kouncil.serde.SerdeService;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,16 +16,16 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @Slf4j
 public class SchemaRegistryController {
-    private final SerdeService serdeService;
+    private final ClusterAwareSchemaService clusterAwareSchemaService;
 
-    public SchemaRegistryController(SerdeService serdeService) {
-        this.serdeService = serdeService;
+    public SchemaRegistryController(ClusterAwareSchemaService clusterAwareSchemaService) {
+        this.clusterAwareSchemaService = clusterAwareSchemaService;
     }
 
     @GetMapping("/api/schemas/latest/{topicName}")
     public SchemasDTO getLatestSchemas(@PathVariable String topicName,
                                        @RequestParam String serverId) {
-        ClusterAwareSchema clusterAwareSchema = serdeService.getClusterAwareSchema(serverId);
+        ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(serverId);
         if (clusterAwareSchema != null) {
             SchemaMetadata keySchema = clusterAwareSchema.getSchemaRegistryFacade().getLatestSchemaMetadata(topicName, true);
             SchemaMetadata valueSchema = clusterAwareSchema.getSchemaRegistryFacade().getLatestSchemaMetadata(topicName, false);

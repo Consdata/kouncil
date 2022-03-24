@@ -1,4 +1,4 @@
-package com.consdata.kouncil.schemaregistry;
+package com.consdata.kouncil.schema;
 
 import com.consdata.kouncil.serde.MessageFormat;
 import lombok.Builder;

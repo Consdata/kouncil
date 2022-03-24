@@ -1,6 +1,7 @@
-package com.consdata.kouncil.serde;
+package com.consdata.kouncil.schema.clusteraware;
 
-import com.consdata.kouncil.schemaregistry.SchemaRegistryFacade;
+import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
+import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.formatter.MessageFormatter;
 import lombok.Builder;
 import lombok.Value;

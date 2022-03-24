@@ -1,4 +1,4 @@
-package com.consdata.kouncil.schemaregistry;
+package com.consdata.kouncil.schema.registry;
 
 import com.consdata.kouncil.config.SchemaRegistryConfig;
 import io.confluent.kafka.schemaregistry.SchemaProvider;
