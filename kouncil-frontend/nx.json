@@ -50,5 +50,5 @@
       "changeDetection": "OnPush"
     }
   },
-  "defaultProject": "kouncil-frontend"
+  "defaultProject": "kouncil"
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "kouncil-frontend": "apps/kouncil-frontend"
+    "kouncil": "apps/kouncil"
   }
 }

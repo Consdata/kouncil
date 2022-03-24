@@ -1,24 +1,25 @@
 {
   "projectType": "application",
-  "root": "apps/kouncil-frontend",
-  "sourceRoot": "apps/kouncil-frontend/src",
+  "root": "apps/kouncil",
+  "sourceRoot": "apps/kouncil/src",
+
   "prefix": "app",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/kouncil-frontend",
-        "index": "apps/kouncil-frontend/src/index.html",
-        "main": "apps/kouncil-frontend/src/main.ts",
-        "polyfills": "apps/kouncil-frontend/src/polyfills.ts",
-        "tsConfig": "apps/kouncil-frontend/tsconfig.app.json",
+        "outputPath": "dist/apps/kouncil",
+        "index": "apps/kouncil/src/index.html",
+        "main": "apps/kouncil/src/main.ts",
+        "polyfills": "apps/kouncil/src/polyfills.ts",
+        "tsConfig": "apps/kouncil/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "apps/kouncil-frontend/src/favicon.ico",
-          "apps/kouncil-frontend/src/assets"
+          "apps/kouncil/src/favicon.ico",
+          "apps/kouncil/src/assets"
         ],
-        "styles": ["apps/kouncil-frontend/src/styles.scss"],
+        "styles": ["apps/kouncil/src/styles.scss"],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -57,8 +58,8 @@
           "buildOptimizer": true,
           "fileReplacements": [
             {
-              "replace": "apps/kouncil-frontend/src/environments/environment.ts",
-              "with": "apps/kouncil-frontend/src/environments/environment.prod.ts"
+              "replace": "apps/kouncil/src/environments/environment.ts",
+              "with": "apps/kouncil/src/environments/environment.prod.ts"
             }
           ],
           "outputHashing": "all"
@@ -92,8 +93,8 @@
           "buildOptimizer": true,
           "fileReplacements": [
             {
-              "replace": "apps/kouncil-frontend/src/environments/environment.ts",
-              "with": "apps/kouncil-frontend/src/environments/environment.demo.ts"
+              "replace": "apps/kouncil/src/environments/environment.ts",
+              "with": "apps/kouncil/src/environments/environment.demo.ts"
             }
           ],
           "outputHashing": "all"
@@ -113,13 +114,13 @@
       "executor": "@nrwl/angular:webpack-server",
       "configurations": {
         "production": {
-          "browserTarget": "kouncil-frontend:build:production"
+          "browserTarget": "kouncil:build:production"
         },
         "demo": {
-          "browserTarget": "kouncil-frontend:build:demo"
+          "browserTarget": "kouncil:build:demo"
         },
         "development": {
-          "browserTarget": "kouncil-frontend:build:development"
+          "browserTarget": "kouncil:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -127,23 +128,23 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "kouncil-frontend:build"
+        "browserTarget": "kouncil:build"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "apps/kouncil-frontend/src/**/*.ts",
-          "apps/kouncil-frontend/src/**/*.html"
+          "apps/kouncil/src/**/*.ts",
+          "apps/kouncil/src/**/*.html"
         ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/kouncil-frontend"],
+      "outputs": ["coverage/apps/kouncil"],
       "options": {
-        "jestConfig": "apps/kouncil-frontend/jest.config.js",
+        "jestConfig": "apps/kouncil/jest.config.js",
         "passWithNoTests": true
       }
     }

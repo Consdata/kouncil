@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'kouncil-frontend',
+  displayName: 'kouncil',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +8,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/apps/kouncil-frontend',
+  coverageDirectory: '../../coverage/apps/kouncil',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
