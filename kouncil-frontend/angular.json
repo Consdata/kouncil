@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
-    "kouncil": "apps/kouncil"
+    "kouncil": "apps/kouncil",
+    "message-data": "libs/message-data"
   }
 }

@@ -135,10 +135,6 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSendPopup(name: string): void {
-    this.drawerService.openDrawerWithPadding(SendComponent, {topicName: name});
-  }
-
   customSort(event): void {
     this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
   }

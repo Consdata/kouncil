@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "ngcc",
+    "nx": "nx",
     "start": "nx serve --proxy-config proxy.conf.json",
     "start:demo": "nx serve --proxy-config proxy.conf.json  --configuration demo",
     "build": "nx build --configuration production",
@@ -68,4 +69,3 @@
     "typescript": "4.5.5"
   }
 }
-
