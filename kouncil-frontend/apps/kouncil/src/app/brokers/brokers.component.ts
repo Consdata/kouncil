@@ -93,7 +93,7 @@ export class BrokersComponent implements OnInit {
     }
   }
 
-  showBrokerDetails(event: Event): void {
+  showBrokerDetails(event): void {
     if (event.type === 'click') {
       this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())
