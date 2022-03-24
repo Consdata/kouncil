@@ -1,19 +1,16 @@
-import {Injectable, Pipe, PipeTransform} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FavouritesGroup} from '../favourites-group';
 
 @Injectable({
   providedIn: 'root'
 })
-@Pipe({
-  name: 'arraySort'
-})
-export class ArraySortPipe implements PipeTransform {
+export class ArraySortService {
   transform(value: any[], key: string, order: string): any {
     return [...value].sort((a, b) => this.compareValues(a, b, key, order));
   }
 
   private compareValues(a: any, b: any, key: string, order: string) {
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)) {
       return 0;
     }
 

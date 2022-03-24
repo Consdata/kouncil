@@ -5,13 +5,13 @@ import {BehaviorSubject, Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class ProgressBarService {
-  private progressSub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private progressSub$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   get loading$(): Observable<boolean> {
-    return this.progressSub.asObservable();
+    return this.progressSub$.asObservable();
   }
 
   setProgress(progress: boolean): void {
-    this.progressSub.next(progress);
+    this.progressSub$.next(progress);
   }
 }

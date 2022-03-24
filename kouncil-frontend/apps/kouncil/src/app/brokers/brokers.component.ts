@@ -9,6 +9,7 @@ import {ServersService} from '../servers.service';
 import {SearchService} from '../search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {Broker} from './broker';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-kafka-brokers',
@@ -50,6 +51,11 @@ import {Broker} from './broker';
 })
 export class BrokersComponent implements OnInit {
 
+  allBrokers?: Broker[];
+  filteredBrokers?: Broker[];
+  private subscription?: Subscription;
+  showJmxStats: boolean = false;
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
@@ -57,14 +63,9 @@ export class BrokersComponent implements OnInit {
               private servers: ServersService) {
   }
 
-  allBrokers?: Broker[];
-  filteredBrokers?: Broker[];
-  private subscription?: Subscription;
-  showJmxStats: boolean = false;
-
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
-    this.brokerService.getBrokers(this.servers.getSelectedServerId())
+    this.brokerService.getBrokers$(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe(data => {
         this.allBrokers = data.brokers;
@@ -73,7 +74,7 @@ export class BrokersComponent implements OnInit {
         this.progressBarService.setProgress(false);
       });
 
-    this.subscription = this.searchService.getPhraseState('brokers').subscribe(
+    this.subscription = this.searchService.getPhraseState$('brokers').subscribe(
       phrase => {
         this.filterRows(phrase);
       });
@@ -93,9 +94,9 @@ export class BrokersComponent implements OnInit {
     }
   }
 
-  showBrokerDetails(event): void {
+  showBrokerDetails(event: Model): void {
     if (event.type === 'click') {
-      this.brokerService.getBrokerConfig(this.servers.getSelectedServerId(), event.row.id)
+      this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())
         .subscribe(data => {
           this.drawerService.openDrawerWithoutPadding(BrokerComponent, {

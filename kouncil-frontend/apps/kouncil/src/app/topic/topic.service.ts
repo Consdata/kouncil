@@ -18,11 +18,11 @@ export abstract class TopicService {
 
   abstract selectAllPartitions(serverId: string, topicName: string): void ;
 
-  abstract getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages>;
+  abstract getConvertTopicMessagesJsonToGridObservable$(): Observable<TopicMessages>;
 
-  abstract getNumberOfPartitionsObservable(): Observable<number>;
+  abstract getNumberOfPartitionsObservable$(): Observable<number>;
 
-  abstract paginateMessages(serverId: string, event: any, topicName: string): void;
+  abstract paginateMessages(serverId: string, event: { page: number }, topicName: string): void;
 
   abstract goToOffset(serverId: string, topicName: string, offset?: number): void;
 

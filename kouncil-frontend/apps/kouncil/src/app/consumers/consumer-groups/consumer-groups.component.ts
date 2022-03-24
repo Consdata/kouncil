@@ -1,6 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ArraySortPipe} from '../../util/array-sort.pipe';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
@@ -11,6 +10,8 @@ import {ServersService} from '../../servers.service';
 import {SearchService} from '../../search.service';
 import {ProgressBarService} from '../../util/progress-bar.service';
 import {ConsumerGroup, ConsumerGroupsResponse} from './consumer-groups';
+import {ArraySortService} from '../../util/array-sort.service';
+import {Model} from '@swimlane/ngx-datatable';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -77,9 +78,15 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 })
 export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
+  consumerGroups: ConsumerGroup[] = [];
+  filtered: ConsumerGroup[] = [];
+  @ViewChild('table') private table?: ElementRef;
+
+  private searchSubscription?: Subscription;
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
-              private arraySortPipe: ArraySortPipe,
+              private arraySortService: ArraySortService,
               private consumerGroupsService: ConsumerGroupsService,
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
@@ -88,23 +95,17 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private favouritesService: FavouritesService) {
   }
 
-  consumerGroups: ConsumerGroup[] = [];
-  filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table?: ElementRef;
-
-  private searchSubscription?: Subscription;
-
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadConsumerGroups();
-    this.searchSubscription = this.searchService.getPhraseState('consumer-groups').subscribe(
+    this.searchSubscription = this.searchService.getPhraseState$('consumer-groups').subscribe(
       phrase => {
         this.filter(phrase);
       });
   }
 
   private loadConsumerGroups(): void {
-    this.consumerGroupsService.getConsumerGroups(this.servers.getSelectedServerId())
+    this.consumerGroupsService.getConsumerGroups$(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: ConsumerGroupsResponse) => {
         this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
@@ -137,12 +138,12 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   deleteConsumerGroup(value: string): void {
-    this.confirmService.openConfirmDialog('consumer group', value)
+    this.confirmService.openConfirmDialog$('consumer group', value)
       .pipe(first())
       .subscribe((confirmed) => {
         if (confirmed) {
           this.progressBarService.setProgress(true);
-          this.consumerGroupsService.deleteConsumerGroup(this.servers.getSelectedServerId(), value)
+          this.consumerGroupsService.deleteConsumerGroup$(this.servers.getSelectedServerId(), value)
             .pipe(first())
             .subscribe(() => {
               this.loadConsumerGroups();
@@ -162,7 +163,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       });
   }
 
-  navigateToConsumerGroup(event): void {
+  navigateToConsumerGroup(event: Model): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.router.navigate(['/consumer-groups/', event.row.groupId]);
@@ -170,7 +171,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
   }
 
   customSort(event): void {
-    this.filtered = this.arraySortPipe.transform(this.filtered, event.column.prop, event.newValue);
+    this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 
   getStatusClass(status: string): string {

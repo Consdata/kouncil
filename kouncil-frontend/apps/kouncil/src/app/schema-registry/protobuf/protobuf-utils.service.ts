@@ -10,13 +10,13 @@ export interface ProtobufSchemaFields {
 })
 export class ProtobufUtilsService {
 
-  private readonly MIN_RANDOM_NUMBER = 1;
-  private readonly MAX_RANDOM_NUMBER = 1000;
-  private readonly INT_TYPES = ['int32', 'int64', 'uint32', 'uint64', 'sint32', 'sint64', 'fixed32', 'fixed64', 'sfixed32', 'sfixed64'];
-  private readonly FLOAT_TYPES = ['double', 'float'];
-  private readonly STRING_TYPE = 'string';
-  private readonly BOOL_TYPE = 'bool';
-  private readonly BYTES_TYPE = 'bytes';
+  private readonly MIN_RANDOM_NUMBER: number = 1;
+  private readonly MAX_RANDOM_NUMBER: number = 1000;
+  private readonly INT_TYPES: string[] = ['int32', 'int64', 'uint32', 'uint64', 'sint32', 'sint64', 'fixed32', 'fixed64', 'sfixed32', 'sfixed64'];
+  private readonly FLOAT_TYPES: string[] = ['double', 'float'];
+  private readonly STRING_TYPE: string = 'string';
+  private readonly BOOL_TYPE: string = 'bool';
+  private readonly BYTES_TYPE: string = 'bytes';
 
   public fillProtobufSchemaWithData(protobufSchema: string): ProtobufSchemaFields {
     const root = parse(protobufSchema).root;

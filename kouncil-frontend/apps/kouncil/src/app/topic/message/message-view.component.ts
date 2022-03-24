@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Clipboard} from '@angular/cdk/clipboard';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-message-view',
@@ -66,7 +67,7 @@ export class MessageViewComponent implements OnInit {
     }) {
   }
 
-  copyToClipboard(object): void {
+  copyToClipboard(object: string): void {
     this.clipboard.copy(JSON.stringify(object, null, 2));
     this.snackBar.open('Copied successfully', '', {
       duration: 1000,
@@ -92,7 +93,7 @@ export class MessageViewComponent implements OnInit {
     });
   }
 
-  navigateToTrack(event): void {
+  navigateToTrack(event: Model): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.dialogRef.close();

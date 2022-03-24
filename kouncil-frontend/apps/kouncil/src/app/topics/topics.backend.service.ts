@@ -12,7 +12,7 @@ export class TopicsBackendService implements TopicsService {
   constructor(private http: HttpClient) {
   }
 
-  getTopics(serverId: string): Observable<Topics> {
+  getTopics$(serverId: string): Observable<Topics> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.get<Topics>(`/api/topics`, {params});
   }
