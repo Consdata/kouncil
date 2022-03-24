@@ -22,12 +22,12 @@
  */
 import {Pipe, PipeTransform} from '@angular/core';
 
-type unit = 'bytes' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB';
-type unitPrecisionMap = {
-  [u in unit]: number;
+type Unit = 'bytes' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB';
+type UnitPrecisionMap = {
+  [u in Unit]: number;
 };
 
-const defaultPrecisionMap: unitPrecisionMap = {
+const defaultPrecisionMap: UnitPrecisionMap = {
   bytes: 0,
   KB: 0,
   MB: 1,
@@ -53,9 +53,9 @@ const defaultPrecisionMap: unitPrecisionMap = {
  */
 @Pipe({name: 'fileSize'})
 export class FileSizePipe implements PipeTransform {
-  private readonly units: unit[] = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  private readonly units: Unit[] = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
-  transform(bytes: number = 0, precision: number | unitPrecisionMap = defaultPrecisionMap): string {
+  transform(bytes: number = 0, precision: number | UnitPrecisionMap = defaultPrecisionMap): string {
     if (isNaN(parseFloat(String(bytes))) || !isFinite(bytes)) {
       return '';
     }

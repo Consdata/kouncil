@@ -6,7 +6,8 @@
       "files": ["*.ts"],
       "extends": [
         "plugin:@nrwl/nx/angular",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "@consdata/eslint-config"
       ],
       "rules": {
         "@angular-eslint/directive-selector": [
@@ -25,7 +26,23 @@
             "style": "kebab-case"
           }
         ],
-        "@typescript-eslint/no-inferrable-types": "off"
+        "no-console": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "warn",
+        "@typescript-eslint/typedef": [
+          "warn",
+          {
+            "arrayDestructuring": false,
+            "arrowParameter": false,
+            "memberVariableDeclaration": true,
+            "objectDestructuring": false,
+            "parameter": true,
+            "propertyDeclaration": true,
+            "variableDeclaration": false,
+            "variableDeclarationIgnoreFunction": false
+          }
+        ],
+        "rxjs/no-nested-subscribe": "warn"
       }
     },
     {

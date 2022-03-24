@@ -42,6 +42,7 @@
     "@angular/cli": "^13.2.3",
     "@angular/compiler-cli": "13.2.2",
     "@angular/language-service": "13.2.2",
+    "@consdata/eslint-config": "0.20.0",
     "@nrwl/cli": "13.8.8",
     "@nrwl/eslint-plugin-nx": "13.9.4",
     "@nrwl/jest": "13.9.4",
