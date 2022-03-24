@@ -9,6 +9,7 @@ import {ServersService} from '../servers.service';
 import {SearchService} from '../search.service';
 import {ProgressBarService} from '../util/progress-bar.service';
 import {Broker} from './broker';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-kafka-brokers',
@@ -93,7 +94,7 @@ export class BrokersComponent implements OnInit {
     }
   }
 
-  showBrokerDetails(event): void {
+  showBrokerDetails(event: Model): void {
     if (event.type === 'click') {
       this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.row.id)
         .pipe(first())

@@ -11,6 +11,7 @@ import {ServersService} from '../servers.service';
 import {SearchService} from '../search.service';
 import {TopicMetadata, Topics} from './topics';
 import {ArraySortService} from '../util/array-sort.service';
+import {Model} from '@swimlane/ngx-datatable';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -129,7 +130,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToTopic(event): void {
+  navigateToTopic(event: Model): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.router.navigate(['/topics/messages', event.row.name]);

@@ -20,6 +20,7 @@ import { RxStompService } from '@stomp/ng2-stompjs';
 import { Crypto } from '../../util/crypto';
 import { NoDataPlaceholderComponent } from '../../no-data-placeholder/no-data-placeholder.component';
 import { Message } from '../../topic/message';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-track-result',
@@ -143,7 +144,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMessage(event): void {
+  showMessage(event: Model): void {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
         source: TrackResultComponent.tryParseJson(event.row.value),

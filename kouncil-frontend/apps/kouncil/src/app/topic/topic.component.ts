@@ -25,6 +25,7 @@ import { Observable, Subscription } from 'rxjs';
 import { SearchService } from '../search.service';
 import { JsonGrid } from './json-grid';
 import { TopicMessages } from './topic-messages';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-topic',
@@ -190,7 +191,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  showMessage(event): void {
+  showMessage(event: Model): void {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
         source:

@@ -11,6 +11,7 @@ import {SearchService} from '../../search.service';
 import {ProgressBarService} from '../../util/progress-bar.service';
 import {ConsumerGroup, ConsumerGroupsResponse} from './consumer-groups';
 import {ArraySortService} from '../../util/array-sort.service';
+import {Model} from '@swimlane/ngx-datatable';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -162,7 +163,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       });
   }
 
-  navigateToConsumerGroup(event): void {
+  navigateToConsumerGroup(event: Model): void {
     const element = event.event.target as HTMLElement;
     if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.router.navigate(['/consumer-groups/', event.row.groupId]);
