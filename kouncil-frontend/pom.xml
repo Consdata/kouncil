@@ -76,7 +76,7 @@
     <resources>
       <resource>
         <filtering>false</filtering>
-        <directory>dist</directory>
+        <directory>dist/apps/kouncil-frontend</directory>
         <includes>
           <include>**/*.*</include>
         </includes>
