@@ -8,7 +8,9 @@ logging:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     com.consdata.kouncil: DEBUG
     org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
-
+kouncil:
+  topics:
+    exclude-regex-patterns: __.*
 # SSL example
 # Addresses specified in /etc/hosts or in DNS may not work with SSL
 # Workaround: use explicit IP address or set property ssl.endpoint.identification.algorithm to empty string

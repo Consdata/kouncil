@@ -3,6 +3,7 @@ package com.consdata.kouncil;
 import com.consdata.kouncil.serde.SerdeService;
 import com.consdata.kouncil.topic.TopicMessageHeader;
 import lombok.AllArgsConstructor;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.Header;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@SuppressWarnings("java:S6212") //val
 public class AbstractMessagesController {
 
     protected final KafkaConnectionService kafkaConnectionService;
@@ -72,7 +74,7 @@ public class AbstractMessagesController {
 
     /*
      * The reason of this headers value transformation function
-     * is because Spring Boot cannot properly deal with dlq original headers
+     * is that Spring Boot cannot properly deal with dlq original headers
      * when the data comes in Long or Integer format (ex. timestamp, partition, offset).
      * So we need to modify data to String format.
      */
@@ -81,9 +83,9 @@ public class AbstractMessagesController {
         if (header.value() != null) {
             ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
             if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
-                headerValue = Long.valueOf(byteBuffer.getLong()).toString();
+                headerValue = Long.toString(byteBuffer.getLong());
             } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
-                headerValue = Integer.valueOf(byteBuffer.getInt()).toString();
+                headerValue = Integer.toString(byteBuffer.getInt());
             } else {
                 headerValue = new String(byteBuffer.array(), StandardCharsets.UTF_8);
             }
@@ -109,7 +111,7 @@ public class AbstractMessagesController {
         try {
             topicsExists = kafkaConnectionService
                     .getAdminClient(serverId)
-                    .listTopics()
+                    .listTopics(new ListTopicsOptions().listInternal(true))
                     .names()
                     .get().containsAll(topicNames);
         } catch (InterruptedException e) {
