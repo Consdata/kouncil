@@ -1,3 +1,5 @@
+import {MessageFormat} from './message-format';
+
 export class Schemas {
   keyMessageFormat: MessageFormat
   keyPlainTextSchema: string;
@@ -8,11 +10,4 @@ export class Schemas {
 export class ExampleSchemaData {
   exampleKey: string;
   exampleValue: string;
-}
-
-export enum MessageFormat {
-  JSON_SCHEMA = 'JSON_SCHEMA',
-  PROTOBUF = 'PROTOBUF',
-  AVRO = 'AVRO',
-  STRING = 'STRING'
 }

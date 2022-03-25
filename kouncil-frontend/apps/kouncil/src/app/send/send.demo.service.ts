@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SendService } from './send.service';
 import { from, Observable } from 'rxjs';
-import { Message } from '../topic/message';
+import {MessageData} from '@app/message-data';
 
 @Injectable()
 export class SendDemoService implements SendService {
-  send$(
-    _serverId: string,
-    _topic: string,
-    _count: number,
-    _message: Message
-  ): Observable<Record<string, unknown>> {
+  send$(_serverId: string, _count: number, _messageData: MessageData): Observable<Record<string, unknown>> {
     return from([{}]);
   }
 }

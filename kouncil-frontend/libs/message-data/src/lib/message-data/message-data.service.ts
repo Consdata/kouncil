@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {MessageData} from './message-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageDataService {
-  private messageDataSub: Subject<MessageData> = new Subject<MessageData>();
+  private messageDataSub: Subject<MessageData> = new BehaviorSubject<MessageData>({} as MessageData);
 
   get messageData$(): Observable<MessageData> {
     return this.messageDataSub.asObservable();

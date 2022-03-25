@@ -14,6 +14,7 @@ import {Crypto} from '../../util/crypto';
 import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
 import {Message} from '../../topic/message';
 import {Model} from '@swimlane/ngx-datatable';
+import {MessageData, MessageDataService} from '@app/message-data';
 
 @Component({
   selector: 'app-track-result',
@@ -91,7 +92,8 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     private drawerService: DrawerService,
     private servers: ServersService,
     private rxStompService: RxStompService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private messageDataService: MessageDataService
   ) {
   }
 
@@ -140,12 +142,14 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   showMessage(event: Model): void {
     if (event.type === 'click') {
-      this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-        source: TrackResultComponent.tryParseJson(event.row.value),
+      const messageData = {
+        value: TrackResultComponent.tryParseJson(event.row.value),
         headers: event.row.headers,
         key: event.row.key,
         topicName: event.row.topic,
-      });
+      } as MessageData;
+      this.messageDataService.setMessageData(messageData);
+      this.drawerService.openDrawerWithPadding(MessageViewComponent);
     }
   }
 

@@ -5,7 +5,7 @@ export interface MessageData {
   value: string;
   offset: number | null;
   partition: number | null;
-  timestamp: number | null;
-  headers: MessageDataHeader[];
-  topic: string;
+  timestamp?: number | null;
+  headers?: MessageDataHeader[];
+  topicName: string;
 }
