@@ -38,7 +38,8 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                      #table>
 
         <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template class="datatable-group-header-wrapper">
+          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template
+                       class="datatable-group-header-wrapper">
             <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All topics'}}</div>
             <span class="datatable-header-divider"></span>
             <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
@@ -51,7 +52,9 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
         <ngx-datatable-column name="Name" cellClass="datatable-cell-wrapper" [width]="500">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
-              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'"
+                        (click)="onFavouriteClick($event, row)">star
+              </mat-icon>
               {{row.name}}
             </a>
           </ng-template>
@@ -141,7 +144,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.drawerService.openDrawerWithPadding(SendComponent, {topicName: name});
   }
 
-  customSort(event): void {
+  customSort(event: { column: { prop: string }, newValue: string }): void {
     this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 

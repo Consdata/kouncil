@@ -1,25 +1,18 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { SearchService } from '../../search.service';
-import { Title } from '@angular/platform-browser';
-import { ProgressBarService } from '../../util/progress-bar.service';
-import { DrawerService } from '../../util/drawer.service';
-import { ServersService } from '../../servers.service';
-import { MessageViewComponent } from '../../topic/message/message-view.component';
-import { TrackService } from '../track.service';
-import { TrackFilter } from '../track-filter/track-filter';
-import { RxStompService } from '@stomp/ng2-stompjs';
-import { Crypto } from '../../util/crypto';
-import { NoDataPlaceholderComponent } from '../../no-data-placeholder/no-data-placeholder.component';
-import { Message } from '../../topic/message';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {SearchService} from '../../search.service';
+import {Title} from '@angular/platform-browser';
+import {ProgressBarService} from '../../util/progress-bar.service';
+import {DrawerService} from '../../util/drawer.service';
+import {ServersService} from '../../servers.service';
+import {MessageViewComponent} from '../../topic/message/message-view.component';
+import {TrackService} from '../track.service';
+import {TrackFilter} from '../track-filter/track-filter';
+import {RxStompService} from '@stomp/ng2-stompjs';
+import {Crypto} from '../../util/crypto';
+import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
+import {Message} from '../../topic/message';
 import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
@@ -99,9 +92,10 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     private servers: ServersService,
     private rxStompService: RxStompService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
-  private static tryParseJson(message): string {
+  private static tryParseJson(message: string): string {
     try {
       return JSON.parse(message);
     } catch (e) {
@@ -131,7 +125,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.topicSubscription?.unsubscribe();
   }
 
-  onMessageReceived(message): void {
+  onMessageReceived(message: { body: string }): void {
     this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);

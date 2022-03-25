@@ -26,23 +26,7 @@
             "style": "kebab-case"
           }
         ],
-        "no-console": "warn",
-        "@typescript-eslint/no-explicit-any": "warn",
-        "@typescript-eslint/explicit-module-boundary-types": "warn",
-        "@typescript-eslint/typedef": [
-          "warn",
-          {
-            "arrayDestructuring": false,
-            "arrowParameter": false,
-            "memberVariableDeclaration": true,
-            "objectDestructuring": false,
-            "parameter": true,
-            "propertyDeclaration": true,
-            "variableDeclaration": false,
-            "variableDeclarationIgnoreFunction": false
-          }
-        ],
-        "rxjs/no-nested-subscribe": "warn"
+        "no-console": "warn"
       }
     },
     {

@@ -17,7 +17,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
 @Component({
   selector: 'app-kafka-consumer-groups',
-  template:`
+  template: `
     <div class="kafka-consumer-groups" *ngIf="filtered">
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Consumer group'"></app-no-data-placeholder>
@@ -39,7 +39,8 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
         <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
           <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
-            <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All consumer groups'}}</div>
+            <div
+              class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All consumer groups'}}</div>
             <span class="datatable-header-divider"></span>
             <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
           <span *ngIf="expanded">HIDE</span>
@@ -51,7 +52,9 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
         <ngx-datatable-column prop="groupId" name="Group id" cellClass="datatable-cell-wrapper" [width]="500">
           <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
             <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
-              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'" (click)="onFavouriteClick($event, row)">star</mat-icon>
+              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'"
+                        (click)="onFavouriteClick($event, row)">star
+              </mat-icon>
               {{value}}
             </a>
           </ng-template>
@@ -59,7 +62,8 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
         <ngx-datatable-column prop="status" name="Status" cellClass="datatable-cell-wrapper" [width]="190">
           <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]" [ngClass]="getStatusClass(value)">
+            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]"
+               [ngClass]="getStatusClass(value)">
               {{value}}
             </a>
           </ng-template>
@@ -125,7 +129,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFavouriteClick(event: MouseEvent, row): void {
+  onFavouriteClick(event: MouseEvent, row: ConsumerGroup): void {
     event.preventDefault();
     this.progressBarService.setProgress(true);
     this.filtered = [];
@@ -145,6 +149,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
           this.progressBarService.setProgress(true);
           this.consumerGroupsService.deleteConsumerGroup$(this.servers.getSelectedServerId(), value)
             .pipe(first())
+            // eslint-disable-next-line rxjs/no-nested-subscribe
             .subscribe(() => {
               this.loadConsumerGroups();
               this.snackbar.open(`Consumer group ${value} deleted`, '', {
@@ -170,7 +175,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     }
   }
 
-  customSort(event): void {
+  customSort(event: { column: { prop: string }, newValue: string }): void {
     this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 
