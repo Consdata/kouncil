@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { TrackService } from '../track.service';
-import { FormControl, NgForm } from '@angular/forms';
-import { TopicsService } from '../../topics/topics.service';
-import { ServersService } from '../../servers.service';
-import { TrackFilter, TrackOperator } from './track-filter';
-import { Topics } from '../../topics/topics';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {TrackService} from '../track.service';
+import {FormControl, NgForm} from '@angular/forms';
+import {TopicsService} from '../../topics/topics.service';
+import {ServersService} from '../../servers.service';
+import {TrackFilter, TrackOperator} from './track-filter';
+import {Topics} from '../../topics/topics';
 
 @Component({
   selector: 'app-track-filter',
@@ -130,7 +130,7 @@ import { Topics } from '../../topics/topics';
       class="switch"
       (change)="toggleAsyncMode()"
       [(ngModel)]="asyncModeState"
-      matTooltip="By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. If this does not work for you, turn it off, but then you have to wait for for the whole search to complete."
+      [matTooltip]="toolTip"
     >
       async
     </mat-slide-toggle>
@@ -154,6 +154,9 @@ export class TrackFilterComponent implements OnInit {
   loading: boolean = false;
   trackFilter: TrackFilter;
   asyncModeState: boolean = this.trackService.isAsyncEnable();
+  toolTip: string = 'By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. ' +
+    'If this does not work for you,' +
+    ' turn it off, but then you have to wait for for the whole search to complete.';
 
   constructor(
     private trackService: TrackService,

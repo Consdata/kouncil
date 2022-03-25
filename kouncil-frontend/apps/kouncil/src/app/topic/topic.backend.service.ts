@@ -17,7 +17,8 @@ export class TopicBackendService implements TopicService {
   selectedPartition?: string;
   private convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
   private numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
-  paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  protected paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
 
   constructor(protected http: HttpClient, protected progressBarService: ProgressBarService) {
   }

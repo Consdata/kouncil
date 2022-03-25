@@ -1350,6 +1350,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@consdata/eslint-config@0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@consdata/eslint-config/-/eslint-config-0.20.0.tgz#21ce045f796824c1e9b26995c160820b42880596"
+  integrity sha512-4rlLsUXdEhduJsLNHVsk0YCNMocS3WfbFsmeb1gU2eMH2MNYln6Kfs43KOUYw5V7lo3bajQWNriHaHnl7l5XFA==
+
 "@cspotcode/source-map-consumer@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-consumer/-/source-map-consumer-0.8.0.tgz#33bf4b7b39c178821606f669bbc447a6a629786b"
