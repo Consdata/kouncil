@@ -21,7 +21,7 @@ export class JsonGrid {
 
   constructor(private datePipe: DatePipe) {}
 
-  private static isScalar(propertyValue: any): boolean {
+  private static isScalar(propertyValue: unknown): boolean {
     return (
       typeof propertyValue === 'string' ||
       typeof propertyValue === 'number' ||
@@ -29,7 +29,7 @@ export class JsonGrid {
     );
   }
 
-  private static escapeHtml(propertyValue) {
+  private static escapeHtml(propertyValue: unknown) {
     if (typeof propertyValue === 'string') {
       return propertyValue
         .replace(/&/g, '&amp;')
@@ -40,7 +40,7 @@ export class JsonGrid {
     }
   }
 
-  private static limitChars(propertyValue) {
+  private static limitChars(propertyValue: unknown) {
     if (typeof propertyValue === 'string') {
       return propertyValue.substr(0, 100);
     } else {

@@ -176,6 +176,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRowClass: (row) => { 'kafka-row-delta': any } = (row) => {
     return {
       'kafka-row-delta': row['fresh'],
