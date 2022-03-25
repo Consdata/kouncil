@@ -21,14 +21,14 @@ export class TopicPartitionsComponent {
 
   @Input() topicName?: string;
 
-  @Output() partitionSelected = new EventEmitter<any>();
+  @Output() partitionSelected: EventEmitter<void> = new EventEmitter<void>();
 
-  selectedPartition = this.ALL_PARTITIONS;
+  selectedPartition: string = this.ALL_PARTITIONS;
 
   partitions: number[] = [];
 
   constructor(private topicService: TopicService, private servers: ServersService) {
-    this.topicService.getNumberOfPartitionsObservable().subscribe(value => {
+    this.topicService.getNumberOfPartitionsObservable$().subscribe(value => {
       this.partitions = Array.from(Array(value).keys());
     });
   }

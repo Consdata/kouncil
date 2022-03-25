@@ -38,12 +38,12 @@ export class TopicPaginationComponent {
 
   @Input() paging?: Page;
   @Input() topicName?: string;
-  pageLimits = [1, 5, 10, 20, 50, 100, 500, 1000];
+  pageLimits: number[] = [1, 5, 10, 20, 50, 100, 500, 1000];
 
   constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
-  paginateMessages($event: any): void {
+  paginateMessages($event: { page: number }): void {
     if (this.topicName) {
       this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
     }

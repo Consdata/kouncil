@@ -1,40 +1,57 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {interval, Observable, Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
-import {ProgressBarService} from '../../util/progress-bar.service';
-import {ConsumerGroupService} from './consumer-group.service';
-import {ServersService} from '../../servers.service';
-import {switchMap, tap} from 'rxjs/operators';
-import {SearchService} from '../../search.service';
-import {ConsumerGroupOffset, ConsumerGroupResponse} from './consumer-group';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { interval, Observable, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { ProgressBarService } from '../../util/progress-bar.service';
+import { ConsumerGroupService } from './consumer-group.service';
+import { ServersService } from '../../servers.service';
+import { switchMap, tap } from 'rxjs/operators';
+import { SearchService } from '../../search.service';
+import { ConsumerGroupOffset, ConsumerGroupResponse } from './consumer-group';
 
 @Component({
   selector: 'app-kafka-consumer-group',
   template: `
     <div class="kafka-consumer-group">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder [objectTypeName]="'Consumer'"></app-no-data-placeholder>
+        <app-no-data-placeholder
+          [objectTypeName]="'Consumer'"
+        ></app-no-data-placeholder>
       </ng-template>
-      <app-breadcrumb [parentLink]="'/consumer-groups'" [name]="groupId"
-                      [parentName]="'Consumer Groups'"></app-breadcrumb>
-      <ngx-datatable *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder"
-                     class="brokers-table material"
-                     [rows]="filteredAssignments"
-                     [rowHeight]="48"
-                     [headerHeight]="48"
-                     [scrollbarH]="false"
-                     [scrollbarV]="false"
-                     [columnMode]="'force'"
-                     [loadingIndicator]="loading$ | async"
-                     #table>
+      <app-breadcrumb
+        [parentLink]="'/consumer-groups'"
+        [name]="groupId"
+        [parentName]="'Consumer Groups'"
+      ></app-breadcrumb>
+      <ngx-datatable
+        *ngIf="
+          filteredAssignments && filteredAssignments.length > 0;
+          else noDataPlaceholder
+        "
+        class="brokers-table material"
+        [rows]="filteredAssignments"
+        [rowHeight]="48"
+        [headerHeight]="48"
+        [scrollbarH]="false"
+        [scrollbarV]="false"
+        [columnMode]="'force'"
+        [loadingIndicator]="loading$ | async"
+        #table
+      >
         <ngx-datatable-column prop="clientId" name="clientId">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <app-cached-cell [property]="'clientId'" [row]="row" [showLastSeenTimestamp]="true"></app-cached-cell>
+            <app-cached-cell
+              [property]="'clientId'"
+              [row]="row"
+              [showLastSeenTimestamp]="true"
+            ></app-cached-cell>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="consumerId" name="consumerId">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <app-cached-cell [property]="'consumerId'" [row]="row"></app-cached-cell>
+            <app-cached-cell
+              [property]="'consumerId'"
+              [row]="row"
+            ></app-cached-cell>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="host" name="host">
@@ -43,7 +60,10 @@ import {ConsumerGroupOffset, ConsumerGroupResponse} from './consumer-group';
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="topic" name="topic"></ngx-datatable-column>
-        <ngx-datatable-column prop="partition" name="partition"></ngx-datatable-column>
+        <ngx-datatable-column
+          prop="partition"
+          name="partition"
+        ></ngx-datatable-column>
         <ngx-datatable-column prop="offset" name="offset">
           <ng-template let-value="value" ngx-datatable-cell-template>
             {{ value | number }}
@@ -61,22 +81,27 @@ import {ConsumerGroupOffset, ConsumerGroupResponse} from './consumer-group';
         </ngx-datatable-column>
         <ngx-datatable-column prop="pace" name="pace">
           <ng-template let-value="value" ngx-datatable-cell-template>
-            <div *ngIf="value == 0; then noPace else paceBlock"></div>
+            <div *ngIf="value === 0; then noPace; else paceBlock"></div>
             <ng-template #noPace>=</ng-template>
             <ng-template #paceBlock>
-              <div *ngIf="value > 0; then upperArrowBlock else downArrowBlock"></div>
-              <ng-template #upperArrowBlock>↑ ({{ value | number }})</ng-template>
-              <ng-template #downArrowBlock>↓ ({{ value | number }})</ng-template>
+              <div
+                *ngIf="value > 0; then upperArrowBlock; else downArrowBlock"
+              ></div>
+              <ng-template #upperArrowBlock
+                >↑ ({{ value | number }})</ng-template
+              >
+              <ng-template #downArrowBlock
+                >↓ ({{ value | number }})</ng-template
+              >
             </ng-template>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
     </div>
   `,
-  styleUrls: ['./consumer-group.component.scss']
+  styleUrls: ['./consumer-group.component.scss'],
 })
 export class ConsumerGroupComponent implements OnInit, OnDestroy {
-
   private searchSubscription?: Subscription;
   private intervalSubscription?: Subscription;
   groupId: string = '';
@@ -86,22 +111,24 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   lastLags: IHash = {};
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
-  constructor(private searchService: SearchService,
-              private route: ActivatedRoute,
-              private progressBarService: ProgressBarService,
-              private consumerGroupService: ConsumerGroupService,
-              private servers: ServersService) {
-  }
+  constructor(
+    private searchService: SearchService,
+    private route: ActivatedRoute,
+    private progressBarService: ProgressBarService,
+    private consumerGroupService: ConsumerGroupService,
+    private servers: ServersService
+  ) {}
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.groupId = params['groupId'];
       this.getConsumerGroup();
     });
 
-    this.searchSubscription = this.searchService.getPhraseState('consumer-group').subscribe(
-      phrase => {
+    this.searchSubscription = this.searchService
+      .getPhraseState$('consumer-group')
+      .subscribe((phrase) => {
         this.filter(phrase);
       });
   }
@@ -119,7 +146,8 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.intervalSubscription = interval(1000)
       .pipe(
         switchMap(() =>
-          this.consumerGroupService.getConsumerGroup(this.servers.getSelectedServerId(), this.groupId)
+          this.consumerGroupService
+            .getConsumerGroup$(this.servers.getSelectedServerId(), this.groupId)
             .pipe(
               tap((data: ConsumerGroupResponse) => {
                 this.allAssignments = data.consumerGroupOffset;
@@ -127,19 +155,30 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
                 this.filter(this.searchService.currentPhrase);
                 this.progressBarService.setProgress(false);
               })
-            ))
-      ).subscribe();
+            )
+        )
+      )
+      .subscribe();
   }
 
   private filter(phrase?: string): void {
-    this.filteredAssignments = this.allAssignments.filter((consumerGroupOffset) => {
-      return !phrase || JSON.stringify(consumerGroupOffset).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
-    });
+    this.filteredAssignments = this.allAssignments.filter(
+      (consumerGroupOffset) => {
+        return (
+          !phrase ||
+          JSON.stringify(consumerGroupOffset)
+            .toLowerCase()
+            .indexOf(phrase.toLowerCase()) > -1
+        );
+      }
+    );
   }
 
   private calculateLags(): void {
-    this.allAssignments.forEach(assignment => {
-      const lag: number = !!assignment.offset ? assignment.endOffset - assignment.offset : 0;
+    this.allAssignments.forEach((assignment) => {
+      const lag: number = assignment.offset
+        ? assignment.endOffset - assignment.offset
+        : 0;
       assignment.lag = lag;
       const pace: number = lag - this.lastLags[this.getKey(assignment)];
       assignment.pace = isNaN(pace) ? 0 : pace;
@@ -148,7 +187,13 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   }
 
   private getKey(assignment: ConsumerGroupOffset): string {
-    return this.servers.getSelectedServerId() + assignment.clientId + assignment.consumerId + assignment.topic + assignment.partition;
+    return (
+      this.servers.getSelectedServerId() +
+      assignment.clientId +
+      assignment.consumerId +
+      assignment.topic +
+      assignment.partition
+    );
   }
 }
 

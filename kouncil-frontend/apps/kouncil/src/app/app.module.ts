@@ -10,7 +10,6 @@ import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
-import {AutosizeDirective} from './util/autosize.directive';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
 import {ConsumerGroupComponent} from './consumers/consumer-group/consumer-group.component';
 import {ToolbarComponent} from './topic/toolbar/toolbar.component';
@@ -56,12 +55,38 @@ import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@stomp/ng2-stompjs';
-import {RxStompConfig} from './rx-stomp.config';
-import {EnumToArrayPipe} from './track/track-filter/enum-to-array.pipe';
+import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
+
+
+export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
+  return () => provider.load();
+}
+
+export function serverServiceFactory(http: HttpClient): ServersService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new ServersBackendService(http);
+    }
+    case Backend.DEMO: {
+      return new ServersDemoService();
+    }
+  }
+}
+
+export function trackServiceFactory(http: HttpClient, rxStompService: RxStompService): TrackService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new TrackBackendService(http, rxStompService);
+    }
+    case Backend.DEMO: {
+      return new TrackDemoService(rxStompService);
+    }
+  }
+}
 
 @NgModule({
   declarations: [
@@ -73,7 +98,6 @@ import {SearchService} from './search.service';
     SendComponent,
     ToolbarComponent,
     BrokersComponent,
-    AutosizeDirective,
     ConsumerGroupComponent,
     ProgressBarComponent,
     NoDataPlaceholderComponent,
@@ -88,7 +112,6 @@ import {SearchService} from './search.service';
     TrackComponent,
     TrackFilterComponent,
     TrackResultComponent,
-    EnumToArrayPipe,
     DemoComponent,
     CachedCellComponent,
   ],
@@ -158,7 +181,7 @@ import {SearchService} from './search.service';
       multi: true
     }, {
       provide: InjectableRxStompConfig,
-      useValue: RxStompConfig,
+      useValue: RX_STOMP_CONFIG,
     },
     {
       provide: RxStompService,
@@ -169,30 +192,4 @@ import {SearchService} from './search.service';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-}
-
-export function configProviderFactory(provider: ServersService) {
-  return () => provider.load();
-}
-
-export function serverServiceFactory(http: HttpClient): ServersService {
-  switch (environment.backend) {
-    case Backend.SERVER: {
-      return new ServersBackendService(http);
-    }
-    case Backend.DEMO: {
-      return new ServersDemoService();
-    }
-  }
-}
-
-export function trackServiceFactory(http: HttpClient, rxStompService: RxStompService): TrackService {
-  switch (environment.backend) {
-    case Backend.SERVER: {
-      return new TrackBackendService(http, rxStompService);
-    }
-    case Backend.DEMO: {
-      return new TrackDemoService(rxStompService);
-    }
-  }
 }

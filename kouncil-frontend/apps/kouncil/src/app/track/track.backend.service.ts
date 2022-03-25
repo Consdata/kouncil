@@ -23,7 +23,7 @@ export class TrackBackendService extends TrackService {
     return parse(dateTime, TRACK_DATE_FORMAT, new Date()).getTime();
   }
 
-  getEvents(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]> {
+  getEvents$(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]> {
     const url = this.asyncEnabled ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
@@ -41,7 +41,7 @@ export class TrackBackendService extends TrackService {
     return this.asyncEnabled;
   }
 
-  toggleAsyncMode() {
+  toggleAsyncMode(): void {
     this.asyncEnabled = !this.asyncEnabled;
     if (this.asyncEnabled) {
       this.rxStompService.activate();

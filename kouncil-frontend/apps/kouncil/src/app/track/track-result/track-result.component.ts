@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {SearchService} from '../../search.service';
@@ -20,13 +13,17 @@ import {RxStompService} from '@stomp/ng2-stompjs';
 import {Crypto} from '../../util/crypto';
 import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
 import {Message} from '../../topic/message';
+import {Model} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-track-result',
   template: `
     <div class="track">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder [objectTypeName]="'Message'" #noDataPlaceholderComponent></app-no-data-placeholder>
+        <app-no-data-placeholder
+          [objectTypeName]="'Message'"
+          #noDataPlaceholderComponent
+        ></app-no-data-placeholder>
       </ng-template>
       <ngx-datatable
         *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
@@ -40,48 +37,42 @@ import {Message} from '../../topic/message';
         [columnMode]="'force'"
         [loadingIndicator]="loading$ | async"
         (activate)="showMessage($event)"
-        #table>
-        <ngx-datatable-column prop="timestamp" name="timestamp"
-                              [width]="190">
-          <ng-template let-value="value"
-                       ngx-datatable-cell-template>
-            {{value | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
+        #table
+      >
+        <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value | date: 'yyyy-MM-dd HH:mm:ss.SSS' }}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="topic" name="topic" [width]="190">
-          <ng-template let-value="value"
-                       ngx-datatable-cell-template>
-            {{value}}
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="partition" name="partition"
-                              [width]="190">
-          <ng-template let-value="value"
-                       ngx-datatable-cell-template>
-            {{value}}
+        <ngx-datatable-column prop="partition" name="partition" [width]="190">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value }}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="offset" name="offset" [width]="190">
-          <ng-template let-value="value"
-                       ngx-datatable-cell-template>
-            {{value}}
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value }}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="key" name="key" [width]="190">
-          <ng-template let-value="value"
-                       ngx-datatable-cell-template>
-            {{value}}
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value }}
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
     </div>
   `,
   styleUrls: ['./track-result.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush // otherwise ngx datatable flickers like hell
+  changeDetection: ChangeDetectionStrategy.OnPush, // otherwise ngx datatable flickers like hell
 })
 export class TrackResultComponent implements OnInit, OnDestroy {
-
-  @ViewChild('noDataPlaceholderComponent') noDataPlaceholderComponent?: NoDataPlaceholderComponent;
+  @ViewChild('noDataPlaceholderComponent')
+  noDataPlaceholderComponent?: NoDataPlaceholderComponent;
   searchSubscription?: Subscription;
   trackFilterSubscription?: Subscription;
   topicSubscription?: Subscription;
@@ -91,18 +82,20 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
-  constructor(private route: ActivatedRoute,
-              private searchService: SearchService,
-              private titleService: Title,
-              private progressBarService: ProgressBarService,
-              private trackService: TrackService,
-              private drawerService: DrawerService,
-              private servers: ServersService,
-              private rxStompService: RxStompService,
-              private changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    private route: ActivatedRoute,
+    private searchService: SearchService,
+    private titleService: Title,
+    private progressBarService: ProgressBarService,
+    private trackService: TrackService,
+    private drawerService: DrawerService,
+    private servers: ServersService,
+    private rxStompService: RxStompService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
   }
 
-  private static tryParseJson(message): string {
+  private static tryParseJson(message: string): string {
     try {
       return JSON.parse(message);
     } catch (e) {
@@ -115,13 +108,15 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchSubscription = this.searchService.getPhraseState('track').subscribe(
-      phrase => {
+    this.searchSubscription = this.searchService
+      .getPhraseState$('track')
+      .subscribe((phrase) => {
         this.filterRows(phrase);
       });
-    this.trackFilterSubscription = this.trackService.trackFilterChange$.subscribe(trackFilter => {
-      this.getEvents(trackFilter);
-    });
+    this.trackFilterSubscription =
+      this.trackService.trackFilterObservable$.subscribe((trackFilter) => {
+        this.getEvents(trackFilter);
+      });
   }
 
   ngOnDestroy(): void {
@@ -130,7 +125,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.topicSubscription?.unsubscribe();
   }
 
-  onMessageReceived(message): void {
+  onMessageReceived(message: { body: string }): void {
     this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);
@@ -143,25 +138,29 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMessage(event): void {
+  showMessage(event: Model): void {
     if (event.type === 'click') {
       this.drawerService.openDrawerWithPadding(MessageViewComponent, {
         source: TrackResultComponent.tryParseJson(event.row.value),
         headers: event.row.headers,
         key: event.row.key,
-        topicName: event.row.topic
+        topicName: event.row.topic,
       });
     }
   }
 
   private filterRows(phrase?: string): void {
     this.filteredRows = this.allRows.filter((row) => {
-      return !phrase || JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1;
+      return (
+        !phrase ||
+        JSON.stringify(row).toLowerCase().indexOf(phrase.toLowerCase()) > -1
+      );
     });
 
     this.changeDetectorRef.detectChanges();
-    if (!!this.noDataPlaceholderComponent) {
-      this.noDataPlaceholderComponent.currentPhrase = this.searchService.currentPhrase;
+    if (this.noDataPlaceholderComponent) {
+      this.noDataPlaceholderComponent.currentPhrase =
+        this.searchService.currentPhrase;
       this.noDataPlaceholderComponent.detectChanges();
     }
   }
@@ -170,7 +169,8 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     if (this.trackService.isAsyncEnable()) {
       this.asyncHandle = Crypto.uuidv4();
       this.topicSubscription?.unsubscribe();
-      this.topicSubscription = this.rxStompService.watch(TrackResultComponent.getDestination(this.asyncHandle))
+      this.topicSubscription = this.rxStompService
+        .watch(TrackResultComponent.getDestination(this.asyncHandle))
         .subscribe((message) => {
           this.onMessageReceived(message);
         });
@@ -181,7 +181,12 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     this.allRows = [];
     this.changeDetectorRef.detectChanges();
     setTimeout(() => {
-      this.trackService.getEvents(this.servers.getSelectedServerId(), trackFilter, this.asyncHandle)
+      this.trackService
+        .getEvents$(
+          this.servers.getSelectedServerId(),
+          trackFilter,
+          this.asyncHandle
+        )
         .subscribe((events: Message[]) => {
           if (events && events.length > 0) {
             this.allRows = [...this.allRows, ...events];
@@ -193,5 +198,4 @@ export class TrackResultComponent implements OnInit, OnDestroy {
         });
     });
   }
-
 }

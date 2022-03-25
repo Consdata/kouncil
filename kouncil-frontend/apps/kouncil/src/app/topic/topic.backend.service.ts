@@ -15,9 +15,10 @@ export class TopicBackendService implements TopicService {
   partitionEndOffsets: { [key: number]: number } = {};
   partitions?: number[];
   selectedPartition?: string;
-  convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
-  numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
-  paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
+  private convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
+  private numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  protected paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
 
   constructor(protected http: HttpClient, protected progressBarService: ProgressBarService) {
   }
@@ -69,15 +70,15 @@ export class TopicBackendService implements TopicService {
     this.getMessages(serverId, topicName);
   }
 
-  getConvertTopicMessagesJsonToGridObservable(): Observable<TopicMessages> {
+  getConvertTopicMessagesJsonToGridObservable$(): Observable<TopicMessages> {
     return this.convertTopicMessagesJsonToGrid$.asObservable();
   }
 
-  getNumberOfPartitionsObservable(): Observable<number> {
+  getNumberOfPartitionsObservable$(): Observable<number> {
     return this.numberOfPartitionsChanged$.asObservable();
   }
 
-  paginateMessages(serverId: string, event: any, topicName: string): void {
+  paginateMessages(serverId: string, event: { page: number }, topicName: string): void {
     const paging = this.paginationChanged$.getValue();
     paging.pageNumber = event.page;
     this.paginationChanged$ = new BehaviorSubject<Page>(paging);

@@ -11,9 +11,9 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export abstract class BrokerService {
 
-  abstract getBrokers(serverId: string): Observable<Brokers>;
+  abstract getBrokers$(serverId: string): Observable<Brokers>;
 
-  abstract getBrokerConfig(serverId: string, id: string): Observable<BrokerConfig[]>;
+  abstract getBrokerConfig$(serverId: string, id: string): Observable<BrokerConfig[]>;
 
 }
 
