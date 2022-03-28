@@ -14,7 +14,7 @@ export class SchemaFacadeService {
               private protobufUtilsService: ProtobufUtilsService) {
   }
 
-  getExampleSchemaData(serverId: string, topic: string): Observable<ExampleSchemaData> {
+  getExampleSchemaData$(serverId: string, topic: string): Observable<ExampleSchemaData> {
     return this.schemaRegistryService.getLatestSchemas$(serverId, topic).pipe(
       switchMap((schemas) => {
         return of({

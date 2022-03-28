@@ -4,7 +4,6 @@ import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
 import {FavouritesService} from '../favourites.service';
 import {ServersService} from '../servers.service';

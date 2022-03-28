@@ -139,7 +139,7 @@ export class SendComponent {
     this.messageDataService.messageData$,
     this.messageDataService.messageData$.pipe(
       switchMap(messageData => this.schemaFacade
-        .getExampleSchemaData(this.servers.getSelectedServerId(), messageData.topicName))
+        .getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName))
     )
   ]).pipe(
     map(([messageData, exampleData]) => ({

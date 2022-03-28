@@ -1,9 +1,9 @@
 import {MessageFormat} from './message-format';
 
 export class Schemas {
-  keyMessageFormat: MessageFormat
+  keyMessageFormat: MessageFormat;
   keyPlainTextSchema: string;
-  valueMessageFormat: MessageFormat
+  valueMessageFormat: MessageFormat;
   valuePlainTextSchema: string;
 }
 
