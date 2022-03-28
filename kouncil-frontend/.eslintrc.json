@@ -5,6 +5,12 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parserOptions": {
+        "project": [
+          "./tsconfig.*?.json"
+        ],
+        "createDefaultProgram": true
+      },
       "rules": {
         "@nrwl/nx/enforce-module-boundaries": [
           "error",

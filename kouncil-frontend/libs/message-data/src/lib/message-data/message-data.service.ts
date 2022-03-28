@@ -6,13 +6,13 @@ import {MessageData} from './message-data';
   providedIn: 'root'
 })
 export class MessageDataService {
-  private messageDataSub: Subject<MessageData> = new BehaviorSubject<MessageData>({} as MessageData);
+  private messageDataSub$: Subject<MessageData> = new BehaviorSubject<MessageData>({} as MessageData);
 
   get messageData$(): Observable<MessageData> {
-    return this.messageDataSub.asObservable();
+    return this.messageDataSub$.asObservable();
   }
 
   setMessageData(messageData: MessageData): void {
-    this.messageDataSub.next(messageData);
+    this.messageDataSub$.next(messageData);
   }
 }

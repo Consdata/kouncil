@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServersService } from '../servers.service';
 import { SchemaFacadeService } from '../schema-registry/schema-facade.service';
-import {MessageData, MessageDataService} from '@app/message-data';
+import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {combineLatest, Observable} from 'rxjs';
 
 @Component({
@@ -39,7 +39,7 @@ import {combineLatest, Observable} from 'rxjs';
             class="small-button"
             mat-button
             disableRipple
-            (click)="addHeader()"
+            (click)="addHeader(messageData.headers)"
           >
             +
           </button>
@@ -69,7 +69,7 @@ import {combineLatest, Observable} from 'rxjs';
             class="small-button"
             mat-button
             disableRipple
-            (click)="removeHeader(i)"
+            (click)="removeHeader(i, messageData.headers)"
           >
             -
           </button>
@@ -196,12 +196,12 @@ export class SendComponent {
     this.countControl.reset(1);
   }
 
-  addHeader(): void {
-    // this.message.headers.push(new MessageHeader('', ''));
+  addHeader(headers: MessageDataHeader[]): void {
+    headers.push({key: '', value: ''} as MessageDataHeader);
   }
 
-  removeHeader(i: number): void {
-    // this.message.headers.splice(i, 1);
+  removeHeader(i: number, headers: MessageDataHeader[]): void {
+    headers.splice(i, 1);
   }
 
 }
