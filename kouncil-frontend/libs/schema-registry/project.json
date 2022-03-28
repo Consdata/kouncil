@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/schema-registry",
+  "sourceRoot": "libs/schema-registry/src",
+  "prefix": "kouncil",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/schema-registry"],
+      "options": {
+        "jestConfig": "libs/schema-registry/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/schema-registry/src/**/*.ts",
+          "libs/schema-registry/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

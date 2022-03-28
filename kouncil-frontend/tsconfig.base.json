@@ -24,7 +24,8 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"],
     "paths": {
-      "@app/message-data": ["libs/message-data/src/index.ts"]
+      "@app/message-data": ["libs/message-data/src/index.ts"],
+      "@app/schema-registry": ["libs/schema-registry/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

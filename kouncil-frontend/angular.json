@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "kouncil": "apps/kouncil",
-    "message-data": "libs/message-data"
+    "message-data": "libs/message-data",
+    "schema-registry": "libs/schema-registry"
   }
 }

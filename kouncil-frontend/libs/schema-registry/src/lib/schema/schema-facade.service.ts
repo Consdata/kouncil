@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ExampleSchemaData} from './schemas.model';
 import {SchemaRegistryService} from './schema-registry.service';
-import {ProtobufUtilsService} from './protobuf/protobuf-utils.service';
-import {Observable, of, switchMap} from 'rxjs';
+import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
+import {map} from 'rxjs/operators';
+import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,10 @@ export class SchemaFacadeService {
 
   getExampleSchemaData$(serverId: string, topic: string): Observable<ExampleSchemaData> {
     return this.schemaRegistryService.getLatestSchemas$(serverId, topic).pipe(
-      switchMap((schemas) => {
-        return of({
-          exampleKey: this.getExample(schemas.keyMessageFormat, schemas.keyPlainTextSchema),
-          exampleValue: this.getExample(schemas.valueMessageFormat, schemas.valuePlainTextSchema)
-        } as ExampleSchemaData);
-      })
+      map((schemas) => ({
+        exampleKey: this.getExample(schemas.keyMessageFormat, schemas.keyPlainTextSchema),
+        exampleValue: this.getExample(schemas.valueMessageFormat, schemas.valuePlainTextSchema)
+      } as ExampleSchemaData))
     );
   }
 

@@ -10,9 +10,9 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServersService } from '../servers.service';
-import { SchemaFacadeService } from '../schema-registry/schema-facade.service';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {combineLatest, Observable} from 'rxjs';
+import {SchemaFacadeService} from '@app/schema-registry';
 
 @Component({
   selector: 'app-send',
