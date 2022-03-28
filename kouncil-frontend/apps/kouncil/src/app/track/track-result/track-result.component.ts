@@ -12,7 +12,6 @@ import {TrackFilter} from '../track-filter/track-filter';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {Crypto} from '../../util/crypto';
 import {NoDataPlaceholderComponent} from '../../no-data-placeholder/no-data-placeholder.component';
-import {Message} from '../../topic/message';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
 
@@ -191,7 +190,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
           trackFilter,
           this.asyncHandle
         )
-        .subscribe((events: Message[]) => {
+        .subscribe((events: MessageData[]) => {
           if (events && events.length > 0) {
             this.allRows = [...this.allRows, ...events];
             this.filterRows(this.searchService.currentPhrase);

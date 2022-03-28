@@ -1,4 +1,4 @@
-import { MessageHeader } from './message-header';
+import {MessageDataHeader} from '@app/message-data';
 
 export interface JsonGridData {
   value: string;
@@ -7,5 +7,5 @@ export interface JsonGridData {
   offset: number | null;
   key: string;
   timestamp: number | null;
-  headers: MessageHeader[];
+  headers: MessageDataHeader[];
 }

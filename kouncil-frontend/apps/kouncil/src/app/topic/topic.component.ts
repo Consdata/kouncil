@@ -18,7 +18,6 @@ import { DrawerService } from '../util/drawer.service';
 import { ServersService } from '../servers.service';
 import { LiveUpdateState } from './toolbar/toolbar.component';
 import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
-import { Message } from './message';
 import { JsonGridData } from './json-grid-data';
 import { CustomTableColumn } from './custom-table-column';
 import { Observable, Subscription } from 'rxjs';
@@ -220,7 +219,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   private jsonToGrid(topicMessages: TopicMessages): void {
     const values: JsonGridData[] = [];
-    topicMessages.messages.forEach((message: Message) =>
+    topicMessages.messages.forEach((message: MessageData) =>
       values.push({
         value: message.value,
         valueJson: TopicComponent.tryParseJson(message.value),
