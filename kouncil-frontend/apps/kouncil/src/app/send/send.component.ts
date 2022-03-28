@@ -5,7 +5,7 @@ import { SendService } from './send.service';
 import {
   first,
   map,
-  switchMap,
+  switchMap
 } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -144,8 +144,9 @@ export class SendComponent {
   ]).pipe(
     map(([messageData, exampleData]) => ({
       ...messageData,
-      key: messageData.key ?? exampleData.exampleKey,
-      value: messageData.value ? JSON.stringify(messageData.value, null, 2) : exampleData.exampleValue
+      key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
+      value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
+                                 JSON.stringify(exampleData.exampleValue, null, 2)
     }))
   );
 
