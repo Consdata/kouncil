@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Schemas} from './schemas.model';
+import {Schemas, SchemasConfiguration} from './schemas.model';
 import {Observable} from 'rxjs';
 
 @Injectable({
@@ -8,6 +8,10 @@ import {Observable} from 'rxjs';
 })
 export class SchemaRegistryService {
   constructor(private httpClient: HttpClient) {
+  }
+
+  getSchemasConfiguration$(): Observable<SchemasConfiguration[]> {
+    return this.httpClient.get<SchemasConfiguration[]>(`/api/schemas/configs`);
   }
 
   getLatestSchemas$(serverId: string, topicName: string): Observable<Schemas> {
