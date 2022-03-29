@@ -5,7 +5,7 @@ import { SendService } from './send.service';
 import {
   first,
   map,
-  switchMap, tap
+  switchMap
 } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
