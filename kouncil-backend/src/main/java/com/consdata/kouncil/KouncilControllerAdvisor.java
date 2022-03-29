@@ -1,5 +1,6 @@
 package com.consdata.kouncil;
 
+import com.consdata.kouncil.schema.registry.SchemaRegistryNotConfiguredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,12 @@ public class KouncilControllerAdvisor {
         String message = ex.getMessage();
         log.error("Received HttpMessageNotWritableException message={}", message, ex);
         return null; // for BrokenPipe problem on closed websocket
+    }
+
+    @ExceptionHandler(SchemaRegistryNotConfiguredException.class)
+    public final ResponseEntity<String> handleException(SchemaRegistryNotConfiguredException ex) {
+        String message = ex.getMessage();
+        log.warn("Received SchemaRegistryNotConfiguredException message={}", message, ex);
+        return ResponseEntity.badRequest().body(message);
     }
 }

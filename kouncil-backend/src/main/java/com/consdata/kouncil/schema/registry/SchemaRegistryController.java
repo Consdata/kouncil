@@ -5,12 +5,10 @@ import com.consdata.kouncil.schema.SchemasDTO;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.serde.MessageFormat;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Slf4j
@@ -41,9 +39,8 @@ public class SchemaRegistryController {
                     });
             return schemaBuilder.build();
         } else {
-            log.warn("Schema registry not configured for specified cluster={}", serverId);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format("Schema registry not configured for specified cluster=%s", serverId));
+            throw new SchemaRegistryNotConfiguredException(
+                    String.format("Schema registry not configured for specified cluster=[%s]", serverId));
         }
     }
 }
