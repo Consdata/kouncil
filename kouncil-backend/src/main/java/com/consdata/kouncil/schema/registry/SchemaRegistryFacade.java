@@ -1,4 +1,4 @@
-package com.consdata.kouncil.schemaregistry;
+package com.consdata.kouncil.schema.registry;
 
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
@@ -7,12 +7,19 @@ import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class SchemaRegistryFacade {
     private static final String KEY_SCHEMA_SUFFIX = "-key";
     private static final String VALUE_SCHEMA_SUFFIX = "-value";
+    private static final SchemaMetadata DEFAULT_SCHEMA_METADATA = new SchemaMetadata(-1,
+            -1,
+            MessageFormat.STRING.name(),
+            null,
+            null);
 
     @Getter
     private final SchemaRegistryClient schemaRegistryClient;
@@ -30,10 +37,17 @@ public class SchemaRegistryFacade {
     /**
      * This method is not using Schema cache to fetch the latest metadata
      */
-    @SneakyThrows
     public SchemaMetadata getLatestSchemaMetadata(String topic, boolean isKey) {
         final String subject = topic.concat(getSubjectSuffix(isKey));
-        return schemaRegistryClient.getLatestSchemaMetadata(subject);
+        try {
+            return schemaRegistryClient.getLatestSchemaMetadata(subject);
+        } catch (RestClientException e) {
+            log.info("Schema not found [topic={}, isKey={}]", topic, isKey);
+            return DEFAULT_SCHEMA_METADATA;
+        } catch (IOException e) {
+            log.error("Error while fetching schema metadata for [topic={}, isKey={}]", topic, isKey, e);
+            return DEFAULT_SCHEMA_METADATA;
+        }
     }
 
     /**

@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { TrackService } from './track.service';
-import { Message } from '../topic/message';
 import { from, Observable, of } from 'rxjs';
 import { TrackFilter } from './track-filter/track-filter';
 import { concatMap, delay, finalize } from 'rxjs/operators';
 import { Crypto } from '../util/crypto';
 import { RandomUtils } from '../util/random-utils';
 import { demoTopics } from '../topics/topics.demo.data';
-import { MessageHeader } from '../topic/message-header';
 import { parse } from 'date-fns';
 import { TRACK_DATE_FORMAT } from './track-date-format';
 import { RxStompService } from '@stomp/ng2-stompjs';
+import {MessageData, MessageDataHeader} from '@app/message-data';
 
 @Injectable()
 export class TrackDemoService extends TrackService {
@@ -19,11 +18,11 @@ export class TrackDemoService extends TrackService {
     rxStompService.deactivate();
   }
 
-  getEvents$(serverId: string, trackFilter: TrackFilter): Observable<Message[]> {
+  getEvents$(serverId: string, trackFilter: TrackFilter): Observable<MessageData[]> {
     const numberOfMessages = RandomUtils.randomInt(3, 10);
     const traceId = Math.random().toString(36).slice(2);
     const userId = RandomUtils.randomInt(100000000, 200000000).toString(10);
-    const answer: Message[] = [];
+    const answer: MessageData[] = [];
     for (let i = 0; i < numberOfMessages; i++) {
       answer.push(this.generateMessage(trackFilter, traceId, userId));
     }
@@ -50,7 +49,7 @@ export class TrackDemoService extends TrackService {
     trackFilter: TrackFilter,
     traceId: string,
     userId: string
-  ): Message {
+  ): MessageData {
     const key = Crypto.uuidv4();
     const event = RandomUtils.createRandomEvent();
     const offset = RandomUtils.randomInt(100000000, 200000000);
@@ -79,21 +78,21 @@ export class TrackDemoService extends TrackService {
     const date = RandomUtils.randomDate(fromDate, toDate).getTime();
 
     const headers = [
-      new MessageHeader('traceId', traceId),
-      new MessageHeader('userId', userId),
+      {key: 'traceId', value: traceId} as MessageDataHeader,
+      {key: 'userId', value: userId}  as MessageDataHeader,
     ];
     if (trackFilter.field) {
-      headers.push(new MessageHeader(trackFilter.field, trackFilter.value));
+      headers.push({key: trackFilter.field, value: trackFilter.value} as MessageDataHeader);
     }
 
-    return new Message(
-      key,
-      event,
-      offset,
-      partition,
-      date,
-      headers,
-      topic.name
-    );
+    return {
+      key: key,
+      value: event,
+      offset: offset,
+      partition: partition,
+      timestamp: date,
+      headers: headers,
+      topicName: topic.name
+    } as MessageData;
   }
 }

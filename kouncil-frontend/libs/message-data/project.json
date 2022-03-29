@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/message-data",
+  "sourceRoot": "libs/message-data/src",
+  "prefix": "kouncil",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/message-data"],
+      "options": {
+        "jestConfig": "libs/message-data/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/message-data/src/**/*.ts",
+          "libs/message-data/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

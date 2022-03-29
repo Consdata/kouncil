@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SendService } from './send.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Message } from '../topic/message';
+import {MessageData} from '@app/message-data';
 
 @Injectable({
   providedIn: 'root',
@@ -10,16 +10,11 @@ import { Message } from '../topic/message';
 export class SendBackendService implements SendService {
   constructor(private http: HttpClient) {}
 
-  send$(
-    serverId: string,
-    topic: string,
-    count: number,
-    message: Message
-  ): Observable<Record<string, unknown>> {
+  send$(serverId: string, count: number, messageData: MessageData): Observable<Record<string, unknown>> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.post<Record<string, unknown>>(
-      `/api/topic/send/${topic}/${count}`,
-      message,
+      `/api/topic/send/${messageData.topicName}/${count}`,
+      messageData,
       { params }
     );
   }

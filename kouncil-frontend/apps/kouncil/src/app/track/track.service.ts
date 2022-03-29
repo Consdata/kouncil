@@ -1,9 +1,9 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {Message} from '../topic/message';
 import {Observable, Subject} from 'rxjs';
 import {TrackFilter, TrackOperator} from './track-filter/track-filter';
 import {addMinutes, format} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
+import {MessageData} from '@app/message-data';
 
 @Injectable()
 export abstract class TrackService {
@@ -13,7 +13,7 @@ export abstract class TrackService {
   trackFilterObservable$: Observable<TrackFilter> = this.trackFilterChange$.asObservable();
   trackFinished: EventEmitter<void> = new EventEmitter<void>();
 
-  abstract getEvents$(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<Message[]>;
+  abstract getEvents$(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<MessageData[]>;
 
   setTrackFilter(trackFilter: TrackFilter): void {
     this.trackFilterChange$.next(trackFilter);

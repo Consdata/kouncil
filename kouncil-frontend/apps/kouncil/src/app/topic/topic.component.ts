@@ -18,7 +18,6 @@ import { DrawerService } from '../util/drawer.service';
 import { ServersService } from '../servers.service';
 import { LiveUpdateState } from './toolbar/toolbar.component';
 import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
-import { Message } from './message';
 import { JsonGridData } from './json-grid-data';
 import { CustomTableColumn } from './custom-table-column';
 import { Observable, Subscription } from 'rxjs';
@@ -26,6 +25,7 @@ import { SearchService } from '../search.service';
 import { JsonGrid } from './json-grid';
 import { TopicMessages } from './topic-messages';
 import {Model} from '@swimlane/ngx-datatable';
+import {MessageData, MessageDataService} from '@app/message-data';
 
 @Component({
   selector: 'app-topic',
@@ -123,7 +123,8 @@ export class TopicComponent implements OnInit, OnDestroy {
     private progressBarService: ProgressBarService,
     private topicService: TopicService,
     private drawerService: DrawerService,
-    private servers: ServersService
+    private servers: ServersService,
+    private messageDataService: MessageDataService
   ) {
     this.jsonToGridSubscription = this.topicService
       .getConvertTopicMessagesJsonToGridObservable$()
@@ -194,30 +195,31 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   showMessage(event: Model): void {
     if (event.type === 'click') {
-      this.drawerService.openDrawerWithPadding(MessageViewComponent, {
-        source:
-          event.row.kouncilValueJson &&
-          Object.keys(event.row.kouncilValueJson).length > 0
-            ? event.row.kouncilValueJson
-            : event.row.kouncilValue,
+      const messageData = {
+        value: event.row.kouncilValueJson && Object.keys(event.row.kouncilValueJson).length > 0 ?
+          event.row.kouncilValueJson : event.row.kouncilValue,
         headers: event.row.headers,
         key: event.row.kouncilKey,
         topicName: this.topicName,
         timestamp: event.row.kouncilTimestampEpoch,
-      });
+      } as MessageData;
+      this.messageDataService.setMessageData(messageData);
+      this.drawerService.openDrawerWithPadding(MessageViewComponent);
     }
   }
 
   openSendPopup(): void {
-    this.drawerService.openDrawerWithPadding(SendComponent, {
+    const messageData = {
       topicName: this.topicName,
-      headers: [],
-    });
+      headers: []
+    } as MessageData;
+    this.messageDataService.setMessageData(messageData);
+    this.drawerService.openDrawerWithPadding(SendComponent);
   }
 
   private jsonToGrid(topicMessages: TopicMessages): void {
     const values: JsonGridData[] = [];
-    topicMessages.messages.forEach((message: Message) =>
+    topicMessages.messages.forEach((message: MessageData) =>
       values.push({
         value: message.value,
         valueJson: TopicComponent.tryParseJson(message.value),

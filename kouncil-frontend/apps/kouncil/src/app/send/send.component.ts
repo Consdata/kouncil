@@ -1,21 +1,26 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, NgForm, Validators } from '@angular/forms';
 import { SendService } from './send.service';
-import { first } from 'rxjs/operators';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import {
+  first,
+  map,
+  switchMap
+} from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServersService } from '../servers.service';
-import { MessageHeader } from '../topic/message-header';
-import { Message } from '../topic/message';
+import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
+import {combineLatest, Observable} from 'rxjs';
+import {SchemaFacadeService} from '@app/schema-registry';
 
 @Component({
   selector: 'app-send',
   template: `
-    <mat-dialog-content>
-      <form #sendForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content *ngIf="messageData$ | async as messageData">
+      <form #sendForm="ngForm" (ngSubmit)="onSubmit(messageData)">
         <div class="drawer-header">
-          <div class="drawer-title">Send event to {{ data.topicName }}</div>
+          <div class="drawer-title">Send event to {{ messageData.topicName }}</div>
           <div class="spacer"></div>
           <mat-icon mat-dialog-close class="close">close</mat-icon>
         </div>
@@ -25,7 +30,7 @@ import { Message } from '../topic/message';
           {{timestamp}<!---->}
         </div>
         <div class="drawer-section-title">Key</div>
-        <input [(ngModel)]="message.key" matInput type="text" name="key" />
+        <input [(ngModel)]="messageData.key" matInput type="text" name="key" />
 
         <div class="drawer-section-title">
           Headers
@@ -34,14 +39,14 @@ import { Message } from '../topic/message';
             class="small-button"
             mat-button
             disableRipple
-            (click)="addHeader()"
+            (click)="addHeader(messageData.headers)"
           >
             +
           </button>
         </div>
         <div
           class="header"
-          *ngFor="let header of message.headers; let i = index"
+          *ngFor="let header of messageData.headers; let i = index"
         >
           <input
             class="header"
@@ -64,7 +69,7 @@ import { Message } from '../topic/message';
             class="small-button"
             mat-button
             disableRipple
-            (click)="removeHeader(i)"
+            (click)="removeHeader(i, messageData.headers)"
           >
             -
           </button>
@@ -72,7 +77,7 @@ import { Message } from '../topic/message';
 
         <div class="drawer-section-title">Value</div>
 
-        <textarea rows="10" [(ngModel)]="message.value" name="value"></textarea>
+        <textarea rows="10" [(ngModel)]="messageData.value" name="value"></textarea>
 
         <div class="drawer-section-title">Count</div>
         <div class="drawer-section-subtitle">
@@ -126,12 +131,27 @@ import { Message } from '../topic/message';
       </form>
     </mat-dialog-content>
   `,
-  styleUrls: ['./send.component.scss'],
+  styleUrls: ['./send.component.scss']
 })
 export class SendComponent {
+
+  messageData$: Observable<MessageData> = combineLatest([
+    this.messageDataService.messageData$,
+    this.messageDataService.messageData$.pipe(
+      switchMap(messageData => this.schemaFacade
+        .getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName))
+    )
+  ]).pipe(
+    map(([messageData, exampleData]) => ({
+      ...messageData,
+      key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
+      value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
+                                 JSON.stringify(exampleData.exampleValue, null, 2)
+    }))
+  );
+
   @ViewChild('sendForm', { read: NgForm }) sendForm: NgForm;
 
-  message: Message;
   countControl: FormControl = new FormControl(1, [
     Validators.min(1),
     Validators.required,
@@ -143,39 +163,18 @@ export class SendComponent {
     private dialog: MatDialog,
     private snackbar: MatSnackBar,
     private servers: ServersService,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      topicName: string;
-      key: string;
-      source: string;
-      headers: MessageHeader[];
-    }
-  ) {
-    console.log(this.data);
-    this.message = new Message(
-      this.data.key,
-      JSON.stringify(this.data.source, null, 2),
-      null,
-      null,
-      null,
-      this.data.headers,
-      this.data.topicName
-    );
+    private schemaFacade: SchemaFacadeService,
+    private messageDataService: MessageDataService) {
   }
 
-  onSubmit(): void {
-    this.sendService
-      .send$(
-        this.servers.getSelectedServerId(),
-        this.data.topicName,
-        this.countControl.value,
-        this.message
-      )
+  onSubmit(messageData: MessageData): void {
+    this.messageDataService.setMessageData(messageData);
+    this.sendService.send$(this.servers.getSelectedServerId(), this.countControl.value, messageData)
       .pipe(first())
       .subscribe(() => {
         this.dialog.closeAll();
         this.resetForm();
-        this.snackbar.open(`Successfully sent to ${this.data.topicName}`, '', {
+        this.snackbar.open(`Successfully sent to ${messageData.topicName}`, '', {
           duration: 3000,
           panelClass: ['snackbar-success', 'snackbar'],
         });
@@ -197,11 +196,12 @@ export class SendComponent {
     this.countControl.reset(1);
   }
 
-  addHeader(): void {
-    this.message.headers.push(new MessageHeader('', ''));
+  addHeader(headers: MessageDataHeader[]): void {
+    headers.push({key: '', value: ''} as MessageDataHeader);
   }
 
-  removeHeader(i: number): void {
-    this.message.headers.splice(i, 1);
+  removeHeader(i: number, headers: MessageDataHeader[]): void {
+    headers.splice(i, 1);
   }
+
 }

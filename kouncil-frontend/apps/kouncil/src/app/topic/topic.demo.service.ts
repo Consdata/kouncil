@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TopicMessages } from './topic-messages';
-import { Message } from './message';
 import { TopicBackendService } from './topic.backend.service';
 import { demoTopics } from '../topics/topics.demo.data';
-import { MessageHeader } from './message-header';
 import { Crypto } from '../util/crypto';
 import { RandomUtils } from '../util/random-utils';
+import {MessageData, MessageDataHeader} from '@app/message-data';
 
 @Injectable()
 export class TopicDemoService extends TopicBackendService {
@@ -29,7 +28,7 @@ export class TopicDemoService extends TopicBackendService {
       !!offset || offset === 0
         ? actualPartitions
         : this.paginationChanged$.getValue().size;
-    const messages = [] as Message[];
+    const messages = [] as MessageData[];
     for (let i = 0; i < size; i++) {
       messages.push(
         this.createRandomMessage(i, partitions, partitionOffsets, offset)
@@ -50,7 +49,7 @@ export class TopicDemoService extends TopicBackendService {
     partitions: number,
     partitionOffsets: Record<number, number>,
     offset?: number
-  ): Message {
+  ): MessageData {
     let partition = RandomUtils.randomInt(0, partitions - 1);
     if (
       this.selectedPartition !== undefined &&
@@ -68,14 +67,14 @@ export class TopicDemoService extends TopicBackendService {
         pagination.size * pagination.pageNumber -
         i;
     }
-    return new Message(
-      Crypto.uuidv4(),
-      RandomUtils.createRandomEvent(),
-      messageOffset,
-      partition,
-      new Date().getTime(),
-      [new MessageHeader('traceId', Crypto.uuidv4())],
-      ''
-    );
+    return {
+      key: Crypto.uuidv4(),
+      value: RandomUtils.createRandomEvent(),
+      offset: messageOffset,
+      partition: partition,
+      timestamp: new Date().getTime(),
+      headers: [{key: 'traceId', value: Crypto.uuidv4()} as MessageDataHeader],
+      topicName: ''
+    } as MessageData;
   }
 }

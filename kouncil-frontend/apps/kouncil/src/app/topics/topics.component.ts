@@ -4,7 +4,6 @@ import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {SendComponent} from '../send/send.component';
 import {DrawerService} from '../util/drawer.service';
 import {FavouritesService} from '../favourites.service';
 import {ServersService} from '../servers.service';
@@ -140,12 +139,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSendPopup(name: string): void {
-    this.drawerService.openDrawerWithPadding(SendComponent, {topicName: name});
-  }
-
   customSort(event: { column: { prop: string }, newValue: string }): void {
     this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
-
 }
