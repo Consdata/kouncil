@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormControl, NgForm, Validators } from '@angular/forms';
 import { SendService } from './send.service';
 import {
-  first,
+  first, map,
   switchMap
 } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -141,20 +141,18 @@ export class SendComponent {
     switchMap(([messageData, isSchemaConfigured]) =>
       iif(() => isSchemaConfigured,
         this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
-          switchMap(exampleData =>
-            of({
+          map(exampleData => ({
               ...messageData,
               key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
               value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
                 JSON.stringify(exampleData.exampleValue, null, 2)
-            })
-          )
-        ),
+          })
+        )),
         of({
           ...messageData,
           value:  messageData.value ?? JSON.stringify(messageData.value, null, 2)
-        })
-      )
+        }
+      ))
     )
   );
 
