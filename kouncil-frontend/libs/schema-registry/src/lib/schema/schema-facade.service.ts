@@ -18,17 +18,18 @@ export class SchemaFacadeService {
   getExampleSchemaData$(serverId: string, topic: string): Observable<ExampleSchemaData> {
     return this.schemaRegistryService.getLatestSchemas$(serverId, topic).pipe(
       map((schemas) => ({
-        exampleKey: this.getExample(schemas.keyMessageFormat, schemas.keyPlainTextSchema),
-        exampleValue: this.getExample(schemas.valueMessageFormat, schemas.valuePlainTextSchema)
+        exampleKey: this.getExample(schemas.keyMessageFormat, schemas.keyPlainTextSchema, true),
+        exampleValue: this.getExample(schemas.valueMessageFormat, schemas.valuePlainTextSchema, false)
       } as ExampleSchemaData))
     );
   }
 
-  private getExample(messageFormat: MessageFormat, plainTextSchema: string): string {
+  private getExample(messageFormat: MessageFormat, plainTextSchema: string, isKey: boolean): string {
     let example;
     switch (messageFormat) {
       case MessageFormat.PROTOBUF:
         example = this.protobufUtilsService.fillProtobufSchemaWithData(plainTextSchema);
+        console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.JSON_SCHEMA:
         console.log('JSON_SCHEMA IS NOT IMPLEMENTED');
@@ -36,8 +37,8 @@ export class SchemaFacadeService {
       case MessageFormat.AVRO:
         console.log('AVRO IS NOT IMPLEMENTED');
         break;
-      case MessageFormat.STRING:
-        example = '';
+      default:
+        console.log(`No schema, isKey=[${isKey}]`);
         break;
     }
     return example;
