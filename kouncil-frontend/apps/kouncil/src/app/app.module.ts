@@ -60,16 +60,19 @@ import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
+import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
   return () => provider.load();
 }
 
-export function serverServiceFactory(http: HttpClient): ServersService {
+export function serverServiceFactory(http: HttpClient,
+                                     schemaRegistryService: SchemaRegistryService,
+                                     schemaStateService: SchemaStateService): ServersService {
   switch (environment.backend) {
     case Backend.SERVER: {
-      return new ServersBackendService(http);
+      return new ServersBackendService(http, schemaRegistryService, schemaStateService);
     }
     case Backend.DEMO: {
       return new ServersDemoService();
@@ -169,7 +172,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     }, {
       provide: ServersService,
       useFactory: serverServiceFactory,
-      deps: [HttpClient]
+      deps: [HttpClient, SchemaRegistryService, SchemaStateService]
     }, {
       provide: TrackService,
       useFactory: trackServiceFactory,

@@ -3,16 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { FormControl, NgForm, Validators } from '@angular/forms';
 import { SendService } from './send.service';
 import {
-  first,
-  map,
+  first, map,
   switchMap
 } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServersService } from '../servers.service';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
-import {combineLatest, Observable} from 'rxjs';
-import {SchemaFacadeService} from '@app/schema-registry';
+import {combineLatest, iif, Observable, of} from 'rxjs';
+import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
 
 @Component({
   selector: 'app-send',
@@ -137,17 +136,24 @@ export class SendComponent {
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,
-    this.messageDataService.messageData$.pipe(
-      switchMap(messageData => this.schemaFacade
-        .getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName))
-    )
+    this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId())
   ]).pipe(
-    map(([messageData, exampleData]) => ({
-      ...messageData,
-      key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
-      value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
-                                 JSON.stringify(exampleData.exampleValue, null, 2)
-    }))
+    switchMap(([messageData, isSchemaConfigured]) =>
+      iif(() => isSchemaConfigured,
+        this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
+          map(exampleData => ({
+              ...messageData,
+              key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
+              value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
+                JSON.stringify(exampleData.exampleValue, null, 2)
+          })
+        )),
+        of({
+          ...messageData,
+          value:  messageData.value ?? JSON.stringify(messageData.value, null, 2)
+        }
+      ))
+    )
   );
 
   @ViewChild('sendForm', { read: NgForm }) sendForm: NgForm;
@@ -164,6 +170,7 @@ export class SendComponent {
     private snackbar: MatSnackBar,
     private servers: ServersService,
     private schemaFacade: SchemaFacadeService,
+    private schemaStateService: SchemaStateService,
     private messageDataService: MessageDataService) {
   }
 

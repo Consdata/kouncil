@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Server } from './server';
 import { ServersService } from './servers.service';
+import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 
 @Injectable()
 export class ServersBackendService extends ServersService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private schemaRegistryService: SchemaRegistryService,
+              private schemaStateService: SchemaStateService) {
     super();
   }
 
@@ -28,6 +31,13 @@ export class ServersBackendService extends ServersService {
           }
         }
         resolve(true);
+      });
+      this.schemaRegistryService.getSchemasConfiguration$().subscribe(schemasConfiguration => {
+        const schemaConf: { [id: string]: boolean } = {};
+        for (const schemaConfig of schemasConfiguration) {
+          schemaConf[schemaConfig.serverId] = schemaConfig.hasSchemaRegistry;
+        }
+        this.schemaStateService.setSchemaConfiguration(schemaConf);
       });
     });
   }
