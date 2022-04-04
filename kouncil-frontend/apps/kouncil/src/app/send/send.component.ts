@@ -4,7 +4,7 @@ import { FormControl, NgForm, Validators } from '@angular/forms';
 import { SendService } from './send.service';
 import {
   first, map,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -150,7 +150,7 @@ export class SendComponent {
         )),
         of({
           ...messageData,
-          value:  messageData.value ?? JSON.stringify(messageData.value, null, 2)
+          value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
         }
       ))
     )

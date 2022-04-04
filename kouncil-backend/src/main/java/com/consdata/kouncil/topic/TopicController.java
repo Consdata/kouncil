@@ -192,8 +192,8 @@ public class TopicController extends AbstractMessagesController {
         log.debug("TCS01 topicName={}, count={}, serverId={}", topicName, count, serverId);
         validateTopics(serverId, Collections.singletonList(topicName));
         KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
-        String key = message.getKey() != null ?  message.getKey(): "";
-        String value = message.getValue() != null ?  message.getValue(): "";
+        String key = message.getKey() != null ? message.getKey(): "";
+        String value = message.getValue() != null ? message.getValue(): "";
         for (int i = 0; i < count; i++) {
             ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, replaceTokens(key, i), replaceTokens(value, i));
             for (TopicMessageHeader header : message.getHeaders()) {
