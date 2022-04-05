@@ -36,6 +36,6 @@ jobs:
       - name: Push to Docker
         run: docker push "consdata/kouncil:${{ env.MVN_VERSION }}"
       - name: Tag Latest Snapshot
-        run: docker tag "consdata/kouncil:${{ env.MVN_VERSION }}" "ynleborg/jugademy:latest_snapshot"
+        run: docker tag "consdata/kouncil:${{ env.MVN_VERSION }}" "consdata/kouncil:latest_snapshot"
       - name: Push to Docker
         run: docker push "consdata/kouncil:latest_snapshot"
