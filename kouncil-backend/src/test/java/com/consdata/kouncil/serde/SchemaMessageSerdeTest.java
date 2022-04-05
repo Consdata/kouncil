@@ -119,6 +119,37 @@ class SchemaMessageSerdeTest {
         assertThat(deserializedValue.getValueSchemaId()).isNull();
     }
 
+    @Test
+    void should_not_fail_when_empty_key_or_value() {
+        // given
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.STRING, new StringMessageFormatter());
+
+        when(clusterAwareSchemaService.getClusterSchema(eq("testCluster"))).thenReturn(
+                ClusterAwareSchema.builder()
+                        .schemaRegistryFacade(schemaRegistryFacade)
+                        .formatters(formatters)
+                        .build()
+        );
+
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                new Bytes("".getBytes(StandardCharsets.UTF_8)),
+                new Bytes("".getBytes(StandardCharsets.UTF_8))
+        );
+
+        // when
+        DeserializedValue deserializedValue = schemaMessageSerde.deserialize("testCluster", message);
+
+        // then
+        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedValue.getDeserializedValue()).isEqualTo("");
+        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("");
+        assertThat(deserializedValue.getKeySchemaId()).isNull();
+        assertThat(deserializedValue.getValueSchemaId()).isNull();
+    }
+
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
         return new ConsumerRecord<>("sometopic",
                 0,
