@@ -53,6 +53,9 @@ public class SchemaMessageSerde {
      */
     private Integer getSchemaIdFromMessage(Bytes message) {
         ByteBuffer buffer = ByteBuffer.wrap(message.get());
-        return buffer.get() == 0 ? buffer.getInt() : null;
+        if (buffer.hasRemaining()) {
+            return buffer.get() == 0 ? buffer.getInt() : null;
+        }
+        return null;
     }
 }
