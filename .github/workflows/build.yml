@@ -22,13 +22,20 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml     
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
       - name: Build Project and Image
-        run: ./mvnw package -P dist  
-      - name: Login to DockerHub       
+        run: ./mvnw package -P dist
+      - name: Set version env variable
+        run: |
+          echo "MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
          username: ${{ secrets.DOCKERHUB_USERNAME }}
          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push to Docker
-        run: docker push "consdata/kouncil:latest"    
+        run: docker push "consdata/kouncil:${{ env.MVN_VERSION }}"
+      - name: Tag Latest Snapshot
+        run: docker tag "consdata/kouncil:${{ env.MVN_VERSION }}" "ynleborg/jugademy:latest_snapshot"
+      - name: Push to Docker
+        run: docker push "consdata/kouncil:latest_snapshot"

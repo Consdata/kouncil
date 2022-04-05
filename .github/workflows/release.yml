@@ -28,6 +28,23 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
       - name: Publish JAR
-        run: ./mvnw -B release:prepare release:perform
+        run: ./mvnw -B release:prepare release:perform -P dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout last tag
+        run: |
+          git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+      - name: Set version env variable
+        run: |
+          echo "MVN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push to Docker
+        run: docker push "consdata/kouncil:${{ env.MVN_VERSION }}"
+      - name: Tag Latest Snapshot
+        run: docker tag "consdata/kouncil:${{ env.MVN_VERSION }}" "consdata/kouncil:latest"
+      - name: Push to Docker
+        run: docker push "consdata/kouncil:latest"
