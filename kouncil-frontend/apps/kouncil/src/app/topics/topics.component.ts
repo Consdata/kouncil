@@ -145,7 +145,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRowClass = (row) => {
+  getRowClass: (row) => { 'row-retry': any, 'row-dlq': any } = (row) => {
     return {
       'row-retry': (() => {
         return row.name.includes('retry');
