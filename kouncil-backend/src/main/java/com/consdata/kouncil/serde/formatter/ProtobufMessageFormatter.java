@@ -1,8 +1,9 @@
 package com.consdata.kouncil.serde.formatter;
 
 import com.consdata.kouncil.serde.MessageFormat;
+import com.consdata.kouncil.serde.deserialization.DeserializationData;
+import com.consdata.kouncil.serde.serialization.SerializationData;
 import com.google.protobuf.Message;
-import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchemaUtils;
@@ -22,24 +23,33 @@ public class ProtobufMessageFormatter implements MessageFormatter {
     }
 
     @Override
-    public String deserialize(String topic, byte[] value) {
-        final Message message = protobufDeserializer.deserialize(topic, value);
+    public String deserialize(DeserializationData deserializationData) {
+        final Message message = protobufDeserializer.deserialize(
+                deserializationData.getTopicName(),
+                deserializationData.getValue()
+        );
         try {
             return new String(ProtobufSchemaUtils.toJson(message));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to deserialize record for topic " + topic, e);
+            throw new RuntimeException("Failed to deserialize record for topic " + deserializationData.getTopicName(), e);
         }
     }
 
     @Override
-    public Bytes serialize(String topic, String value, ParsedSchema parsedSchema) {
-        ProtobufSchema protobufSchema = (ProtobufSchema) parsedSchema;
+    public Bytes serialize(SerializationData serializationData) {
+        ProtobufSchema protobufSchema = (ProtobufSchema) serializationData.getSchema();
         try {
-            byte[] serialized = protobufSerializer.serialize(topic,
-                    protobufSchema.newMessageBuilder().mergeFrom(value.getBytes()).build());
+            Message protobufMessage = protobufSchema
+                    .newMessageBuilder()
+                    .mergeFrom(serializationData.getValue().getBytes())
+                    .build();
+            byte[] serialized = protobufSerializer.serialize(
+                    serializationData.getTopicName(),
+                    protobufMessage
+            );
             return Bytes.wrap(serialized);
         } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize record for topic " + topic, e);
+            throw new RuntimeException("Failed to serialize record for topic " + serializationData.getTopicName(), e);
         }
     }
 

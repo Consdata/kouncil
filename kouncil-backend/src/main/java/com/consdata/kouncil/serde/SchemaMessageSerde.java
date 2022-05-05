@@ -2,7 +2,9 @@ package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
+import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.formatter.MessageFormatter;
+import com.consdata.kouncil.serde.serialization.SerializationData;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -28,14 +30,25 @@ public class SchemaMessageSerde {
             Integer keySchemaId = getSchemaIdFromMessage(message.key());
             MessageFormatter keyFormatter = getFormatter(clusterAwareSchema, message.topic(), true, keySchemaId);
 
-            builder.deserializedKey(keyFormatter.deserialize(message.topic(), message.key().get()))
+            String deserializedKey = keyFormatter.deserialize(DeserializationData.builder()
+                            .topicName(message.topic())
+                            .value(message.key().get())
+                    .build());
+
+            builder.deserializedKey(deserializedKey)
                     .keyFormat(keyFormatter.getFormat())
                     .keySchemaId(Optional.ofNullable(keySchemaId).map(String::valueOf).orElse(null));
         }
         if (message.value() != null) {
             Integer valueSchemaId = getSchemaIdFromMessage(message.value());
             MessageFormatter valueFormatter = getFormatter(clusterAwareSchema, message.topic(), false, valueSchemaId);
-            builder.deserializedValue(valueFormatter.deserialize(message.topic(), message.value().get()))
+
+            String deserializedValue = valueFormatter.deserialize(DeserializationData.builder()
+                            .topicName(message.topic())
+                            .value(message.value().get())
+                    .build());
+
+            builder.deserializedValue(deserializedValue)
                     .valueFormat(valueFormatter.getFormat())
                     .valueSchemaId(Optional.ofNullable(valueSchemaId).map(String::valueOf).orElse(null));
         }
@@ -66,8 +79,16 @@ public class SchemaMessageSerde {
         }
 
         return new ProducerRecord<>(topicName,
-                keyFormatter.serialize(topicName, key, parsedKeySchema),
-                valueFormatter.serialize(topicName, value, parsedValueSchema));
+                keyFormatter.serialize(SerializationData.builder()
+                                .topicName(topicName)
+                                .value(key)
+                                .schema(parsedKeySchema)
+                        .build()),
+                valueFormatter.serialize(SerializationData.builder()
+                                .topicName(topicName)
+                                .value(value)
+                                .schema(parsedValueSchema)
+                        .build()));
     }
 
     private MessageFormatter getFormatter(ClusterAwareSchema clusterAwareSchema, String topic, boolean isKey, Integer keySchemaId) {

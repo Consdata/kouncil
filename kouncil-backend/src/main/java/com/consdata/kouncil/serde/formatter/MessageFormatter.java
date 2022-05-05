@@ -1,11 +1,12 @@
 package com.consdata.kouncil.serde.formatter;
 
 import com.consdata.kouncil.serde.MessageFormat;
-import io.confluent.kafka.schemaregistry.ParsedSchema;
+import com.consdata.kouncil.serde.deserialization.DeserializationData;
+import com.consdata.kouncil.serde.serialization.SerializationData;
 import org.apache.kafka.common.utils.Bytes;
 
 public interface MessageFormatter {
-    String deserialize(String topic, byte[] value);
-    Bytes serialize(String topic, String value, ParsedSchema parsedSchema);
+    String deserialize(DeserializationData deserializationData);
+    Bytes serialize(SerializationData serializationData);
     MessageFormat getFormat();
 }

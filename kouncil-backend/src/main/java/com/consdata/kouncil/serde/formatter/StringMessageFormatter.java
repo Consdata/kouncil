@@ -1,20 +1,21 @@
 package com.consdata.kouncil.serde.formatter;
 
 import com.consdata.kouncil.serde.MessageFormat;
-import io.confluent.kafka.schemaregistry.ParsedSchema;
+import com.consdata.kouncil.serde.deserialization.DeserializationData;
+import com.consdata.kouncil.serde.serialization.SerializationData;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.nio.charset.StandardCharsets;
 
 public class StringMessageFormatter implements MessageFormatter {
     @Override
-    public String deserialize(String topic, byte[] value) {
-        return new String(value, StandardCharsets.UTF_8);
+    public String deserialize(DeserializationData deserializationData) {
+        return new String(deserializationData.getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
-    public Bytes serialize(String topic, String value, ParsedSchema parsedSchema) {
-        return Bytes.wrap(value.getBytes());
+    public Bytes serialize(SerializationData serializationData) {
+        return Bytes.wrap(serializationData.getValue().getBytes());
     }
 
     @Override
