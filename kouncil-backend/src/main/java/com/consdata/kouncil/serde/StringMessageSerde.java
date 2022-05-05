@@ -13,11 +13,11 @@ public class StringMessageSerde {
     public DeserializedValue deserialize(ConsumerRecord<Bytes, Bytes> message) {
         var builder = DeserializedValue.builder();
         if (message.key() != null) {
-            builder.deserializedKey(stringMessageFormatter.format(message.topic(), message.key().get()))
+            builder.deserializedKey(stringMessageFormatter.deserialize(message.topic(), message.key().get()))
                     .keyFormat(stringMessageFormatter.getFormat());
         }
         if (message.value() != null) {
-            builder.deserializedValue(stringMessageFormatter.format(message.topic(), message.value().get()))
+            builder.deserializedValue(stringMessageFormatter.deserialize(message.topic(), message.value().get()))
                     .valueFormat(stringMessageFormatter.getFormat());
         }
         return builder.build();

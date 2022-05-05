@@ -28,14 +28,14 @@ public class SchemaMessageSerde {
             Integer keySchemaId = getSchemaIdFromMessage(message.key());
             MessageFormatter keyFormatter = getFormatter(clusterAwareSchema, message.topic(), true, keySchemaId);
 
-            builder.deserializedKey(keyFormatter.format(message.topic(), message.key().get()))
+            builder.deserializedKey(keyFormatter.deserialize(message.topic(), message.key().get()))
                     .keyFormat(keyFormatter.getFormat())
                     .keySchemaId(Optional.ofNullable(keySchemaId).map(String::valueOf).orElse(null));
         }
         if (message.value() != null) {
             Integer valueSchemaId = getSchemaIdFromMessage(message.value());
             MessageFormatter valueFormatter = getFormatter(clusterAwareSchema, message.topic(), false, valueSchemaId);
-            builder.deserializedValue(valueFormatter.format(message.topic(), message.value().get()))
+            builder.deserializedValue(valueFormatter.deserialize(message.topic(), message.value().get()))
                     .valueFormat(valueFormatter.getFormat())
                     .valueSchemaId(Optional.ofNullable(valueSchemaId).map(String::valueOf).orElse(null));
         }
@@ -66,8 +66,8 @@ public class SchemaMessageSerde {
         }
 
         return new ProducerRecord<>(topicName,
-                keyFormatter.read(topicName, key, parsedKeySchema),
-                valueFormatter.read(topicName, value, parsedValueSchema));
+                keyFormatter.serialize(topicName, key, parsedKeySchema),
+                valueFormatter.serialize(topicName, value, parsedValueSchema));
     }
 
     private MessageFormatter getFormatter(ClusterAwareSchema clusterAwareSchema, String topic, boolean isKey, Integer keySchemaId) {

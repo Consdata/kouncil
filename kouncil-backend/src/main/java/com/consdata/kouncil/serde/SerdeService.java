@@ -1,7 +1,7 @@
 package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
-import com.consdata.kouncil.serde.formatter.*;
+import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;

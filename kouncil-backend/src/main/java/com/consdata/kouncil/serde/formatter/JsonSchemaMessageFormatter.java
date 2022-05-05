@@ -9,13 +9,13 @@ import org.apache.kafka.common.utils.Bytes;
 public class JsonSchemaMessageFormatter implements MessageFormatter {
 
     @Override
-    public String format(String topic, byte[] value) {
+    public String deserialize(String topic, byte[] value) {
         log.info("NOT IMPLEMENTED");
         return null;
     }
 
     @Override
-    public Bytes read(String topic, String value, ParsedSchema parsedSchema) {
+    public Bytes serialize(String topic, String value, ParsedSchema parsedSchema) {
         log.info("NOT IMPLEMENTED");
         return null;
     }

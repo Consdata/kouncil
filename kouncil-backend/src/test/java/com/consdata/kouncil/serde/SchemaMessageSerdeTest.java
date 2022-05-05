@@ -4,6 +4,7 @@ import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.formatter.*;
+import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import lombok.SneakyThrows;

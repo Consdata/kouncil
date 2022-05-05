@@ -5,7 +5,7 @@ import io.confluent.kafka.schemaregistry.ParsedSchema;
 import org.apache.kafka.common.utils.Bytes;
 
 public interface MessageFormatter {
-    String format(String topic, byte[] value);
-    Bytes read(String topic, String value, ParsedSchema parsedSchema);
+    String deserialize(String topic, byte[] value);
+    Bytes serialize(String topic, String value, ParsedSchema parsedSchema);
     MessageFormat getFormat();
 }

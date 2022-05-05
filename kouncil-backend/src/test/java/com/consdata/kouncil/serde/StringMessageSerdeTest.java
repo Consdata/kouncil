@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StringMessageSerdeTest {
 
-    private final StringMessageSerde stringMessageSerde = new StringMessageSerde(
+    private final com.consdata.kouncil.serde.StringMessageSerde stringMessageSerde = new com.consdata.kouncil.serde.StringMessageSerde(
             new StringMessageFormatter()
     );
 
