@@ -24,6 +24,8 @@ public class StringMessageSerde {
     }
 
     public ProducerRecord<Bytes, Bytes> serialize(String topicName, String key, String value) {
-        return new ProducerRecord<>(topicName, Bytes.wrap(key.getBytes()), Bytes.wrap(value.getBytes()));
+        return new ProducerRecord<>(topicName,
+                stringMessageFormatter.serialize(topicName, key, null),
+                stringMessageFormatter.serialize(topicName, value, null));
     }
 }
