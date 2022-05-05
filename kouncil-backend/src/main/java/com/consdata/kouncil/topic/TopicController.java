@@ -4,7 +4,7 @@ import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

@@ -1,5 +1,6 @@
 package com.consdata.kouncil.serde;
 
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.record.TimestampType;

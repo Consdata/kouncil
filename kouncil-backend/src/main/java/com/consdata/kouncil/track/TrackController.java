@@ -3,7 +3,7 @@ package com.consdata.kouncil.track;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

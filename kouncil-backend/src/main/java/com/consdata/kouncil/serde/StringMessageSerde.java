@@ -1,6 +1,7 @@
 package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
+import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import com.consdata.kouncil.serde.serialization.SerializationData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
