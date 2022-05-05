@@ -26,8 +26,7 @@ public class SchemaRegistryFacade {
 
     @SneakyThrows
     public MessageFormat getSchemaFormat(String topic, Integer schemaId, boolean isKey) {
-        final String subject = topic.concat(getSubjectSuffix(isKey));
-        return MessageFormat.valueOf(getSchemaBySubjectAndId(subject, schemaId).schemaType());
+        return MessageFormat.valueOf(getSchemaByTopicAndId(topic, schemaId, isKey).schemaType());
     }
 
     /**
@@ -49,8 +48,10 @@ public class SchemaRegistryFacade {
     /**
      * This method is performance-safe, because uses Schema cache
      */
-    private ParsedSchema getSchemaBySubjectAndId(String subject, int id) throws RestClientException, IOException {
-        return schemaRegistryClient.getSchemaBySubjectAndId(subject, id);
+    @SneakyThrows
+    public ParsedSchema getSchemaByTopicAndId(String topic, Integer schemaId, boolean isKey) {
+        final String subject = topic.concat(getSubjectSuffix(isKey));
+        return schemaRegistryClient.getSchemaBySubjectAndId(subject, schemaId);
     }
 
     private String getSubjectSuffix(boolean isKey) {
