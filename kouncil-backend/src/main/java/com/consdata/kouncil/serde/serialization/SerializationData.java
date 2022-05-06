@@ -10,4 +10,5 @@ public class SerializationData {
     String topicName;
     String payload;
     ParsedSchema schema;
+    boolean isKey;
 }

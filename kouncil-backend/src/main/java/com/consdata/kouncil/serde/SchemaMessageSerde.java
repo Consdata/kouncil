@@ -32,6 +32,7 @@ public class SchemaMessageSerde {
                 SerializationData.builder().payload(payload)
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
                         .schema(schema)
+                        .isKey(kouncilSchemaMetadata.isKey())
                 .build()
         );
     }

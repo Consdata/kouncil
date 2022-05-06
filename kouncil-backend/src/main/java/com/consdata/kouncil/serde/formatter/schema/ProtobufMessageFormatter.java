@@ -14,6 +14,8 @@ import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 public class ProtobufMessageFormatter implements MessageFormatter {
     private final KafkaProtobufDeserializer<Message> protobufDeserializer;
@@ -39,6 +41,7 @@ public class ProtobufMessageFormatter implements MessageFormatter {
 
     @Override
     public Bytes serialize(SerializationData serializationData) {
+        this.configureSerializer(serializationData);
         ProtobufSchema protobufSchema = (ProtobufSchema) serializationData.getSchema();
         DynamicMessage.Builder builder = protobufSchema.newMessageBuilder();
         try {
@@ -53,5 +56,12 @@ public class ProtobufMessageFormatter implements MessageFormatter {
     @Override
     public MessageFormat getFormat() {
         return MessageFormat.PROTOBUF;
+    }
+
+    private void configureSerializer(SerializationData serializationData) {
+        protobufSerializer.configure(
+                Map.of("schema.registry.url", "needed_in_runtime_but_not_used"),
+                serializationData.isKey()
+        );
     }
 }
