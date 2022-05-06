@@ -1,7 +1,7 @@
 package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
-import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
+import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.deserialization.DeserializedData;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @Service
 public class SerdeService {
-    private final ClusterAwareSchemaService clusterAwareSchemaService;
+    private final SchemaAwareClusterService schemaAwareClusterService;
     private final StringMessageSerde stringMessageSerde;
     private final SchemaMessageSerde schemaMessageSerde;
 
-    public SerdeService(ClusterAwareSchemaService clusterAwareSchemaService) {
-        this.clusterAwareSchemaService = clusterAwareSchemaService;
+    public SerdeService(SchemaAwareClusterService schemaAwareClusterService) {
+        this.schemaAwareClusterService = schemaAwareClusterService;
         this.stringMessageSerde = new StringMessageSerde(new StringMessageFormatter());
         this.schemaMessageSerde = new SchemaMessageSerde();
     }
@@ -29,8 +29,8 @@ public class SerdeService {
     public DeserializedMessage deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
         DeserializedData keyData = DeserializedData.builder().build();
         DeserializedData valueData = DeserializedData.builder().build();
-        if (this.clusterAwareSchemaService.clusterHasSchemaRegistry(clusterId)) {
-            SchemaAwareCluster schemaAwareCluster = clusterAwareSchemaService.getClusterSchema(clusterId);
+        if (this.schemaAwareClusterService.clusterHasSchemaRegistry(clusterId)) {
+            SchemaAwareCluster schemaAwareCluster = schemaAwareClusterService.getClusterSchema(clusterId);
             if (message.key() != null) {
                 keyData = getSchemaDeserializedData(message.key(), message.topic(), true, schemaAwareCluster);
             }
@@ -57,8 +57,8 @@ public class SerdeService {
     public ProducerRecord<Bytes, Bytes> serialize(String clusterId, String topicName, String key, String value) {
         Bytes serializedKey;
         Bytes serializedValue;
-        if (this.clusterAwareSchemaService.clusterHasSchemaRegistry(clusterId)) {
-            SchemaAwareCluster schemaAwareCluster = clusterAwareSchemaService.getClusterSchema(clusterId);
+        if (this.schemaAwareClusterService.clusterHasSchemaRegistry(clusterId)) {
+            SchemaAwareCluster schemaAwareCluster = schemaAwareClusterService.getClusterSchema(clusterId);
             serializedKey = getSchemaSerializedData(topicName, key, true, schemaAwareCluster);
             serializedValue = getSchemaSerializedData(topicName, value, false, schemaAwareCluster);
         } else {

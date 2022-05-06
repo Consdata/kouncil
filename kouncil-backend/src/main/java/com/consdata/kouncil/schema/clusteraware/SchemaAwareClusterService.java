@@ -16,27 +16,27 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class ClusterAwareSchemaService {
-    private final Map<String, SchemaAwareCluster> clusterAwareSchema = new ConcurrentHashMap<>();
+public class SchemaAwareClusterService {
+    private final Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
 
-    public ClusterAwareSchemaService(KouncilConfiguration kouncilConfiguration) {
+    public SchemaAwareClusterService(KouncilConfiguration kouncilConfiguration) {
         kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
             SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null ?
                     SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
 
             if (schemaRegistryClient != null) {
                 SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
-                this.clusterAwareSchema.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
+                this.schemaAwareCluster.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
             }
         });
     }
 
     public SchemaAwareCluster getClusterSchema(String serverId) {
-        return clusterAwareSchema.get(serverId);
+        return schemaAwareCluster.get(serverId);
     }
 
     public boolean clusterHasSchemaRegistry(String serverId) {
-        return clusterAwareSchema.containsKey(serverId);
+        return schemaAwareCluster.containsKey(serverId);
     }
 
     private SchemaAwareCluster initializeSchemaAwareCluster(SchemaRegistryFacade schemaRegistryFacade) {
