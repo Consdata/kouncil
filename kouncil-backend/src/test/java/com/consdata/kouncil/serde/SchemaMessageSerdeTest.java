@@ -3,7 +3,7 @@ package com.consdata.kouncil.serde;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.formatter.*;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
@@ -73,21 +73,21 @@ class SchemaMessageSerdeTest {
         );
 
         // when
-        DeserializedValue deserializedValue = schemaMessageSerde.deserialize("testCluster", message);
+        DeserializedMessage deserializedMessage = schemaMessageSerde.deserialize("testCluster", message);
 
         // then
-        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
-        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
+        assertThat(deserializedMessage.getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedMessage.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getDeserializedKey()).isEqualTo("lorem");
 
         var simpleMessageJsonContent = Files.readString(
                 Paths.get(Objects.requireNonNull(
                         SchemaMessageSerdeTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
                 )).trim();
-        assertThat(deserializedValue.getDeserializedValue()).isEqualTo(simpleMessageJsonContent);
+        assertThat(deserializedMessage.getDeserializedValue()).isEqualTo(simpleMessageJsonContent);
 
-        assertThat(deserializedValue.getKeySchemaId()).isNull();
-        assertThat(deserializedValue.getValueSchemaId()).isEqualTo("1");
+        assertThat(deserializedMessage.getKeySchemaId()).isNull();
+        assertThat(deserializedMessage.getValueSchemaId()).isEqualTo("1");
     }
 
     @Test
@@ -110,15 +110,15 @@ class SchemaMessageSerdeTest {
         );
 
         // when
-        DeserializedValue deserializedValue = schemaMessageSerde.deserialize("testCluster", message);
+        DeserializedMessage deserializedMessage = schemaMessageSerde.deserialize("testCluster", message);
 
         // then
-        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getDeserializedValue()).isEqualTo("ipsum");
-        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
-        assertThat(deserializedValue.getKeySchemaId()).isNull();
-        assertThat(deserializedValue.getValueSchemaId()).isNull();
+        assertThat(deserializedMessage.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getDeserializedValue()).isEqualTo("ipsum");
+        assertThat(deserializedMessage.getDeserializedKey()).isEqualTo("lorem");
+        assertThat(deserializedMessage.getKeySchemaId()).isNull();
+        assertThat(deserializedMessage.getValueSchemaId()).isNull();
     }
 
     @Test
@@ -141,15 +141,15 @@ class SchemaMessageSerdeTest {
         );
 
         // when
-        DeserializedValue deserializedValue = schemaMessageSerde.deserialize("testCluster", message);
+        DeserializedMessage deserializedMessage = schemaMessageSerde.deserialize("testCluster", message);
 
         // then
-        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getDeserializedValue()).isEqualTo("");
-        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("");
-        assertThat(deserializedValue.getKeySchemaId()).isNull();
-        assertThat(deserializedValue.getValueSchemaId()).isNull();
+        assertThat(deserializedMessage.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getDeserializedValue()).isEqualTo("");
+        assertThat(deserializedMessage.getDeserializedKey()).isEqualTo("");
+        assertThat(deserializedMessage.getKeySchemaId()).isNull();
+        assertThat(deserializedMessage.getValueSchemaId()).isNull();
     }
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {

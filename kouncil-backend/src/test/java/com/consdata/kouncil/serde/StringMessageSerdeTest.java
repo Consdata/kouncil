@@ -1,6 +1,6 @@
 package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.record.TimestampType;
@@ -25,15 +25,15 @@ class StringMessageSerdeTest {
                 new Bytes("ipsum".getBytes(StandardCharsets.UTF_8))
         );
         // when
-        DeserializedValue deserializedValue = stringMessageSerde.deserialize(message);
+        DeserializedMessage deserializedMessage = stringMessageSerde.deserialize(message);
 
         // then
-        assertThat(deserializedValue.getDeserializedKey()).isEqualTo("lorem");
-        assertThat(deserializedValue.getDeserializedValue()).isEqualTo("ipsum");
-        assertThat(deserializedValue.getKeyFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getValueFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedValue.getKeySchemaId()).isNull();
-        assertThat(deserializedValue.getValueSchemaId()).isNull();
+        assertThat(deserializedMessage.getDeserializedKey()).isEqualTo("lorem");
+        assertThat(deserializedMessage.getDeserializedValue()).isEqualTo("ipsum");
+        assertThat(deserializedMessage.getKeyFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getKeySchemaId()).isNull();
+        assertThat(deserializedMessage.getValueSchemaId()).isNull();
     }
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {

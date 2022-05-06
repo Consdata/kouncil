@@ -3,7 +3,7 @@ package com.consdata.kouncil.track;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -128,15 +128,15 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        DeserializedValue deserializedValue = serdeService.deserialize(serverId, consumerRecord);
+                        DeserializedMessage deserializedMessage = serdeService.deserialize(serverId, consumerRecord);
                         // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
-                        if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedValue.getValueData().getDeserialized())) {
+                        if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedMessage.getValueData().getDeserialized())) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(m.getTopicName())
-                                    .key(deserializedValue.getKeyData().getDeserialized())
-                                    .value(deserializedValue.getValueData().getDeserialized())
+                                    .key(deserializedMessage.getKeyData().getDeserialized())
+                                    .value(deserializedMessage.getValueData().getDeserialized())
                                     .offset(consumerRecord.offset())
                                     .partition(consumerRecord.partition())
                                     .timestamp(consumerRecord.timestamp())

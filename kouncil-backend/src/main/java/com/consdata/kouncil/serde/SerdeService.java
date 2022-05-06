@@ -2,8 +2,8 @@ package com.consdata.kouncil.serde;
 
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
-import com.consdata.kouncil.serde.deserialization.DeserializedValue;
-import com.consdata.kouncil.serde.deserialization.NewDeserializedData;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
+import com.consdata.kouncil.serde.deserialization.DeserializedData;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -26,9 +26,9 @@ public class SerdeService {
         this.schemaMessageSerde = new SchemaMessageSerde();
     }
 
-    public DeserializedValue deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
-        NewDeserializedData keyData = NewDeserializedData.builder().build();
-        NewDeserializedData valueData = NewDeserializedData.builder().build();
+    public DeserializedMessage deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
+        DeserializedData keyData = DeserializedData.builder().build();
+        DeserializedData valueData = DeserializedData.builder().build();
         if (this.clusterAwareSchemaService.clusterHasSchemaRegistry(clusterId)) {
             ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(clusterId);
             if (message.key() != null) {
@@ -39,7 +39,7 @@ public class SerdeService {
                                 .schemaTopic(message.topic())
                                 .build())
                         )
-                        .orElse(NewDeserializedData.builder()
+                        .orElse(DeserializedData.builder()
                                 .deserialized(stringMessageSerde.deserialize(message.key()))
                                 .valueFormat(MessageFormat.STRING)
                                 .build()
@@ -53,7 +53,7 @@ public class SerdeService {
                                 .schemaTopic(message.topic())
                                 .build())
                         )
-                        .orElse(NewDeserializedData.builder()
+                        .orElse(DeserializedData.builder()
                                 .deserialized(stringMessageSerde.deserialize(message.value()))
                                 .valueFormat(MessageFormat.STRING)
                                 .build()
@@ -61,19 +61,19 @@ public class SerdeService {
             }
         } else {
             if (message.key() != null) {
-                keyData = NewDeserializedData.builder()
+                keyData = DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(message.key()))
                         .valueFormat(MessageFormat.STRING)
                         .build();
             }
             if (message.value() != null) {
-                valueData = NewDeserializedData.builder()
+                valueData = DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(message.value()))
                         .valueFormat(MessageFormat.STRING)
                         .build();
             }
         }
-        return DeserializedValue.builder().keyData(keyData).valueData(valueData).build();
+        return DeserializedMessage.builder().keyData(keyData).valueData(valueData).build();
     }
 
     public ProducerRecord<Bytes, Bytes> serialize(String clusterId, String topicName, String key, String value) {

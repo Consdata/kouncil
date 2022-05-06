@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class DeserializedValue {
-    NewDeserializedData keyData;
-    NewDeserializedData valueData;
+public class DeserializedMessage {
+    DeserializedData keyData;
+    DeserializedData valueData;
 }
