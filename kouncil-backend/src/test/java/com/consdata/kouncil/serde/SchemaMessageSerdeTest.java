@@ -1,11 +1,12 @@
 package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
+import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
-import com.consdata.kouncil.serde.formatter.*;
 import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
+import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
+import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import lombok.SneakyThrows;
@@ -61,7 +62,7 @@ class SchemaMessageSerdeTest {
         formatters.put(MessageFormat.STRING, new StringMessageFormatter());
 
         when(clusterAwareSchemaService.getClusterSchema(eq("testCluster"))).thenReturn(
-                ClusterAwareSchema.builder()
+                SchemaAwareCluster.builder()
                         .schemaRegistryFacade(schemaRegistryFacade)
                         .formatters(formatters)
                         .build()
@@ -98,7 +99,7 @@ class SchemaMessageSerdeTest {
         formatters.put(MessageFormat.STRING, new StringMessageFormatter());
 
         when(clusterAwareSchemaService.getClusterSchema(eq("testCluster"))).thenReturn(
-                ClusterAwareSchema.builder()
+                SchemaAwareCluster.builder()
                         .schemaRegistryFacade(schemaRegistryFacade)
                         .formatters(formatters)
                         .build()
@@ -129,7 +130,7 @@ class SchemaMessageSerdeTest {
         formatters.put(MessageFormat.STRING, new StringMessageFormatter());
 
         when(clusterAwareSchemaService.getClusterSchema(eq("testCluster"))).thenReturn(
-                ClusterAwareSchema.builder()
+                SchemaAwareCluster.builder()
                         .schemaRegistryFacade(schemaRegistryFacade)
                         .formatters(formatters)
                         .build()

@@ -1,4 +1,4 @@
-package com.consdata.kouncil.serde.formatter;
+package com.consdata.kouncil.serde.formatter.schema;
 
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;

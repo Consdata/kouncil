@@ -4,7 +4,7 @@ import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.schema.SchemasConfigurationDTO;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
 import com.consdata.kouncil.schema.SchemasDTO;
-import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
+import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.serde.MessageFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,16 +45,16 @@ public class SchemaRegistryController {
     public SchemasDTO getLatestSchemas(@PathVariable String topicName,
                                        @RequestParam String serverId) {
         if (clusterAwareSchemaService.clusterHasSchemaRegistry(serverId)) {
-            ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(serverId);
+            SchemaAwareCluster schemaAwareCluster = clusterAwareSchemaService.getClusterSchema(serverId);
 
             var schemaBuilder = SchemasDTO.builder();
-            clusterAwareSchema.getSchemaRegistryFacade()
+            schemaAwareCluster.getSchemaRegistryFacade()
                     .getLatestSchemaMetadata(topicName, true)
                     .ifPresent(schema -> {
                         schemaBuilder.keyMessageFormat(MessageFormat.valueOf(schema.getSchemaType()));
                         schemaBuilder.keyPlainTextSchema(schema.getSchema());
                     });
-            clusterAwareSchema.getSchemaRegistryFacade()
+            schemaAwareCluster.getSchemaRegistryFacade()
                     .getLatestSchemaMetadata(topicName, false)
                     .ifPresent(schema -> {
                         schemaBuilder.valueMessageFormat(MessageFormat.valueOf(schema.getSchemaType()));
