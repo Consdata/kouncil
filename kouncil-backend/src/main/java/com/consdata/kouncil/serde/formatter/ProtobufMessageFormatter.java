@@ -3,7 +3,9 @@ package com.consdata.kouncil.serde.formatter;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
+import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchemaUtils;
@@ -38,15 +40,10 @@ public class ProtobufMessageFormatter implements MessageFormatter {
     @Override
     public Bytes serialize(SerializationData serializationData) {
         ProtobufSchema protobufSchema = (ProtobufSchema) serializationData.getSchema();
+        DynamicMessage.Builder builder = protobufSchema.newMessageBuilder();
         try {
-            Message protobufMessage = protobufSchema
-                    .newMessageBuilder()
-                    .mergeFrom(serializationData.getValue().getBytes())
-                    .build();
-            byte[] serialized = protobufSerializer.serialize(
-                    serializationData.getTopicName(),
-                    protobufMessage
-            );
+            JsonFormat.parser().merge(serializationData.getValue(), builder);
+            byte[] serialized = protobufSerializer.serialize(serializationData.getTopicName(), builder.build());
             return Bytes.wrap(serialized);
         } catch (Throwable e) {
             throw new RuntimeException("Failed to serialize record for topic " + serializationData.getTopicName(), e);
