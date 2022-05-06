@@ -9,6 +9,7 @@ import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
@@ -54,7 +55,7 @@ public class SerdeService {
         return DeserializedMessage.builder().keyData(keyData).valueData(valueData).build();
     }
 
-    public ProducerRecord<Bytes, Bytes> serialize(String clusterId, String topicName, String key, String value) {
+    public ProducerRecord<Bytes, Bytes> serialize(String clusterId, String topicName, @NotNull String key, @NotNull String value) {
         Bytes serializedKey;
         Bytes serializedValue;
         if (this.schemaAwareClusterService.clusterHasSchemaRegistry(clusterId)) {
