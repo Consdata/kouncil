@@ -4,19 +4,18 @@ import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
 import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
 import com.consdata.kouncil.serde.deserialization.DeserializedValue;
 import com.consdata.kouncil.serde.deserialization.SchemaDeserializer;
-import com.consdata.kouncil.serde.serialization.SchemaSerializer;
+import com.consdata.kouncil.serde.formatter.MessageFormatter;
+import com.consdata.kouncil.serde.serialization.SerializationData;
+import io.confluent.kafka.schemaregistry.ParsedSchema;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
 
 public class SchemaMessageSerde {
     private final ClusterAwareSchemaService clusterAwareSchemaService;
-    private final SchemaSerializer schemaSerializer;
     private final SchemaDeserializer schemaDeserializer;
 
     public SchemaMessageSerde(ClusterAwareSchemaService clusterAwareSchemaService) {
         this.clusterAwareSchemaService = clusterAwareSchemaService;
-        this.schemaSerializer = new SchemaSerializer();
         this.schemaDeserializer = new SchemaDeserializer();
     }
 
@@ -26,8 +25,14 @@ public class SchemaMessageSerde {
         return schemaDeserializer.deserialize(clusterAwareSchema, message);
     }
 
-    public ProducerRecord<Bytes, Bytes> serialize(String serverId, String topicName, String key, String value) {
-        ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(serverId);
-        return schemaSerializer.serialize(clusterAwareSchema, topicName, key, value);
+    public Bytes serialize(ClusterAwareSchema clusterAwareSchema, String value, KouncilSchemaMetadata kouncilSchemaMetadata) {
+        MessageFormat messageFormat = clusterAwareSchema.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
+        ParsedSchema schema = clusterAwareSchema.getSchemaRegistryFacade().getSchemaByTopicAndId(kouncilSchemaMetadata);
+        MessageFormatter formatter = clusterAwareSchema.getFormatter(messageFormat);
+
+        return formatter.serialize(SerializationData.builder().value(value)
+                        .topicName(kouncilSchemaMetadata.getSchemaTopic())
+                        .schema(schema)
+                .build());
     }
 }

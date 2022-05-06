@@ -13,7 +13,6 @@ public class AvroMessageFormatter implements MessageFormatter {
     @Override
     public String deserialize(DeserializationData deserializationData) {
         log.info("NOT IMPLEMENTED");
-
         return null;
     }
 

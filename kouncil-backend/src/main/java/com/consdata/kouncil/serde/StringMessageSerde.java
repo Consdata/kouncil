@@ -32,9 +32,7 @@ public class StringMessageSerde {
         return builder.build();
     }
 
-    public ProducerRecord<Bytes, Bytes> serialize(String topicName, String key, String value) {
-        return new ProducerRecord<>(topicName,
-                stringMessageFormatter.serialize(SerializationData.builder().topicName(topicName).value(key).build()),
-                stringMessageFormatter.serialize(SerializationData.builder().topicName(topicName).value(value).build()));
+    public Bytes serialize(String topicName, String value) {
+        return stringMessageFormatter.serialize(SerializationData.builder().topicName(topicName).value(value).build());
     }
 }
