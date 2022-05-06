@@ -163,8 +163,8 @@ public class TopicController extends AbstractMessagesController {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
-                            .key(deserializedValue.getDeserializedKey())
-                            .value(deserializedValue.getDeserializedValue())
+                            .key(deserializedValue.getKeyData().getDeserialized())
+                            .value(deserializedValue.getValueData().getDeserialized())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
                             .topic(consumerRecord.topic())
