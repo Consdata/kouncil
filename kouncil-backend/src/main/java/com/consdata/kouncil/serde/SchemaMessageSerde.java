@@ -9,13 +9,13 @@ import io.confluent.kafka.schemaregistry.ParsedSchema;
 import org.apache.kafka.common.utils.Bytes;
 
 public class SchemaMessageSerde {
-    public DeserializedData deserialize(ClusterAwareSchema clusterAwareSchema, Bytes value, KouncilSchemaMetadata kouncilSchemaMetadata) {
+    public DeserializedData deserialize(ClusterAwareSchema clusterAwareSchema, Bytes payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
         MessageFormat messageFormat = clusterAwareSchema.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
         MessageFormatter formatter = clusterAwareSchema.getFormatter(messageFormat);
 
         return DeserializedData.builder()
                 .deserialized(formatter.deserialize(DeserializationData.builder()
-                        .value(value.get())
+                        .value(payload.get())
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
                         .build()))
                 .valueFormat(formatter.getFormat())
@@ -23,13 +23,13 @@ public class SchemaMessageSerde {
                 .build();
     }
 
-    public Bytes serialize(ClusterAwareSchema clusterAwareSchema, String value, KouncilSchemaMetadata kouncilSchemaMetadata) {
+    public Bytes serialize(ClusterAwareSchema clusterAwareSchema, String payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
         MessageFormat messageFormat = clusterAwareSchema.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
         ParsedSchema schema = clusterAwareSchema.getSchemaRegistryFacade().getSchemaByTopicAndId(kouncilSchemaMetadata);
         MessageFormatter formatter = clusterAwareSchema.getFormatter(messageFormat);
 
         return formatter.serialize(
-                SerializationData.builder().value(value)
+                SerializationData.builder().payload(payload)
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
                         .schema(schema)
                 .build()

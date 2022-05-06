@@ -41,7 +41,7 @@ public class ProtobufMessageFormatter implements MessageFormatter {
         try {
             Message protobufMessage = protobufSchema
                     .newMessageBuilder()
-                    .mergeFrom(serializationData.getValue().getBytes())
+                    .mergeFrom(serializationData.getPayload().getBytes())
                     .build();
             byte[] serialized = protobufSerializer.serialize(
                     serializationData.getTopicName(),

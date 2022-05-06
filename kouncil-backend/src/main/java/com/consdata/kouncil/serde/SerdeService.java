@@ -32,32 +32,10 @@ public class SerdeService {
         if (this.clusterAwareSchemaService.clusterHasSchemaRegistry(clusterId)) {
             ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(clusterId);
             if (message.key() != null) {
-                keyData = getSchemaIdFromMessage(message.key())
-                        .map(keySchemaId -> schemaMessageSerde.deserialize(clusterAwareSchema, message.key(), KouncilSchemaMetadata.builder()
-                                .isKey(true)
-                                .schemaId(keySchemaId)
-                                .schemaTopic(message.topic())
-                                .build())
-                        )
-                        .orElse(DeserializedData.builder()
-                                .deserialized(stringMessageSerde.deserialize(message.key()))
-                                .valueFormat(MessageFormat.STRING)
-                                .build()
-                        );
+                keyData = getSchemaDeserializedData(message.key(), message.topic(), true, clusterAwareSchema);
             }
             if (message.value() != null) {
-                valueData = getSchemaIdFromMessage(message.value())
-                        .map(valueSchemaId -> schemaMessageSerde.deserialize(clusterAwareSchema, message.value(), KouncilSchemaMetadata.builder()
-                                .isKey(false)
-                                .schemaId(valueSchemaId)
-                                .schemaTopic(message.topic())
-                                .build())
-                        )
-                        .orElse(DeserializedData.builder()
-                                .deserialized(stringMessageSerde.deserialize(message.value()))
-                                .valueFormat(MessageFormat.STRING)
-                                .build()
-                        );
+                valueData = getSchemaDeserializedData(message.value(), message.topic(), false, clusterAwareSchema);
             }
         } else {
             if (message.key() != null) {
@@ -81,28 +59,42 @@ public class SerdeService {
         Bytes serializedValue;
         if (this.clusterAwareSchemaService.clusterHasSchemaRegistry(clusterId)) {
             ClusterAwareSchema clusterAwareSchema = clusterAwareSchemaService.getClusterSchema(clusterId);
-
-            serializedKey = getSchemaIdFromRegistry(clusterAwareSchema, topicName, true)
-                    .map(keySchemaId -> schemaMessageSerde.serialize(clusterAwareSchema, key, KouncilSchemaMetadata.builder()
-                                    .isKey(true)
-                                    .schemaId(keySchemaId)
-                                    .schemaTopic(topicName)
-                            .build()))
-                    .orElseGet(() -> stringMessageSerde.serialize(key));
-
-            serializedValue = getSchemaIdFromRegistry(clusterAwareSchema, topicName, false)
-                    .map(valueSchemaId -> schemaMessageSerde.serialize(clusterAwareSchema, value, KouncilSchemaMetadata.builder()
-                            .isKey(false)
-                            .schemaId(valueSchemaId)
-                            .schemaTopic(topicName)
-                            .build()))
-                    .orElseGet(() -> stringMessageSerde.serialize(key));
-
+            serializedKey = getSchemaSerializedData(topicName, key, true, clusterAwareSchema);
+            serializedValue = getSchemaSerializedData(topicName, value, false, clusterAwareSchema);
         } else {
             serializedKey = stringMessageSerde.serialize(key);
             serializedValue = stringMessageSerde.serialize(value);
         }
         return new ProducerRecord<>(topicName, serializedKey, serializedValue);
+    }
+
+    private DeserializedData getSchemaDeserializedData(Bytes payload, String topic, boolean isKey, ClusterAwareSchema clusterAwareSchema) {
+        DeserializedData deserializedData;
+        deserializedData = getSchemaIdFromMessage(payload)
+                .map(schemaId -> schemaMessageSerde.deserialize(clusterAwareSchema, payload, KouncilSchemaMetadata.builder()
+                        .isKey(isKey)
+                        .schemaId(schemaId)
+                        .schemaTopic(topic)
+                        .build())
+                )
+                .orElse(DeserializedData.builder()
+                        .deserialized(stringMessageSerde.deserialize(payload))
+                        .valueFormat(MessageFormat.STRING)
+                        .build()
+                );
+        return deserializedData;
+    }
+
+    private Bytes getSchemaSerializedData(String topicName, String payload, boolean isKey, ClusterAwareSchema clusterAwareSchema) {
+        Bytes serializedData;
+        serializedData = getSchemaIdFromRegistry(clusterAwareSchema, topicName, isKey)
+                .map(schemaId -> schemaMessageSerde.serialize(clusterAwareSchema, payload, KouncilSchemaMetadata.builder()
+                        .isKey(isKey)
+                        .schemaId(schemaId)
+                        .schemaTopic(topicName)
+                        .build()))
+                .orElseGet(() -> stringMessageSerde.serialize(payload));
+        return serializedData;
     }
 
     private Optional<Integer> getSchemaIdFromRegistry(ClusterAwareSchema clusterAwareSchema, String topicName, boolean isKey) {
