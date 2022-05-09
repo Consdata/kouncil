@@ -40,6 +40,7 @@ class SerdeServiceTest {
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
+    private static final String CLUSTER_ID = "clusterId";
     private static ProtobufSchema PROTOBUF_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
     @Mock
@@ -135,19 +136,14 @@ class SerdeServiceTest {
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
-
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-
-        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
-                SchemaAwareCluster.builder()
-                        .schemaRegistryFacade(schemaRegistryFacade)
-                        .formatters(formatters)
-                        .build()
-        );
-
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
         // when
-        DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
+        DeserializedMessage deserializedMessage = serdeService.deserialize(CLUSTER_ID, message);
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
@@ -168,19 +164,14 @@ class SerdeServiceTest {
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
-
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-
-        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
-                SchemaAwareCluster.builder()
-                        .schemaRegistryFacade(schemaRegistryFacade)
-                        .formatters(formatters)
-                        .build()
-        );
-
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
         // when
-        DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
+        DeserializedMessage deserializedMessage = serdeService.deserialize(CLUSTER_ID, message);
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
@@ -195,7 +186,7 @@ class SerdeServiceTest {
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
 
         // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", LOREM, IPSUM);
+        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize(CLUSTER_ID, "topicName", LOREM, IPSUM);
 
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(LOREM.getBytes()));
@@ -212,19 +203,14 @@ class SerdeServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-
-        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
-                SchemaAwareCluster.builder()
-                        .schemaRegistryFacade(schemaRegistryFacade)
-                        .formatters(formatters)
-                        .build()
-        );
-
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
         // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", LOREM, SIMPLE_MESSAGE_JSON);
+        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize(CLUSTER_ID, "topicName", LOREM, SIMPLE_MESSAGE_JSON);
 
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(LOREM.getBytes()));
@@ -244,16 +230,13 @@ class SerdeServiceTest {
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-
-        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
-                SchemaAwareCluster.builder()
-                        .schemaRegistryFacade(schemaRegistryFacade)
-                        .formatters(formatters)
-                        .build()
-        );
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
 
         // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", SIMPLE_MESSAGE_JSON, LOREM);
+        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize(CLUSTER_ID, "topicName", SIMPLE_MESSAGE_JSON, LOREM);
 
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(PROTOBUF_SIMPLE_MESSAGE_BYTES));
