@@ -120,7 +120,7 @@ class SerdeServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_with_schema() {
+    public void should_deserialize_value_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -154,6 +154,44 @@ class SerdeServiceTest {
         assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(simpleMessageJsonContent);
         assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+    }
+
+    @SneakyThrows
+    @Test
+    public void should_deserialize_key_with_schema() {
+        // given
+        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES),
+                new Bytes(LOREM.getBytes(StandardCharsets.UTF_8))
+        );
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+
+        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
+                SchemaAwareCluster.builder()
+                        .schemaRegistryFacade(schemaRegistryFacade)
+                        .formatters(formatters)
+                        .build()
+        );
+
+        var simpleMessageJsonContent = Files.readString(
+                Paths.get(Objects.requireNonNull(
+                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                )).trim();
+
+        // when
+        DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
+
+        // then
+        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(simpleMessageJsonContent);
+        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(LOREM);
+        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.STRING);
     }
 
     @Test
