@@ -78,7 +78,7 @@ public class SerdeService {
                         .schemaTopic(topic)
                         .build())
                 )
-                .orElse(DeserializedData.builder()
+                .orElseGet(() -> DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(payload))
                         .valueFormat(MessageFormat.STRING)
                         .build()

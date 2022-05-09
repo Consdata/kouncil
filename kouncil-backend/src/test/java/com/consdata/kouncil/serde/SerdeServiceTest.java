@@ -6,7 +6,6 @@ import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
-import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
