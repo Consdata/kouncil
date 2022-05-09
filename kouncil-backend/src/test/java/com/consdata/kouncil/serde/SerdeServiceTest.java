@@ -15,6 +15,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.utils.Bytes;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,6 +40,8 @@ class SerdeServiceTest {
     private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[] {0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
+    private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
+    private static ProtobufSchema PROTOBUF_SCHEMA;
     @Mock
     private SchemaAwareClusterService schemaAwareClusterService;
 
@@ -50,6 +53,13 @@ class SerdeServiceTest {
 
     @InjectMocks
     private SerdeService serdeService;
+
+    @BeforeAll
+    public static void beforeAll() throws IOException, URISyntaxException {
+        var protobufSchemaPath = Paths.get(SerdeServiceTest.class.getClassLoader()
+                .getResource("SimpleMessage.proto").toURI());
+        PROTOBUF_SCHEMA = new ProtobufSchema(Files.readString(protobufSchemaPath));
+    }
 
     @Test
     public void should_deserialize_without_schema() {
@@ -108,6 +118,44 @@ class SerdeServiceTest {
         assertThat(deserializedMessage.getValueData().getValueFormat()).isNull();
     }
 
+    @SneakyThrows
+    @Test
+    public void should_deserialize_with_schema() {
+        // given
+        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                new Bytes(LOREM.getBytes(StandardCharsets.UTF_8)),
+                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES)
+        );
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+
+        when(schemaAwareClusterService.getClusterSchema(eq("clusterId"))).thenReturn(
+                SchemaAwareCluster.builder()
+                        .schemaRegistryFacade(schemaRegistryFacade)
+                        .formatters(formatters)
+                        .build()
+        );
+
+        var simpleMessageJsonContent = Files.readString(
+                Paths.get(Objects.requireNonNull(
+                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                )).trim();
+
+        // when
+        DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
+
+        // then
+        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
+        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(simpleMessageJsonContent);
+        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+    }
+
     @Test
     public void should_serialize_without_schema() {
         // given
@@ -126,7 +174,11 @@ class SerdeServiceTest {
     public void should_serialize_value_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
-        setMocksForProtobuf(false, true);
+        when(schemaRegistryFacade.getSchemaByTopicAndId(any(KouncilSchemaMetadata.class))).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
+        when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -156,7 +208,11 @@ class SerdeServiceTest {
     public void should_serialize_key_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
-        setMocksForProtobuf(true, false);
+        when(schemaRegistryFacade.getSchemaByTopicAndId(any(KouncilSchemaMetadata.class))).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
+        when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.empty());
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -179,33 +235,6 @@ class SerdeServiceTest {
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(PROTOBUF_SIMPLE_MESSAGE_BYTES));
         assertThat(serializedMessage.value()).isEqualTo(Bytes.wrap(LOREM.getBytes()));
-    }
-
-    private void setMocksForProtobuf(boolean mockSchemaForKey, boolean mockSchemaForValue) throws URISyntaxException, IOException {
-        var protobufSchemaPath = Paths.get(SerdeServiceTest.class.getClassLoader()
-                .getResource("SimpleMessage.proto").toURI());
-        ProtobufSchema simpleMessageSchema = new ProtobufSchema(Files.readString(protobufSchemaPath));
-
-        when(schemaRegistryFacade.getSchemaByTopicAndId(any(KouncilSchemaMetadata.class))).thenReturn(simpleMessageSchema);
-        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-
-        if (mockSchemaForKey) {
-            when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true)))
-                    .thenReturn(Optional.of(new SchemaMetadata(10, 100, "unused")));
-        } else {
-            when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true)))
-                    .thenReturn(Optional.empty());
-        }
-
-        if (mockSchemaForValue) {
-            when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false)))
-                    .thenReturn(Optional.of(new SchemaMetadata(10, 100, "unused")));
-        } else {
-            when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false)))
-                    .thenReturn(Optional.empty());
-        }
-
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
     }
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
