@@ -8,6 +8,7 @@ import lombok.Value;
 @Builder
 public class SerializationData {
     String topicName;
-    String value;
+    String payload;
     ParsedSchema schema;
+    boolean isKey;
 }

@@ -4,7 +4,7 @@ import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -156,15 +156,15 @@ public class TopicController extends AbstractMessagesController {
                     continue;
                 }
 
-                DeserializedValue deserializedValue = serdeService.deserialize(clusterId, consumerRecord);
+                DeserializedMessage deserializedMessage = serdeService.deserialize(clusterId, consumerRecord);
                 // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                 if (messegesCount < limit) {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
-                            .key(deserializedValue.getDeserializedKey())
-                            .value(deserializedValue.getDeserializedValue())
+                            .key(deserializedMessage.getKeyData().getDeserialized())
+                            .value(deserializedMessage.getValueData().getDeserialized())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
                             .topic(consumerRecord.topic())

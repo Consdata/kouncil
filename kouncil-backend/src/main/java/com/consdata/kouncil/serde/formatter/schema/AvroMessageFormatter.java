@@ -1,14 +1,13 @@
-package com.consdata.kouncil.serde.formatter;
+package com.consdata.kouncil.serde.formatter.schema;
 
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
-import io.confluent.kafka.schemaregistry.ParsedSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class JsonSchemaMessageFormatter implements MessageFormatter {
+public class AvroMessageFormatter implements MessageFormatter {
 
     @Override
     public String deserialize(DeserializationData deserializationData) {
@@ -24,6 +23,6 @@ public class JsonSchemaMessageFormatter implements MessageFormatter {
 
     @Override
     public MessageFormat getFormat() {
-        return MessageFormat.JSON_SCHEMA;
+        return MessageFormat.AVRO;
     }
 }
