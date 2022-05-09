@@ -4,7 +4,10 @@ import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.schema.registry.SchemaRegistryClientBuilder;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
 import com.consdata.kouncil.serde.MessageFormat;
-import com.consdata.kouncil.serde.formatter.*;
+import com.consdata.kouncil.serde.formatter.schema.AvroMessageFormatter;
+import com.consdata.kouncil.serde.formatter.schema.JsonSchemaMessageFormatter;
+import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
+import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import org.springframework.stereotype.Service;
 
@@ -13,36 +16,35 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class ClusterAwareSchemaService {
-    private final Map<String, ClusterAwareSchema> clusterAwareSchema = new ConcurrentHashMap<>();
+public class SchemaAwareClusterService {
+    private final Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
 
-    public ClusterAwareSchemaService(KouncilConfiguration kouncilConfiguration) {
+    public SchemaAwareClusterService(KouncilConfiguration kouncilConfiguration) {
         kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
             SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null ?
                     SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
 
             if (schemaRegistryClient != null) {
                 SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
-                this.clusterAwareSchema.put(clusterKey, initializeClusterAwareSchema(schemaRegistryFacade));
+                this.schemaAwareCluster.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
             }
         });
     }
 
-    public ClusterAwareSchema getClusterSchema(String serverId) {
-        return clusterAwareSchema.get(serverId);
+    public SchemaAwareCluster getClusterSchema(String serverId) {
+        return schemaAwareCluster.get(serverId);
     }
 
     public boolean clusterHasSchemaRegistry(String serverId) {
-        return clusterAwareSchema.containsKey(serverId);
+        return schemaAwareCluster.containsKey(serverId);
     }
 
-    private ClusterAwareSchema initializeClusterAwareSchema(SchemaRegistryFacade schemaRegistryFacade) {
+    private SchemaAwareCluster initializeSchemaAwareCluster(SchemaRegistryFacade schemaRegistryFacade) {
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter());
         formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
-        formatters.put(MessageFormat.STRING, new StringMessageFormatter());
-        return ClusterAwareSchema.builder()
+        return SchemaAwareCluster.builder()
                 .formatters(formatters)
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .build();

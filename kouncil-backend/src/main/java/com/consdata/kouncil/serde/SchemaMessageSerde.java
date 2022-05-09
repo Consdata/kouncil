@@ -1,61 +1,41 @@
 package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchema;
-import com.consdata.kouncil.schema.clusteraware.ClusterAwareSchemaService;
-import com.consdata.kouncil.serde.formatter.MessageFormatter;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
+import com.consdata.kouncil.serde.deserialization.DeserializationData;
+import com.consdata.kouncil.serde.deserialization.DeserializedData;
+import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
+import com.consdata.kouncil.serde.serialization.SerializationData;
+import io.confluent.kafka.schemaregistry.ParsedSchema;
 import org.apache.kafka.common.utils.Bytes;
+import org.springframework.stereotype.Service;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
+@Service
 public class SchemaMessageSerde {
+    public DeserializedData deserialize(SchemaAwareCluster schemaAwareCluster, Bytes payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
+        MessageFormat messageFormat = schemaAwareCluster.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
+        MessageFormatter formatter = schemaAwareCluster.getFormatter(messageFormat);
 
-    private final ClusterAwareSchemaService clusterAwareSchemaService;
-
-    public SchemaMessageSerde(ClusterAwareSchemaService clusterAwareSchemaService) {
-        this.clusterAwareSchemaService = clusterAwareSchemaService;
+        return DeserializedData.builder()
+                .deserialized(formatter.deserialize(DeserializationData.builder()
+                        .value(payload.get())
+                        .topicName(kouncilSchemaMetadata.getSchemaTopic())
+                        .build()))
+                .messageFormat(formatter.getFormat())
+                .schemaId(kouncilSchemaMetadata.getSchemaId())
+                .build();
     }
 
-    public DeserializedValue deserialize(String serverId,
-                                         ConsumerRecord<Bytes, Bytes> message) {
-        var builder = DeserializedValue.builder();
-        if (message.key() != null) {
-            Integer keySchemaId = getSchemaIdFromMessage(message.key());
-            MessageFormatter keyFormatter = getFormatter(clusterAwareSchemaService.getClusterSchema(serverId),
-                    message.topic(), true, keySchemaId);
+    public Bytes serialize(SchemaAwareCluster schemaAwareCluster, String payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
+        MessageFormat messageFormat = schemaAwareCluster.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
+        ParsedSchema schema = schemaAwareCluster.getSchemaRegistryFacade().getSchemaByTopicAndId(kouncilSchemaMetadata);
+        MessageFormatter formatter = schemaAwareCluster.getFormatter(messageFormat);
 
-            builder.deserializedKey(keyFormatter.format(message.topic(), message.key().get()))
-                    .keyFormat(keyFormatter.getFormat())
-                    .keySchemaId(Optional.ofNullable(keySchemaId).map(String::valueOf).orElse(null));
-        }
-        if (message.value() != null) {
-            Integer valueSchemaId = getSchemaIdFromMessage(message.value());
-            MessageFormatter valueFormatter = getFormatter(clusterAwareSchemaService.getClusterSchema(serverId),
-                    message.topic(), false, valueSchemaId);
-            builder.deserializedValue(valueFormatter.format(message.topic(), message.value().get()))
-                    .valueFormat(valueFormatter.getFormat())
-                    .valueSchemaId(Optional.ofNullable(valueSchemaId).map(String::valueOf).orElse(null));
-        }
-        return builder.build();
-    }
-
-    private MessageFormatter getFormatter(ClusterAwareSchema clusterAwareSchema, String topic, boolean isKey, Integer keySchemaId) {
-        MessageFormat messageFormat = Optional.ofNullable(keySchemaId)
-                .map(schemaId -> clusterAwareSchema.getSchemaFormat(topic, schemaId, isKey))
-                .orElse(MessageFormat.STRING);
-        return clusterAwareSchema.getFormatter(messageFormat);
-    }
-
-    /**
-     * Schema identifier is fetched from message, because schema could have changed.
-     * Latest schema may be too new.
-     */
-    private Integer getSchemaIdFromMessage(Bytes message) {
-        ByteBuffer buffer = ByteBuffer.wrap(message.get());
-        if (buffer.hasRemaining()) {
-            return buffer.get() == 0 ? buffer.getInt() : null;
-        }
-        return null;
+        return formatter.serialize(
+                SerializationData.builder().payload(payload)
+                        .topicName(kouncilSchemaMetadata.getSchemaTopic())
+                        .schema(schema)
+                        .isKey(kouncilSchemaMetadata.isKey())
+                .build()
+        );
     }
 }

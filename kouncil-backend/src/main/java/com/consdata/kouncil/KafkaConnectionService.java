@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.BytesDeserializer;
+import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -23,7 +24,7 @@ public class KafkaConnectionService {
     protected static final String RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE = "10000";
     private final KouncilConfiguration kouncilConfiguration;
     //we can cache this
-    private final Map<String, KafkaTemplate<String, String>> kafkaTemplates = new HashMap<>();
+    private final Map<String, KafkaTemplate<Bytes, Bytes>> kafkaTemplates = new HashMap<>();
     //we can cache this
     private final Map<String, AdminClient> adminClients = new HashMap<>();
 
@@ -31,12 +32,12 @@ public class KafkaConnectionService {
         this.kouncilConfiguration = kouncilConfiguration;
     }
 
-    public KafkaTemplate<String, String> getKafkaTemplate(String serverId) {
+    public KafkaTemplate<Bytes, Bytes> getKafkaTemplate(String serverId) {
         if (!kafkaTemplates.containsKey(serverId)) {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildProducerProperties();
             props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
-            props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
+            props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
             kafkaTemplates.put(serverId, new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props)));
