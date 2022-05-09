@@ -8,7 +8,6 @@ import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -42,6 +41,7 @@ class SerdeServiceTest {
     private static final String IPSUM = "ipsum";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
     private static ProtobufSchema PROTOBUF_SCHEMA;
+    private static String SIMPLE_MESSAGE_JSON;
     @Mock
     private SchemaAwareClusterService schemaAwareClusterService;
 
@@ -59,6 +59,11 @@ class SerdeServiceTest {
         var protobufSchemaPath = Paths.get(SerdeServiceTest.class.getClassLoader()
                 .getResource("SimpleMessage.proto").toURI());
         PROTOBUF_SCHEMA = new ProtobufSchema(Files.readString(protobufSchemaPath));
+
+        SIMPLE_MESSAGE_JSON = Files.readString(
+                Paths.get(Objects.requireNonNull(
+                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                )).trim();
     }
 
     @Test
@@ -141,18 +146,13 @@ class SerdeServiceTest {
                         .build()
         );
 
-        var simpleMessageJsonContent = Files.readString(
-                Paths.get(Objects.requireNonNull(
-                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
-                )).trim();
-
         // when
         DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
         assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(simpleMessageJsonContent);
+        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
         assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
     }
 
@@ -179,16 +179,11 @@ class SerdeServiceTest {
                         .build()
         );
 
-        var simpleMessageJsonContent = Files.readString(
-                Paths.get(Objects.requireNonNull(
-                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
-                )).trim();
-
         // when
         DeserializedMessage deserializedMessage = serdeService.deserialize("clusterId", message);
 
         // then
-        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(simpleMessageJsonContent);
+        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
         assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(LOREM);
         assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.STRING);
@@ -228,13 +223,8 @@ class SerdeServiceTest {
                         .build()
         );
 
-        var simpleMessageJsonContent = Files.readString(
-                Paths.get(Objects.requireNonNull(
-                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
-                )).trim();
-
         // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", LOREM, simpleMessageJsonContent);
+        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", LOREM, SIMPLE_MESSAGE_JSON);
 
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(LOREM.getBytes()));
@@ -262,13 +252,8 @@ class SerdeServiceTest {
                         .build()
         );
 
-        var simpleMessageJsonContent = Files.readString(
-                Paths.get(Objects.requireNonNull(
-                        SerdeServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
-                )).trim();
-
         // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", simpleMessageJsonContent, LOREM);
+        ProducerRecord<Bytes, Bytes> serializedMessage = serdeService.serialize("clusterId", "topicName", SIMPLE_MESSAGE_JSON, LOREM);
 
         // then
         assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(PROTOBUF_SIMPLE_MESSAGE_BYTES));
