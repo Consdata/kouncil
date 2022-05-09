@@ -81,9 +81,9 @@ class SerdeServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(IPSUM);
-        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
     }
 
     @Test
@@ -100,9 +100,9 @@ class SerdeServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isNull();
-        assertThat(deserializedMessage.getKeyData().getValueFormat()).isNull();
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isNull();
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(IPSUM);
-        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
     }
 
     @Test
@@ -119,9 +119,9 @@ class SerdeServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isNull();
-        assertThat(deserializedMessage.getValueData().getValueFormat()).isNull();
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isNull();
     }
 
     @SneakyThrows
@@ -147,9 +147,9 @@ class SerdeServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
     }
 
     @SneakyThrows
@@ -175,9 +175,65 @@ class SerdeServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getKeyData().getValueFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getValueData().getValueFormat()).isEqualTo(MessageFormat.STRING);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
+    }
+
+    @SneakyThrows
+    @Test
+    public void should_deserialize_with_schema_key_null() {
+        // given
+        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                null,
+                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES)
+        );
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
+        // when
+        DeserializedMessage deserializedMessage = serdeService.deserialize(CLUSTER_ID, message);
+
+        // then
+        assertThat(deserializedMessage.getKeyData().getDeserialized()).isNull();
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isNull();
+        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
+    }
+
+    @SneakyThrows
+    @Test
+    public void should_deserialize_with_schema_value_null() {
+        // given
+        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
+        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
+                new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES),
+                null
+        );
+        when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
+        formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+                .schemaRegistryFacade(schemaRegistryFacade)
+                .formatters(formatters)
+                .build());
+        // when
+        DeserializedMessage deserializedMessage = serdeService.deserialize(CLUSTER_ID, message);
+
+        // then
+        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
+        assertThat(deserializedMessage.getValueData().getDeserialized()).isNull();
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isNull();
     }
 
     @Test

@@ -8,6 +8,6 @@ import lombok.Value;
 @Builder
 public class DeserializedData {
     String deserialized;
-    MessageFormat valueFormat;
+    MessageFormat messageFormat;
     Integer schemaId;
 }

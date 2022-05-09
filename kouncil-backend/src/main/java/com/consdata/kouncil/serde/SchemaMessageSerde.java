@@ -18,7 +18,7 @@ public class SchemaMessageSerde {
                         .value(payload.get())
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
                         .build()))
-                .valueFormat(formatter.getFormat())
+                .messageFormat(formatter.getFormat())
                 .schemaId(kouncilSchemaMetadata.getSchemaId())
                 .build();
     }

@@ -42,13 +42,13 @@ public class SerdeService {
             if (message.key() != null) {
                 keyData = DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(message.key()))
-                        .valueFormat(MessageFormat.STRING)
+                        .messageFormat(MessageFormat.STRING)
                         .build();
             }
             if (message.value() != null) {
                 valueData = DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(message.value()))
-                        .valueFormat(MessageFormat.STRING)
+                        .messageFormat(MessageFormat.STRING)
                         .build();
             }
         }
@@ -80,7 +80,7 @@ public class SerdeService {
                 )
                 .orElseGet(() -> DeserializedData.builder()
                         .deserialized(stringMessageSerde.deserialize(payload))
-                        .valueFormat(MessageFormat.STRING)
+                        .messageFormat(MessageFormat.STRING)
                         .build()
                 );
         return deserializedData;
