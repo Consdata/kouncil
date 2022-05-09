@@ -2,8 +2,9 @@ package com.consdata.kouncil.track;
 
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.serde.SerdeService;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
+import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +48,9 @@ public class TrackController extends AbstractMessagesController {
                            WebSocketMessageBrokerStats webSocketMessageBrokerStats,
                            DestinationStore destinationStore,
                            EventMatcher eventMatcher,
-                           SerdeService serdeService) {
-        super(kafkaConnectionService, serdeService);
+                           SerializationService serializationService,
+                           DeserializationService deserializationService) {
+        super(kafkaConnectionService, serializationService, deserializationService);
         this.eventSender = eventSender;
         this.executor = executor;
         this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
@@ -128,7 +130,7 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        DeserializedMessage deserializedMessage = serdeService.deserialize(serverId, consumerRecord);
+                        DeserializedMessage deserializedMessage = deserializationService.deserialize(serverId, consumerRecord);
                         // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
 
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedMessage.getValueData().getDeserialized())) {

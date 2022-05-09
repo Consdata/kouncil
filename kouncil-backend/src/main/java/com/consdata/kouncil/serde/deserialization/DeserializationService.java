@@ -1,30 +1,30 @@
-package com.consdata.kouncil.serde;
+package com.consdata.kouncil.serde.deserialization;
 
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
-import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
-import com.consdata.kouncil.serde.deserialization.DeserializedData;
-import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
-import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
+import com.consdata.kouncil.serde.KouncilSchemaMetadata;
+import com.consdata.kouncil.serde.MessageFormat;
+import com.consdata.kouncil.serde.SchemaMessageSerde;
+import com.consdata.kouncil.serde.StringMessageSerde;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
 @Service
-public class SerdeService {
+public class DeserializationService {
     private final SchemaAwareClusterService schemaAwareClusterService;
     private final StringMessageSerde stringMessageSerde;
     private final SchemaMessageSerde schemaMessageSerde;
 
-    public SerdeService(SchemaAwareClusterService schemaAwareClusterService) {
+    public DeserializationService(SchemaAwareClusterService schemaAwareClusterService,
+                                  StringMessageSerde stringMessageSerde,
+                                  SchemaMessageSerde schemaMessageSerde) {
         this.schemaAwareClusterService = schemaAwareClusterService;
-        this.stringMessageSerde = new StringMessageSerde(new StringMessageFormatter());
-        this.schemaMessageSerde = new SchemaMessageSerde();
+        this.stringMessageSerde = stringMessageSerde;
+        this.schemaMessageSerde = schemaMessageSerde;
     }
 
     public DeserializedMessage deserialize(String clusterId, ConsumerRecord<Bytes, Bytes> message) {
@@ -55,20 +55,6 @@ public class SerdeService {
         return DeserializedMessage.builder().keyData(keyData).valueData(valueData).build();
     }
 
-    public ProducerRecord<Bytes, Bytes> serialize(String clusterId, String topicName, @NotNull String key, @NotNull String value) {
-        Bytes serializedKey;
-        Bytes serializedValue;
-        if (this.schemaAwareClusterService.clusterHasSchemaRegistry(clusterId)) {
-            SchemaAwareCluster schemaAwareCluster = schemaAwareClusterService.getClusterSchema(clusterId);
-            serializedKey = getSchemaSerializedData(topicName, key, true, schemaAwareCluster);
-            serializedValue = getSchemaSerializedData(topicName, value, false, schemaAwareCluster);
-        } else {
-            serializedKey = stringMessageSerde.serialize(key);
-            serializedValue = stringMessageSerde.serialize(value);
-        }
-        return new ProducerRecord<>(topicName, serializedKey, serializedValue);
-    }
-
     private DeserializedData getSchemaDeserializedData(Bytes payload, String topic, boolean isKey, SchemaAwareCluster schemaAwareCluster) {
         DeserializedData deserializedData;
         deserializedData = getSchemaIdFromMessage(payload)
@@ -84,24 +70,6 @@ public class SerdeService {
                         .build()
                 );
         return deserializedData;
-    }
-
-    private Bytes getSchemaSerializedData(String topicName, String payload, boolean isKey, SchemaAwareCluster schemaAwareCluster) {
-        Bytes serializedData;
-        serializedData = getSchemaIdFromRegistry(schemaAwareCluster, topicName, isKey)
-                .map(schemaId -> schemaMessageSerde.serialize(schemaAwareCluster, payload, KouncilSchemaMetadata.builder()
-                        .isKey(isKey)
-                        .schemaId(schemaId)
-                        .schemaTopic(topicName)
-                        .build()))
-                .orElseGet(() -> stringMessageSerde.serialize(payload));
-        return serializedData;
-    }
-
-    private Optional<Integer> getSchemaIdFromRegistry(SchemaAwareCluster schemaAwareCluster, String topicName, boolean isKey) {
-        return schemaAwareCluster.getSchemaRegistryFacade()
-                .getLatestSchemaMetadata(topicName, isKey)
-                .map(SchemaMetadata::getId);
     }
 
     /**

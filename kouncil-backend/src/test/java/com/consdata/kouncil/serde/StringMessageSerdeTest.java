@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StringMessageSerdeTest {
 
-    private final StringMessageSerde stringMessageSerde = new StringMessageSerde(new StringMessageFormatter());
+    private final StringMessageSerde stringMessageSerde = new StringMessageSerde();
 
     @Test
     void should_deserialize_string() {

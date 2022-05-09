@@ -7,7 +7,9 @@ import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.serialization.SerializationData;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import org.apache.kafka.common.utils.Bytes;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SchemaMessageSerde {
     public DeserializedData deserialize(SchemaAwareCluster schemaAwareCluster, Bytes payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
         MessageFormat messageFormat = schemaAwareCluster.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
