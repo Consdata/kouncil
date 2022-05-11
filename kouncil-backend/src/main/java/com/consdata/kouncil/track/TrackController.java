@@ -131,14 +131,14 @@ public class TrackController extends AbstractMessagesController {
                             continue;
                         }
                         DeserializedMessage deserializedMessage = deserializationService.deserialize(serverId, consumerRecord);
-                        // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
-
                         if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedMessage.getValueData().getDeserialized())) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(m.getTopicName())
                                     .key(deserializedMessage.getKeyData().getDeserialized())
+                                    .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
                                     .value(deserializedMessage.getValueData().getDeserialized())
+                                    .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                                     .offset(consumerRecord.offset())
                                     .partition(consumerRecord.partition())
                                     .timestamp(consumerRecord.timestamp())

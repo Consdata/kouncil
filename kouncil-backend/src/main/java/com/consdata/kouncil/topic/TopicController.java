@@ -159,14 +159,14 @@ public class TopicController extends AbstractMessagesController {
                 }
 
                 DeserializedMessage deserializedMessage = deserializationService.deserialize(clusterId, consumerRecord);
-                // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
-
                 if (messegesCount < limit) {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
                             .key(deserializedMessage.getKeyData().getDeserialized())
+                            .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
                             .value(deserializedMessage.getValueData().getDeserialized())
+                            .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
                             .topic(consumerRecord.topic())
