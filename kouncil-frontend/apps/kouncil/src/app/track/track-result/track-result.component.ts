@@ -141,13 +141,12 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   showMessage(event: Model): void {
     if (event.type === 'click') {
-      console.log(event.row);
       const messageData = {
         value: TrackResultComponent.tryParseJson(event.row.value),
-        valueFormat: event.row.kouncilValueFormat,
+        valueFormat: event.row.valueFormat,
         headers: event.row.headers,
         key: event.row.key,
-        keyFormat: event.row.kouncilKeyFormat,
+        keyFormat: event.row.keyFormat,
         topicName: event.row.topic
       } as MessageData;
       this.messageDataService.setMessageData(messageData);
