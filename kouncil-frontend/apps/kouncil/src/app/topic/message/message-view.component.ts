@@ -36,6 +36,10 @@ import {Observable} from 'rxjs';
       </div>
 
       <ngx-json-viewer [json]="messageData.value" class="json-details"></ngx-json-viewer>
+      <div class="message-format">
+        keyFormat: {{ messageData.keyFormat }}
+        valueFromat: {{ messageData.valueFormat }}
+      </div>
 
       <div class="actions">
         <button type="button" mat-dialog-close mat-button disableRipple class="cancel">Cancel</button>

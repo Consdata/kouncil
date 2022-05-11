@@ -141,11 +141,14 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   showMessage(event: Model): void {
     if (event.type === 'click') {
+      console.log(event.row);
       const messageData = {
         value: TrackResultComponent.tryParseJson(event.row.value),
+        valueFormat: event.row.kouncilValueFormat,
         headers: event.row.headers,
         key: event.row.key,
-        topicName: event.row.topic,
+        keyFormat: event.row.kouncilKeyFormat,
+        topicName: event.row.topic
       } as MessageData;
       this.messageDataService.setMessageData(messageData);
       this.drawerService.openDrawerWithPadding(MessageViewComponent);

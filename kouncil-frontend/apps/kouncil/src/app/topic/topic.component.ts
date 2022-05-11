@@ -198,8 +198,10 @@ export class TopicComponent implements OnInit, OnDestroy {
       const messageData = {
         value: event.row.kouncilValueJson && Object.keys(event.row.kouncilValueJson).length > 0 ?
           event.row.kouncilValueJson : event.row.kouncilValue,
+        valueFormat: event.row.kouncilValueFormat,
         headers: event.row.headers,
         key: event.row.kouncilKey,
+        keyFormat: event.row.kouncilKeyFormat,
         topicName: this.topicName,
         timestamp: event.row.kouncilTimestampEpoch,
       } as MessageData;
@@ -222,10 +224,12 @@ export class TopicComponent implements OnInit, OnDestroy {
     topicMessages.messages.forEach((message: MessageData) =>
       values.push({
         value: message.value,
+        valueFormat: message.valueFormat,
         valueJson: TopicComponent.tryParseJson(message.value),
         partition: message.partition,
         offset: message.offset,
         key: message.key,
+        keyFormat: message.keyFormat,
         timestamp: message.timestamp,
         headers: message.headers,
       })

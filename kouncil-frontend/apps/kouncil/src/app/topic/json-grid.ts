@@ -72,11 +72,13 @@ export class JsonGrid {
           });
         }
         row['kouncilKey'] = object.key;
+        row['kouncilKeyFormat'] = object.keyFormat;
         row['kouncilOffset'] = object.offset;
         row['kouncilPartition'] = object.partition;
         row['kouncilTimestamp'] = this.formatTimestamp(object.timestamp);
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
+        row['kouncilValueFormat'] = object.valueFormat;
         row['kouncilValueJson'] = object.valueJson;
         row['headers'] = object.headers;
         this.rows.unshift(row);
