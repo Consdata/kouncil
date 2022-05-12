@@ -34,12 +34,23 @@ import {Observable} from 'rxjs';
         </ngx-datatable>
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
-
-      <ngx-json-viewer [json]="messageData.key" class="json-details key"></ngx-json-viewer>
-      <ngx-json-viewer [json]="messageData.value" class="json-details value"></ngx-json-viewer>
-      <div class="message-format">
-        keyFormat: {{ messageData.keyFormat }}
-        valueFromat: {{ messageData.valueFormat }}
+      <div class="payload-section">
+        <div class="key-section">
+          <div class="message-format">
+            keyFormat: {{ messageData.keyFormat }}
+          </div>
+          <div class="message-payload">
+            <ngx-json-viewer [json]="messageData.key"></ngx-json-viewer>
+          </div>
+        </div>
+        <div class="value-section">
+          <div class="message-format">
+            valueFormat: {{ messageData.valueFormat }}
+          </div>
+          <div class="message-payload">
+            <ngx-json-viewer [json]="messageData.value"></ngx-json-viewer>
+          </div>
+        </div>
       </div>
 
       <div class="actions">

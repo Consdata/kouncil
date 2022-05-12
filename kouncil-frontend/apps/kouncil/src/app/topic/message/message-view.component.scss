@@ -5,21 +5,34 @@
     height: 100%;
   }
 
-  .json-details {
-    margin: 24px 0;
-    background: $main-10;
-    overflow: auto;
+  .payload-section {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-  }
 
-  button {
-  }
+    .key-section {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
 
-  ::ng-deep .json-details > section.ngx-json-viewer {
-    overflow: initial;
-    padding: 24px 32px;
-    height: calc(100% - 48px);
-    width: calc(100% - 64px);
+    .value-section {
+      display: flex;
+      flex-direction: column;
+      flex: 9;
+    }
+
+    .message-payload {
+      flex: 9;
+      margin: 24px 0;
+      padding: 24px 32px;
+      background: $main-10;
+      overflow: auto;
+    }
+
+    .message-format {
+      flex: 1;
+    }
   }
 
   $green: #127D48;
