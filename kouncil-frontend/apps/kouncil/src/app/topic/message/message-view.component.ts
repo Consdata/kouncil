@@ -20,7 +20,7 @@ import {Observable} from 'rxjs';
         <div class="spacer"></div>
         <mat-icon mat-dialog-close class="close">close</mat-icon>
       </div>
-      <div class="headers-table">
+      <div class="headers">
         <ngx-datatable *ngIf="messageData.headers.length > 0 && isAnimationDone" class="headers-table-detail material"
                        [rows]="messageData.headers"
                        [rowHeight]="38"
@@ -34,7 +34,7 @@ import {Observable} from 'rxjs';
         </ngx-datatable>
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
-      <div class="payload-section">
+      <div class="payload">
         <div class="key-section">
           <div class="message-format">
             keyFormat: {{ messageData.keyFormat }}

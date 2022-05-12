@@ -1,11 +1,23 @@
 @import '../../../styles/palette';
 
 :host {
+  $green: #127D48;
+
   .mat-dialog-content {
     height: 100%;
   }
 
-  .payload-section {
+  .headers {
+    max-height: 100%;
+
+    .headers-table-detail {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  .payload {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -34,7 +46,9 @@
     }
   }
 
-  $green: #127D48;
+  .actions {
+    gap: 16px;
+  }
 
   $type-colors: (
     string: $green,
@@ -56,20 +70,5 @@
 
   ::ng-deep .segment-key {
     color: $blue-60 !important;
-  }
-
-  .actions {
-    gap: 16px;
-  }
-
-  .headers-table {
-    max-height: 100%;
-
-    .headers-table-detail {
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
-    }
-
   }
 }
