@@ -21,6 +21,7 @@ import {Observable} from 'rxjs';
         <mat-icon mat-dialog-close class="close">close</mat-icon>
       </div>
       <div class="headers">
+        <div class="label">Headers</div>
         <ngx-datatable *ngIf="messageData.headers.length > 0 && isAnimationDone" class="headers-table-detail material"
                        [rows]="messageData.headers"
                        [rowHeight]="38"
