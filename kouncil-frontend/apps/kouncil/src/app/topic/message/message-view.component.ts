@@ -20,9 +20,9 @@ import {Observable} from 'rxjs';
         <div class="spacer"></div>
         <mat-icon mat-dialog-close class="close">close</mat-icon>
       </div>
-      <div class="headers">
+      <div class="headers" *ngIf="messageData.headers.length > 0 && isAnimationDone">
         <div class="label">Headers</div>
-        <ngx-datatable *ngIf="messageData.headers.length > 0 && isAnimationDone" class="headers-table-detail material"
+        <ngx-datatable class="headers-table-detail material"
                        [rows]="messageData.headers"
                        [rowHeight]="38"
                        [headerHeight]="38"
@@ -37,17 +37,13 @@ import {Observable} from 'rxjs';
       </div>
       <div class="payload">
         <div class="key-section">
-          <div class="message-format">
-            keyFormat: {{ messageData.keyFormat }}
-          </div>
+          <div class="label">Key - {{ messageData.keyFormat }}</div>
           <div class="message-payload">
             <ngx-json-viewer [json]="messageData.key"></ngx-json-viewer>
           </div>
         </div>
         <div class="value-section">
-          <div class="message-format">
-            valueFormat: {{ messageData.valueFormat }}
-          </div>
+          <div class="label">Value - {{ messageData.valueFormat }}</div>
           <div class="message-payload">
             <ngx-json-viewer [json]="messageData.value"></ngx-json-viewer>
           </div>
