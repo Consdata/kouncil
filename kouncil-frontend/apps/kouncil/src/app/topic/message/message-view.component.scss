@@ -9,29 +9,28 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    margin: 24px 0;
 
     .key-section {
       display: flex;
       flex-direction: column;
-      flex: 1;
+      margin-bottom: 20px;
     }
 
     .value-section {
       display: flex;
       flex-direction: column;
-      flex: 9;
+      flex: 2;
     }
 
     .message-payload {
-      flex: 9;
-      margin: 24px 0;
-      padding: 24px 32px;
+      flex: 1;
+      padding: 24px;
       background: $main-10;
       overflow: auto;
     }
 
     .message-format {
-      flex: 1;
     }
   }
 
