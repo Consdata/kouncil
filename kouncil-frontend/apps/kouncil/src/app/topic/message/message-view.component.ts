@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {SendComponent} from '../../send/send.component';
 import {DrawerService} from '../../util/drawer.service';
-import {first, tap} from 'rxjs/operators';
+import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -63,7 +63,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./message-view.component.scss']
 })
 export class MessageViewComponent implements OnInit {
-  messageData$: Observable<MessageData> = this.messageDataService.messageData$.pipe(tap(as => console.log(as)));
+  messageData$: Observable<MessageData> = this.messageDataService.messageData$;
 
   public isAnimationDone: boolean = false;
 

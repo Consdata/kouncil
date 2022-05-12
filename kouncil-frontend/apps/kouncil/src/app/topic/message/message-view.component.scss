@@ -24,8 +24,8 @@
   .payload {
     display: flex;
     flex-direction: column;
-    height: 100%;
     margin: 24px 0;
+    overflow: auto;
 
     .key-section {
       display: flex;
@@ -43,7 +43,6 @@
       flex: 1;
       padding: 24px;
       background: $main-10;
-      overflow: auto;
     }
   }
 
