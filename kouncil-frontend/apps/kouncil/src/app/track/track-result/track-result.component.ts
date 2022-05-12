@@ -145,7 +145,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
         value: TrackResultComponent.tryParseJson(event.row.value),
         valueFormat: event.row.valueFormat,
         headers: event.row.headers,
-        key: event.row.key,
+        key: TrackResultComponent.tryParseJson(event.row.key),
         keyFormat: event.row.keyFormat,
         topicName: event.row.topic
       } as MessageData;

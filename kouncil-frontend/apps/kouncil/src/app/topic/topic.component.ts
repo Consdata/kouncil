@@ -200,7 +200,8 @@ export class TopicComponent implements OnInit, OnDestroy {
           event.row.kouncilValueJson : event.row.kouncilValue,
         valueFormat: event.row.kouncilValueFormat,
         headers: event.row.headers,
-        key: event.row.kouncilKey,
+        key: event.row.kouncilKeyJson && Object.keys(event.row.kouncilKeyJson).length > 0 ?
+          event.row.kouncilKeyJson : event.row.kouncilKey,
         keyFormat: event.row.kouncilKeyFormat,
         topicName: this.topicName,
         timestamp: event.row.kouncilTimestampEpoch,
@@ -230,6 +231,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         offset: message.offset,
         key: message.key,
         keyFormat: message.keyFormat,
+        keyJson: TopicComponent.tryParseJson(message.key),
         timestamp: message.timestamp,
         headers: message.headers,
       })

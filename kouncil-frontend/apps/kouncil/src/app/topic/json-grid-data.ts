@@ -9,6 +9,7 @@ export interface JsonGridData {
   offset: number | null;
   key: string;
   keyFormat: MessageFormat;
+  keyJson: Record<string, unknown>;
   timestamp: number | null;
   headers: MessageDataHeader[];
 }

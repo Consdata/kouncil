@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {SendComponent} from '../../send/send.component';
 import {DrawerService} from '../../util/drawer.service';
-import {first} from 'rxjs/operators';
+import {first, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -35,7 +35,8 @@ import {Observable} from 'rxjs';
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
 
-      <ngx-json-viewer [json]="messageData.value" class="json-details"></ngx-json-viewer>
+      <ngx-json-viewer [json]="messageData.key" class="json-details key"></ngx-json-viewer>
+      <ngx-json-viewer [json]="messageData.value" class="json-details value"></ngx-json-viewer>
       <div class="message-format">
         keyFormat: {{ messageData.keyFormat }}
         valueFromat: {{ messageData.valueFormat }}
@@ -54,7 +55,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./message-view.component.scss']
 })
 export class MessageViewComponent implements OnInit {
-  messageData$: Observable<MessageData> = this.messageDataService.messageData$;
+  messageData$: Observable<MessageData> = this.messageDataService.messageData$.pipe(tap(as => console.log(as)));
 
   public isAnimationDone: boolean = false;
 
