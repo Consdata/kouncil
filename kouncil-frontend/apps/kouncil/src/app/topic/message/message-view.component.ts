@@ -38,15 +38,11 @@ import {Observable} from 'rxjs';
       <div class="payload">
         <div class="key-section">
           <div class="label">Key (deserialized from {{ messageData.keyFormat }} format)</div>
-          <div class="message-payload">
-            <ngx-json-viewer [json]="messageData.key"></ngx-json-viewer>
-          </div>
+          <ngx-json-viewer class="message-payload" [json]="messageData.key"></ngx-json-viewer>
         </div>
         <div class="value-section">
           <div class="label">Value (deserialized from {{ messageData.valueFormat }} format)</div>
-          <div class="message-payload">
-            <ngx-json-viewer [json]="messageData.value"></ngx-json-viewer>
-          </div>
+          <ngx-json-viewer class="message-payload" [json]="messageData.value"></ngx-json-viewer>
         </div>
       </div>
 
