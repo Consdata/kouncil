@@ -20,8 +20,9 @@ import {Observable} from 'rxjs';
         <div class="spacer"></div>
         <mat-icon mat-dialog-close class="close">close</mat-icon>
       </div>
-      <div class="headers-table">
-        <ngx-datatable *ngIf="messageData.headers.length > 0 && isAnimationDone" class="headers-table-detail material"
+      <div class="headers" *ngIf="messageData.headers.length > 0 && isAnimationDone">
+        <div class="label">Headers</div>
+        <ngx-datatable class="headers-table-detail material"
                        [rows]="messageData.headers"
                        [rowHeight]="38"
                        [headerHeight]="38"
@@ -34,8 +35,16 @@ import {Observable} from 'rxjs';
         </ngx-datatable>
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
-
-      <ngx-json-viewer [json]="messageData.value" class="json-details"></ngx-json-viewer>
+      <div class="payload">
+        <div class="key-section">
+          <div class="label">Key (deserialized from {{ messageData.keyFormat }} format)</div>
+          <ngx-json-viewer class="message-payload" [json]="messageData.key"></ngx-json-viewer>
+        </div>
+        <div class="value-section">
+          <div class="label">Value (deserialized from {{ messageData.valueFormat }} format)</div>
+          <ngx-json-viewer class="message-payload" [json]="messageData.value"></ngx-json-viewer>
+        </div>
+      </div>
 
       <div class="actions">
         <button type="button" mat-dialog-close mat-button disableRipple class="cancel">Cancel</button>

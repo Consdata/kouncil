@@ -4,6 +4,9 @@
   .kafka-brokers {
     height: 100%;
     overflow-y: auto;
-  }
 
+    .brokers-table {
+      margin-top: 24px;
+    }
+  }
 }

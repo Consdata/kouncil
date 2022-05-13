@@ -71,12 +71,25 @@ export class JsonGrid {
             );
           });
         }
+        if (object.keyJson) {
+          Object.keys(object.keyJson).forEach((propertyName) => {
+            this.handleObject(
+              0,
+              object.keyJson[propertyName],
+              row,
+              propertyName
+            );
+          });
+        }
         row['kouncilKey'] = object.key;
+        row['kouncilKeyFormat'] = object.keyFormat;
+        row['kouncilKeyJson'] = object.keyJson;
         row['kouncilOffset'] = object.offset;
         row['kouncilPartition'] = object.partition;
         row['kouncilTimestamp'] = this.formatTimestamp(object.timestamp);
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
+        row['kouncilValueFormat'] = object.valueFormat;
         row['kouncilValueJson'] = object.valueJson;
         row['headers'] = object.headers;
         this.rows.unshift(row);
