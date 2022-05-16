@@ -24,7 +24,6 @@ public class AvroMessageFormatter implements MessageFormatter {
 
     public AvroMessageFormatter(SchemaRegistryClient client) {
         this.avroDeserializer = new KafkaAvroDeserializer(client);
-        ;
         this.avroSerializer = new KafkaAvroSerializer(client);
     }
 
@@ -60,9 +59,9 @@ public class AvroMessageFormatter implements MessageFormatter {
 
     private void configureSerializer(SerializationData serializationData) {
         avroSerializer.configure(
-                Map.of("schema.registry.url", "needed_in_runtime_but_not_used",
+                Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "needed_in_runtime_but_not_used",
                         AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, false,
-                        AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, false),
+                        AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true),
                 serializationData.isKey()
         );
     }

@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class ProtobufSerializationServiceTest {
-    private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[] {0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
+    private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
@@ -88,6 +88,8 @@ public class ProtobufSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
+        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(PROTOBUF_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -112,6 +114,8 @@ public class ProtobufSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
+        when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
+        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(PROTOBUF_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);

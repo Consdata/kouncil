@@ -38,7 +38,7 @@ public class AvroSerializationServiceTest {
     private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 32, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
-    private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
+    private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "SimpleMessageAvro");
     private static final String CLUSTER_ID = "clusterId";
     private static AvroSchema AVRO_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
@@ -89,6 +89,7 @@ public class AvroSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
+        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(AVRO_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -114,6 +115,7 @@ public class AvroSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
+        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(AVRO_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);

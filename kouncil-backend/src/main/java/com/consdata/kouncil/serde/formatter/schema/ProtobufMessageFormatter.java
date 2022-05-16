@@ -9,6 +9,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchemaUtils;
+import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer;
 import org.apache.kafka.common.utils.Bytes;
@@ -59,7 +60,10 @@ public class ProtobufMessageFormatter implements MessageFormatter {
 
     private void configureSerializer(SerializationData serializationData) {
         protobufSerializer.configure(
-                Map.of("schema.registry.url", "needed_in_runtime_but_not_used"),
+                Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "needed_in_runtime_but_not_used",
+                        AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, false,
+                        AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true),
+
                 serializationData.isKey()
         );
     }
