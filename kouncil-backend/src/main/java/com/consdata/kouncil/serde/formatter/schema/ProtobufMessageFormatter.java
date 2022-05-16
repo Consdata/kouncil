@@ -14,7 +14,6 @@ import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 public class ProtobufMessageFormatter implements MessageFormatter {
@@ -35,7 +34,7 @@ public class ProtobufMessageFormatter implements MessageFormatter {
         try {
             return new String(ProtobufSchemaUtils.toJson(message));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to deserialize record for topic " + deserializationData.getTopicName(), e);
+            throw new RuntimeException("Failed to deserialize PROTOBUF record for topic " + deserializationData.getTopicName(), e);
         }
     }
 
@@ -49,7 +48,7 @@ public class ProtobufMessageFormatter implements MessageFormatter {
             byte[] serialized = protobufSerializer.serialize(serializationData.getTopicName(), builder.build());
             return Bytes.wrap(serialized);
         } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize record for topic " + serializationData.getTopicName(), e);
+            throw new RuntimeException("Failed to serialize PROTOBUF record for topic " + serializationData.getTopicName(), e);
         }
     }
 

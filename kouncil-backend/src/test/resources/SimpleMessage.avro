@@ -1,0 +1,18 @@
+{
+    "type": "record",
+    "name": "SimpleMessageAvro",
+    "fields": [
+        {
+            "name": "content",
+            "type": "string"
+        },
+        {
+            "name": "someNumber",
+            "type": "int"
+        },
+        {
+            "name": "receivedDate",
+            "type": "string"
+        }
+    ]
+}
