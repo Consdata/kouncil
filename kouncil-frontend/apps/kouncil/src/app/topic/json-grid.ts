@@ -2,9 +2,9 @@ import {DatePipe} from '@angular/common';
 import {Injectable} from '@angular/core';
 import {JsonGridData} from './json-grid-data';
 
-export class Column {
-  constructor(public name: string, public nameShort: string) {
-  }
+export interface Column {
+  name: string;
+  nameShort: string;
 }
 
 @Injectable()
@@ -215,7 +215,7 @@ export class JsonGrid {
   private addColumn(name: string): void {
     if (!this.columnNames.has(name)) {
       this.columnNames.add(name);
-      this.columns.add(new Column(name, this.shortenPath(name)));
+      this.columns.add({name, nameShort: this.shortenPath(name)});
     }
   }
 
