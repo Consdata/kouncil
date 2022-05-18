@@ -135,7 +135,8 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   private static tryParseJson(message: string): Record<string, unknown> {
     try {
-      return JSON.parse(message);
+      const parsedMessage = JSON.parse(message);
+      return parsedMessage && typeof parsedMessage === 'object' ? parsedMessage: {};
     } catch (e) {
       return {};
     }
