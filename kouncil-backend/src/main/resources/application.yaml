@@ -9,6 +9,8 @@ logging:
     com.consdata.kouncil: DEBUG
     org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
 kouncil:
+  schemaRegistry:
+    url: "http://localhost:8081"
   topics:
     exclude-regex-patterns: __.*
 # SSL example
