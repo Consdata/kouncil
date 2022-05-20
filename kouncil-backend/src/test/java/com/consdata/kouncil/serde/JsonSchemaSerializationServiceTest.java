@@ -88,12 +88,12 @@ public class JsonSchemaSerializationServiceTest {
         when(schemaRegistryFacade.getSchemaByTopicAndId(any(KouncilSchemaMetadata.class))).thenReturn(JSON_SCHEMA);
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
         when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(JSON_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
@@ -114,13 +114,13 @@ public class JsonSchemaSerializationServiceTest {
         when(schemaRegistryFacade.getSchemaByTopicAndId(any(KouncilSchemaMetadata.class))).thenReturn(JSON_SCHEMA);
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.empty());
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
         when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(JSON_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)

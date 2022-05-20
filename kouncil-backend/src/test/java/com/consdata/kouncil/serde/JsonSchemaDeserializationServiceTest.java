@@ -134,9 +134,9 @@ public class JsonSchemaDeserializationServiceTest {
         );
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(JSON_SCHEMA);
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
@@ -148,7 +148,7 @@ public class JsonSchemaDeserializationServiceTest {
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
         assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.JSON_SCHEMA);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.JSON);
     }
 
     @SneakyThrows
@@ -162,9 +162,9 @@ public class JsonSchemaDeserializationServiceTest {
         );
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(JSON_SCHEMA);
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
@@ -174,7 +174,7 @@ public class JsonSchemaDeserializationServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.JSON_SCHEMA);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.JSON);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(LOREM);
         assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
     }
@@ -190,9 +190,9 @@ public class JsonSchemaDeserializationServiceTest {
         );
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(JSON_SCHEMA);
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
@@ -204,7 +204,7 @@ public class JsonSchemaDeserializationServiceTest {
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isNull();
         assertThat(deserializedMessage.getKeyData().getMessageFormat()).isNull();
         assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.JSON_SCHEMA);
+        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.JSON);
     }
 
     @SneakyThrows
@@ -218,9 +218,9 @@ public class JsonSchemaDeserializationServiceTest {
         );
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
         when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(JSON_SCHEMA);
-        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON_SCHEMA);
+        when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
@@ -230,7 +230,7 @@ public class JsonSchemaDeserializationServiceTest {
 
         // then
         assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(SIMPLE_MESSAGE_JSON);
-        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.JSON_SCHEMA);
+        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.JSON);
         assertThat(deserializedMessage.getValueData().getDeserialized()).isNull();
         assertThat(deserializedMessage.getValueData().getMessageFormat()).isNull();
     }

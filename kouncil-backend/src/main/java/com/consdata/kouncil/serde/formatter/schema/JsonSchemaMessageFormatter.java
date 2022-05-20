@@ -39,13 +39,13 @@ public class JsonSchemaMessageFormatter implements MessageFormatter {
             byte[] serialized = jsonSchemaSerializer.serialize(serializationData.getTopicName(), jsonNode);
             return Bytes.wrap(serialized);
         } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize JSON_SCHEMA record for topic " + serializationData.getTopicName(), e);
+            throw new RuntimeException("Failed to serialize JSON record for topic " + serializationData.getTopicName(), e);
         }
     }
 
     @Override
     public MessageFormat getFormat() {
-        return MessageFormat.JSON_SCHEMA;
+        return MessageFormat.JSON;
     }
 
     private void configureSerializer(SerializationData serializationData) {
