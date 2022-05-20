@@ -39,7 +39,6 @@ import static org.mockito.Mockito.when;
 public class ProtobufDeserializationServiceTest {
     private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[] {0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
-    private static final String IPSUM = "ipsum";
     private static final String CLUSTER_ID = "clusterId";
     private static ProtobufSchema PROTOBUF_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
@@ -65,63 +64,6 @@ public class ProtobufDeserializationServiceTest {
                 Paths.get(Objects.requireNonNull(
                         ProtobufDeserializationServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
                 )).trim();
-    }
-
-    @Test
-    public void should_deserialize_without_schema() {
-        // given
-        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
-        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
-                new Bytes(LOREM.getBytes(StandardCharsets.UTF_8)),
-                new Bytes(IPSUM.getBytes(StandardCharsets.UTF_8))
-        );
-
-        // when
-        DeserializedMessage deserializedMessage = deserializationService.deserialize("clusterId", message);
-
-        // then
-        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(IPSUM);
-        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
-    }
-
-    @Test
-    public void should_deserialize_without_schema_key_null() {
-        // given
-        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
-        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
-                null,
-                new Bytes(IPSUM.getBytes(StandardCharsets.UTF_8))
-        );
-
-        // when
-        DeserializedMessage deserializedMessage = deserializationService.deserialize("clusterId", message);
-
-        // then
-        assertThat(deserializedMessage.getKeyData().getDeserialized()).isNull();
-        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isNull();
-        assertThat(deserializedMessage.getValueData().getDeserialized()).isEqualTo(IPSUM);
-        assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
-    }
-
-    @Test
-    public void should_deserialize_without_schema_value_null() {
-        // given
-        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
-        ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
-                new Bytes(LOREM.getBytes(StandardCharsets.UTF_8)),
-                null
-        );
-
-        // when
-        DeserializedMessage deserializedMessage = deserializationService.deserialize("clusterId", message);
-
-        // then
-        assertThat(deserializedMessage.getKeyData().getDeserialized()).isEqualTo(LOREM);
-        assertThat(deserializedMessage.getKeyData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
-        assertThat(deserializedMessage.getValueData().getDeserialized()).isNull();
-        assertThat(deserializedMessage.getValueData().getMessageFormat()).isNull();
     }
 
     @SneakyThrows

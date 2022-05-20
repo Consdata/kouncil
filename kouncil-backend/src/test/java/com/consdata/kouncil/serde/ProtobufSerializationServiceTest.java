@@ -37,7 +37,6 @@ import static org.mockito.Mockito.when;
 public class ProtobufSerializationServiceTest {
     private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
-    private static final String IPSUM = "ipsum";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
     private static final String CLUSTER_ID = "clusterId";
     private static ProtobufSchema PROTOBUF_SCHEMA;
@@ -64,19 +63,6 @@ public class ProtobufSerializationServiceTest {
                 Paths.get(Objects.requireNonNull(
                         ProtobufSerializationServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
                 )).trim();
-    }
-
-    @Test
-    public void should_serialize_without_schema() {
-        // given
-        when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
-
-        // when
-        ProducerRecord<Bytes, Bytes> serializedMessage = serializationService.serialize(CLUSTER_ID, "topicName", LOREM, IPSUM);
-
-        // then
-        assertThat(serializedMessage.key()).isEqualTo(Bytes.wrap(LOREM.getBytes()));
-        assertThat(serializedMessage.value()).isEqualTo(Bytes.wrap(IPSUM.getBytes()));
     }
 
     @Test
