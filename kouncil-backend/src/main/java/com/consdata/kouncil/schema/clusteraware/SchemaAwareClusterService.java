@@ -43,7 +43,7 @@ public class SchemaAwareClusterService {
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        formatters.put(MessageFormat.JSON_SCHEMA, new JsonSchemaMessageFormatter());
+        formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         return SchemaAwareCluster.builder()
                 .formatters(formatters)
                 .schemaRegistryFacade(schemaRegistryFacade)

@@ -63,7 +63,6 @@ public class ProtobufMessageFormatter implements MessageFormatter {
                 Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "needed_in_runtime_but_not_used",
                         AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, false,
                         AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true),
-
                 serializationData.isKey()
         );
     }
