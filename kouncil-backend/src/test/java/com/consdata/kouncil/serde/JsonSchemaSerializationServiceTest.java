@@ -57,7 +57,7 @@ public class JsonSchemaSerializationServiceTest {
     @BeforeAll
     public static void beforeAll() throws IOException, URISyntaxException {
         var jsonSchemaPath = Paths.get(JsonSchemaSerializationServiceTest.class.getClassLoader()
-                .getResource("SimpleMessage.json").toURI());
+                .getResource("SimpleMessage.schema.json").toURI());
         JSON_SCHEMA = new JsonSchema(Files.readString(jsonSchemaPath));
 
         SIMPLE_MESSAGE_JSON = Files.readString(
