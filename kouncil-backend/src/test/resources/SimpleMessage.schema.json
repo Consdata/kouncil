@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "definitions": {
+    "content": {
+      "type": "string"
+    },
+    "someNumber": {
+      "type" : "integer"
+    },
+    "receivedDate": {
+      "type" : "string"
+    }
+  },
+  "required": [
+    "content",
+    "someNumber",
+    "receivedDate"
+  ]
+}

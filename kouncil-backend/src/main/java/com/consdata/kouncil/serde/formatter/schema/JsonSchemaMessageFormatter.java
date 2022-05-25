@@ -4,8 +4,10 @@ import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.json.JsonSchema;
+import io.confluent.kafka.schemaregistry.json.JsonSchemaUtils;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializer;
 import io.confluent.kafka.serializers.json.KafkaJsonSchemaSerializer;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 @Slf4j
 public class JsonSchemaMessageFormatter implements MessageFormatter {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private final KafkaJsonSchemaDeserializer<JsonNode> jsonSchemaDeserializer;
     private final KafkaJsonSchemaSerializer<JsonNode> jsonSchemaSerializer;
 
@@ -33,10 +36,14 @@ public class JsonSchemaMessageFormatter implements MessageFormatter {
     @Override
     public Bytes serialize(SerializationData serializationData) {
         this.configureSerializer(serializationData);
-        JsonSchema jsonSchema = (JsonSchema) serializationData.getSchema();
-        JsonNode jsonNode = jsonSchema.toJsonNode();
         try {
-            byte[] serialized = jsonSchemaSerializer.serialize(serializationData.getTopicName(), jsonNode);
+            JsonNode jsonPayloadNode = MAPPER.readTree(serializationData.getPayload());
+            JsonSchema jsonSchema = ((JsonSchema) serializationData.getSchema());
+            jsonSchema.validate(jsonPayloadNode);
+
+            JsonNode jsonNodeWithEnvelopedSchema = MAPPER.valueToTree(JsonSchemaUtils.toObject(jsonPayloadNode, jsonSchema));
+
+            byte[] serialized = jsonSchemaSerializer.serialize(serializationData.getTopicName(), jsonNodeWithEnvelopedSchema);
             return Bytes.wrap(serialized);
         } catch (Throwable e) {
             throw new RuntimeException("Failed to serialize JSON record for topic " + serializationData.getTopicName(), e);
