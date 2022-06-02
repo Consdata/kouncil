@@ -165,6 +165,29 @@ kouncil:
 
 In the case of both simple and advanced configuration being present, the advanced configuration takes precedence.
 
+## Advanced config - TLS
+
+Let's assume that your Kafka is secured and you need mTLS to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate.
+Then add "kafka" node to your yaml with the following values:
+
+```yaml
+kouncil:
+  clusters:
+    - name: transaction-cluster
+      kafka:
+        security:
+          protocol: SSL
+        ssl:
+          truststore-location: file:///config/truststore/client.truststore.jks
+          truststore-password: secret
+          keystore-password: secret
+          keystore-location: file:///config/keystore/client.keystore.jks
+          key-password: secret
+      brokers:
+        -  host: 192.10.0.1
+           port: 9092
+```
+
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 
