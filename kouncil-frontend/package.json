@@ -1,7 +1,7 @@
 {
   "name": "kouncil",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "scripts": {
     "postinstall": "ngcc",
     "start": "nx serve --proxy-config proxy.conf.json",
