@@ -2,8 +2,9 @@ package com.consdata.kouncil.track;
 
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
-import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
+import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +48,9 @@ public class TrackController extends AbstractMessagesController {
                            WebSocketMessageBrokerStats webSocketMessageBrokerStats,
                            DestinationStore destinationStore,
                            EventMatcher eventMatcher,
-                           SerdeService serdeService) {
-        super(kafkaConnectionService, serdeService);
+                           SerializationService serializationService,
+                           DeserializationService deserializationService) {
+        super(kafkaConnectionService, serializationService, deserializationService);
         this.eventSender = eventSender;
         this.executor = executor;
         this.webSocketMessageBrokerStats = webSocketMessageBrokerStats;
@@ -128,15 +130,15 @@ public class TrackController extends AbstractMessagesController {
                             }
                             continue;
                         }
-                        DeserializedValue deserializedValue = serdeService.deserialize(serverId, consumerRecord);
-                        // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
-
-                        if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedValue.getDeserializedValue())) {
+                        DeserializedMessage deserializedMessage = deserializationService.deserialize(serverId, consumerRecord);
+                        if (eventMatcher.filterMatch(field, trackOperator, value, consumerRecord.headers(), deserializedMessage.getValueData().getDeserialized())) {
                             candidates.add(TopicMessage
                                     .builder()
                                     .topic(m.getTopicName())
-                                    .key(deserializedValue.getDeserializedKey())
-                                    .value(deserializedValue.getDeserializedValue())
+                                    .key(deserializedMessage.getKeyData().getDeserialized())
+                                    .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
+                                    .value(deserializedMessage.getValueData().getDeserialized())
+                                    .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                                     .offset(consumerRecord.offset())
                                     .partition(consumerRecord.partition())
                                     .timestamp(consumerRecord.timestamp())

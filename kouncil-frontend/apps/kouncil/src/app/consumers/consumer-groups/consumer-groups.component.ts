@@ -69,7 +69,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column cellClass="ngx-actions-column" [width]="240"
+        <ngx-datatable-column prop="groupId" name="" cellClass="ngx-actions-column" [width]="240"
                               [sortable]="false" [resizeable]="false" [canAutoResize]="false">
           <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
             <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>

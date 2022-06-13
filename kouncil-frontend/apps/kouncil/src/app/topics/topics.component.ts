@@ -34,6 +34,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                      [limit]="4"
                      (sort)="customSort($event)"
                      (activate)="navigateToTopic($event)"
+                     [rowClass]="getRowClass"
                      #table>
 
         <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
@@ -142,4 +143,16 @@ export class TopicsComponent implements OnInit, OnDestroy {
   customSort(event: { column: { prop: string }, newValue: string }): void {
     this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRowClass: (row) => { 'row-retry': any, 'row-dlq': any } = (row) => {
+    return {
+      'row-retry': (() => {
+        return row.name.includes('retry');
+      })(),
+      'row-dlq': (() => {
+        return row.name.includes('dlq');
+      })()
+    };
+  };
 }

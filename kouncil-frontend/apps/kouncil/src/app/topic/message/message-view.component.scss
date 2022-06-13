@@ -1,28 +1,55 @@
 @import '../../../styles/palette';
 
 :host {
-  .mat-dialog-content {
-    height: 100%;
-  }
-
-  .json-details {
-    margin: 24px 0;
-    background: $main-10;
-    overflow: auto;
-    height: 100%;
-  }
-
-  button {
-  }
-
-  ::ng-deep .json-details > section.ngx-json-viewer {
-    overflow: initial;
-    padding: 24px 32px;
-    height: calc(100% - 48px);
-    width: calc(100% - 64px);
-  }
-
   $green: #127D48;
+
+  .drawer-header {
+    margin-bottom: 20px;
+  }
+
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .headers {
+    .headers-table-detail {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  .payload {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    margin: 24px 0;
+    overflow: auto;
+
+    .key-section {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .value-section {
+      display: flex;
+      flex-direction: column;
+      flex: 2;
+    }
+
+    .message-payload {
+      flex: 1;
+      padding: 24px;
+      background: $main-10;
+    }
+  }
+
+  .actions {
+    gap: 16px;
+  }
 
   $type-colors: (
     string: $green,
@@ -44,20 +71,5 @@
 
   ::ng-deep .segment-key {
     color: $blue-60 !important;
-  }
-
-  .actions {
-    gap: 16px;
-  }
-
-  .headers-table {
-    max-height: 100%;
-
-    .headers-table-detail {
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
-    }
-
   }
 }

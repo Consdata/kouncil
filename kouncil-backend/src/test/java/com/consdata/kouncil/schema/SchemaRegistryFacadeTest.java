@@ -1,6 +1,7 @@
 package com.consdata.kouncil.schema;
 
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
+import com.consdata.kouncil.serde.KouncilSchemaMetadata;
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
@@ -111,7 +112,13 @@ class SchemaRegistryFacadeTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat("test-topic", 1, true);
+        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat(
+                KouncilSchemaMetadata.builder()
+                        .schemaTopic("test-topic")
+                        .schemaId(1)
+                        .isKey(true)
+                        .build()
+        );
 
         // then
         assertThat(schemaFormat).isEqualTo(MessageFormat.PROTOBUF);
@@ -124,7 +131,13 @@ class SchemaRegistryFacadeTest {
         when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
 
         // when
-        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat("test-topic", 1, false);
+        MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat(
+                KouncilSchemaMetadata.builder()
+                        .schemaTopic("test-topic")
+                        .schemaId(1)
+                        .isKey(false)
+                        .build()
+        );
 
         // then
         assertThat(schemaFormat).isEqualTo(MessageFormat.PROTOBUF);

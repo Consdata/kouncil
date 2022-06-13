@@ -135,7 +135,8 @@ export class TopicComponent implements OnInit, OnDestroy {
 
   private static tryParseJson(message: string): Record<string, unknown> {
     try {
-      return JSON.parse(message);
+      const parsedMessage = JSON.parse(message);
+      return parsedMessage && typeof parsedMessage === 'object' ? parsedMessage: {};
     } catch (e) {
       return {};
     }
@@ -198,8 +199,11 @@ export class TopicComponent implements OnInit, OnDestroy {
       const messageData = {
         value: event.row.kouncilValueJson && Object.keys(event.row.kouncilValueJson).length > 0 ?
           event.row.kouncilValueJson : event.row.kouncilValue,
+        valueFormat: event.row.kouncilValueFormat,
         headers: event.row.headers,
-        key: event.row.kouncilKey,
+        key: event.row.kouncilKeyJson && Object.keys(event.row.kouncilKeyJson).length > 0 ?
+          event.row.kouncilKeyJson : event.row.kouncilKey,
+        keyFormat: event.row.kouncilKeyFormat,
         topicName: this.topicName,
         timestamp: event.row.kouncilTimestampEpoch,
       } as MessageData;
@@ -222,10 +226,13 @@ export class TopicComponent implements OnInit, OnDestroy {
     topicMessages.messages.forEach((message: MessageData) =>
       values.push({
         value: message.value,
+        valueFormat: message.valueFormat,
         valueJson: TopicComponent.tryParseJson(message.value),
         partition: message.partition,
         offset: message.offset,
         key: message.key,
+        keyFormat: message.keyFormat,
+        keyJson: TopicComponent.tryParseJson(message.key),
         timestamp: message.timestamp,
         headers: message.headers,
       })

@@ -1,6 +1,7 @@
 package com.consdata.kouncil;
 
-import com.consdata.kouncil.serde.SerdeService;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
+import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.topic.TopicMessageHeader;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
@@ -26,7 +27,8 @@ import java.util.stream.Collectors;
 public class AbstractMessagesController {
 
     protected final KafkaConnectionService kafkaConnectionService;
-    protected final SerdeService serdeService;
+    protected final SerializationService serializationService;
+    protected final DeserializationService deserializationService;
 
     protected Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<Bytes, Bytes> consumer, Collection<TopicPartition> topicPartitions) {
         final Map<Integer, Long> endOffsets;

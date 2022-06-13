@@ -1,5 +1,6 @@
 package com.consdata.kouncil.schema.registry;
 
+import com.consdata.kouncil.serde.KouncilSchemaMetadata;
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
@@ -25,9 +26,8 @@ public class SchemaRegistryFacade {
     }
 
     @SneakyThrows
-    public MessageFormat getSchemaFormat(String topic, Integer schemaId, boolean isKey) {
-        final String subject = topic.concat(getSubjectSuffix(isKey));
-        return MessageFormat.valueOf(getSchemaBySubjectAndId(subject, schemaId).schemaType());
+    public MessageFormat getSchemaFormat(KouncilSchemaMetadata metadata) {
+        return MessageFormat.valueOf(getSchemaByTopicAndId(metadata).schemaType());
     }
 
     /**
@@ -49,8 +49,10 @@ public class SchemaRegistryFacade {
     /**
      * This method is performance-safe, because uses Schema cache
      */
-    private ParsedSchema getSchemaBySubjectAndId(String subject, int id) throws RestClientException, IOException {
-        return schemaRegistryClient.getSchemaBySubjectAndId(subject, id);
+    @SneakyThrows
+    public ParsedSchema getSchemaByTopicAndId(KouncilSchemaMetadata metadata) {
+        final String subject = metadata.getSchemaTopic().concat(getSubjectSuffix(metadata.isKey()));
+        return schemaRegistryClient.getSchemaBySubjectAndId(subject, metadata.getSchemaId());
     }
 
     private String getSubjectSuffix(boolean isKey) {

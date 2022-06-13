@@ -1,5 +1,6 @@
 package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.serde.MessageFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +12,9 @@ public class TopicMessage {
 
     private List<TopicMessageHeader> headers;
     private String key;
+    private MessageFormat keyFormat;
     private String value;
+    private MessageFormat valueFormat;
     private long timestamp;
     private int partition;
     private long offset;

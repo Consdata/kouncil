@@ -15,6 +15,7 @@
 
   .topic-table {
     height: calc(100% - 88px);
+    margin-top: 24px;
 
     ::ng-deep datatable-body-row {
       .datatable-row-left {

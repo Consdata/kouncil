@@ -1,9 +1,10 @@
-import { DatePipe } from '@angular/common';
-import { Injectable } from '@angular/core';
-import { JsonGridData } from './json-grid-data';
+import {DatePipe} from '@angular/common';
+import {Injectable} from '@angular/core';
+import {JsonGridData} from './json-grid-data';
 
-export class Column {
-  constructor(public name: string, public nameShort: string) {}
+export interface Column {
+  name: string;
+  nameShort: string;
 }
 
 @Injectable()
@@ -19,7 +20,8 @@ export class JsonGrid {
   private columnNames: Set<string> = new Set<string>();
   private rows: unknown[] = [];
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe) {
+  }
 
   private static isScalar(propertyValue: unknown): boolean {
     return (
@@ -67,16 +69,31 @@ export class JsonGrid {
               0,
               object.valueJson[propertyName],
               row,
-              propertyName
+              propertyName,
+              false
+            );
+          });
+        }
+        if (object.keyJson) {
+          Object.keys(object.keyJson).forEach((propertyName) => {
+            this.handleObject(
+              0,
+              object.keyJson[propertyName],
+              row,
+              propertyName,
+              true
             );
           });
         }
         row['kouncilKey'] = object.key;
+        row['kouncilKeyFormat'] = object.keyFormat;
+        row['kouncilKeyJson'] = object.keyJson;
         row['kouncilOffset'] = object.offset;
         row['kouncilPartition'] = object.partition;
         row['kouncilTimestamp'] = this.formatTimestamp(object.timestamp);
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
+        row['kouncilValueFormat'] = object.valueFormat;
         row['kouncilValueJson'] = object.valueJson;
         row['headers'] = object.headers;
         this.rows.unshift(row);
@@ -103,23 +120,25 @@ export class JsonGrid {
     return this.rows;
   }
 
-  private handleObject(level: number, value: unknown, row: Record<string, unknown>, path: string): void {
+  private handleObject(level: number, value: unknown, row: Record<string, unknown>, path: string, isKey: boolean): void {
     if (level > JsonGrid.MAX_OBJECT_DEPTH) {
       return;
     }
     if (JsonGrid.isScalar(value) || value === null) {
       // scalar value
-      this.addColumn(path);
-      row[path] = JsonGrid.escapeHtml(JsonGrid.limitChars(value));
+      const formattedPath = this.formatPath(path, isKey);
+      this.addColumn(formattedPath);
+      row[formattedPath] = JsonGrid.escapeHtml(JsonGrid.limitChars(value));
     } else if (typeof value === 'object' && Array.isArray(value)) {
       // array
       if (value.length <= JsonGrid.EXPAND_LIST_LIMIT) {
         value.forEach((arrayValue, i) =>
-          this.handleObject(level + 1, arrayValue, row, `${path}[${i}]`)
+          this.handleObject(level + 1, arrayValue, row, `${path}[${i}]`, isKey)
         );
       } else {
-        this.addColumn(path);
-        row[path] = `[Array of ${value.length} elements]`;
+        const formattedPath = this.formatPath(path, isKey);
+        this.addColumn(formattedPath);
+        row[formattedPath] = `[Array of ${value.length} elements]`;
       }
     } else {
       // object
@@ -129,12 +148,14 @@ export class JsonGrid {
             level + 1,
             value[property],
             row,
-            `${path}.${property}`
+            `${path}.${property}`,
+            isKey
           )
         );
       } else {
-        this.addColumn(path);
-        row[path] = `[Object with ${Object.keys(value).length} properties]`;
+        const formattedPath = this.formatPath(path, isKey);
+        this.addColumn(formattedPath);
+        row[formattedPath] = `[Object with ${Object.keys(value).length} properties]`;
       }
     }
   }
@@ -163,23 +184,16 @@ export class JsonGrid {
   }
 
   private sortColumns(): void {
-    const sorted = new Set<Column>();
-    Array.from(this.columns.values()).forEach((column) => {
-      if (column.name.startsWith('H[')) {
-        sorted.add(column);
-      }
-    });
-    Array.from(this.columns.values()).forEach((column) => {
-      if (column.name.indexOf('.') === -1) {
-        sorted.add(column);
-      }
-    });
-    Array.from(this.columns.values()).forEach((column) => {
-      if (column.name.indexOf('.') > -1) {
-        sorted.add(column);
-      }
-    });
-    this.columns = sorted;
+    const columnNames = Array.from(this.columns.values());
+    const headerColumns = columnNames.filter(column => column.name.startsWith('H['));
+    const keyColumns = columnNames.filter(column => column.name.startsWith('K['));
+    const valueColumns = columnNames.filter(column => column.name.startsWith('V['));
+
+    this.columns = new Set<Column>([
+      ...headerColumns,
+      ...keyColumns.sort((a, b) => a.name.includes('.') ? 1 : b.name.includes('.') ? -1 : 0),
+      ...valueColumns.sort((a, b) => a.name.includes('.') ? 1 : b.name.includes('.') ? -1 : 0)
+    ]);
   }
 
   private flagFreshRows(freshMessageTimestamp: number): void {
@@ -201,7 +215,11 @@ export class JsonGrid {
   private addColumn(name: string): void {
     if (!this.columnNames.has(name)) {
       this.columnNames.add(name);
-      this.columns.add(new Column(name, this.shortenPath(name)));
+      this.columns.add({name, nameShort: this.shortenPath(name)});
     }
+  }
+
+  private formatPath(path: string, isKey: boolean): string {
+    return isKey ? `K[${path}]` : `V[${path}]`;
   }
 }

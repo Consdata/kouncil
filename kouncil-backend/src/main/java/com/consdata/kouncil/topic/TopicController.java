@@ -3,8 +3,9 @@ package com.consdata.kouncil.topic;
 import com.consdata.kouncil.AbstractMessagesController;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.serde.SerdeService;
-import com.consdata.kouncil.serde.DeserializedValue;
+import com.consdata.kouncil.serde.deserialization.DeserializationService;
+import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
+import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -31,8 +32,9 @@ import java.util.stream.IntStream;
 public class TopicController extends AbstractMessagesController {
 
     public TopicController(KafkaConnectionService kafkaConnectionService,
-                           SerdeService serdeService) {
-        super(kafkaConnectionService, serdeService);
+                           SerializationService serializationService,
+                           DeserializationService deserializationService) {
+        super(kafkaConnectionService, serializationService, deserializationService);
     }
 
     @GetMapping("/api/topic/messages/{topicName}/{partition}")
@@ -156,15 +158,15 @@ public class TopicController extends AbstractMessagesController {
                     continue;
                 }
 
-                DeserializedValue deserializedValue = serdeService.deserialize(clusterId, consumerRecord);
-                // TODO - dorobić zwrotkę (rozszerzyć TopicMessage) na front z danymi dotyczącymi schemy, tak aby je zaprezentować
-
+                DeserializedMessage deserializedMessage = deserializationService.deserialize(clusterId, consumerRecord);
                 if (messegesCount < limit) {
                     messegesCount += 1;
                     messages.add(TopicMessage
                             .builder()
-                            .key(deserializedValue.getDeserializedKey())
-                            .value(deserializedValue.getDeserializedValue())
+                            .key(deserializedMessage.getKeyData().getDeserialized())
+                            .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
+                            .value(deserializedMessage.getValueData().getDeserialized())
+                            .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
                             .topic(consumerRecord.topic())
@@ -191,11 +193,11 @@ public class TopicController extends AbstractMessagesController {
                      @RequestParam("serverId") String serverId) {
         log.debug("TCS01 topicName={}, count={}, serverId={}", topicName, count, serverId);
         validateTopics(serverId, Collections.singletonList(topicName));
-        KafkaTemplate<String, String> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
+        KafkaTemplate<Bytes, Bytes> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
         String key = message.getKey() != null ? message.getKey(): "";
         String value = message.getValue() != null ? message.getValue(): "";
         for (int i = 0; i < count; i++) {
-            ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, replaceTokens(key, i), replaceTokens(value, i));
+            ProducerRecord<Bytes, Bytes> producerRecord = serializationService.serialize(serverId, topicName, replaceTokens(key, i), replaceTokens(value, i));
             for (TopicMessageHeader header : message.getHeaders()) {
                 producerRecord
                         .headers()

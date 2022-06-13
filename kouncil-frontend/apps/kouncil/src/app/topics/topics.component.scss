@@ -4,6 +4,10 @@
   .kafka-topics {
     height: 100%;
     overflow-y: auto;
+
+    .topics-table {
+      margin-top: 24px;
+    }
   }
 
   .datatable-cell-anchor {

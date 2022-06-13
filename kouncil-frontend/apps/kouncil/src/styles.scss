@@ -58,3 +58,17 @@ html, body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.row-dlq {
+  div {
+    color: darkred;
+    font-style: italic;
+  }
+}
+
+.row-retry {
+  div {
+    color: darkorange;
+    font-style: italic;
+  }
+}

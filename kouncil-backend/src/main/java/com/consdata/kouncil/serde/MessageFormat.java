@@ -1,7 +1,7 @@
 package com.consdata.kouncil.serde;
 
 public enum MessageFormat {
-    JSON_SCHEMA,
+    JSON,
     PROTOBUF,
     AVRO,
     STRING
