@@ -12,7 +12,121 @@ import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
 
 @Component({
   selector: 'app-send',
-  templateUrl: 'send.component.html',
+  template: `
+    <mat-dialog-content *ngIf="messageData$ | async as messageData">
+      <form #sendForm="ngForm" (ngSubmit)="onSubmit(messageData)">
+        <div class="drawer-header">
+          <div class="drawer-title">Send event to {{ messageData.topicName }}</div>
+          <div class="spacer"></div>
+          <mat-icon mat-dialog-close class="close">close</mat-icon>
+        </div>
+
+        <div class="drawer-section-subtitle">
+          Available placeholders: {{uuid}<!---->}, {{count}<!---->},
+          {{timestamp}<!---->}
+        </div>
+        <div class="drawer-section-title">Key</div>
+        <input [(ngModel)]="messageData.key" matInput type="text" name="key" />
+
+        <div class="drawer-section-title">
+          Headers
+          <button
+            type="button"
+            class="small-button"
+            mat-button
+            disableRipple
+            (click)="addHeader(messageData.headers)"
+          >
+            +
+          </button>
+        </div>
+        <div
+          class="header"
+          *ngFor="let header of messageData.headers; let i = index"
+        >
+          <input
+            class="header"
+            [(ngModel)]="header.key"
+            placeholder="Header key"
+            matInput
+            type="text"
+            name="header-key-{{ i }}"
+          />
+          <input
+            class="header"
+            [(ngModel)]="header.value"
+            placeholder="Header value"
+            matInput
+            type="text"
+            name="header-value-{{ i }}"
+          />
+          <button
+            type="button"
+            class="small-button"
+            mat-button
+            disableRipple
+            (click)="removeHeader(i, messageData.headers)"
+          >
+            -
+          </button>
+        </div>
+
+        <div class="drawer-section-title">Value</div>
+
+        <textarea rows="10" [(ngModel)]="messageData.value" name="value"></textarea>
+
+        <div class="drawer-section-title">Count</div>
+        <div class="drawer-section-subtitle">
+          How many times you want to send this event?
+        </div>
+        <div class="count">
+          <input
+            matInput
+            type="number"
+            min="1"
+            [formControl]="countControl"
+            name="count"
+          />
+          <button
+            type="button"
+            class="small-button"
+            mat-button
+            disableRipple
+            (click)="decreaseCount()"
+          >
+            -
+          </button>
+          <button
+            type="button"
+            class="small-button"
+            mat-button
+            disableRipple
+            (click)="increaseCount()"
+          >
+            +
+          </button>
+        </div>
+
+        <span class="spacer"></span>
+
+        <div class="actions">
+          <button
+            type="button"
+            mat-dialog-close
+            mat-button
+            disableRipple
+            class="action-button-white"
+          >
+            Cancel
+          </button>
+          <span class="spacer"></span>
+          <button mat-button disableRipple class="action-button-black" type="submit">
+            Send event
+          </button>
+        </div>
+      </form>
+    </mat-dialog-content>
+  `,
   styleUrls: ['./send.component.scss']
 })
 export class SendComponent {
