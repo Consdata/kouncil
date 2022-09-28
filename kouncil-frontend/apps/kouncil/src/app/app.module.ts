@@ -8,7 +8,6 @@ import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
-import {ResendComponent} from '../../../../libs/resend-events/src/lib/resend/resend.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
@@ -63,6 +62,7 @@ import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
+import {ResendModule} from '@app/resend-events';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -101,7 +101,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     TopicsComponent,
     ConsumerGroupsComponent,
     SendComponent,
-    ResendComponent,
     ToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
@@ -142,7 +141,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatSlideToggleModule,
     MatSelectModule,
     NgxMatSelectSearchModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ResendModule
   ],
   providers: [
     {
