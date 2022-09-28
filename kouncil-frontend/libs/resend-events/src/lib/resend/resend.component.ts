@@ -4,18 +4,114 @@ import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {first, map, switchMap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ServersService} from '../servers.service';
+import {ServersService} from 'apps/kouncil/src/app/servers.service';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {combineLatest, iif, Observable, of} from 'rxjs';
 import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
 import {ResendService} from './resend.service';
-import {TopicMetadata, Topics} from '../topics/topics';
-import {TopicsService} from '../topics/topics.service';
+import {TopicMetadata, Topics} from 'apps/kouncil/src/app/topics/topics';
+import {TopicsService} from 'apps/kouncil/src/app/topics/topics.service';
 import {ResendDataModel} from './resend.data.model';
 
 @Component({
   selector: 'app-resend',
-  templateUrl: 'resend.component.html',
+  template: `
+    <mat-dialog-content *ngIf="messageData$ | async as messageData">
+      <form [formGroup]="resendForm" (ngSubmit)="onSubmit()">
+        <div class="drawer-header">
+          <div class="drawer-title">Resend events from {{messageData.topicName}}</div>
+          <div class="spacer"></div>
+          <mat-icon mat-dialog-close class="close">close</mat-icon>
+        </div>
+
+        <div class="resend-options-wrapper">
+          <div class="topic-selection">
+            <div class="drawer-section-title">Source topic:</div>
+            <mat-form-field>
+              <mat-select class="select select-topic"
+                          formControlName="sourceTopicName"
+                          [(value)]="messageData.topicName">
+                <mat-option *ngFor="let topic of topics" [value]="topic.name">{{topic.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="partition-selection">
+            <div class="drawer-section-title">Source partition:</div>
+            <mat-form-field>
+              <mat-select class="select" formControlName="sourceTopicPartition">
+                <mat-option [value]="0">None</mat-option>
+                <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="drawer-section-title">With offset to resend:</div>
+        <div class="offset-count-wrapper">
+          <div class="drawer-section-title">From:</div>
+          <div class="count offset-input-fields">
+            <input matInput type="number" min="1" formControlName="offsetBeginning" name="count"/>
+            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseFromCount()">
+              -
+            </button>
+            <button type="button" class="small-button" mat-button disableRipple (click)="increaseFromCount()">
+              +
+            </button>
+          </div>
+
+          <div class="drawer-section-title">To:</div>
+          <div class="count offset-input-fields">
+            <input matInput type="number" min="1" formControlName="offsetEnd" name="count"/>
+            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseToCount()">
+              -
+            </button>
+            <button type="button" class="small-button" mat-button disableRipple (click)="increaseToCount()">
+              +
+            </button>
+          </div>
+        </div>
+
+        <div class="resend-options-wrapper">
+          <div class="topic-selection">
+            <div class="drawer-section-title">To topic:</div>
+            <mat-form-field>
+              <mat-select class="select select-topic" formControlName="destinationTopicName">
+                <mat-option [value]="messageData.topicName">{{messageData.topicName}}</mat-option>
+                <mat-option *ngFor="let topic of topics" [value]="topic.caption()">{{topic.caption()}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="partition-selection">
+            <div class="drawer-section-title">On partition:</div>
+            <mat-form-field>
+              <mat-select class="select" formControlName="destinationTopicPartition">
+                <mat-option [value]="0">None</mat-option>
+                <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <span class="spacer"></span>
+
+        <div class="actions">
+          <button
+            type="button"
+            mat-dialog-close
+            mat-button
+            disableRipple
+            class="action-button-white"
+          >
+            Cancel
+          </button>
+          <span class="spacer"></span>
+          <button mat-button disableRipple class="action-button-black" type="submit">
+            Resend events
+          </button>
+        </div>
+      </form>
+    </mat-dialog-content>
+  `,
   styleUrls: ['./resend.component.scss']
 })
 export class ResendComponent implements OnInit{

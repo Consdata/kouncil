@@ -3,6 +3,7 @@
   "projects": {
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
-    "schema-registry": "libs/schema-registry"
+    "schema-registry": "libs/schema-registry",
+    "resend-events": "libs/resend-events"
   }
 }

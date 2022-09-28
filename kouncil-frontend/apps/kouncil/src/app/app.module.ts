@@ -8,7 +8,7 @@ import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
-import {ResendComponent} from './resend/resend.component';
+import {ResendComponent} from '../../../../libs/resend-events/src/lib/resend/resend.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
@@ -25,7 +25,7 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
-import {ResendService, resendServiceFactory} from './resend/resend.service';
+import {ResendService, resendServiceFactory} from '../../../../libs/resend-events/src/lib/resend/resend.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
