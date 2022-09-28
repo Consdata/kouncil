@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/kouncil",
   "sourceRoot": "apps/kouncil/src",
   "prefix": "app",
   "targets": {
@@ -138,7 +138,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/kouncil"],
       "options": {
-        "jestConfig": "apps/kouncil/jest.config.js",
+        "jestConfig": "apps/kouncil/jest.config.ts",
         "passWithNoTests": true
       }
     }

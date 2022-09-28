@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'kouncil',
+/* eslint-disable */
+export default {
+  displayName: 'schema-registry',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +9,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/apps/kouncil',
+  coverageDirectory: '../../coverage/libs/schema-registry',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

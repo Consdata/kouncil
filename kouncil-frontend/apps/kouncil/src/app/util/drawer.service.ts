@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ComponentType} from '@angular/cdk/overlay';
-import {MatDialogRef} from '@angular/material/dialog/dialog-ref';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'

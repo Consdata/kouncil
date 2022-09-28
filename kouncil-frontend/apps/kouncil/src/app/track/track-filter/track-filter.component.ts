@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
-import {FormControl, NgForm} from '@angular/forms';
+import {UntypedFormControl, NgForm} from '@angular/forms';
 import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 import {TrackFilter, TrackOperator} from './track-filter';
@@ -149,8 +149,8 @@ export class TrackFilterComponent implements OnInit {
 
   topicList: string[] = [];
   visibleTopicList: string[] = [];
-  topicFilterControl: FormControl = new FormControl();
-  datesControl: FormControl = new FormControl();
+  topicFilterControl: UntypedFormControl = new UntypedFormControl();
+  datesControl: UntypedFormControl = new UntypedFormControl();
   loading: boolean = false;
   trackFilter: TrackFilter;
   asyncModeState: boolean = this.trackService.isAsyncEnable();

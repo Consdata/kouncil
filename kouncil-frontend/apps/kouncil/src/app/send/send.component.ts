@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormControl, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { SendService } from './send.service';
 import { first, map, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -41,7 +41,7 @@ export class SendComponent {
 
   @ViewChild('sendForm', { read: NgForm }) sendForm: NgForm;
 
-  countControl: FormControl = new FormControl(1, [
+  countControl: UntypedFormControl = new UntypedFormControl(1, [
     Validators.min(1),
     Validators.required,
   ]);

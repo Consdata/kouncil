@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {first, map, switchMap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -20,7 +20,7 @@ import {ResendDataModel} from './resend.data.model';
 })
 export class ResendComponent implements OnInit{
 
-  resendForm: FormGroup;
+  resendForm: UntypedFormGroup;
   topics: TopicMetadata[] = [];
 
   messageData$: Observable<MessageData> = combineLatest([
@@ -58,13 +58,13 @@ export class ResendComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.resendForm = new FormGroup({
-      'sourceTopicName': new FormControl('', Validators.required),
-      'sourceTopicPartition': new FormControl('None'),
-      'offsetBeginning': new FormControl(1, [Validators.min(1), Validators.required]),
-      'offsetEnd': new FormControl(1, [Validators.min(1), Validators.required]),
-      'destinationTopicName': new FormControl('', Validators.required),
-      'destinationTopicPartition': new FormControl('None')
+    this.resendForm = new UntypedFormGroup({
+      'sourceTopicName': new UntypedFormControl('', Validators.required),
+      'sourceTopicPartition': new UntypedFormControl('None'),
+      'offsetBeginning': new UntypedFormControl(1, [Validators.min(1), Validators.required]),
+      'offsetEnd': new UntypedFormControl(1, [Validators.min(1), Validators.required]),
+      'destinationTopicName': new UntypedFormControl('', Validators.required),
+      'destinationTopicPartition': new UntypedFormControl('None')
     })
 
     this.topicsService.getTopics$(this.servers.getSelectedServerId())

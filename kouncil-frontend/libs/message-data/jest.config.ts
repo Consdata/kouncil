@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'schema-registry',
+/* eslint-disable */
+export default {
+  displayName: 'message-data',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +9,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/libs/schema-registry',
+  coverageDirectory: '../../coverage/libs/message-data',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

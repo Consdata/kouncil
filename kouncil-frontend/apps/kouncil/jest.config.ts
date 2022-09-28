@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'message-data',
+/* eslint-disable */
+export default {
+  displayName: 'kouncil',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +9,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/libs/message-data',
+  coverageDirectory: '../../coverage/apps/kouncil',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
