@@ -13,7 +13,7 @@ import { ProgressBarService } from '../util/progress-bar.service';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
 import { SendComponent } from '../send/send.component';
-import { ResendComponent } from '../resend/resend.component';
+import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
 import { DrawerService } from '../util/drawer.service';
 import { ServersService } from '../servers.service';

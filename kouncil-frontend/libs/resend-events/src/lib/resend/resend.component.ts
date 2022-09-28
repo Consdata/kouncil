@@ -4,13 +4,13 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {first, map, switchMap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ServersService} from '../servers.service';
+import {ServersService} from 'apps/kouncil/src/app/servers.service';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {combineLatest, iif, Observable, of} from 'rxjs';
 import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
 import {ResendService} from './resend.service';
-import {TopicMetadata, Topics} from '../topics/topics';
-import {TopicsService} from '../topics/topics.service';
+import {TopicMetadata, Topics} from 'apps/kouncil/src/app/topics/topics';
+import {TopicsService} from 'apps/kouncil/src/app/topics/topics.service';
 import {ResendDataModel} from './resend.data.model';
 
 @Component({
