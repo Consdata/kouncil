@@ -8,6 +8,7 @@ import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
+import {ResendComponent} from './resend/resend.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
@@ -24,6 +25,7 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
+import {ResendService, resendServiceFactory} from './resend/resend.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -99,6 +101,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     TopicsComponent,
     ConsumerGroupsComponent,
     SendComponent,
+    ResendComponent,
     ToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
@@ -153,36 +156,49 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: BrokerService,
       useFactory: brokerServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: ConsumerGroupsService,
       useFactory: consumerGroupsServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: ConsumerGroupService,
       useFactory: consumerGroupServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: TopicsService,
       useFactory: topicsServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: SendService,
       useFactory: sendServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
+      provide: ResendService,
+      useFactory: resendServiceFactory,
+      deps: [HttpClient]
+    },
+    {
       provide: ServersService,
       useFactory: serverServiceFactory,
       deps: [HttpClient, SchemaRegistryService, SchemaStateService]
-    }, {
+    },
+    {
       provide: TrackService,
       useFactory: trackServiceFactory,
       deps: [HttpClient, RxStompService]
-    }, {
+    },
+    {
       provide: APP_INITIALIZER,
       useFactory: configProviderFactory,
       deps: [ServersService],
       multi: true
-    }, {
+    },
+    {
       provide: InjectableRxStompConfig,
       useValue: RX_STOMP_CONFIG,
     },

@@ -13,6 +13,7 @@ import { ProgressBarService } from '../util/progress-bar.service';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
 import { SendComponent } from '../send/send.component';
+import { ResendComponent } from '../resend/resend.component';
 import { MessageViewComponent } from './message/message-view.component';
 import { DrawerService } from '../util/drawer.service';
 import { ServersService } from '../servers.service';
@@ -37,6 +38,7 @@ import {MessageData, MessageDataService} from '@app/message-data';
             [name]="topicName"
             (toggleLiveEvent)="toggleLiveEventHandler($event)"
             (openSendPopupEvent)="openSendPopup()"
+            (openResendPopupEvent)="openResendPopup()"
             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
             (toggleJsonEvent)="toggleJsonEventHandler($event)"
           >
@@ -221,6 +223,15 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.drawerService.openDrawerWithPadding(SendComponent);
   }
 
+  openResendPopup(): void {
+    const messageData = {
+      topicName: this.topicName,
+      headers: []
+    } as MessageData;
+    this.messageDataService.setMessageData(messageData);
+    this.drawerService.openDrawerWithPadding(ResendComponent);
+  }
+
   private jsonToGrid(topicMessages: TopicMessages): void {
     const values: JsonGridData[] = [];
     topicMessages.messages.forEach((message: MessageData) =>
@@ -235,7 +246,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         keyJson: TopicComponent.tryParseJson(message.key),
         timestamp: message.timestamp,
         headers: message.headers,
-      })
+      } as JsonGridData)
     );
     this.jsonGrid.replaceObjects(values);
 

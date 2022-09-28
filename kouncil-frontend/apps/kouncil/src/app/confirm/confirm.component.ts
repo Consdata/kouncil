@@ -15,9 +15,9 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     <div class="drawer-section-title">{{data.objectName}}</div>
 
     <div class="actions">
-      <button type="button" mat-dialog-close mat-button disableRipple class="cancel">No, keep it</button>
+      <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">No, keep it</button>
       <span class="spacer"></span>
-      <button mat-button disableRipple class="action" (click)="delete()">Yes, delete it</button>
+      <button mat-button disableRipple class="action-button-black" (click)="delete()">Yes, delete it</button>
     </div>
   `,
   styleUrls: ['./confirm.component.scss']

@@ -209,6 +209,16 @@ public class TopicController extends AbstractMessagesController {
         log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);
     }
 
+    @PostMapping("/api/topic/resend/{topicName}")
+    @EntryExitLogger
+    public void send(@PathVariable("topicName") String sourceTopicName,
+                     @RequestBody TopicResendEventsModel message,
+                     @RequestParam("serverId") String serverId) {
+        log.debug("TCS01 topicName={},  serverId={}, message={}", sourceTopicName, serverId, message);
+        // TODO validacja
+        // TODO wyslanie eventow
+    }
+
     private String replaceTokens(String data, int i) {
         return data
                 .replace("{{count}}", String.valueOf(i))

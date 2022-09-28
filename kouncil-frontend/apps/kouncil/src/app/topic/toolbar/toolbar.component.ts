@@ -26,9 +26,10 @@ export enum LiveUpdateState {
       <app-topic-partitions [topicName]="name" (partitionSelected)="clearOffset()"></app-topic-partitions>
       <div class="offset-wrapper">
         <input class="offset-input" placeholder="Offset" matInput type="number" min="0" name="value" [(ngModel)]="offset"/>
-        <button mat-button class="action offset-search-button" (click)="goToOffset()"><span class="search-icon"></span></button>
+        <button mat-button class="action-button-black offset-search-button" (click)="goToOffset()"><span class="search-icon"></span></button>
       </div>
-      <button mat-button class="action" (click)="openSendPopup()">Send event</button>
+      <button mat-button class="action-button-white" (click)="openResendPopup()">Resend events</button>
+      <button mat-button class="action-button-black" (click)="openSendPopup()">Send event</button>
     </div>
   `,
   styleUrls: ['./toolbar.component.scss']
@@ -38,6 +39,7 @@ export class ToolbarComponent {
   @Input() name?: string;
   @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter<LiveUpdateState>();
   @Output() openSendPopupEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() openResendPopupEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -67,6 +69,10 @@ export class ToolbarComponent {
 
   openSendPopup(): void {
     this.openSendPopupEvent.emit();
+  }
+
+  openResendPopup(): void {
+    this.openResendPopupEvent.emit();
   }
 
   toggleHeaders(): void {

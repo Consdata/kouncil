@@ -1,0 +1,24 @@
+@import '../../styles/palette';
+
+:host {
+  .resend-options-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .select-topic {
+    width: 500px;
+  }
+
+  .offset-count-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .offset-input-fields {
+    width: 40%;
+  }
+
+}
