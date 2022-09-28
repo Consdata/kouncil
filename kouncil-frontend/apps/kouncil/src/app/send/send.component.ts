@@ -1,11 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
-import { SendService } from './send.service';
-import { first, map, switchMap } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ServersService } from '../servers.service';
+import {Component, ViewChild} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {FormControl, NgForm, Validators} from '@angular/forms';
+import {SendService} from './send.service';
+import {first, map, switchMap} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ServersService} from '../servers.service';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {combineLatest, iif, Observable, of} from 'rxjs';
 import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
@@ -22,11 +22,11 @@ import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
         </div>
 
         <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!---->}, {{count}<!---->},
-          {{timestamp}<!---->}
+          Available placeholders: {{uuid}<!----> }, {{count}<!----> },
+          {{timestamp}<!----> }
         </div>
         <div class="drawer-section-title">Key</div>
-        <input [(ngModel)]="messageData.key" matInput type="text" name="key" />
+        <input [(ngModel)]="messageData.key" matInput type="text" name="key"/>
 
         <div class="drawer-section-title">
           Headers
@@ -143,19 +143,19 @@ export class SendComponent {
               key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
               value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
                 JSON.stringify(exampleData.exampleValue, null, 2)
-          })
-        )),
+            })
+          )),
         of({
-          ...messageData,
-          value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
-        }
-      ))
+            ...messageData,
+            value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
+          }
+        ))
     )
   );
 
-  @ViewChild('sendForm', { read: NgForm }) sendForm: NgForm;
+  @ViewChild('sendForm', {read: NgForm}) sendForm: NgForm;
 
-  countControl: UntypedFormControl = new UntypedFormControl(1, [
+  countControl: FormControl = new FormControl<number>(1, [
     Validators.min(1),
     Validators.required,
   ]);
@@ -196,7 +196,7 @@ export class SendComponent {
   }
 
   resetForm(): void {
-    this.sendForm.reset({ value: '', key: '' });
+    this.sendForm.reset({value: '', key: ''});
     this.countControl.reset(1);
   }
 
