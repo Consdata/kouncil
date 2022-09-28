@@ -22,7 +22,6 @@ export class ResendComponent implements OnInit{
 
   resendForm: FormGroup;
   topics: TopicMetadata[] = [];
-  partitions: number[] = [1,2,3,4];
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,

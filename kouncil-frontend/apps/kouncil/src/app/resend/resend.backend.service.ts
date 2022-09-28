@@ -11,7 +11,6 @@ export class ResendBackendService {
 
   resend$(serverId: string, resendDataModel: ResendDataModel): Observable<Record<string, unknown>> {
     const params = new HttpParams().set('serverId', serverId);
-    console.log("I am in resend method of backend")
     return this.http.post<Record<string, unknown>>(
       `/api/topic/resend/${resendDataModel.sourceTopicName}`,
       resendDataModel,

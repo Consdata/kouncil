@@ -10,9 +10,10 @@
       <div class="topic-selection">
         <div class="drawer-section-title">Source topic:</div>
         <mat-form-field>
-          <mat-select class="select select-topic" formControlName="sourceTopicName">
-            <mat-option [value]="messageData.topicName">{{messageData.topicName}}</mat-option>
-            <mat-option *ngFor="let topic of topics" [value]="topic.caption()">{{topic.caption()}}</mat-option>
+          <mat-select class="select select-topic"
+                      formControlName="sourceTopicName"
+                      [(value)]="messageData.topicName">
+            <mat-option *ngFor="let topic of topics" [value]="topic.name">{{topic.name}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -21,7 +22,7 @@
         <mat-form-field>
           <mat-select class="select" formControlName="sourceTopicPartition">
             <mat-option [value]="0">None</mat-option>
-            <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
+            <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -67,7 +68,7 @@
         <mat-form-field>
           <mat-select class="select" formControlName="destinationTopicPartition">
             <mat-option [value]="0">None</mat-option>
-            <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
+            <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
