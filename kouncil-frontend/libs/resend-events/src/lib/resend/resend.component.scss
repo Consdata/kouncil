@@ -1,6 +1,10 @@
 @import 'apps/kouncil/src/styles/palette';
 
 :host {
+  ::ng-deep .mat-select-trigger {
+    align-items: baseline;
+  }
+
   .resend-options-wrapper {
     display: flex;
     justify-content: space-between;
@@ -8,7 +12,7 @@
   }
 
   .select-topic {
-    width: 500px;
+    width: 400px;
   }
 
   .offset-count-wrapper {

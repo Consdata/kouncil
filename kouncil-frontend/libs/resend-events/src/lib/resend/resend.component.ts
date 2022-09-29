@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {first, map, startWith, switchMap} from 'rxjs/operators';
+import {first, map, switchMap, takeUntil} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from 'apps/kouncil/src/app/servers.service';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {combineLatest, iif, Observable, of} from 'rxjs';
+import {combineLatest, iif, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
 import {ResendService} from './resend.service';
 import {TopicMetadata, Topics} from 'apps/kouncil/src/app/topics/topics';
@@ -28,16 +28,16 @@ import {ResendDataModel} from './resend.data.model';
           <div class="topic-selection">
             <div class="drawer-section-title">Source topic:</div>
             <mat-form-field>
-              <input type="text"
-                     formControlName="sourceTopicName"
-                     placeholder="Pick topic"
-                     matInput
-                     [(ngModel)]="messageData.topicName"
-                     [matAutocomplete]="autoSourceTopic">
-              <mat-autocomplete #autoSourceTopic="matAutocomplete">
-                <mat-option *ngFor="let topic of filteredSourceTopics | async"
-                            [value]="topic.caption()">{{topic.caption()}}</mat-option>
-              </mat-autocomplete>
+              <mat-select class="select select-topic" formControlName="sourceTopicName">
+                <mat-option>
+                  <ngx-mat-select-search placeholderLabel="Search topic.."
+                                         [formControl]="sourceTopicFilterCtrl">
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let topic of sourceFilteredTopics | async" [value]="topic.caption()">
+                  {{topic.name}}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
           </div>
           <div class="partition-selection">
@@ -45,7 +45,7 @@ import {ResendDataModel} from './resend.data.model';
             <mat-form-field>
               <mat-select class="select" formControlName="sourceTopicPartition">
                 <mat-option [value]="0">None</mat-option>
-                <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
+                <mat-option *ngFor="let i of partitions" disabled="true" value="{{i}}">{{i}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -80,15 +80,16 @@ import {ResendDataModel} from './resend.data.model';
           <div class="topic-selection">
             <div class="drawer-section-title">To topic:</div>
             <mat-form-field>
-              <input type="text"
-                     formControlName="destinationTopicName"
-                     placeholder="Pick topic"
-                     matInput
-                     [matAutocomplete]="autoDestTopic">
-              <mat-autocomplete autoActiveFirstOption #autoDestTopic="matAutocomplete">
-                <mat-option *ngFor="let topic of filteredDestTopics | async"
-                            [value]="topic.caption()">{{topic.caption()}}</mat-option>
-              </mat-autocomplete>
+              <mat-select class="select select-topic" formControlName="destinationTopicName">
+                <mat-option>
+                  <ngx-mat-select-search placeholderLabel="Search topic.."
+                                         [formControl]="destinationTopicFilterCtrl">
+                  </ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let topic of destinationFilteredTopics | async" [value]="topic.name">
+                  {{topic.name}}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
           </div>
           <div class="partition-selection">
@@ -96,7 +97,7 @@ import {ResendDataModel} from './resend.data.model';
             <mat-form-field>
               <mat-select class="select" formControlName="destinationTopicPartition">
                 <mat-option [value]="0">None</mat-option>
-                <mat-option *ngFor="let i of [0, messageData.partition]" value="{{i}}">{{i}}</mat-option>
+                <mat-option *ngFor="let i of partitions" disabled="true" value="{{i}}">{{i}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -128,20 +129,30 @@ import {ResendDataModel} from './resend.data.model';
   `,
   styleUrls: ['./resend.component.scss']
 })
-export class ResendComponent implements OnInit {
+export class ResendComponent implements OnInit, OnDestroy {
+
 
   topics: TopicMetadata[] = [];
-  filteredSourceTopics: Observable<TopicMetadata[]> = of([]);
-  filteredDestTopics: Observable<TopicMetadata[]> = of([]);
+  partitions: number[] = [1, 2, 3, 4];
+
+  sourceTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required)
+  sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
+  sourceFilteredTopics: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
+
+  destinationTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required)
+  destinationTopicFilterCtrl: FormControl = new FormControl<string>('');
+  destinationFilteredTopics: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
 
   resendForm: FormGroup = new FormGroup({
-    'sourceTopicName': new FormControl<string>('', Validators.required),
-    'sourceTopicPartition': new FormControl<string>('None'),
+    'sourceTopicName': this.sourceTopicNameCtrl,
+    'sourceTopicPartition': new FormControl<number>(0),
     'offsetBeginning': new FormControl<number>(1, [Validators.min(1), Validators.required]),
     'offsetEnd': new FormControl<number>(1, [Validators.min(1), Validators.required]),
-    'destinationTopicName': new FormControl<string>('', Validators.required),
-    'destinationTopicPartition': new FormControl<string>('None')
+    'destinationTopicName': this.destinationTopicNameCtrl,
+    'destinationTopicPartition': new FormControl<number>(0)
   });
+
+  _onDestroy = new Subject<void>();
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,
@@ -184,40 +195,48 @@ export class ResendComponent implements OnInit {
         this.topics = data.topics
           .map(t => new TopicMetadata(t.partitions, null, t.name));
 
-        this.filteredSourceTopics = this.resendForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this.filterTopics(value.sourceTopicName || '')),
-        );
-        this.filteredDestTopics = this.resendForm.valueChanges.pipe(
-          startWith(''),
-          map(value => this.filterTopics(value.destinationTopicName || '')),
-        );
+        this.sourceFilteredTopics.next(this.topics.slice());
+        this.destinationFilteredTopics.next(this.topics.slice());
+
+        this.sourceTopicFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+            this.filterTopics(this.sourceTopicFilterCtrl, this.sourceFilteredTopics);
+          });
+
+        this.destinationTopicFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+            this.filterTopics(this.destinationTopicFilterCtrl, this.destinationFilteredTopics);
+          });
       });
   }
 
-  private filterTopics(value: string): TopicMetadata[] {
-    const filterValue = value.toLowerCase();
-    return this.topics.filter(option => option.name.toLowerCase().includes(filterValue));
+  ngOnDestroy() {
+    this._onDestroy.next(null);
+    this._onDestroy.complete();
   }
 
-  onSubmit(): void {
-    if (this.resendForm.invalid) {
-      this.snackbar.open('INVALID FORM VALUES', 'Close', {
-        duration: 5000,
-        panelClass: ['snackbar-error', 'snackbar']
-      });
+  filterTopics(topicFilterControl: FormControl, filteredTopics: ReplaySubject<TopicMetadata[]>): void {
+    if (!this.topics) {
       return;
     }
 
-    const resendData = {
-      sourceTopicName: this.resendForm.value['sourceTopicName'],
-      sourceTopicPartition: this.resendForm.value['sourceTopicPartition'],
-      offsetBeginning: +this.resendForm.value['offsetBeginning'],
-      offsetEnd: +this.resendForm.value['offsetEnd'],
-      destinationTopicName: this.resendForm.value['destinationTopicName'],
-      destinationTopicPartition: this.resendForm.value['destinationTopicPartition']
-    } as ResendDataModel;
-    console.log(this.servers.getSelectedServerId());
+    let search: string = topicFilterControl.value;
+    if (!search) {
+      filteredTopics.next(this.topics.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+
+    filteredTopics.next(
+      this.topics.filter(topic => topic.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+  onSubmit(): void {
+    const resendData: ResendDataModel = {...this.resendForm.value}
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
