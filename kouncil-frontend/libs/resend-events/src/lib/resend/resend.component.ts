@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {first, map, switchMap, takeUntil} from 'rxjs/operators';
+import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from 'apps/kouncil/src/app/servers.service';
@@ -33,7 +33,7 @@ import {ResendDataModel} from './resend.data.model';
                                          [formControl]="sourceTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of sourceFilteredTopics | async" [value]="topic.caption()">
+                <mat-option *ngFor="let topic of sourceFilteredTopics$ | async" [value]="topic.caption()">
                   {{topic.name}}
                 </mat-option>
               </mat-select>
@@ -85,7 +85,7 @@ import {ResendDataModel} from './resend.data.model';
                                          [formControl]="destinationTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of destinationFilteredTopics | async" [value]="topic.name">
+                <mat-option *ngFor="let topic of destinationFilteredTopics$ | async" [value]="topic.name">
                   {{topic.name}}
                 </mat-option>
               </mat-select>
@@ -130,17 +130,14 @@ import {ResendDataModel} from './resend.data.model';
 })
 export class ResendComponent implements OnInit, OnDestroy {
 
-
   topics: TopicMetadata[] = [];
   partitions: number[] = [1, 2, 3, 4];
 
-  sourceTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required)
+  sourceTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
   sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
-  sourceFilteredTopics: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
 
-  destinationTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required)
+  destinationTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
   destinationTopicFilterCtrl: FormControl = new FormControl<string>('');
-  destinationFilteredTopics: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
 
   resendForm: FormGroup = new FormGroup({
     'sourceTopicName': this.sourceTopicNameCtrl,
@@ -151,12 +148,17 @@ export class ResendComponent implements OnInit, OnDestroy {
     'destinationTopicPartition': new FormControl<number>(0)
   });
 
-  _onDestroy = new Subject<void>();
+  _onDestroy$: Subject<void> = new Subject<void>();
+  sourceFilteredTopics$: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
+  destinationFilteredTopics$: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,
     this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId())
   ]).pipe(
+    tap(([messageData, _]) => {
+      this.resendForm.get('sourceTopicName').setValue(messageData.topicName);
+    }),
     switchMap(([messageData, isSchemaConfigured]) =>
       iif(() => isSchemaConfigured,
         this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
@@ -186,55 +188,55 @@ export class ResendComponent implements OnInit, OnDestroy {
     private messageDataService: MessageDataService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.topicsService.getTopics$(this.servers.getSelectedServerId())
       .pipe(first())
       .subscribe((data: Topics) => {
         this.topics = data.topics
           .map(t => new TopicMetadata(t.partitions, null, t.name));
 
-        this.sourceFilteredTopics.next(this.topics.slice());
-        this.destinationFilteredTopics.next(this.topics.slice());
+        this.sourceFilteredTopics$.next(this.topics.slice());
+        this.destinationFilteredTopics$.next(this.topics.slice());
 
         this.sourceTopicFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
+          .pipe(takeUntil(this._onDestroy$))
           .subscribe(() => {
-            this.filterTopics(this.sourceTopicFilterCtrl, this.sourceFilteredTopics);
+            this.filterTopics(this.sourceTopicFilterCtrl, this.sourceFilteredTopics$);
           });
 
         this.destinationTopicFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
+          .pipe(takeUntil(this._onDestroy$))
           .subscribe(() => {
-            this.filterTopics(this.destinationTopicFilterCtrl, this.destinationFilteredTopics);
+            this.filterTopics(this.destinationTopicFilterCtrl, this.destinationFilteredTopics$);
           });
       });
   }
 
-  ngOnDestroy() {
-    this._onDestroy.next(null);
-    this._onDestroy.complete();
+  ngOnDestroy(): void {
+    this._onDestroy$.next(null);
+    this._onDestroy$.complete();
   }
 
-  filterTopics(topicFilterControl: FormControl, filteredTopics: ReplaySubject<TopicMetadata[]>): void {
+  filterTopics(topicFilterControl: FormControl, filteredTopics$: ReplaySubject<TopicMetadata[]>): void {
     if (!this.topics) {
       return;
     }
 
     let search: string = topicFilterControl.value;
     if (!search) {
-      filteredTopics.next(this.topics.slice());
+      filteredTopics$.next(this.topics.slice());
       return;
     } else {
       search = search.toLowerCase();
     }
 
-    filteredTopics.next(
+    filteredTopics$.next(
       this.topics.filter(topic => topic.name.toLowerCase().indexOf(search) > -1)
     );
   }
 
   onSubmit(): void {
-    const resendData: ResendDataModel = {...this.resendForm.value}
+    const resendData: ResendDataModel = {...this.resendForm.value};
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {

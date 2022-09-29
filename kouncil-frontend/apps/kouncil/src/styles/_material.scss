@@ -137,6 +137,7 @@ mat-dialog-container.mat-dialog-container {
     .action-button-black:disabled {
       border: 1px solid $main-50;
       background-color: $main-30;
+      cursor: not-allowed;
       color: $main-60;
     }
 
