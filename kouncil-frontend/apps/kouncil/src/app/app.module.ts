@@ -24,7 +24,6 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
-import {ResendService, resendServiceFactory} from '../../../../libs/resend-events/src/lib/resend/resend.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -62,7 +61,7 @@ import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
-import {ResendModule} from '@app/resend-events';
+import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
