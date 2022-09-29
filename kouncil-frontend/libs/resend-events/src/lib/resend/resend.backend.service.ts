@@ -13,7 +13,7 @@ export class ResendBackendService {
     console.log(resendDataModel)
     const params = new HttpParams().set('serverId', serverId);
     return this.http.post<Record<string, unknown>>(
-      `/api/topic/resend/${resendDataModel.sourceTopicName}`,
+      `/api/topic/resend`,
       resendDataModel,
       { params }
     );

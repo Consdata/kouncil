@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {first, map, switchMap, takeUntil} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
@@ -45,7 +44,7 @@ import {ResendDataModel} from './resend.data.model';
             <mat-form-field>
               <mat-select class="select" formControlName="sourceTopicPartition">
                 <mat-option [value]="0">None</mat-option>
-                <mat-option *ngFor="let i of partitions" disabled="true" value="{{i}}">{{i}}</mat-option>
+                <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -177,7 +176,6 @@ export class ResendComponent implements OnInit, OnDestroy {
   );
 
   constructor(
-    private http: HttpClient,
     private resendService: ResendService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar,
