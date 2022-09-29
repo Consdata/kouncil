@@ -109,6 +109,9 @@
     ::ng-deep .mat-select-value-text {
       padding-left: 32px;
     }
+    ::ng-deep .mat-select-trigger {
+      align-items: baseline;
+    }
   }
 
   .servers::before {
@@ -122,4 +125,5 @@
     line-height: $default-line-height;
     font-family: 'Material Icons';
   }
+
 }
