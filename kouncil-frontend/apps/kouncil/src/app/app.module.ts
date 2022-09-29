@@ -61,6 +61,7 @@ import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
 
 

@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
@@ -157,12 +157,13 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
                 panelClass: ['snackbar-success', 'snackbar']
               });
             }, error => {
-              console.warn(error);
+              const consoleErrorMessage = `Error Code: ${error.status}<br>Message: ${error.message}\nError message: ${error.error}`;
               this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
                 duration: 3000,
                 panelClass: ['snackbar-error', 'snackbar']
               });
               this.progressBarService.setProgress(false);
+              return throwError(new Error(consoleErrorMessage));
             });
         }
       });

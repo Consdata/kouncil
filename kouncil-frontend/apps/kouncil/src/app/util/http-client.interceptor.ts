@@ -17,7 +17,6 @@ export class HttpClientInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError((error: HttpErrorResponse) => {
-          console.log(JSON.stringify(error));
           const consoleErrorMessage = `Error Code: ${error.status}<br>Message: ${error.message}\nError message: ${error.error}`;
           this.snackBar.open(error.error, 'Close', {
             duration: 5000,

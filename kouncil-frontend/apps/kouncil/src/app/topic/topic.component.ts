@@ -13,6 +13,7 @@ import { ProgressBarService } from '../util/progress-bar.service';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
 import { SendComponent } from '../send/send.component';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
 import { DrawerService } from '../util/drawer.service';
@@ -180,10 +181,9 @@ export class TopicComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRowClass: (row) => { 'kafka-row-delta': any } = (row) => {
+  getRowClass: (row) => { 'kafkaRowDelta': string } = (row) => {
     return {
-      'kafka-row-delta': row['fresh'],
+      'kafkaRowDelta': row['fresh'],
     };
   };
 

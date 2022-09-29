@@ -1,5 +1,5 @@
 export const demoConsumerGroup = {
-  'transaction-processing': [{
+  'transactionProcessing': [{
     'consumerId': 'bank-transaction-consumer-12208701-99a7-4e9a-8a0e-bbc8970319de',
     'clientId': 'bank-transaction-consumer',
     'host': '/172.17.0.1',
@@ -32,7 +32,7 @@ export const demoConsumerGroup = {
     'offset': 6013017,
     'endOffset': 6013017
   }],
-  'currency-exchange-rate-aggregation': [{
+  'currencyExchangeRateAggregation': [{
     'consumerId': 'currency-aggregation-consumer-34bfcc58-9c58-11eb-a8b3-0242ac130003',
     'clientId': 'currency-aggregation-consumer',
     'host': '/172.17.10.10',
@@ -49,7 +49,7 @@ export const demoConsumerGroup = {
     'offset': 96349534587,
     'endOffset': 96349534587
   }],
-  'currency-exchange-stream': [{
+  'currencyExchangeStream': [{
     'consumerId': 'currency-exchange-stream-consumer-375f7af0-9c5b-11eb-a8b3-0242ac130003',
     'clientId': 'currency-exchange-stream-consumer',
     'host': '/172.17.10.12',
@@ -66,6 +66,6 @@ export const demoConsumerGroup = {
     'offset': 96349534587,
     'endOffset': 96349534587
   }],
-  'transaction-history': [],
-  'transaction-history-report': []
+  'transactionHistory': [],
+  'transactionHistoryReport': []
 };

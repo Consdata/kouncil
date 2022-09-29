@@ -144,13 +144,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRowClass: (row) => { 'row-retry': any, 'row-dlq': any } = (row) => {
+  getRowClass: (row) => { 'rowRetry': string, 'rowDlq': string } = (row) => {
     return {
-      'row-retry': (() => {
+      'rowRetry': (() => {
         return row.name.includes('retry');
       })(),
-      'row-dlq': (() => {
+      'rowDlq': (() => {
         return row.name.includes('dlq');
       })()
     };

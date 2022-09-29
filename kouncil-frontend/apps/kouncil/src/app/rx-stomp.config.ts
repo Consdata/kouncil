@@ -7,6 +7,7 @@ export const RX_STOMP_CONFIG: InjectableRxStompConfig = {
   heartbeatOutgoing: 20000,
   reconnectDelay: 2000,
   debug: (msg: string): void => {
+    // eslint-disable-next-line no-console
     console.log('RxStompConfig.debug: msg={}', msg);
   },
 };
