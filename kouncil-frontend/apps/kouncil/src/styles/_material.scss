@@ -134,6 +134,12 @@ mat-dialog-container.mat-dialog-container {
       background: $main-100;
     }
 
+    .action-button-black:disabled {
+      border: 1px solid $main-50;
+      background-color: $main-30;
+      color: $main-60;
+    }
+
   }
 
   .count {
