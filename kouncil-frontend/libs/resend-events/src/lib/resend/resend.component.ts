@@ -1,12 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {first, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {first, map, takeUntil, tap} from 'rxjs/operators';
 import {MatDialog } from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from 'apps/kouncil/src/app/servers.service';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {combineLatest, iif, Observable, of, ReplaySubject, Subject} from 'rxjs';
-import {SchemaFacadeService, SchemaStateService } from '@app/schema-registry';
+import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {ResendService} from './resend.service';
 import {TopicMetadata, Topics} from 'apps/kouncil/src/app/topics/topics';
 import {TopicsService} from 'apps/kouncil/src/app/topics/topics.service';
@@ -35,7 +34,8 @@ import {ResendDataModel} from './resend.data.model';
                                          [formControl]="sourceTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of sourceFilteredTopics$ | async" [value]="topic.caption()">
+                <mat-option *ngFor="let topic of sourceFilteredTopics$ | async"
+                            [value]="topic.caption()">
                   {{topic.caption()}}
                 </mat-option>
               </mat-select>
@@ -44,9 +44,13 @@ import {ResendDataModel} from './resend.data.model';
           <div class="partition-selection">
             <div class="drawer-section-title">Source partition:</div>
             <mat-form-field>
-              <mat-select class="select" formControlName="sourceTopicPartition">
+              <mat-select class="select"
+                          formControlName="sourceTopicPartition">
                 <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of srcPartitions" value="{{partition}}">{{partition}}</mat-option>
+                <mat-option *ngFor="let partition of srcPartitions"
+                            value="{{partition}}">
+                  {{partition}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -57,10 +61,10 @@ import {ResendDataModel} from './resend.data.model';
           <div class="drawer-section-title">From:</div>
           <div class="count offset-input-fields">
             <input matInput type="number" min="1" formControlName="offsetBeginning" name="count"/>
-            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseFromCount()">
+            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseFromOffsetCount()">
               -
             </button>
-            <button type="button" class="small-button" mat-button disableRipple (click)="increaseFromCount()">
+            <button type="button" class="small-button" mat-button disableRipple (click)="increaseFromOffsetCount()">
               +
             </button>
           </div>
@@ -68,10 +72,10 @@ import {ResendDataModel} from './resend.data.model';
           <div class="drawer-section-title">To:</div>
           <div class="count offset-input-fields">
             <input matInput type="number" min="1" formControlName="offsetEnd" name="count"/>
-            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseToCount()">
+            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseToOffsetCount()">
               -
             </button>
-            <button type="button" class="small-button" mat-button disableRipple (click)="increaseToCount()">
+            <button type="button" class="small-button" mat-button disableRipple (click)="increaseToOffsetCount()">
               +
             </button>
           </div>
@@ -89,7 +93,8 @@ import {ResendDataModel} from './resend.data.model';
                                          [formControl]="destinationTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of destinationFilteredTopics$ | async" [value]="topic.caption()">
+                <mat-option *ngFor="let topic of destinationFilteredTopics$ | async"
+                            [value]="topic.caption()">
                   {{topic.caption()}}
                 </mat-option>
               </mat-select>
@@ -98,9 +103,13 @@ import {ResendDataModel} from './resend.data.model';
           <div class="partition-selection">
             <div class="drawer-section-title">On partition:</div>
             <mat-form-field>
-              <mat-select class="select" formControlName="destinationTopicPartition">
+              <mat-select class="select"
+                          formControlName="destinationTopicPartition">
                 <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of destPartitions" value="{{partition}}">{{partition}}</mat-option>
+                <mat-option *ngFor="let partition of destPartitions"
+                            value="{{partition}}">
+                  {{partition}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -158,28 +167,12 @@ export class ResendComponent implements OnInit, OnDestroy {
   private _onDestroy$: Subject<void> = new Subject<void>();
 
   messageData$: Observable<MessageData> = combineLatest([
-    this.messageDataService.messageData$,
-    this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId())
-  ]).pipe(
-    tap(([messageData, _]) => {
+    this.messageDataService.messageData$
+    ]).pipe(
+    tap(([messageData]) => {
       this.resendForm.get('sourceTopicName').setValue(messageData.topicName);
     }),
-    switchMap(([messageData, isSchemaConfigured]) =>
-      iif(() => isSchemaConfigured,
-        this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
-          map(exampleData => ({
-              ...messageData,
-              key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
-              value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
-                JSON.stringify(exampleData.exampleValue, null, 2)
-            })
-          )),
-        of({
-            ...messageData,
-            value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
-          }
-        ))
-    )
+    map(([messageData]) => messageData)
   );
 
   constructor(
@@ -188,8 +181,6 @@ export class ResendComponent implements OnInit, OnDestroy {
     private snackbar: MatSnackBar,
     private servers: ServersService,
     private topicsService: TopicsService,
-    private schemaFacade: SchemaFacadeService,
-    private schemaStateService: SchemaStateService,
     private messageDataService: MessageDataService) {
   }
 
@@ -217,18 +208,21 @@ export class ResendComponent implements OnInit, OnDestroy {
       });
   }
 
-
-  setPartitionsOnSrcTopicChanged(value: string): void {
-    this.srcPartitions = Array.from(Array(this.topics.find(t => t.name === value).partitions).keys());
-  }
-
-  setPartitionsOnDestTopicChanged(value: string): void {
-    this.destPartitions = Array.from(Array(this.topics.find(t => t.name === value).partitions).keys());
-  }
-
   ngOnDestroy(): void {
     this._onDestroy$.next(null);
     this._onDestroy$.complete();
+  }
+
+  setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
+    this.srcPartitions = Array.from(Array(
+      this.topics.find(t => t.name === selectedTopicName).partitions).keys()
+    );
+  }
+
+  setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
+    this.destPartitions = Array.from(Array(
+      this.topics.find(t => t.name === selectedTopicName).partitions).keys()
+    );
   }
 
   filterTopics(topicFilterControl: FormControl, filteredTopics$: ReplaySubject<TopicMetadata[]>): void {
@@ -251,6 +245,7 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const resendData: ResendDataModel = {...this.resendForm.value};
+    console.log(resendData);
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
@@ -265,24 +260,24 @@ export class ResendComponent implements OnInit, OnDestroy {
       });
   }
 
-  increaseFromCount(): void {
+  increaseFromOffsetCount(): void {
     const offsetBeginning = this.resendForm.get('offsetBeginning');
     offsetBeginning.setValue(offsetBeginning.value + 1);
   }
 
-  decreaseFromCount(): void {
+  decreaseFromOffsetCount(): void {
     const offsetBeginning = this.resendForm.get('offsetBeginning');
     if (offsetBeginning.value > 1) {
       offsetBeginning.setValue(offsetBeginning.value - 1);
     }
   }
 
-  increaseToCount(): void {
+  increaseToOffsetCount(): void {
     const offsetEnd = this.resendForm.get('offsetEnd');
     offsetEnd.setValue(offsetEnd.value + 1);
   }
 
-  decreaseToCount(): void {
+  decreaseToOffsetCount(): void {
     const offsetEnd = this.resendForm.get('offsetEnd');
     if (offsetEnd.value > 1) {
       offsetEnd.setValue(offsetEnd.value - 1);
