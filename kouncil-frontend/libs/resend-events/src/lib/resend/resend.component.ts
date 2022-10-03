@@ -14,92 +14,100 @@ import {ServersService} from '@app/common-servers';
   selector: 'app-resend',
   template: `
     <mat-dialog-content *ngIf="messageData$ | async as messageData">
-      <form [formGroup]="resendForm" (ngSubmit)="onSubmit()">
-        <div class="drawer-header">
-          <div class="drawer-title">Resend events from {{messageData.topicName}}</div>
-          <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="close">close</mat-icon>
+      <div class="drawer-header">
+        <div class="drawer-title">Resend events from {{messageData.topicName}}</div>
+        <div class="spacer"></div>
+        <mat-icon mat-dialog-close class="close">close</mat-icon>
+      </div>
+
+      <form class="form"
+            [formGroup]="resendForm"
+            (ngSubmit)="onSubmit()">
+
+        <div class="drawer-section-title">Source topic</div>
+
+        <div>
+          <div class="field-label">Topic:</div>
+          <mat-form-field>
+            <mat-select class="select select-topic"
+                        formControlName="sourceTopicName"
+                        (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
+              <mat-option>
+                <ngx-mat-select-search placeholderLabel="Search topic.."
+                                       [formControl]="sourceTopicFilterCtrl">
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
+                          [value]="topic.caption()">
+                {{topic.caption()}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
-        <div class="resend-options-wrapper">
-          <div class="topic-selection">
-            <div class="drawer-section-title">Source topic:</div>
-            <mat-form-field>
-              <mat-select class="select select-topic"
-                          formControlName="sourceTopicName"
-                          (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
-                <mat-option>
-                  <ngx-mat-select-search placeholderLabel="Search topic.."
-                                         [formControl]="sourceTopicFilterCtrl">
-                  </ngx-mat-select-search>
-                </mat-option>
-                <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
-                            [value]="topic.caption()">
-                  {{topic.caption()}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="partition-selection">
-            <div class="drawer-section-title">Source partition:</div>
-            <mat-form-field>
-              <mat-select class="select"
-                          formControlName="sourceTopicPartition">
-                <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
-                            value="{{partition}}">
-                  {{partition}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+        <div>
+          <div class="field-label">Partition:</div>
+          <mat-form-field>
+            <mat-select class="select"
+                        formControlName="sourceTopicPartition">
+              <mat-option [value]="-1">None</mat-option>
+              <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
+                          value="{{partition}}">
+                {{partition}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <div class="drawer-section-title">With offset to resend:</div>
-        <div class="offset-count-wrapper">
-          <div class="drawer-section-title">From:</div>
-          <div class="offset-input-fields">
-            <input matInput type="number" min="1" formControlName="offsetBeginning"/>
-          </div>
 
-          <div class="drawer-section-title">To:</div>
-          <div class="offset-input-fields">
-            <input matInput type="number" min="1" formControlName="offsetEnd"/>
-          </div>
+        <div class="field-with-label">
+          <div class="field-label">From:</div>
+          <mat-form-field>
+            <input matInput type="number" min="1" formControlName="offsetBeginning"/>
+          </mat-form-field>
         </div>
 
-        <div class="resend-options-wrapper">
-          <div class="topic-selection">
-            <div class="drawer-section-title">To topic:</div>
-            <mat-form-field>
-              <mat-select class="select select-topic"
-                          formControlName="destinationTopicName"
-                          (valueChange)="resendFilterService.setPartitionsOnDestTopicChanged($event)">
-                <mat-option>
-                  <ngx-mat-select-search placeholderLabel="Search topic.."
-                                         [formControl]="destinationTopicFilterCtrl">
-                  </ngx-mat-select-search>
-                </mat-option>
-                <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
-                            [value]="topic.caption()">
-                  {{topic.caption()}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="partition-selection">
-            <div class="drawer-section-title">On partition:</div>
-            <mat-form-field>
-              <mat-select class="select"
-                          formControlName="destinationTopicPartition">
-                <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of resendFilterService.destPartitionsObs$ | async"
-                            value="{{partition}}">
-                  {{partition}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+        <div class="field-with-label">
+          <div class="field-label">To:</div>
+          <mat-form-field>
+            <input matInput type="number" min="1" formControlName="offsetEnd"/>
+          </mat-form-field>
+        </div>
+
+        <div class="drawer-section-title">Destination topic</div>
+
+        <div>
+          <div class="field-label">Topic:</div>
+          <mat-form-field>
+            <mat-select class="select select-topic"
+                        formControlName="destinationTopicName"
+                        (valueChange)="resendFilterService.setPartitionsOnDestTopicChanged($event)">
+              <mat-option>
+                <ngx-mat-select-search placeholderLabel="Search topic.."
+                                       [formControl]="destinationTopicFilterCtrl">
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
+                          [value]="topic.caption()">
+                {{topic.caption()}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <div class="field-label">Partition:</div>
+          <mat-form-field>
+            <mat-select class="select"
+                        formControlName="destinationTopicPartition">
+              <mat-option [value]="-1">None</mat-option>
+              <mat-option *ngFor="let partition of resendFilterService.destPartitionsObs$ | async"
+                          value="{{partition}}">
+                {{partition}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <span class="spacer"></span>

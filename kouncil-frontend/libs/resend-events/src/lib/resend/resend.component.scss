@@ -5,24 +5,23 @@
     align-items: baseline;
   }
 
-  .resend-options-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+  .form {
+    margin-top: 15px;
   }
 
-  .select-topic {
-    width: 400px;
+  .drawer-section-title {
+    margin-top: 15px;
+    margin-botton: 10px;
   }
 
-  .offset-count-wrapper {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+  .field-label {
+    color: $main-100;
+    font-size: 14px;
+    font-weight: 500;
   }
 
-  .offset-input-fields {
-    width: 40%;
+  .mat-form-field {
+    width: 100%;
   }
 
 }
