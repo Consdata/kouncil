@@ -1,6 +1,7 @@
 package com.consdata.kouncil.topic;
 
 import com.consdata.kouncil.KafkaConnectionService;
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.MessagesHelper;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
@@ -204,7 +205,7 @@ public class TopicService {
                     || resendParams.getOffsetEnd() < sourcePartitionBeginningOffset || resendParams.getOffsetEnd() > sourcePartitionEndOffset) {
                 log.error("Submitted offset range {}-{} is outside topic offset range {}-{}",
                         resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset);
-                throw new RuntimeException(String.format("Submitted offset range %d-%d is outside topic offset range %d-%d",
+                throw new KouncilRuntimeException(String.format("Submitted offset range %d-%d is outside topic offset range %d-%d",
                         resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset));
             }
 
