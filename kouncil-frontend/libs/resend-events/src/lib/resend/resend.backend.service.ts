@@ -10,7 +10,6 @@ export class ResendBackendService {
   constructor(private http: HttpClient) {}
 
   resend$(serverId: string, resendDataModel: ResendDataModel): Observable<Record<string, unknown>> {
-    console.log(resendDataModel);
     const params = new HttpParams().set('serverId', serverId);
     return this.http.post<Record<string, unknown>>(
       `/api/topic/resend`,

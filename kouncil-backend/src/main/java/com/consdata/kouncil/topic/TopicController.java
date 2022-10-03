@@ -47,7 +47,6 @@ public class TopicController {
     @EntryExitLogger
     public void resend(@RequestBody TopicResendEventsModel resendData,
                        @RequestParam("serverId") String serverId) {
-        log.debug("TCS01 serverId={}, resendData={}", serverId, resendData);
         log.debug("TCS01 topicName={},  serverId={}, message={}", resendData.getSourceTopicName(), serverId, resendData);
         topicService.resend(resendData, serverId);
     }
