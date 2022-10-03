@@ -26,9 +26,9 @@
   }
 
   .count {
-    display: flex;
-    flex-direction: row;
+    display: inline-flex;
     align-items: center;
+
     border: 1px solid $main-20;
     border-radius: $default-border-radius;
     width: 50%;
@@ -40,7 +40,6 @@
     }
 
     input {
-      height: 38px;
       border: none;
       padding: 0 32px 0 8px;
     }
