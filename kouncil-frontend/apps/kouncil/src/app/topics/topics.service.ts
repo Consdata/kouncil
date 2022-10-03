@@ -18,8 +18,8 @@ export function topicsServiceFactory(http: HttpClient): TopicsService {
     case Backend.SERVER: {
       return new TopicsBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new TopicsDemoService();
-    }
   }
 }

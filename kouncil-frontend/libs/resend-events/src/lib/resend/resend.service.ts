@@ -17,8 +17,8 @@ export function resendServiceFactory(http: HttpClient): ResendService {
     case Backend.SERVER: {
       return new ResendBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new ResendDemoService();
-    }
   }
 }

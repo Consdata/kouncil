@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "common-model": "libs/common-model",
+    "feat-confirm": "libs/feat-confirm",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
     "resend-events": "libs/resend-events",

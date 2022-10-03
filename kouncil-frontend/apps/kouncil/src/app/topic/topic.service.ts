@@ -34,9 +34,9 @@ export function topicServiceFactory(http: HttpClient, progressBarService: Progre
     case Backend.SERVER: {
       return new TopicBackendService(http, progressBarService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new TopicDemoService(http, progressBarService);
-    }
   }
 }
 

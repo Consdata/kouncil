@@ -25,6 +25,7 @@
     "typeRoots": ["node_modules/@types"],
     "paths": {
       "@app/common-model": ["libs/common-model/src/index.ts"],
+      "@app/feat-confirm": ["libs/feat-confirm/src/index.ts"],
       "@app/message-data": ["libs/message-data/src/index.ts"],
       "@app/resend-events": ["libs/resend-events/src/index.ts"],
       "@app/schema-registry": ["libs/schema-registry/src/index.ts"]

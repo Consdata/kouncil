@@ -33,7 +33,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import {ConfirmComponent} from './confirm/confirm.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -62,6 +61,7 @@ import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
 import {Backend} from '@app/common-model';
+import {ConfirmModule} from '@app/feat-confirm';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -75,9 +75,9 @@ export function serverServiceFactory(http: HttpClient,
     case Backend.SERVER: {
       return new ServersBackendService(http, schemaRegistryService, schemaStateService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new ServersDemoService();
-    }
   }
 }
 
@@ -86,9 +86,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     case Backend.SERVER: {
       return new TrackBackendService(http, rxStompService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new TrackDemoService(rxStompService);
-    }
   }
 }
 
@@ -109,7 +109,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     NoDataPlaceholderComponent,
     TopicPaginationComponent,
     BreadcrumbComponent,
-    ConfirmComponent,
     BrokerComponent,
     MessageViewComponent,
     FileSizePipe,
@@ -141,7 +140,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatSelectModule,
     NgxMatSelectSearchModule,
     MatTooltipModule,
-    ResendModule
+    ResendModule,
+    ConfirmModule
   ],
   providers: [
     {

@@ -17,8 +17,8 @@ export function sendServiceFactory(http: HttpClient): SendService {
     case Backend.SERVER: {
       return new SendBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new SendDemoService();
-    }
   }
 }

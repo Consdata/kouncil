@@ -22,8 +22,8 @@ export function brokerServiceFactory(http: HttpClient): BrokerService {
     case Backend.SERVER: {
       return new BrokerBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new BrokerDemoService();
-    }
   }
 }

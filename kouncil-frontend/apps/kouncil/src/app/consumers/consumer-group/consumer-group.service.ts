@@ -18,8 +18,8 @@ export function consumerGroupServiceFactory(http: HttpClient): ConsumerGroupServ
     case Backend.SERVER: {
       return new ConsumerGroupBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new ConsumerGroupDemoService();
-    }
   }
 }
