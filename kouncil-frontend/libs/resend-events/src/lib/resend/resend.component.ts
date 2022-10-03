@@ -9,6 +9,7 @@ import {ResendService} from './resend.service';
 import {ResendDataModel} from './resend.data.model';
 import {ResendFilterService} from './resend.filter.service';
 import {ServersService} from '@app/common-servers';
+import {ResendFormService} from './resend-form.service';
 
 @Component({
   selector: 'app-resend',
@@ -21,7 +22,7 @@ import {ServersService} from '@app/common-servers';
       </div>
 
       <form class="form"
-            [formGroup]="resendForm"
+            [formGroup]="resendFormService.resendForm"
             (ngSubmit)="onSubmit()">
 
         <div class="drawer-section-title">Source topic</div>
@@ -123,7 +124,7 @@ import {ServersService} from '@app/common-servers';
                   disableRipple
                   class="action-button-black"
                   type="submit"
-                  [disabled]="resendForm.invalid">
+                  [disabled]="resendFormService.resendForm.invalid">
             Resend events
           </button>
         </div>
@@ -131,21 +132,12 @@ import {ServersService} from '@app/common-servers';
     </mat-dialog-content>
   `,
   styleUrls: ['./resend.component.scss'],
-  providers: [ResendFilterService]
+  providers: [ResendFilterService, ResendFormService]
 })
 export class ResendComponent implements OnInit, OnDestroy {
 
   sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
   destinationTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
-
-  resendForm: FormGroup = new FormGroup({
-    'sourceTopicName': new FormControl<string>('', Validators.required),
-    'sourceTopicPartition': new FormControl<number>(0, Validators.required),
-    'offsetBeginning': new FormControl<number>(0, [Validators.min(0), Validators.required]),
-    'offsetEnd': new FormControl<number>(0, [Validators.min(0), Validators.required]),
-    'destinationTopicName': new FormControl<string>('', Validators.required),
-    'destinationTopicPartition': new FormControl<number>(-1)
-  });
 
   private _onDestroy$: Subject<void> = new Subject<void>();
 
@@ -153,13 +145,14 @@ export class ResendComponent implements OnInit, OnDestroy {
     this.messageDataService.messageData$
   ]).pipe(
     tap(([messageData]) => {
-      this.resendForm.get('sourceTopicName').setValue(messageData.topicName);
+      this.resendFormService.resendForm.get('sourceTopicName').setValue(messageData.topicName);
     }),
     map(([messageData]) => messageData)
   );
 
   constructor(
     public resendFilterService: ResendFilterService,
+    public resendFormService: ResendFormService,
     private resendService: ResendService,
     private servers: ServersService,
     private dialog: MatDialog,
@@ -169,7 +162,7 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.resendFilterService.init().then(() => {
-      this.resendFilterService.setPartitionsOnSrcTopicChanged(this.resendForm.value['sourceTopicName']);
+      this.resendFilterService.setPartitionsOnSrcTopicChanged(this.resendFormService.resendForm.value['sourceTopicName']);
 
       this.sourceTopicFilterCtrl.valueChanges
         .pipe(takeUntil(this._onDestroy$))
@@ -191,13 +184,13 @@ export class ResendComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    const resendData: ResendDataModel = {...this.resendForm.value};
+    const resendData: ResendDataModel = {...this.resendFormService.resendForm.value};
     console.log('resendData=', resendData);
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
         this.dialog.closeAll();
-        this.resendForm.reset();
+        this.resendFormService.resendForm.reset();
         this.snackbar.open(
           `Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
           '', {

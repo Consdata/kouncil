@@ -5,6 +5,7 @@ import {ServersService} from '@app/common-servers';
 import {TopicsService} from '@app/feat-topics';
 import {first} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
+import {ResendFormService} from './resend-form.service';
 
 @Injectable()
 export class ResendFilterService {
@@ -22,6 +23,7 @@ export class ResendFilterService {
   public destinationFilteredTopicsObs$ = this.destinationFilteredTopics$.asObservable();
 
   constructor(
+    private resendFormService: ResendFormService,
     private servers: ServersService,
     private topicsService: TopicsService) {
   }
@@ -47,6 +49,7 @@ export class ResendFilterService {
     } else {
       this.srcPartitions.next(Array.from(Array(partitions).keys()));
     }
+    this.resendFormService.resendForm.get('sourceTopicPartition')?.setValue(0);
   }
 
   public setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
@@ -56,6 +59,7 @@ export class ResendFilterService {
     } else {
       this.destPartitions.next(Array.from(Array(partitions).keys()));
     }
+    this.resendFormService.resendForm.get('destinationTopicPartition')?.setValue(0);
   }
 
   public filterSrcTopics(sourceTopicFilterCtrl: FormControl) {
