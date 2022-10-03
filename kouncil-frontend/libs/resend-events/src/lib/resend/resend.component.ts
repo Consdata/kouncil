@@ -185,7 +185,7 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const resendData: ResendDataModel = {...this.resendFormService.resendForm.value};
-    console.log('resendData=', resendData);
+
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
@@ -197,6 +197,11 @@ export class ResendComponent implements OnInit, OnDestroy {
             duration: 5000,
             panelClass: ['snackbar-success', 'snackbar'],
           });
+      }, () => {
+        this.snackbar.open(`Error occurred while resending events`, '', {
+          duration: 5000,
+          panelClass: ['snackbar-error', 'snackbar']
+        });
       });
   }
 
