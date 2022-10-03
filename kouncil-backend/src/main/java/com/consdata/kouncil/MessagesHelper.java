@@ -11,6 +11,7 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -24,13 +25,14 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @SuppressWarnings("java:S6212") //val
-public class AbstractMessagesController {
+@Component
+public class MessagesHelper {
 
     protected final KafkaConnectionService kafkaConnectionService;
     protected final SerializationService serializationService;
     protected final DeserializationService deserializationService;
 
-    protected Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<Bytes, Bytes> consumer, Collection<TopicPartition> topicPartitions) {
+    public Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<Bytes, Bytes> consumer, Collection<TopicPartition> topicPartitions) {
         final Map<Integer, Long> endOffsets;
         final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
                 .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
@@ -50,7 +52,7 @@ public class AbstractMessagesController {
         return endOffsets;
     }
 
-    protected Map<Integer, Long> calculateBeginningOffsets(
+    public Map<Integer, Long> calculateBeginningOffsets(
             Long beginningTimestampMillis,
             Long offset,
             KafkaConsumer<Bytes, Bytes> consumer,
@@ -96,7 +98,7 @@ public class AbstractMessagesController {
         return headerValue;
     }
 
-    protected List<TopicMessageHeader> mapHeaders(Headers headers) {
+    public List<TopicMessageHeader> mapHeaders(Headers headers) {
         List<TopicMessageHeader> result = new ArrayList<>();
         for (Header header : headers) {
             String headerValue = transformHeaderValue(header);
@@ -108,7 +110,7 @@ public class AbstractMessagesController {
         return result;
     }
 
-    protected void validateTopics(String serverId, List<String> topicNames) {
+    public void validateTopics(String serverId, List<String> topicNames) {
         boolean topicsExists;
         try {
             topicsExists = kafkaConnectionService

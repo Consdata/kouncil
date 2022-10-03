@@ -2,14 +2,16 @@ package com.consdata.kouncil.topic;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Builder
+@ToString
 public class TopicResendEventsModel {
     private String sourceTopicName;
-    private int sourceTopicPartition;
-    private int offsetBeginning;
-    private int offsetEnd;
+    private Integer sourceTopicPartition;
+    private Long offsetBeginning;
+    private Long offsetEnd;
     private String destinationTopicName;
-    private int destinationTopicPartition;
+    private Integer destinationTopicPartition;
 }
