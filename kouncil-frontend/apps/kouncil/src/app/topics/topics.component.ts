@@ -5,12 +5,12 @@ import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {DrawerService} from '../util/drawer.service';
-import {FavouritesService} from '../favourites.service';
 import {ServersService} from '../servers.service';
 import {SearchService} from '../search.service';
 import {TopicMetadata, Topics} from './topics';
 import {ArraySortService} from '../util/array-sort.service';
 import {Model} from '@swimlane/ngx-datatable';
+import {FavouritesService} from '@app/feat-favourites';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 

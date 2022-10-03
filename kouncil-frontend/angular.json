@@ -3,6 +3,7 @@
   "projects": {
     "common-model": "libs/common-model",
     "feat-confirm": "libs/feat-confirm",
+    "feat-favourites": "libs/feat-favourites",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
     "resend-events": "libs/resend-events",

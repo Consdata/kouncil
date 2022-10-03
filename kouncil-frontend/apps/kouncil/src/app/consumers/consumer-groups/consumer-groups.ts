@@ -1,5 +1,4 @@
-import {FavouritesGroup} from '../../favourites-group';
-import {Favouritable} from '../../favouritable';
+import {Favouritable, FavouritesGroup} from '@app/feat-favourites';
 
 export class ConsumerGroup implements Favouritable {
   constructor(public groupId: string, public status: string, public group: (FavouritesGroup | null)) {

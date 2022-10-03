@@ -1,5 +1,4 @@
-import {FavouritesGroup} from '../favourites-group';
-import {Favouritable} from '../favouritable';
+import {Favouritable, FavouritesGroup} from '@app/feat-favourites';
 
 export class TopicMetadata implements Favouritable {
   constructor(public partitions: number, public group: (FavouritesGroup | null), public name: string) {
