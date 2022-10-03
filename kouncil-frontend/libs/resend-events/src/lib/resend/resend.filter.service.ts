@@ -43,23 +43,11 @@ export class ResendFilterService {
   }
 
   public setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
-    const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
-    if (partitions <= 0) {
-      this.srcPartitions$.next([0]);
-    } else {
-      this.srcPartitions$.next(Array.from(Array(partitions).keys()));
-    }
-    this.resendFormService.resendForm.get('sourceTopicPartition')?.setValue(0);
+    this.setPartitionsOnTopicChanged(selectedTopicName, 'sourceTopicPartition', this.srcPartitions$, 0);
   }
 
   public setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
-    const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
-    if (partitions <= 1) {
-      this.destPartitions$.next([]);
-    } else {
-      this.destPartitions$.next(Array.from(Array(partitions).keys()));
-    }
-    this.resendFormService.resendForm.get('destinationTopicPartition')?.setValue(0);
+    this.setPartitionsOnTopicChanged(selectedTopicName, 'destinationTopicPartition', this.destPartitions$, -1);
   }
 
   public filterSrcTopics(sourceTopicFilterCtrl: FormControl): void {
@@ -68,6 +56,19 @@ export class ResendFilterService {
 
   public filterDestTopics(destinationTopicFilterCtrl: FormControl): void {
     this.filterTopics(destinationTopicFilterCtrl, this.destinationFilteredTopics$);
+  }
+
+  private setPartitionsOnTopicChanged(selectedTopicName: string, formPartitionName: string,
+                                      topicPartitions$: Subject<number[]>, defaultValue: number): void {
+    const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
+
+    if (partitions <= 1 && defaultValue < 0) {
+      topicPartitions$.next([]);
+    } else {
+      topicPartitions$.next(Array.from(Array(partitions).keys()));
+    }
+
+    this.resendFormService.resendForm.get(formPartitionName)?.setValue(defaultValue);
   }
 
   private filterTopics(topicFilterControl: FormControl, filteredTopics$: Subject<TopicMetadata[]>): void {
