@@ -178,9 +178,10 @@ export class TopicComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
   getRowClass: (row) => { 'kafka-row-delta': any } = (row) => {
     return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'kafka-row-delta': row['fresh'],
     };
   };

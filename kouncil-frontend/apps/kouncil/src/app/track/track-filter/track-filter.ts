@@ -8,6 +8,7 @@ export class TrackFilter {
   }
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export enum TrackOperator {
   '~',
   '!~',
@@ -15,3 +16,5 @@ export enum TrackOperator {
   'is not',
   'regex'
 }
+
+/* eslint-enable */
