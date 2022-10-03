@@ -50,9 +50,8 @@ import {ServersService} from '@app/common-servers';
           <mat-form-field>
             <mat-select class="select"
                         formControlName="sourceTopicPartition">
-              <mat-option [value]="-1">None</mat-option>
               <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
-                          value="{{partition}}">
+                          [value]="partition">
                 {{partition}}
               </mat-option>
             </mat-select>
@@ -62,14 +61,14 @@ import {ServersService} from '@app/common-servers';
         <div class="field-with-label">
           <mat-label class="field-label">Start offset</mat-label>
           <mat-form-field>
-            <input matInput type="number" min="1" formControlName="offsetBeginning"/>
+            <input matInput type="number" min="0" formControlName="offsetBeginning"/>
           </mat-form-field>
         </div>
 
         <div class="field-with-label">
           <mat-label class="field-label">End offset</mat-label>
           <mat-form-field>
-            <input matInput type="number" min="1" formControlName="offsetEnd"/>
+            <input matInput type="number" min="0" formControlName="offsetEnd"/>
           </mat-form-field>
         </div>
 
@@ -101,7 +100,7 @@ import {ServersService} from '@app/common-servers';
                         formControlName="destinationTopicPartition">
               <mat-option [value]="-1">None</mat-option>
               <mat-option *ngFor="let partition of resendFilterService.destPartitionsObs$ | async"
-                          value="{{partition}}">
+                          [value]="partition">
                 {{partition}}
               </mat-option>
             </mat-select>
@@ -141,9 +140,9 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   resendForm: FormGroup = new FormGroup({
     'sourceTopicName': new FormControl<string>('', Validators.required),
-    'sourceTopicPartition': new FormControl<number>(-1),
-    'offsetBeginning': new FormControl<number>(1, [Validators.min(1), Validators.required]),
-    'offsetEnd': new FormControl<number>(1, [Validators.min(1), Validators.required]),
+    'sourceTopicPartition': new FormControl<number>(0, Validators.required),
+    'offsetBeginning': new FormControl<number>(0, [Validators.min(0), Validators.required]),
+    'offsetEnd': new FormControl<number>(0, [Validators.min(0), Validators.required]),
     'destinationTopicName': new FormControl<string>('', Validators.required),
     'destinationTopicPartition': new FormControl<number>(-1)
   });

@@ -42,8 +42,8 @@ export class ResendFilterService {
 
   public setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
     const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
-    if (partitions <= 1) {
-      this.srcPartitions.next([]);
+    if (partitions <= 0) {
+      this.srcPartitions.next([0]);
     } else {
       this.srcPartitions.next(Array.from(Array(partitions).keys()));
     }
