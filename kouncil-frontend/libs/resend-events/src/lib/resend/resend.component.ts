@@ -1,15 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {first, map, takeUntil, tap} from 'rxjs/operators';
+import {map, takeUntil, tap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ResendService} from './resend.service';
 import {ResendDataModel} from './resend.data.model';
-import {TopicMetadata, Topics} from '@app/common-model';
-import {TopicsService} from '@app/feat-topics';
-import {ServersService} from '@app/common-servers';
+import {ResendFilterService} from './resend.filter.service';
 
 @Component({
   selector: 'app-resend',
@@ -28,13 +26,13 @@ import {ServersService} from '@app/common-servers';
             <mat-form-field>
               <mat-select class="select select-topic"
                           formControlName="sourceTopicName"
-                          (valueChange)="setPartitionsOnSrcTopicChanged($event)">
+                          (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
                 <mat-option>
                   <ngx-mat-select-search placeholderLabel="Search topic.."
                                          [formControl]="sourceTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of sourceFilteredTopics$ | async"
+                <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
                             [value]="topic.caption()">
                   {{topic.caption()}}
                 </mat-option>
@@ -47,7 +45,7 @@ import {ServersService} from '@app/common-servers';
               <mat-select class="select"
                           formControlName="sourceTopicPartition">
                 <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of srcPartitions"
+                <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
                             value="{{partition}}">
                   {{partition}}
                 </mat-option>
@@ -87,13 +85,13 @@ import {ServersService} from '@app/common-servers';
             <mat-form-field>
               <mat-select class="select select-topic"
                           formControlName="destinationTopicName"
-                          (valueChange)="setPartitionsOnDestTopicChanged($event)">
+                          (valueChange)="resendFilterService.setPartitionsOnDestTopicChanged($event)">
                 <mat-option>
                   <ngx-mat-select-search placeholderLabel="Search topic.."
                                          [formControl]="destinationTopicFilterCtrl">
                   </ngx-mat-select-search>
                 </mat-option>
-                <mat-option *ngFor="let topic of destinationFilteredTopics$ | async"
+                <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
                             [value]="topic.caption()">
                   {{topic.caption()}}
                 </mat-option>
@@ -106,7 +104,7 @@ import {ServersService} from '@app/common-servers';
               <mat-select class="select"
                           formControlName="destinationTopicPartition">
                 <mat-option [value]="-1">None</mat-option>
-                <mat-option *ngFor="let partition of destPartitions"
+                <mat-option *ngFor="let partition of resendFilterService.destPartitionsObs$ | async"
                             value="{{partition}}">
                   {{partition}}
                 </mat-option>
@@ -139,13 +137,10 @@ import {ServersService} from '@app/common-servers';
       </form>
     </mat-dialog-content>
   `,
-  styleUrls: ['./resend.component.scss']
+  styleUrls: ['./resend.component.scss'],
+  providers: [ResendFilterService]
 })
 export class ResendComponent implements OnInit, OnDestroy {
-
-  topics: TopicMetadata[] = [];
-  srcPartitions: number[];
-  destPartitions: number[];
 
   sourceTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
   sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
@@ -162,8 +157,6 @@ export class ResendComponent implements OnInit, OnDestroy {
     'destinationTopicPartition': new FormControl<number>(-1)
   });
 
-  sourceFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
-  destinationFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
   private _onDestroy$: Subject<void> = new Subject<void>();
 
   messageData$: Observable<MessageData> = combineLatest([
@@ -177,70 +170,33 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   constructor(
     private resendService: ResendService,
+    public resendFilterService: ResendFilterService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar,
-    private servers: ServersService,
-    private topicsService: TopicsService,
     private messageDataService: MessageDataService) {
   }
 
   ngOnInit(): void {
-    this.topicsService.getTopics$(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe((data: Topics) => {
-        this.topics = data.topics
-          .map(t => new TopicMetadata(t.partitions, null, t.name));
-        this.sourceFilteredTopics$.next(this.topics.slice());
-        this.destinationFilteredTopics$.next(this.topics.slice());
-        this.setPartitionsOnSrcTopicChanged(this.resendForm.value['sourceTopicName']);
+    this.resendFilterService.init().then(() => {
+      this.resendFilterService.setPartitionsOnSrcTopicChanged(this.resendForm.value['sourceTopicName']);
 
-        this.sourceTopicFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy$))
-          .subscribe(() => {
-            this.filterTopics(this.sourceTopicFilterCtrl, this.sourceFilteredTopics$);
-          });
+      this.sourceTopicFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy$))
+        .subscribe(() => {
+          this.resendFilterService.filterSrcTopics(this.sourceTopicFilterCtrl);
+        });
 
-        this.destinationTopicFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy$))
-          .subscribe(() => {
-            this.filterTopics(this.destinationTopicFilterCtrl, this.destinationFilteredTopics$);
-          });
-      });
+      this.destinationTopicFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy$))
+        .subscribe(() => {
+          this.resendFilterService.filterDestTopics(this.destinationTopicFilterCtrl);
+        });
+    });
   }
 
   ngOnDestroy(): void {
     this._onDestroy$.next();
     this._onDestroy$.complete();
-  }
-
-  setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
-    this.srcPartitions = Array.from(Array(
-      this.topics.find(t => t.name === selectedTopicName).partitions).keys()
-    );
-  }
-
-  setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
-    this.destPartitions = Array.from(Array(
-      this.topics.find(t => t.name === selectedTopicName).partitions).keys()
-    );
-  }
-
-  filterTopics(topicFilterControl: FormControl, filteredTopics$: Subject<TopicMetadata[]>): void {
-    if (!this.topics) {
-      return;
-    }
-
-    let search: string = topicFilterControl.value;
-    if (!search) {
-      filteredTopics$.next(this.topics.slice());
-      return;
-    } else {
-      search = search.trim().toLowerCase();
-    }
-
-    filteredTopics$.next(
-      this.topics.filter(topic => topic.name.toLowerCase().indexOf(search) > -1)
-    );
   }
 
   onSubmit(): void {
