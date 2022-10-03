@@ -119,7 +119,6 @@ import {ServersService} from '@app/common-servers';
           >
             Cancel
           </button>
-          <span class="spacer"></span>
           <button mat-button disableRipple class="action-button-black" type="submit">
             Send event
           </button>

@@ -114,6 +114,7 @@ mat-dialog-container.mat-dialog-container {
   .actions {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
     button {
       font-size: 14px;
@@ -121,6 +122,8 @@ mat-dialog-container.mat-dialog-container {
       line-height: 24px;
       padding: 8px 12px;
       border-radius: $default-border-radius;
+
+      cursor: pointer;
     }
 
     .action-button-white {
