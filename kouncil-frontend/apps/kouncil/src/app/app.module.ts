@@ -6,7 +6,6 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/h
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {SendComponent} from './send/send.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
@@ -19,7 +18,6 @@ import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
 import {topicServiceProvider} from './topic/topic.service';
-import {SendService, sendServiceFactory} from './send/send.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -55,9 +53,10 @@ import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
-import {topicsServiceFactory} from './app-factories';
+import {sendServiceFactory, topicsServiceFactory} from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
+import {FeatSendModule, SendService} from '@app/feat-send';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -94,7 +93,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     NavbarComponent,
     TopicComponent,
     ConsumerGroupsComponent,
-    SendComponent,
     ToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
@@ -136,7 +134,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ResendModule,
     ConfirmModule,
     FeatTopicsModule,
-    FeatNoDataModule
+    FeatNoDataModule,
+    FeatSendModule
   ],
   providers: [
     {

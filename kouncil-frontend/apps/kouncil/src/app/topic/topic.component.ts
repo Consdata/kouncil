@@ -11,7 +11,6 @@ import { DatePipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
-import { SendComponent } from '../send/send.component';
 import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
 import { LiveUpdateState } from './toolbar/toolbar.component';
@@ -25,6 +24,7 @@ import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
+import {SendComponent} from '@app/feat-send';
 
 @Component({
   selector: 'app-topic',
