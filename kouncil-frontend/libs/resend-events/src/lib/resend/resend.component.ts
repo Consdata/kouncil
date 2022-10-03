@@ -59,17 +59,15 @@ import {ServersService} from '@app/common-servers';
           </mat-form-field>
         </div>
 
-        <div class="drawer-section-title">With offset to resend:</div>
-
         <div class="field-with-label">
-          <div class="field-label">From:</div>
+          <div class="field-label">Start offset:</div>
           <mat-form-field>
             <input matInput type="number" min="1" formControlName="offsetBeginning"/>
           </mat-form-field>
         </div>
 
         <div class="field-with-label">
-          <div class="field-label">To:</div>
+          <div class="field-label">End offset:</div>
           <mat-form-field>
             <input matInput type="number" min="1" formControlName="offsetEnd"/>
           </mat-form-field>
