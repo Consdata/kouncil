@@ -3,9 +3,9 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {ServersService} from '../servers.service';
-import {SearchService} from '../search.service';
 import {Backend} from '@app/common-model';
+import {SearchService} from '@app/common-utils';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-kafka-navbar',

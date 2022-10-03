@@ -1,3 +1,4 @@
+export {TopicsComponent} from './lib/topics/topics.component';
 export {demoTopics} from './lib/topics/topics.demo.data';
 export {FeatTopicsModule} from './lib/feat-topics.module';
 export {TopicsBackendService} from './lib/topics/topics.backend.service';

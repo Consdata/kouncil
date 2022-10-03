@@ -4,8 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {ConsumerGroupsBackendService} from './consumer-groups.backend.service';
 import {ConsumerGroupsDemoService} from './consumer-groups.demo.service';
-import {Backend} from '@app/common-model';
-import {ConsumerGroupsResponse} from '../../../../../../libs/common-model/src/lib/model/consumer-group/consumer-groups';
+import {Backend, ConsumerGroupsResponse} from '@app/common-model';
 
 @Injectable()
 export abstract class ConsumerGroupsService {

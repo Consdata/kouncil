@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "common-model": "libs/common-model",
+    "common-servers": "libs/common-servers",
     "common-utils": "libs/common-utils",
     "feat-confirm": "libs/feat-confirm",
     "feat-favourites": "libs/feat-favourites",

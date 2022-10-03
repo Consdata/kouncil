@@ -1,3 +1,5 @@
+export {ArraySortService} from './lib/util/array-sort.service';
+export {SearchService} from './lib/search/search.service';
 export {CommonUtilsModule} from './lib/common-utils.module';
 export {Crypto} from './lib/util/crypto';
 export {DrawerService} from './lib/util/drawer.service';

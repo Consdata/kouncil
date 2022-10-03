@@ -1,17 +1,16 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {SearchService} from '../../search.service';
 import {Title} from '@angular/platform-browser';
-import {ServersService} from '../../servers.service';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {DrawerService, ProgressBarService, Crypto} from '@app/common-utils';
+import {DrawerService, ProgressBarService, Crypto, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-track-result',

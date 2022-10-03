@@ -14,18 +14,17 @@ import { Page } from './page';
 import { SendComponent } from '../send/send.component';
 import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
-import { ServersService } from '../servers.service';
 import { LiveUpdateState } from './toolbar/toolbar.component';
 import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
 import { JsonGridData } from './json-grid-data';
 import { CustomTableColumn } from './custom-table-column';
 import { Observable, Subscription } from 'rxjs';
-import { SearchService } from '../search.service';
 import { JsonGrid } from './json-grid';
 import { TopicMessages } from './topic-messages';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {DrawerService, ProgressBarService} from '@app/common-utils';
+import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-topic',

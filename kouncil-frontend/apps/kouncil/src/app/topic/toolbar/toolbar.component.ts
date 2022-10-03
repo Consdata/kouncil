@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from '../topic.service';
-import {ServersService} from '../../servers.service';
+import {ServersService} from '@app/common-servers';
 
 export enum LiveUpdateState {
   PLAY = 'play',

@@ -36,10 +36,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ServersService} from './servers.service';
 import {environment} from '../environments/environment';
-import {ServersBackendService} from './servers.backend.service';
-import {ServersDemoService} from './servers.demo.service';
 import {TrackComponent} from './track/track.component';
 import {TrackFilterComponent} from './track/track-filter/track-filter.component';
 import {TrackResultComponent} from './track/track-result/track-result.component';
@@ -52,15 +49,15 @@ import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
-import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
-import {CommonUtilsModule, HttpClientInterceptor} from '@app/common-utils';
+import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {topicsServiceFactory} from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
+import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {

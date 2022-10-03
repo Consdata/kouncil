@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {TopicService} from './topic.service';
 import {Page} from './page';
-import {ServersService} from '../servers.service';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-topic-pagination',

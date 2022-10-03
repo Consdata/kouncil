@@ -5,10 +5,10 @@ import {SendService} from './send.service';
 import {first, map, switchMap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ServersService} from '../servers.service';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {combineLatest, iif, Observable, of} from 'rxjs';
 import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-send',

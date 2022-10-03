@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from './topic.service';
 import {MatSelectChange} from '@angular/material/select';
-import {ServersService} from '../servers.service';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-topic-partitions',
