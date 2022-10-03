@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TopicMetadata, Topics} from '@app/common-model';
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {ServersService} from '@app/common-servers';
 import {TopicsService} from '@app/feat-topics';
 import {first} from 'rxjs/operators';
@@ -12,15 +12,15 @@ export class ResendFilterService {
 
   private topics: TopicMetadata[] = [];
 
-  private srcPartitions: Subject<number[]> = new Subject<number[]>();
-  private destPartitions: Subject<number[]> = new Subject<number[]>();
+  private srcPartitions$: Subject<number[]> = new Subject<number[]>();
+  private destPartitions$: Subject<number[]> = new Subject<number[]>();
   private sourceFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
   private destinationFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
 
-  public srcPartitionsObs$ = this.srcPartitions.asObservable();
-  public destPartitionsObs$ = this.destPartitions.asObservable();
-  public sourceFilteredTopicsObs$ = this.sourceFilteredTopics$.asObservable();
-  public destinationFilteredTopicsObs$ = this.destinationFilteredTopics$.asObservable();
+  public srcPartitionsObs$: Observable<number[]> = this.srcPartitions$.asObservable();
+  public destPartitionsObs$: Observable<number[]> = this.destPartitions$.asObservable();
+  public sourceFilteredTopicsObs$: Observable<TopicMetadata[]> = this.sourceFilteredTopics$.asObservable();
+  public destinationFilteredTopicsObs$: Observable<TopicMetadata[]> = this.destinationFilteredTopics$.asObservable();
 
   constructor(
     private resendFormService: ResendFormService,
@@ -45,9 +45,9 @@ export class ResendFilterService {
   public setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
     const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
     if (partitions <= 0) {
-      this.srcPartitions.next([0]);
+      this.srcPartitions$.next([0]);
     } else {
-      this.srcPartitions.next(Array.from(Array(partitions).keys()));
+      this.srcPartitions$.next(Array.from(Array(partitions).keys()));
     }
     this.resendFormService.resendForm.get('sourceTopicPartition')?.setValue(0);
   }
@@ -55,18 +55,18 @@ export class ResendFilterService {
   public setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
     const partitions = this.topics.find(t => t.name === selectedTopicName).partitions;
     if (partitions <= 1) {
-      this.destPartitions.next([]);
+      this.destPartitions$.next([]);
     } else {
-      this.destPartitions.next(Array.from(Array(partitions).keys()));
+      this.destPartitions$.next(Array.from(Array(partitions).keys()));
     }
     this.resendFormService.resendForm.get('destinationTopicPartition')?.setValue(0);
   }
 
-  public filterSrcTopics(sourceTopicFilterCtrl: FormControl) {
+  public filterSrcTopics(sourceTopicFilterCtrl: FormControl): void {
     this.filterTopics(sourceTopicFilterCtrl, this.sourceFilteredTopics$);
   }
 
-  public filterDestTopics(destinationTopicFilterCtrl: FormControl) {
+  public filterDestTopics(destinationTopicFilterCtrl: FormControl): void {
     this.filterTopics(destinationTopicFilterCtrl, this.destinationFilteredTopics$);
   }
 
