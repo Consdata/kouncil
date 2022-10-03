@@ -4,7 +4,7 @@ import {first, map, takeUntil, tap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
 import {ResendService} from './resend.service';
 import {ResendDataModel} from './resend.data.model';
 import {TopicMetadata, Topics} from '@app/common-model';
@@ -151,7 +151,7 @@ export class ResendComponent implements OnInit, OnDestroy {
   sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
 
   destinationTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
-  destinationTopicFilterCtrl: FormControl = new FormControl<string>('');
+  destinationTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
 
   resendForm: FormGroup = new FormGroup({
     'sourceTopicName': this.sourceTopicNameCtrl,
@@ -162,8 +162,8 @@ export class ResendComponent implements OnInit, OnDestroy {
     'destinationTopicPartition': new FormControl<number>(-1)
   });
 
-  sourceFilteredTopics$: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
-  destinationFilteredTopics$: ReplaySubject<TopicMetadata[]> = new ReplaySubject<TopicMetadata[]>(1);
+  sourceFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
+  destinationFilteredTopics$: Subject<TopicMetadata[]> = new Subject<TopicMetadata[]>();
   private _onDestroy$: Subject<void> = new Subject<void>();
 
   messageData$: Observable<MessageData> = combineLatest([
@@ -225,7 +225,7 @@ export class ResendComponent implements OnInit, OnDestroy {
     );
   }
 
-  filterTopics(topicFilterControl: FormControl, filteredTopics$: ReplaySubject<TopicMetadata[]>): void {
+  filterTopics(topicFilterControl: FormControl, filteredTopics$: Subject<TopicMetadata[]>): void {
     if (!this.topics) {
       return;
     }
@@ -235,7 +235,7 @@ export class ResendComponent implements OnInit, OnDestroy {
       filteredTopics$.next(this.topics.slice());
       return;
     } else {
-      search = search.toLowerCase();
+      search = search.trim().toLowerCase();
     }
 
     filteredTopics$.next(
