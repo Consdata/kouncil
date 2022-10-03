@@ -131,18 +131,15 @@ import {ServersService} from '@app/common-servers';
 })
 export class ResendComponent implements OnInit, OnDestroy {
 
-  sourceTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
   sourceTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
-
-  destinationTopicNameCtrl: FormControl = new FormControl<string>('', Validators.required);
   destinationTopicFilterCtrl: FormControl = new FormControl<string>('', Validators.required);
 
   resendForm: FormGroup = new FormGroup({
-    'sourceTopicName': this.sourceTopicNameCtrl,
+    'sourceTopicName': new FormControl<string>('', Validators.required),
     'sourceTopicPartition': new FormControl<number>(-1),
     'offsetBeginning': new FormControl<number>(1, [Validators.min(1), Validators.required]),
     'offsetEnd': new FormControl<number>(1, [Validators.min(1), Validators.required]),
-    'destinationTopicName': this.destinationTopicNameCtrl,
+    'destinationTopicName': new FormControl<string>('', Validators.required),
     'destinationTopicPartition': new FormControl<number>(-1)
   });
 
