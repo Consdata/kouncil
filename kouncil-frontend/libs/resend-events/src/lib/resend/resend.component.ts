@@ -27,7 +27,7 @@ import {ServersService} from '@app/common-servers';
         <div class="drawer-section-title">Source topic</div>
 
         <div>
-          <div class="field-label">Topic:</div>
+          <mat-label class="field-label">Topic</mat-label>
           <mat-form-field>
             <mat-select class="select select-topic"
                         formControlName="sourceTopicName"
@@ -46,7 +46,7 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div>
-          <div class="field-label">Partition:</div>
+          <mat-label class="field-label">Partition</mat-label>
           <mat-form-field>
             <mat-select class="select"
                         formControlName="sourceTopicPartition">
@@ -60,14 +60,14 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div class="field-with-label">
-          <div class="field-label">Start offset:</div>
+          <mat-label class="field-label">Start offset</mat-label>
           <mat-form-field>
             <input matInput type="number" min="1" formControlName="offsetBeginning"/>
           </mat-form-field>
         </div>
 
         <div class="field-with-label">
-          <div class="field-label">End offset:</div>
+          <mat-label class="field-label">End offset</mat-label>
           <mat-form-field>
             <input matInput type="number" min="1" formControlName="offsetEnd"/>
           </mat-form-field>
@@ -76,7 +76,7 @@ import {ServersService} from '@app/common-servers';
         <div class="drawer-section-title">Destination topic</div>
 
         <div>
-          <div class="field-label">Topic:</div>
+          <mat-label class="field-label">Topic</mat-label>
           <mat-form-field>
             <mat-select class="select select-topic"
                         formControlName="destinationTopicName"
@@ -95,7 +95,7 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div>
-          <div class="field-label">Partition:</div>
+          <mat-label class="field-label">Partition</mat-label>
           <mat-form-field>
             <mat-select class="select"
                         formControlName="destinationTopicPartition">
