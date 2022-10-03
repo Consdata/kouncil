@@ -195,28 +195,18 @@ public class TopicService {
 
     public void resend(TopicResendEventsModel resendParams, String serverId) {
         messagesHelper.validateTopics(serverId, asList(resendParams.getSourceTopicName(), resendParams.getDestinationTopicName()));
-        log.error("Resend with params: {}", resendParams);
+        log.info("Resend with params: {}", resendParams);
         try (KafkaConsumer<Bytes, Bytes> consumer = kafkaConnectionService.getKafkaConsumer(serverId, RESEND_MAX_POLL_RECORDS)) {
             TopicPartition sourceTopicPartition = new TopicPartition(resendParams.getSourceTopicName(), resendParams.getSourceTopicPartition());
-            Long sourcePartitionBeginningOffset = consumer.beginningOffsets(singletonList(sourceTopicPartition)).get(sourceTopicPartition);
-            Long sourcePartitionEndOffset = consumer.endOffsets(singletonList(sourceTopicPartition)).get(sourceTopicPartition);
-
-            if (resendParams.getOffsetBeginning() < sourcePartitionBeginningOffset || resendParams.getOffsetBeginning() > sourcePartitionEndOffset
-                    || resendParams.getOffsetEnd() < sourcePartitionBeginningOffset || resendParams.getOffsetEnd() > sourcePartitionEndOffset) {
-                log.error("Submitted offset range {}-{} is outside topic offset range {}-{}",
-                        resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset);
-                throw new KouncilRuntimeException(String.format("Submitted offset range %d-%d is outside topic offset range %d-%d",
-                        resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset));
-            }
+            validateOffsetRange(resendParams, consumer, sourceTopicPartition);
 
             consumer.assign(singletonList(sourceTopicPartition));
-
             consumer.seek(sourceTopicPartition, resendParams.getOffsetBeginning());
 
             KafkaTemplate<Bytes, Bytes> kafkaTemplate = kafkaConnectionService.getKafkaTemplate(serverId);
 
             int emptyPolls = 0;
-            long messagesCount = 0;
+            long resentMessagesCount = 0;
             long lastOffset = -1;
             while (emptyPolls < 3 && lastOffset < resendParams.getOffsetEnd()) {
                 ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer);
@@ -231,15 +221,28 @@ public class TopicService {
                     if (lastOffset > resendParams.getOffsetEnd()) {
                         break;
                     }
-                    messagesCount++;
+                    resentMessagesCount++;
                     resendOneRecord(consumerRecord, kafkaTemplate, resendParams.getDestinationTopicName(), resendParams.getDestinationTopicPartition());
                 }
-                log.info("");
+                log.info("Resent {}% completed", resentMessagesCount * 100 / (resendParams.getOffsetEnd() - resendParams.getOffsetBeginning() + 1));
             }
-            if (messagesCount > 0) {
+            if (resentMessagesCount > 0) {
                 kafkaTemplate.flush();
             }
-            log.info("Resent {} messages", messagesCount);
+            log.info("Resent {} messages", resentMessagesCount);
+        }
+    }
+
+    private static void validateOffsetRange(TopicResendEventsModel resendParams, KafkaConsumer<Bytes, Bytes> consumer, TopicPartition sourceTopicPartition) {
+        Long sourcePartitionBeginningOffset = consumer.beginningOffsets(singletonList(sourceTopicPartition)).get(sourceTopicPartition);
+        Long sourcePartitionEndOffset = consumer.endOffsets(singletonList(sourceTopicPartition)).get(sourceTopicPartition);
+
+        if (resendParams.getOffsetBeginning() < sourcePartitionBeginningOffset || resendParams.getOffsetBeginning() > sourcePartitionEndOffset
+                || resendParams.getOffsetEnd() < sourcePartitionBeginningOffset || resendParams.getOffsetEnd() > sourcePartitionEndOffset) {
+            log.error("Submitted offset range {}-{} is outside topic offset range {}-{}",
+                    resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset);
+            throw new KouncilRuntimeException(String.format("Submitted offset range %d-%d is outside topic offset range %d-%d",
+                    resendParams.getOffsetBeginning(), resendParams.getOffsetEnd(), sourcePartitionBeginningOffset, sourcePartitionEndOffset));
         }
     }
 
