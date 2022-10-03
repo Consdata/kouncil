@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {Subject} from 'rxjs';
-import {ResendService} from '@app/resend-events';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from '@app/common-servers';
 import {TopicsService} from '@app/feat-topics';
 import {first} from 'rxjs/operators';
@@ -25,9 +22,6 @@ export class ResendFilterService {
   public destinationFilteredTopicsObs$ = this.destinationFilteredTopics$.asObservable();
 
   constructor(
-    private resendService: ResendService,
-    private dialog: MatDialog,
-    private snackbar: MatSnackBar,
     private servers: ServersService,
     private topicsService: TopicsService) {
   }

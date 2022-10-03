@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {map, takeUntil, tap} from 'rxjs/operators';
+import {first, map, takeUntil, tap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MessageData, MessageDataService} from '@app/message-data';
@@ -8,6 +8,7 @@ import {combineLatest, Observable, Subject} from 'rxjs';
 import {ResendService} from './resend.service';
 import {ResendDataModel} from './resend.data.model';
 import {ResendFilterService} from './resend.filter.service';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-resend',
@@ -57,25 +58,13 @@ import {ResendFilterService} from './resend.filter.service';
         <div class="drawer-section-title">With offset to resend:</div>
         <div class="offset-count-wrapper">
           <div class="drawer-section-title">From:</div>
-          <div class="count offset-input-fields">
-            <input matInput type="number" min="1" formControlName="offsetBeginning" name="count"/>
-            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseFromOffsetCount()">
-              -
-            </button>
-            <button type="button" class="small-button" mat-button disableRipple (click)="increaseFromOffsetCount()">
-              +
-            </button>
+          <div class="offset-input-fields">
+            <input matInput type="number" min="1" formControlName="offsetBeginning"/>
           </div>
 
           <div class="drawer-section-title">To:</div>
-          <div class="count offset-input-fields">
-            <input matInput type="number" min="1" formControlName="offsetEnd" name="count"/>
-            <button type="button" class="small-button" mat-button disableRipple (click)="decreaseToOffsetCount()">
-              -
-            </button>
-            <button type="button" class="small-button" mat-button disableRipple (click)="increaseToOffsetCount()">
-              +
-            </button>
+          <div class="offset-input-fields">
+            <input matInput type="number" min="1" formControlName="offsetEnd"/>
           </div>
         </div>
 
@@ -169,8 +158,9 @@ export class ResendComponent implements OnInit, OnDestroy {
   );
 
   constructor(
-    private resendService: ResendService,
     public resendFilterService: ResendFilterService,
+    private resendService: ResendService,
+    private servers: ServersService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar,
     private messageDataService: MessageDataService) {
@@ -201,7 +191,7 @@ export class ResendComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const resendData: ResendDataModel = {...this.resendForm.value};
-    console.log(resendData);
+    console.log('resendData=', resendData);
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
@@ -214,30 +204,6 @@ export class ResendComponent implements OnInit, OnDestroy {
             panelClass: ['snackbar-success', 'snackbar'],
           });
       });
-  }
-
-  increaseFromOffsetCount(): void {
-    const offsetBeginning = this.resendForm.get('offsetBeginning');
-    offsetBeginning.setValue(offsetBeginning.value + 1);
-  }
-
-  decreaseFromOffsetCount(): void {
-    const offsetBeginning = this.resendForm.get('offsetBeginning');
-    if (offsetBeginning.value > 1) {
-      offsetBeginning.setValue(offsetBeginning.value - 1);
-    }
-  }
-
-  increaseToOffsetCount(): void {
-    const offsetEnd = this.resendForm.get('offsetEnd');
-    offsetEnd.setValue(offsetEnd.value + 1);
-  }
-
-  decreaseToOffsetCount(): void {
-    const offsetEnd = this.resendForm.get('offsetEnd');
-    if (offsetEnd.value > 1) {
-      offsetEnd.setValue(offsetEnd.value - 1);
-    }
   }
 
 }
