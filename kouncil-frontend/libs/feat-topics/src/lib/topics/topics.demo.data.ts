@@ -1,5 +1,5 @@
-import {TopicMetadata} from './topics';
 import {FavouritesGroup} from '@app/feat-favourites';
+import {TopicMetadata} from '@app/common-model';
 
 export const demoTopics = [
   new TopicMetadata(4, FavouritesGroup.GROUP_ALL, 'bank-transactions'),

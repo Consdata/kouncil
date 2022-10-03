@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
 import {FormControl, NgForm} from '@angular/forms';
-import {TopicsService} from '../../topics/topics.service';
 import {ServersService} from '../../servers.service';
 import {TrackFilter, TrackOperator} from './track-filter';
-import {Topics} from '../../topics/topics';
+import {TopicsService} from '@app/feat-topics';
+import {Topics} from '@app/common-model';
 
 @Component({
   selector: 'app-track-filter',

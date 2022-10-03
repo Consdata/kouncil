@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {TopicMessages} from './topic-messages';
 import {Page} from './page';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {ProgressBarService} from '../util/progress-bar.service';
+import {ProgressBarService} from '@app/common-utils';
 
 @Injectable({
   providedIn: 'root'

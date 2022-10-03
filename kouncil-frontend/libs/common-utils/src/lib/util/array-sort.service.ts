@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {TopicMetadata} from '../topics/topics';
-import {ConsumerGroup} from '../consumers/consumer-groups/consumer-groups';
 import {FavouritesGroup} from '@app/feat-favourites';
+import {ConsumerGroup, TopicMetadata} from '@app/common-model';
 
 @Injectable({
   providedIn: 'root'

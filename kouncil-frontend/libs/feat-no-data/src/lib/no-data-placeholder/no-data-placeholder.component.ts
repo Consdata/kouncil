@@ -1,12 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-} from '@angular/core';
-import { ProgressBarService } from '../util/progress-bar.service';
-import { SearchService } from '../search.service';
-import { Observable } from 'rxjs';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input,} from '@angular/core';
+import {Observable} from 'rxjs';
+import {ProgressBarService} from '@app/common-utils';
+import {SearchService} from '../../../../../apps/kouncil/src/app/search.service';
 
 @Component({
   selector: 'app-no-data-placeholder',

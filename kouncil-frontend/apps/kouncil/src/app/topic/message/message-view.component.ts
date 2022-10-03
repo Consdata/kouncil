@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {SendComponent} from '../../send/send.component';
-import {DrawerService} from '../../util/drawer.service';
 import {first, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
@@ -10,6 +9,7 @@ import {Clipboard} from '@angular/cdk/clipboard';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {DrawerService} from '@app/common-utils';
 
 @Component({
   selector: 'app-message-view',

@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { TopicMessages } from './topic-messages';
-import { TopicBackendService } from './topic.backend.service';
-import { demoTopics } from '../topics/topics.demo.data';
-import { Crypto } from '../util/crypto';
-import { RandomUtils } from '../util/random-utils';
+import {Injectable} from '@angular/core';
+import {TopicMessages} from './topic-messages';
+import {TopicBackendService} from './topic.backend.service';
 import {MessageData, MessageDataHeader} from '@app/message-data';
+import {Crypto, RandomUtils} from '@app/common-utils';
+import {demoTopics} from '@app/feat-topics';
 
 @Injectable()
 export class TopicDemoService extends TopicBackendService {

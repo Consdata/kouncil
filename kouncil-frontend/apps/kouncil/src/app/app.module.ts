@@ -6,7 +6,6 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/h
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicsComponent} from './topics/topics.component';
 import {SendComponent} from './send/send.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
@@ -15,13 +14,10 @@ import {ConsumerGroupComponent} from './consumers/consumer-group/consumer-group.
 import {ToolbarComponent} from './topic/toolbar/toolbar.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {ProgressBarComponent} from './util/progress-bar.component';
-import {NoDataPlaceholderComponent} from './no-data-placeholder/no-data-placeholder.component';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
-import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {SendService, sendServiceFactory} from './send/send.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -39,7 +35,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
-import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ServersService} from './servers.service';
 import {environment} from '../environments/environment';
@@ -62,6 +57,10 @@ import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
+import {CommonUtilsModule, HttpClientInterceptor} from '@app/common-utils';
+import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
+import {topicsServiceFactory} from './app-factories';
+import {FeatNoDataModule} from '@app/feat-no-data';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -97,16 +96,12 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     AppComponent,
     NavbarComponent,
     TopicComponent,
-    TopicsComponent,
     ConsumerGroupsComponent,
     SendComponent,
     ToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
-    ProgressBarComponent,
-    NoDataPlaceholderComponent,
     TopicPartitionsComponent,
-    NoDataPlaceholderComponent,
     TopicPaginationComponent,
     BreadcrumbComponent,
     BrokerComponent,
@@ -140,8 +135,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatSelectModule,
     NgxMatSelectSearchModule,
     MatTooltipModule,
+    CommonUtilsModule,
     ResendModule,
-    ConfirmModule
+    ConfirmModule,
+    FeatTopicsModule,
+    FeatNoDataModule
   ],
   providers: [
     {

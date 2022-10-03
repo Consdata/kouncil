@@ -6,12 +6,13 @@ import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from '../../servers.service';
 import {SearchService} from '../../search.service';
-import {ProgressBarService} from '../../util/progress-bar.service';
-import {ConsumerGroup, ConsumerGroupsResponse} from './consumer-groups';
-import {ArraySortService} from '../../util/array-sort.service';
 import {Model} from '@swimlane/ngx-datatable';
 import {ConfirmService} from '@app/feat-confirm';
 import {FavouritesService} from '@app/feat-favourites';
+import {ConsumerGroup} from '@app/common-model';
+import {ConsumerGroupsResponse} from '../../../../../../libs/common-model/src/lib/model/consumer-group/consumer-groups';
+import {ProgressBarService} from '@app/common-utils';
+import {ArraySortService} from '../../../../../../libs/common-utils/src/lib/util/array-sort.service';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 

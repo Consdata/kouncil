@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CachedCellData } from './cached-cell-data';
-import { ConsumerGroupOffset } from '../consumer-group/consumer-group';
+
 import { ServersService } from '../../servers.service';
 import { format } from 'date-fns';
+import {ConsumerGroupOffset} from '@app/common-model';
 
 export interface CachedCellDataViewModel {
   realValue: string | null;

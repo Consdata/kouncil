@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {first, map, takeUntil, tap} from 'rxjs/operators';
-import {MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ServersService} from 'apps/kouncil/src/app/servers.service';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {ResendService} from './resend.service';
-import {TopicMetadata, Topics} from 'apps/kouncil/src/app/topics/topics';
-import {TopicsService} from 'apps/kouncil/src/app/topics/topics.service';
 import {ResendDataModel} from './resend.data.model';
+import {TopicMetadata, Topics} from '@app/common-model';
+import {TopicsService} from '@app/feat-topics';
 
 @Component({
   selector: 'app-resend',

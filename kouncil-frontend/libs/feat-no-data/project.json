@@ -1,0 +1,27 @@
+{
+  "name": "feat-no-data",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-no-data/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/feat-no-data"],
+      "options": {
+        "jestConfig": "libs/feat-no-data/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/feat-no-data/**/*.ts",
+          "libs/feat-no-data/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

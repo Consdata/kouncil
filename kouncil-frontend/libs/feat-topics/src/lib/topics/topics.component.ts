@@ -1,16 +1,15 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {DrawerService} from '../util/drawer.service';
-import {ServersService} from '../servers.service';
-import {SearchService} from '../search.service';
-import {TopicMetadata, Topics} from './topics';
-import {ArraySortService} from '../util/array-sort.service';
 import {Model} from '@swimlane/ngx-datatable';
 import {FavouritesService} from '@app/feat-favourites';
+import {DrawerService, ProgressBarService} from '@app/common-utils';
+import {TopicMetadata, Topics} from '@app/common-model';
+import {SearchService} from '../../../../../apps/kouncil/src/app/search.service';
+import {ArraySortService} from '../../../../common-utils/src/lib/util/array-sort.service';
+import {ServersService} from '../../../../../apps/kouncil/src/app/servers.service';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {ConsumerGroupOffset} from '../consumer-group/consumer-group';
 import {CachedCellDataViewModel, CachedCellService} from './cached-cell.service';
 import {Observable} from 'rxjs';
+import {ConsumerGroupOffset} from '@app/common-model';
 
 @Component({
   selector: 'app-cached-cell',

@@ -9,13 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DatePipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { ProgressBarService } from '../util/progress-bar.service';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
 import { SendComponent } from '../send/send.component';
 import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
-import { DrawerService } from '../util/drawer.service';
 import { ServersService } from '../servers.service';
 import { LiveUpdateState } from './toolbar/toolbar.component';
 import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
@@ -27,6 +25,7 @@ import { JsonGrid } from './json-grid';
 import { TopicMessages } from './topic-messages';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
+import {DrawerService, ProgressBarService} from '@app/common-utils';
 
 @Component({
   selector: 'app-topic',

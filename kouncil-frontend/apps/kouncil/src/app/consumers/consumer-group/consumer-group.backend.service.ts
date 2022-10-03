@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ConsumerGroupService} from './consumer-group.service';
 import {Observable} from 'rxjs';
-import {ConsumerGroupResponse} from './consumer-group';
+import {ConsumerGroupResponse} from '@app/common-model';
 
 @Injectable({
   providedIn: 'root'
