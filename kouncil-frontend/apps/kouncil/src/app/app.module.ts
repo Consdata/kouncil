@@ -44,7 +44,6 @@ import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ServersService} from './servers.service';
 import {environment} from '../environments/environment';
-import {Backend} from './app.backend';
 import {ServersBackendService} from './servers.backend.service';
 import {ServersDemoService} from './servers.demo.service';
 import {TrackComponent} from './track/track.component';
@@ -62,6 +61,7 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService, resendServiceFactory} from '@app/resend-events';
+import {Backend} from '@app/common-model';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {

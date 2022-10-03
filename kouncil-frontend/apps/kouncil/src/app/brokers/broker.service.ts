@@ -5,8 +5,8 @@ import {HttpClient} from '@angular/common/http';
 import {BrokerBackendService} from './broker.backend.service';
 import {BrokerDemoService} from './broker.demo.service';
 import {environment} from '../../environments/environment';
-import {Backend} from '../app.backend';
 import {Injectable} from '@angular/core';
+import {Backend} from '@app/common-model';
 
 @Injectable()
 export abstract class BrokerService {

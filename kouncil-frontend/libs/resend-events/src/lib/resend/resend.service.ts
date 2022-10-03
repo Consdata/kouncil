@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from 'apps/kouncil/src/environments/environment';
-import {Backend} from 'apps/kouncil/src/app/app.backend';
 import {ResendBackendService} from './resend.backend.service';
 import {ResendDemoService} from './resend.demo.service';
 import {ResendDataModel} from './resend.data.model';
+import {Backend} from '@app/common-model';
 
 @Injectable()
 export abstract class ResendService {

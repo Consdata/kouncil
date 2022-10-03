@@ -1,9 +1,10 @@
 {
   "version": 2,
   "projects": {
+    "common-model": "libs/common-model",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
-    "schema-registry": "libs/schema-registry",
-    "resend-events": "libs/resend-events"
+    "resend-events": "libs/resend-events",
+    "schema-registry": "libs/schema-registry"
   }
 }

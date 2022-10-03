@@ -3,9 +3,9 @@ import {Observable} from 'rxjs';
 import {Topics} from './topics';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {Backend} from '../app.backend';
 import {TopicsBackendService} from './topics.backend.service';
 import {TopicsDemoService} from './topics.demo.service';
+import {Backend} from '@app/common-model';
 
 @Injectable()
 export abstract class TopicsService {

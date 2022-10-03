@@ -1,15 +1,15 @@
 {
-  "name": "schema-registry",
+  "name": "common-model",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/schema-registry/src",
-  "prefix": "kouncil",
+  "sourceRoot": "libs/common-model/src",
+  "prefix": "app",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/schema-registry"],
+      "outputs": ["coverage/libs/common-model"],
       "options": {
-        "jestConfig": "libs/schema-registry/jest.config.ts",
+        "jestConfig": "libs/common-model/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -17,8 +17,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "libs/schema-registry/src/**/*.ts",
-          "libs/schema-registry/src/**/*.html"
+          "libs/common-model/**/*.ts",
+          "libs/common-model/**/*.html"
         ]
       }
     }

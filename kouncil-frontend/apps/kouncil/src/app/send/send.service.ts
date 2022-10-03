@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { Backend } from '../app.backend';
-import { SendBackendService } from './send.backend.service';
-import { SendDemoService } from './send.demo.service';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
+import {SendBackendService} from './send.backend.service';
+import {SendDemoService} from './send.demo.service';
 import {MessageData} from '@app/message-data';
+import {Backend} from '@app/common-model';
 
 @Injectable()
 export abstract class SendService {

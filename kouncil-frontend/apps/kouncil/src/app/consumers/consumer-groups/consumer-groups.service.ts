@@ -3,9 +3,9 @@ import { Observable } from 'rxjs';
 import { ConsumerGroupsResponse } from './consumer-groups';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Backend } from '../../app.backend';
 import { ConsumerGroupsBackendService } from './consumer-groups.backend.service';
 import { ConsumerGroupsDemoService } from './consumer-groups.demo.service';
+import {Backend} from '@app/common-model';
 
 @Injectable()
 export abstract class ConsumerGroupsService {
