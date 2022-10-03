@@ -209,7 +209,7 @@ export class ResendComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next(null);
+    this._onDestroy$.next();
     this._onDestroy$.complete();
   }
 
