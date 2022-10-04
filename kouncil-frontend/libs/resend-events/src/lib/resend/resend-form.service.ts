@@ -38,22 +38,18 @@ export class ResendFormService {
   submit(): void {
     const resendData: ResendDataModel = {...this.resendForm.value};
 
-    if (resendData.offsetEnd - resendData.offsetBeginning > 500) {
-      this.confirmService.openConfirmDialog$({
-        title: 'Resend messages',
-        subtitle: 'Are you sure you want resend messages:',
-        section: `${resendData.destinationTopicName}`
-      })
-        .pipe(
-          first(),
-          filter((confirmed) => !!confirmed),
-        )
-        .subscribe(() => {
-          this.resendMessages(resendData)
-        });
-    } else {
-      this.resendMessages(resendData)
-    }
+    this.confirmService.openConfirmDialog$({
+      title: 'Resend messages',
+      subtitle: 'Are you sure you want resend messages:',
+      section: `${resendData.destinationTopicName}`
+    })
+      .pipe(
+        first(),
+        filter((confirmed) => !!confirmed),
+      )
+      .subscribe(() => {
+        this.resendMessages(resendData)
+      });
   }
 
   private resendMessages(resendData: ResendDataModel): void {
