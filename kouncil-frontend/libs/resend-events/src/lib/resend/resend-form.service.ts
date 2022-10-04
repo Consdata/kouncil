@@ -1,6 +1,6 @@
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Injectable} from '@angular/core';
-import {ResendService} from '@app/resend-events';
+import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -34,9 +34,7 @@ export class ResendFormService {
   }
 
   submit(): void {
-    const resendData = {...this.resendForm.value};
-    console.log('event', this.resendForm.value, this.resendForm.getRawValue());
-
+    const resendData: ResendDataModel = {...this.resendForm.value};
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
       .subscribe(() => {
