@@ -1,4 +1,4 @@
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {Injectable} from '@angular/core';
 import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
@@ -32,6 +32,14 @@ export class ResendFormService {
       }),
       'destinationTopicName': new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
       'destinationTopicPartition': new FormControl<number>(-1, {nonNullable: true})
+    }, {
+      validators: (control: AbstractControl): ValidationErrors | null => {
+        const offsetBeginning = control.get('offsetBeginning')?.value;
+        const offsetEnd = control.get('offsetEnd')?.value;
+
+        const result = offsetBeginning > offsetEnd ? {offsetBeginningBiggerThanEnd: true} : null;
+        return result;
+      }
     });
   }
 
