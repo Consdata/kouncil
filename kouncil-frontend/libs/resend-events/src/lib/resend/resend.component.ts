@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {MessageData, MessageDataService} from '@app/message-data';
@@ -127,6 +127,7 @@ import {ResendFormService} from './resend-form.service';
     </mat-dialog-content>
   `,
   styleUrls: ['./resend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ResendFilterService, ResendFormService]
 })
 export class ResendComponent implements OnInit, OnDestroy {
