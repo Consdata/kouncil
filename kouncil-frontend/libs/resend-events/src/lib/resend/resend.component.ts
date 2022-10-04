@@ -1,14 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
-import {first, map, takeUntil, tap} from 'rxjs/operators';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {map, takeUntil, tap} from 'rxjs/operators';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {ResendService} from './resend.service';
-import {ResendDataModel} from './resend.data.model';
 import {ResendFilterService} from './resend.filter.service';
-import {ServersService} from '@app/common-servers';
 import {ResendFormService} from './resend-form.service';
 
 @Component({
@@ -153,10 +148,6 @@ export class ResendComponent implements OnInit, OnDestroy {
   constructor(
     public resendFilterService: ResendFilterService,
     public resendFormService: ResendFormService,
-    private resendService: ResendService,
-    private servers: ServersService,
-    private dialog: MatDialog,
-    private snackbar: MatSnackBar,
     private messageDataService: MessageDataService) {
   }
 
@@ -184,25 +175,7 @@ export class ResendComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    const resendData: ResendDataModel = {...this.resendFormService.resendForm.value};
-
-    this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
-      .pipe(first())
-      .subscribe(() => {
-        this.dialog.closeAll();
-        this.resendFormService.resendForm.reset();
-        this.snackbar.open(
-          `Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
-          '', {
-            duration: 5000,
-            panelClass: ['snackbar-success', 'snackbar'],
-          });
-      }, () => {
-        this.snackbar.open(`Error occurred while resending events`, '', {
-          duration: 5000,
-          panelClass: ['snackbar-error', 'snackbar']
-        });
-      });
+    this.resendFormService.submit();
   }
 
 }
