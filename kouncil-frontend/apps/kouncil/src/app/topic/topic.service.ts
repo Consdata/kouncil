@@ -2,12 +2,12 @@ import {TopicMessages} from './topic-messages';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {Backend} from '../app.backend';
 import {TopicBackendService} from './topic.backend.service';
-import {ProgressBarService} from '../util/progress-bar.service';
 import {TopicDemoService} from './topic.demo.service';
 import {Page} from './page';
 import {Injectable} from '@angular/core';
+import {Backend} from '@app/common-model';
+import {ProgressBarService} from '@app/common-utils';
 
 @Injectable()
 export abstract class TopicService {
@@ -34,9 +34,9 @@ export function topicServiceFactory(http: HttpClient, progressBarService: Progre
     case Backend.SERVER: {
       return new TopicBackendService(http, progressBarService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new TopicDemoService(http, progressBarService);
-    }
   }
 }
 

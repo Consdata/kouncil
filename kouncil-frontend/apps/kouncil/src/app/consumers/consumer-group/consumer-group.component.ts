@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { interval, Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { ProgressBarService } from '../../util/progress-bar.service';
 import { ConsumerGroupService } from './consumer-group.service';
-import { ServersService } from '../../servers.service';
 import { switchMap, tap } from 'rxjs/operators';
-import { SearchService } from '../../search.service';
-import { ConsumerGroupOffset, ConsumerGroupResponse } from './consumer-group';
+import {ProgressBarService, SearchService} from '@app/common-utils';
+import {ConsumerGroupOffset, ConsumerGroupResponse} from '@app/common-model';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-kafka-consumer-group',

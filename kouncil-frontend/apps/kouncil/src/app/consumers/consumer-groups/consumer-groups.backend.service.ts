@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { ConsumerGroupsService } from './consumer-groups.service';
-import { Observable } from 'rxjs';
-import { ConsumerGroupsResponse } from './consumer-groups';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {ConsumerGroupsService} from './consumer-groups.service';
+import {Observable} from 'rxjs';
+import {ConsumerGroupsResponse} from '@app/common-model';
 
 @Injectable({
   providedIn: 'root',

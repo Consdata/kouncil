@@ -1,0 +1,27 @@
+{
+  "name": "feat-send",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-send/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/feat-send"],
+      "options": {
+        "jestConfig": "libs/feat-send/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/feat-send/**/*.ts",
+          "libs/feat-send/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

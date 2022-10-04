@@ -9,23 +9,22 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DatePipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { ProgressBarService } from '../util/progress-bar.service';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
-import { SendComponent } from '../send/send.component';
+import { ResendComponent } from '@app/resend-events';
 import { MessageViewComponent } from './message/message-view.component';
-import { DrawerService } from '../util/drawer.service';
-import { ServersService } from '../servers.service';
 import { LiveUpdateState } from './toolbar/toolbar.component';
 import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
 import { JsonGridData } from './json-grid-data';
 import { CustomTableColumn } from './custom-table-column';
 import { Observable, Subscription } from 'rxjs';
-import { SearchService } from '../search.service';
 import { JsonGrid } from './json-grid';
 import { TopicMessages } from './topic-messages';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
+import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {ServersService} from '@app/common-servers';
+import {SendComponent} from '@app/feat-send';
 
 @Component({
   selector: 'app-topic',
@@ -37,6 +36,7 @@ import {MessageData, MessageDataService} from '@app/message-data';
             [name]="topicName"
             (toggleLiveEvent)="toggleLiveEventHandler($event)"
             (openSendPopupEvent)="openSendPopup()"
+            (openResendPopupEvent)="openResendPopup()"
             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
             (toggleJsonEvent)="toggleJsonEventHandler($event)"
           >
@@ -178,9 +178,10 @@ export class TopicComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getMessagesDelta(), 1000);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
   getRowClass: (row) => { 'kafka-row-delta': any } = (row) => {
     return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'kafka-row-delta': row['fresh'],
     };
   };
@@ -221,6 +222,15 @@ export class TopicComponent implements OnInit, OnDestroy {
     this.drawerService.openDrawerWithPadding(SendComponent);
   }
 
+  openResendPopup(): void {
+    const messageData = {
+      topicName: this.topicName,
+      headers: []
+    } as MessageData;
+    this.messageDataService.setMessageData(messageData);
+    this.drawerService.openDrawerWithPadding(ResendComponent);
+  }
+
   private jsonToGrid(topicMessages: TopicMessages): void {
     const values: JsonGridData[] = [];
     topicMessages.messages.forEach((message: MessageData) =>
@@ -235,7 +245,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         keyJson: TopicComponent.tryParseJson(message.key),
         timestamp: message.timestamp,
         headers: message.headers,
-      })
+      } as JsonGridData)
     );
     this.jsonGrid.replaceObjects(values);
 

@@ -1,2 +1,7 @@
 @import '../../styles/palette';
 
+:host {
+  ::ng-deep .mat-select-trigger {
+    align-items: baseline;
+  }
+}

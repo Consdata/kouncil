@@ -114,6 +114,7 @@ mat-dialog-container.mat-dialog-container {
   .actions {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
     button {
       font-size: 14px;
@@ -121,18 +122,28 @@ mat-dialog-container.mat-dialog-container {
       line-height: 24px;
       padding: 8px 12px;
       border-radius: $default-border-radius;
+
+      cursor: pointer;
     }
 
-    .cancel {
+    .action-button-white {
       background: $main-0;
       border: 1px solid $main-20;
       color: $main-70;
     }
 
-    .action {
+    .action-button-black {
       color: $main-0;
       background: $main-100;
     }
+
+    .action-button-black:disabled {
+      border: 1px solid $main-50;
+      background-color: $main-30;
+      cursor: not-allowed;
+      color: $main-60;
+    }
+
   }
 
   .close {
@@ -198,10 +209,6 @@ snack-bar-container.snackbar {
   font-weight: 500;
 }
 
-.select {
-  height: 40px;
-}
-
 .mat-form-field-underline {
   display: none;
 }
@@ -240,29 +247,5 @@ snack-bar-container.snackbar {
     outline: none;
     box-shadow: 0 0 3px 1px $blue-60;
     transition: all $default-transition-time;
-  }
-}
-
-.servers-list {
-  .mat-option-text {
-    padding-left: 30px;
-  }
-
-  .mat-option-text::before {
-    content: '\e876';
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    color: $main-50;
-    padding: 0 6px;
-    font-size: 24px;
-    line-height: $default-line-height;
-    font-family: 'Material Icons';
-  }
-
-  .mat-active {
-    .mat-option-text::before {
-      color: $blue-50;
-    }
   }
 }

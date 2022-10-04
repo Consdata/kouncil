@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 export const demoConsumerGroup = {
   'transaction-processing': [{
     'consumerId': 'bank-transaction-consumer-12208701-99a7-4e9a-8a0e-bbc8970319de',
@@ -69,3 +70,4 @@ export const demoConsumerGroup = {
   'transaction-history': [],
   'transaction-history-report': []
 };
+/* eslint-enable */

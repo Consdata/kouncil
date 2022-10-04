@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { environment } from '../environments/environment';
-import { Backend } from './app.backend';
+import {Component} from '@angular/core';
+import {environment} from '../environments/environment';
+import {Backend} from '@app/common-model';
 
 @Component({
   selector: 'app-root',

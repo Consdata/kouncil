@@ -95,11 +95,17 @@
     }
   }
 
-  .action {
+  .action-button-black {
     background: $main-100;
     color: $main-0;
     border-radius: $default-border-radius;
     height: 40px;
+  }
+
+  .action-button-white {
+    background: $main-0;
+    border: 1px solid $main-20;
+    color: $main-70;
   }
 
   .offset-wrapper {

@@ -1,7 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {SendComponent} from '../../send/send.component';
-import {DrawerService} from '../../util/drawer.service';
 import {first, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
@@ -10,6 +8,8 @@ import {Clipboard} from '@angular/cdk/clipboard';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {DrawerService} from '@app/common-utils';
+import {SendComponent} from '@app/feat-send';
 
 @Component({
   selector: 'app-message-view',
@@ -47,12 +47,12 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
       </div>
 
       <div class="actions">
-        <button type="button" mat-dialog-close mat-button disableRipple class="cancel">Cancel</button>
+        <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">Cancel</button>
         <span class="spacer"></span>
-        <button mat-button disableRipple class="cancel" (click)="copyToClipboard(vm.messageData.value)">Copy to
+        <button mat-button disableRipple class="action-button-white" (click)="copyToClipboard(vm.messageData.value)">Copy to
           clipboard
         </button>
-        <button mat-button disableRipple class="action" (click)="resend(vm.messageData)">Resend event</button>
+        <button mat-button disableRipple class="action-button-black" (click)="resend(vm.messageData)">Resend event</button>
       </div>
 
     </mat-dialog-content>

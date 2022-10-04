@@ -1,0 +1,26 @@
+{
+  "name": "resend-events",
+  "projectType": "library",
+  "sourceRoot": "libs/resend-events/src",
+  "prefix": "kouncil",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/resend-events"],
+      "options": {
+        "jestConfig": "libs/resend-events/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/resend-events/src/**/*.ts",
+          "libs/resend-events/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

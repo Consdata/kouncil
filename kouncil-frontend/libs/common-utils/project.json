@@ -1,0 +1,27 @@
+{
+  "name": "common-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/common-utils/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common-utils"],
+      "options": {
+        "jestConfig": "libs/common-utils/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/common-utils/**/*.ts",
+          "libs/common-utils/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

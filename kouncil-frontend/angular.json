@@ -1,8 +1,17 @@
 {
   "version": 2,
   "projects": {
+    "common-model": "libs/common-model",
+    "common-servers": "libs/common-servers",
+    "common-utils": "libs/common-utils",
+    "feat-confirm": "libs/feat-confirm",
+    "feat-favourites": "libs/feat-favourites",
+    "feat-no-data": "libs/feat-no-data",
+    "feat-send": "libs/feat-send",
+    "feat-topics": "libs/feat-topics",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
+    "resend-events": "libs/resend-events",
     "schema-registry": "libs/schema-registry"
   }
 }

@@ -1,5 +1,5 @@
-import {FavouritesGroup} from '../../favourites-group';
-import {ConsumerGroup} from './consumer-groups';
+import {FavouritesGroup} from '@app/feat-favourites';
+import {ConsumerGroup} from '@app/common-model';
 
 export const demoConsumerGroups: ConsumerGroup[] = [
   new ConsumerGroup('transaction-processing', 'Stable', FavouritesGroup.GROUP_ALL),

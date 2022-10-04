@@ -1,6 +1,7 @@
 {
+  "name": "message-data",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/message-data",
   "sourceRoot": "libs/message-data/src",
   "prefix": "kouncil",
   "targets": {
@@ -8,7 +9,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/message-data"],
       "options": {
-        "jestConfig": "libs/message-data/jest.config.js",
+        "jestConfig": "libs/message-data/jest.config.ts",
         "passWithNoTests": true
       }
     },

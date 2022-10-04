@@ -6,8 +6,6 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/h
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicsComponent} from './topics/topics.component';
-import {SendComponent} from './send/send.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
@@ -15,15 +13,11 @@ import {ConsumerGroupComponent} from './consumers/consumer-group/consumer-group.
 import {ToolbarComponent} from './topic/toolbar/toolbar.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {ProgressBarComponent} from './util/progress-bar.component';
-import {NoDataPlaceholderComponent} from './no-data-placeholder/no-data-placeholder.component';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
 import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
 import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
-import {TopicsService, topicsServiceFactory} from './topics/topics.service';
 import {topicServiceProvider} from './topic/topic.service';
-import {SendService, sendServiceFactory} from './send/send.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -33,20 +27,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import {ConfirmComponent} from './confirm/confirm.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
-import {HttpClientInterceptor} from './util/http-client.interceptor';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ServersService} from './servers.service';
 import {environment} from '../environments/environment';
-import {Backend} from './app.backend';
-import {ServersBackendService} from './servers.backend.service';
-import {ServersDemoService} from './servers.demo.service';
 import {TrackComponent} from './track/track.component';
 import {TrackFilterComponent} from './track/track-filter/track-filter.component';
 import {TrackResultComponent} from './track/track-result/track-result.component';
@@ -59,8 +47,16 @@ import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
-import {SearchService} from './search.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
+import {ResendModule, ResendService} from '@app/resend-events';
+import {Backend} from '@app/common-model';
+import {ConfirmModule} from '@app/feat-confirm';
+import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
+import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
+import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './app-factories';
+import {FeatNoDataModule} from '@app/feat-no-data';
+import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
+import {FeatSendModule, SendService} from '@app/feat-send';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -74,9 +70,9 @@ export function serverServiceFactory(http: HttpClient,
     case Backend.SERVER: {
       return new ServersBackendService(http, schemaRegistryService, schemaStateService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new ServersDemoService();
-    }
   }
 }
 
@@ -85,9 +81,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     case Backend.SERVER: {
       return new TrackBackendService(http, rxStompService);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new TrackDemoService(rxStompService);
-    }
   }
 }
 
@@ -96,19 +92,13 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     AppComponent,
     NavbarComponent,
     TopicComponent,
-    TopicsComponent,
     ConsumerGroupsComponent,
-    SendComponent,
     ToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
-    ProgressBarComponent,
-    NoDataPlaceholderComponent,
     TopicPartitionsComponent,
-    NoDataPlaceholderComponent,
     TopicPaginationComponent,
     BreadcrumbComponent,
-    ConfirmComponent,
     BrokerComponent,
     MessageViewComponent,
     FileSizePipe,
@@ -139,7 +129,13 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatSlideToggleModule,
     MatSelectModule,
     NgxMatSelectSearchModule,
-    MatTooltipModule
+    MatTooltipModule,
+    CommonUtilsModule,
+    ResendModule,
+    ConfirmModule,
+    FeatTopicsModule,
+    FeatNoDataModule,
+    FeatSendModule
   ],
   providers: [
     {
@@ -153,36 +149,49 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: BrokerService,
       useFactory: brokerServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: ConsumerGroupsService,
       useFactory: consumerGroupsServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: ConsumerGroupService,
       useFactory: consumerGroupServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: TopicsService,
       useFactory: topicsServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
       provide: SendService,
       useFactory: sendServiceFactory,
       deps: [HttpClient]
-    }, {
+    },
+    {
+      provide: ResendService,
+      useFactory: resendServiceFactory,
+      deps: [HttpClient]
+    },
+    {
       provide: ServersService,
       useFactory: serverServiceFactory,
       deps: [HttpClient, SchemaRegistryService, SchemaStateService]
-    }, {
+    },
+    {
       provide: TrackService,
       useFactory: trackServiceFactory,
       deps: [HttpClient, RxStompService]
-    }, {
+    },
+    {
       provide: APP_INITIALIZER,
       useFactory: configProviderFactory,
       deps: [ServersService],
       multi: true
-    }, {
+    },
+    {
       provide: InjectableRxStompConfig,
       useValue: RX_STOMP_CONFIG,
     },

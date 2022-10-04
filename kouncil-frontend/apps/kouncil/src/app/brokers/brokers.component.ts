@@ -4,12 +4,10 @@ import {Subscription} from 'rxjs';
 import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
 import {BrokerComponent} from '../broker/broker.component';
-import {DrawerService} from '../util/drawer.service';
-import {ServersService} from '../servers.service';
-import {SearchService} from '../search.service';
-import {ProgressBarService} from '../util/progress-bar.service';
 import {Broker} from './broker';
 import {Model} from '@swimlane/ngx-datatable';
+import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-kafka-brokers',

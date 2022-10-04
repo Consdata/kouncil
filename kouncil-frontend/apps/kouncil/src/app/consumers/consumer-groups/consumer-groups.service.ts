@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ConsumerGroupsResponse } from './consumer-groups';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Backend } from '../../app.backend';
-import { ConsumerGroupsBackendService } from './consumer-groups.backend.service';
-import { ConsumerGroupsDemoService } from './consumer-groups.demo.service';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {ConsumerGroupsBackendService} from './consumer-groups.backend.service';
+import {ConsumerGroupsDemoService} from './consumer-groups.demo.service';
+import {Backend, ConsumerGroupsResponse} from '@app/common-model';
 
 @Injectable()
 export abstract class ConsumerGroupsService {
@@ -26,8 +25,9 @@ export function consumerGroupsServiceFactory(
     case Backend.SERVER: {
       return new ConsumerGroupsBackendService(http);
     }
-    case Backend.DEMO: {
+    case Backend.DEMO:
+    default:
       return new ConsumerGroupsDemoService();
-    }
+
   }
 }
