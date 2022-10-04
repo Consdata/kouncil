@@ -4,7 +4,8 @@ import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {first} from 'rxjs/operators';
+import {ConfirmService} from '@app/feat-confirm';
+import {filter, first} from 'rxjs/operators';
 
 @Injectable()
 export class ResendFormService {
@@ -16,7 +17,8 @@ export class ResendFormService {
     private resendService: ResendService,
     private servers: ServersService,
     private dialog: MatDialog,
-    private snackbar: MatSnackBar) {
+    private snackbar: MatSnackBar,
+    private confirmService: ConfirmService) {
     this.resendForm = this.formBuilder.group({
       'sourceTopicName': new FormControl<string>('', {nonNullable: true}),
       'sourceTopicPartition': new FormControl<number>(0, {nonNullable: true, validators: Validators.required}),
@@ -35,22 +37,44 @@ export class ResendFormService {
 
   submit(): void {
     const resendData: ResendDataModel = {...this.resendForm.value};
+
+    if (resendData.offsetEnd - resendData.offsetBeginning > 500) {
+      this.confirmService.openConfirmDialog$({
+        title: 'Resend messages',
+        subtitle: 'Are you sure you want resend messages:',
+        section: `${resendData.destinationTopicName}`
+      })
+        .pipe(
+          first(),
+          filter((confirmed) => !!confirmed),
+        )
+        .subscribe(() => {
+          this.resendMessages(resendData)
+        });
+    } else {
+      this.resendMessages(resendData)
+    }
+  }
+
+  private resendMessages(resendData: ResendDataModel): void {
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
       .pipe(first())
-      .subscribe(() => {
-        this.dialog.closeAll();
-        this.resendForm.reset();
-        this.snackbar.open(
-          `Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
-          '', {
+      .subscribe({
+        next: () => {
+          this.dialog.closeAll();
+          this.resendForm.reset();
+          this.snackbar.open(
+            `Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
+            '', {
+              duration: 5000,
+              panelClass: ['snackbar-success', 'snackbar'],
+            });
+        }, error: (e) => () => {
+          this.snackbar.open(`Error occurred while resending events`, '', {
             duration: 5000,
-            panelClass: ['snackbar-success', 'snackbar'],
+            panelClass: ['snackbar-error', 'snackbar']
           });
-      }, () => {
-        this.snackbar.open(`Error occurred while resending events`, '', {
-          duration: 5000,
-          panelClass: ['snackbar-error', 'snackbar']
-        });
+        }
       });
   }
 
