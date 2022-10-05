@@ -13,7 +13,9 @@
     </parent>
 
     <properties>
-        <confluent.version>7.0.1</confluent.version>
+        <confluent.version>7.2.1</confluent.version>
+        <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
+        <swagger-annotations.version>2.2.2</swagger-annotations.version>
     </properties>
 
     <dependencies>
@@ -75,9 +77,14 @@
 
         <!-- swagger -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
         </dependency>
 
         <!-- tests -->
