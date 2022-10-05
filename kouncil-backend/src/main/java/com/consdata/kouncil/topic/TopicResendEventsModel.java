@@ -14,6 +14,7 @@ public class TopicResendEventsModel {
     private Long offsetEnd;
     private String destinationTopicName;
     private Integer destinationTopicPartition;
+    private boolean shouldFilterOutHeaders;
 
     public Integer getDestinationTopicPartition() {
         return destinationTopicPartition < 0 ? null : destinationTopicPartition;

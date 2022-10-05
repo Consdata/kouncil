@@ -9,13 +9,17 @@ import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.track.TopicMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +51,9 @@ public class TopicService {
     private final DeserializationService deserializationService;
     private final MessagesHelper messagesHelper;
     private static final int RESEND_MAX_POLL_RECORDS = 100;
+
+    @Value("${resendHeadersToKeep:}")
+    private String[] resendHeadersToKeep;
 
     TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
                                       @PathVariable("partition") String partitions,
@@ -222,7 +229,7 @@ public class TopicService {
                         break;
                     }
                     resentMessagesCount++;
-                    resendOneRecord(consumerRecord, kafkaTemplate, resendParams.getDestinationTopicName(), resendParams.getDestinationTopicPartition());
+                    resendOneRecord(consumerRecord, kafkaTemplate, resendParams.getDestinationTopicName(), resendParams.getDestinationTopicPartition(), resendParams.isShouldFilterOutHeaders());
                 }
                 log.info("Resent {}% completed", resentMessagesCount * 100 / (resendParams.getOffsetEnd() - resendParams.getOffsetBeginning() + 1));
             }
@@ -246,9 +253,16 @@ public class TopicService {
         }
     }
 
-    private void resendOneRecord(ConsumerRecord<Bytes, Bytes> consumerRecord, KafkaTemplate<Bytes, Bytes> kafkaTemplate, String destinationTopic, Integer destinationTopicPartition) {
-        ProducerRecord<Bytes, Bytes> producerRecord = new ProducerRecord<>(destinationTopic, destinationTopicPartition, consumerRecord.key(), consumerRecord.value(), consumerRecord.headers());
+    private void resendOneRecord(ConsumerRecord<Bytes, Bytes> consumerRecord, KafkaTemplate<Bytes, Bytes> kafkaTemplate, String destinationTopic, Integer destinationTopicPartition, boolean shouldFilterOutHeaders) {
+        ProducerRecord<Bytes, Bytes> producerRecord = new ProducerRecord<>(destinationTopic, destinationTopicPartition, consumerRecord.key(), consumerRecord.value(),
+                shouldFilterOutHeaders ? getFilteredOutHeaders(consumerRecord.headers()) : consumerRecord.headers());
         kafkaTemplate.send(producerRecord);
+    }
+
+    private List<Header> getFilteredOutHeaders(Headers headers) {
+        return Arrays.stream(headers.toArray())
+                .filter((header) -> ArrayUtils.contains(resendHeadersToKeep, header.key()))
+                .collect(Collectors.toList());
     }
 
     private String replaceTokens(String data, int i) {

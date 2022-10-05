@@ -31,7 +31,8 @@ export class ResendFormService {
         validators: [Validators.min(0), Validators.required]
       }),
       'destinationTopicName': new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
-      'destinationTopicPartition': new FormControl<number>(-1, {nonNullable: true})
+      'destinationTopicPartition': new FormControl<number>(-1, {nonNullable: true}),
+      'shouldFilterOutHeaders': new FormControl<boolean>(true)
     }, {
       validators: (control: AbstractControl): ValidationErrors | null => {
         const offsetBeginning = control.get('offsetBeginning')?.value;
