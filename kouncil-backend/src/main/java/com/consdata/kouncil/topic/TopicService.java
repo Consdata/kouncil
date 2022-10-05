@@ -52,7 +52,7 @@ public class TopicService {
     private final MessagesHelper messagesHelper;
     private static final int RESEND_MAX_POLL_RECORDS = 100;
 
-    @Value("${kouncil.topics.resend-headers-to-keep}")
+    @Value("${resendHeadersToKeep:}")
     private String[] resendHeadersToKeep;
 
     TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,

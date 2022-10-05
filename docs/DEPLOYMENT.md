@@ -34,6 +34,11 @@ docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" -e sche
 ```
 This url will be used for every cluster in `boostrapServers` variable. If you want to be more specific go to [Advanced configuration](#docker---advanced-configuration).
 
+If you want to set list of headers to keep while resending events from one topic to another you can use `resendHeadersToKeep` environment variable and pass list of comma-seperated header names, for example:
+```bash
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" -e resendHeadersToKeep="requestId,version" consdata/kouncil:latest
+```
+
 In order to change the port on which Kouncil listens for connections, just modify the `-p` argument, like so:
 
 ```bash

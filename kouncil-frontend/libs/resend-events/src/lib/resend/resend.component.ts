@@ -103,9 +103,7 @@ import {ResendFormService} from './resend-form.service';
           </mat-form-field>
         </div>
 
-        <div>
-          <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers</mat-checkbox>
-        </div>
+        <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers</mat-checkbox>
 
         <span class="spacer"></span>
 
