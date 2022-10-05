@@ -45,11 +45,12 @@ export class ResendFormService {
 
   submit(): void {
     const resendData: ResendDataModel = {...this.resendForm.value};
-
+    const msgCount = resendData.offsetEnd - resendData.offsetBeginning + 1; // +1 - offset start from 0
     this.confirmService.openConfirmDialog$({
       title: 'Resend messages',
-      subtitle: 'Are you sure you want resend messages:',
-      section: `${resendData.destinationTopicName}`
+      subtitle: `Are you sure you want resend ${msgCount} message${msgCount > 1 ? 's' : ''}:`,
+      sectionLine1: `from: ${resendData.sourceTopicName}`,
+      sectionLine2: `to: ${resendData.destinationTopicName}`
     })
       .pipe(
         first(),

@@ -143,7 +143,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.confirmService.openConfirmDialog$({
       title: 'Delete consumer group',
       subtitle: 'Are you sure you want to delete:',
-      section: value
+      sectionLine1: value
     })
       .pipe(first())
       .subscribe((confirmed) => {

@@ -5,19 +5,21 @@ import {ConfirmModel} from './confirm.model';
 @Component({
   selector: 'app-confirm',
   template: `
-    <div class="drawer-header">
-      <div class="drawer-title">{{data.title}}</div>
+    <div class="header">
+      <div class="title">{{data.title}}</div>
       <div class="spacer"></div>
       <mat-icon mat-dialog-close class="close">close</mat-icon>
     </div>
 
-    <div class="drawer-subtitle">{{data.subtitle}}</div>
+    <div class="subtitle">{{data.subtitle}}</div>
 
-    <div class="drawer-section-title">{{data.section}}</div>
+    <div class="section">
+      <div>{{data.sectionLine1}}</div>
+      <div *ngIf="data.sectionLine2">{{data.sectionLine2}}</div>
+    </div>
 
     <div class="actions">
       <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">No</button>
-      <span class="spacer"></span>
       <button mat-button disableRipple class="action-button-black" (click)="confirm()">Yes</button>
     </div>
   `,

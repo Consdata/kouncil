@@ -1,5 +1,6 @@
 export interface ConfirmModel {
   title: string;
   subtitle: string;
-  section: string
+  sectionLine1: string;
+  sectionLine2?: string;
 }
