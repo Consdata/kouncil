@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use 'styles/palette' as pallete;
+@import '~@angular/material/theming';
 @import 'styles/ngx';
 @import 'styles/material';
 @import '~@swimlane/ngx-datatable/assets/icons.css';

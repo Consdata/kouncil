@@ -20,9 +20,9 @@ import {ConfirmModel} from './confirm.model';
       </div>
     </mat-dialog-content>
 
-    <mat-dialog-actions class="actions">
-      <button mat-button mat-dialog-close disableRipple class="action-button-white">No</button>
-      <button mat-button disableRipple [mat-dialog-close]="true" class="action-button-black">Yes</button>
+    <mat-dialog-actions>
+      <button mat-flat-button mat-dialog-close>No</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="true">Yes</button>
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
