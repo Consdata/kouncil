@@ -1,14 +1,14 @@
 @use '@angular/material' as mat;
-@import 'styles/palette';
+@use 'styles/palette' as pallete;
 @import 'styles/ngx';
 @import 'styles/material';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 
 @include mat.core();
 
-$kouncil-primary: mat.define-palette($palette-main);
-$kouncil-accent: mat.define-palette($palette-accent);
-$kouncil-warn: mat.define-palette($palette-warn);
+$kouncil-primary: mat.define-palette(pallete.$palette-main);
+$kouncil-accent: mat.define-palette(pallete.$palette-accent);
+$kouncil-warn: mat.define-palette(pallete.$palette-warn);
 
 $kouncil-theme: mat.define-light-theme((
   color: (
@@ -29,7 +29,7 @@ $custom-typography: mat.define-typography-config(
 html, body {
   height: 100%;
   margin: 0;
-  background-color: $main-10;
+  background-color: pallete.$main-10;
   font-family: 'Inter';
 }
 
@@ -46,8 +46,8 @@ html, body {
   left: calc(50% - 60px);
   top: calc(50% - 60px);
   z-index: 1;
-  border: 16px solid $main-20;
-  border-top: 16px solid $main-60;
+  border: 16px solid pallete.$main-20;
+  border-top: 16px solid pallete.$main-60;
   border-radius: 50%;
   width: 120px;
   height: 120px;
