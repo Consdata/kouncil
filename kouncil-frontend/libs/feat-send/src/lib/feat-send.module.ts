@@ -9,6 +9,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {SendComponent} from './send/send.component';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   imports: [CommonModule,
@@ -16,6 +17,7 @@ import {SendComponent} from './send/send.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,

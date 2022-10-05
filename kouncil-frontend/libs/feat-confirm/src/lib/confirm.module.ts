@@ -8,6 +8,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {ConfirmComponent} from './confirm/confirm.component';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import {ConfirmComponent} from './confirm/confirm.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,

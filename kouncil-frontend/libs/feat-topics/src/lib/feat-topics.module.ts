@@ -11,6 +11,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {RouterModule} from '@angular/router';
 import {FeatNoDataModule} from '@app/feat-no-data';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   imports: [CommonModule,
@@ -18,6 +19,7 @@ import {FeatNoDataModule} from '@app/feat-no-data';
     NgxDatatableModule,
     RouterModule,
     MatFormFieldModule,
+    MatButtonModule,
     MatInputModule,
     MatSelectModule,
     MatIconModule,
