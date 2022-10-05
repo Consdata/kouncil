@@ -1,5 +1,5 @@
 // global styles regarding ngx-datatable
-@import "palette";
+@use 'palette' as pallete;
 
 ngx-datatable.ngx-datatable {
 }
@@ -23,7 +23,7 @@ ngx-datatable.ngx-datatable {
 .group-header {
   font-size: 18px;
   line-height: 28px;
-  color: $main-100;
+  color: pallete.$main-100;
   font-weight: 500;
 }
 
@@ -40,14 +40,14 @@ ngx-datatable.ngx-datatable {
   .datatable-header-divider {
     flex-grow: 1;
     flex-shrink: 0;
-    border-bottom: 1px solid $main-30;
+    border-bottom: 1px solid pallete.$main-30;
     margin: 0 16px;
   }
 
   .datatable-header-hide {
     flex-grow: 0;
     font-weight: 500;
-    color: $main-60;
+    color: pallete.$main-60;
     text-decoration: underline;
     font-size: 12px;
     line-height: 20px;
@@ -57,17 +57,17 @@ ngx-datatable.ngx-datatable {
 
 .datatable-body-row {
   cursor: pointer;
-  background: $main-0;
-  border-top: 1px solid $main-20;
-  border-bottom: 1px solid $main-20;
+  background: pallete.$main-0;
+  border-top: 1px solid pallete.$main-20;
+  border-bottom: 1px solid pallete.$main-20;
   margin-bottom: -1px;
 
   .ngx-action-button {
     visibility: hidden;
-    background: $main-100;
-    color: $main-text-light-color;
+    background: pallete.$main-100;
+    color: pallete.$main-text-light-color;
     font-size: 14px;
-    border-radius: $default-border-radius;
+    border-radius: pallete.$default-border-radius;
     height: 32px;
     border: none;
     padding: 4px 10px;
@@ -75,7 +75,7 @@ ngx-datatable.ngx-datatable {
   }
 
   &:hover {
-    background: $main-10;
+    background: pallete.$main-10;
 
     .ngx-action-button {
       visibility: visible;
@@ -91,7 +91,7 @@ ngx-datatable.ngx-datatable {
 .datatable-body-cell {
   font-size: 14px;
   text-decoration: none;
-  color: $main-100;
+  color: pallete.$main-100;
   padding-left: 24px;
 
   .datatable-body-cell-label {
@@ -116,11 +116,11 @@ ngx-datatable.ngx-datatable {
 }
 
 mat-icon.ngx-star-favourite {
-  color: $blue-60;
+  color: pallete.$blue-60;
   font-size: 24px;
   margin-left: 0;
 
   &.gray {
-    color: $main-30;
+    color: pallete.$main-30;
   }
 }
