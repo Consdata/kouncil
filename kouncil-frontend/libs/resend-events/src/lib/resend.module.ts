@@ -11,21 +11,23 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {ConfirmModule} from '@app/feat-confirm';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
-    MatAutocompleteModule,
-    MatDialogModule,
-    NgxMatSelectSearchModule,
-    ConfirmModule
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatDialogModule,
+        NgxMatSelectSearchModule,
+        ConfirmModule,
+        MatCheckboxModule
+    ],
   declarations: [
     ResendComponent
   ],

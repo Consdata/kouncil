@@ -11,3 +11,4 @@ logging:
 kouncil:
   topics:
     exclude-regex-patterns: __.*
+    resend-headers-to-keep: requestId, version

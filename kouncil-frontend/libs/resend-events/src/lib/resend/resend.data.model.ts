@@ -6,4 +6,5 @@ export interface ResendDataModel {
   offsetEnd: number;
   destinationTopicName: string;
   destinationTopicPartition: number;
+  shouldFilterOutHeaders: boolean;
 }
