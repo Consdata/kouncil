@@ -57,6 +57,7 @@ import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
+import {FeatLagGraphModule} from '@app/feat-lag-graph';
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -135,7 +136,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ConfirmModule,
     FeatTopicsModule,
     FeatNoDataModule,
-    FeatSendModule
+    FeatSendModule,
+    FeatLagGraphModule
   ],
   providers: [
     {

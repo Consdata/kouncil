@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { interval, Observable, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { ConsumerGroupService } from './consumer-group.service';
-import { switchMap, tap } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {interval, Observable, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {ConsumerGroupService} from './consumer-group.service';
+import {switchMap, tap} from 'rxjs/operators';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {ConsumerGroupOffset, ConsumerGroupResponse} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
+import {Model} from '@swimlane/ngx-datatable';
+import {LagGraphOpenerService} from '@app/feat-lag-graph';
 
 @Component({
   selector: 'app-kafka-consumer-group',
@@ -34,6 +36,7 @@ import {ServersService} from '@app/common-servers';
         [scrollbarV]="false"
         [columnMode]="'force'"
         [loadingIndicator]="loading$ | async"
+        (activate)="showLagGraph($event)"
         #table
       >
         <ngx-datatable-column prop="clientId" name="clientId">
@@ -115,8 +118,10 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private progressBarService: ProgressBarService,
     private consumerGroupService: ConsumerGroupService,
-    private servers: ServersService
-  ) {}
+    private servers: ServersService,
+    private lagGraphOpenerService: LagGraphOpenerService
+  ) {
+  }
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
@@ -136,6 +141,12 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     this.searchSubscription?.unsubscribe();
     this.intervalSubscription?.unsubscribe();
     this.paused = true;
+  }
+
+  showLagGraph(event: Model): void {
+    if (event.type === 'click') {
+      this.lagGraphOpenerService.openLagGraphDialog$({});
+    }
   }
 
   private getConsumerGroup(): void {

@@ -1,0 +1,25 @@
+@import 'apps/kouncil/src/styles/palette';
+
+:host {
+  ::ng-deep .mat-select-trigger {
+    align-items: baseline;
+  }
+
+  .drawer-section-title {
+    font-size: 17px;
+  }
+
+  .field-label {
+    color: $main-100;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  .checkbox {
+    margin-top: 25px;
+  }
+}
