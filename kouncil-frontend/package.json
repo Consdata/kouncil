@@ -27,6 +27,7 @@
     "@stomp/ng2-stompjs": "^8.0.0",
     "@swimlane/ngx-datatable": "^20.0.0",
     "core-js": "3.25.3",
+    "d3": "^7.6.1",
     "date-fns": "2.29.3",
     "ngx-json-viewer": "3.1.0",
     "ngx-mat-select-search": "4.2.1",
