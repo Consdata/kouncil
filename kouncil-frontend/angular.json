@@ -6,6 +6,7 @@
     "common-utils": "libs/common-utils",
     "feat-confirm": "libs/feat-confirm",
     "feat-favourites": "libs/feat-favourites",
+    "feat-lag-graph": "libs/feat-lag-graph",
     "feat-no-data": "libs/feat-no-data",
     "feat-send": "libs/feat-send",
     "feat-topics": "libs/feat-topics",
