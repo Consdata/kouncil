@@ -101,7 +101,7 @@ public class TopicService {
                     log.debug("TCM62 partition={}, seekTo startOffset={}", partitionIndex, startOffsetForPartition);
                     consumer.seek(partition, startOffsetForPartition);
                 }
-                pollMessages(serverId, limit, consumer, metadata.getEndOffsets(), messages);
+                pollMessages(serverId, limit, consumer, metadata.getEndOffsets(), partition, messages);
             }
 
             log.debug("TCM90 poll completed records.size={}", messages.size());
@@ -154,13 +154,13 @@ public class TopicService {
 
     /**
      * Sometimes poll after seek returns none or few results.
-     * So we try to call it until we receive two consecutive empty polls or have enught messages
+     * So we try to call it until we receive 3 consecutive empty polls or have enough messages
      */
-    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, List<TopicMessage> messages) {
+    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, TopicPartition partition, List<TopicMessage> messages) {
         int emptyPolls = 0;
-        int messegesCount = 0;
-        while (emptyPolls < 3 && messegesCount < limit) {
-            ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer);
+        int messagesCount = 0;
+        while (emptyPolls < 3 && messagesCount < limit) {
+            ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, partition);
             if (records.isEmpty()) {
                 emptyPolls++;
             } else {
@@ -169,13 +169,13 @@ public class TopicService {
             for (ConsumerRecord<Bytes, Bytes> consumerRecord : records) {
                 if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
                     log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffsets.get(consumerRecord.partition()));
-                    messegesCount = limit;
+                    messagesCount = limit;
                     continue;
                 }
 
                 DeserializedMessage deserializedMessage = deserializationService.deserialize(clusterId, consumerRecord);
-                if (messegesCount < limit) {
-                    messegesCount += 1;
+                if (messagesCount < limit) {
+                    messagesCount += 1;
                     messages.add(TopicMessage
                             .builder()
                             .key(deserializedMessage.getKeyData().getDeserialized())
@@ -191,12 +191,13 @@ public class TopicService {
                 }
             }
         }
+
     }
 
-    private ConsumerRecords<Bytes, Bytes> getConsumerRecords(KafkaConsumer<Bytes, Bytes> consumer) {
+    private ConsumerRecords<Bytes, Bytes> getConsumerRecords(KafkaConsumer<Bytes, Bytes> consumer, TopicPartition partition) {
         long startTime = System.nanoTime();
         ConsumerRecords<Bytes, Bytes> records = consumer.poll(Duration.ofMillis(100));
-        log.debug("TCM40 poll took={}ms, returned {} records", (System.nanoTime() - startTime) / 1000000, records.count());
+        log.debug("TCM40 poll took={}ms, returned {} records from {}", (System.nanoTime() - startTime) / 1000000, records.count(), partition);
         return records;
     }
 
@@ -216,7 +217,7 @@ public class TopicService {
             long resentMessagesCount = 0;
             long lastOffset = -1;
             while (emptyPolls < 3 && lastOffset < resendParams.getOffsetEnd()) {
-                ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer);
+                ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, sourceTopicPartition);
                 log.info("Polled {} records for resend", records.count());
                 if (records.isEmpty()) {
                     emptyPolls++;
