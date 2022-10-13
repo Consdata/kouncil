@@ -119,7 +119,10 @@ import {ServersService} from '@app/common-servers';
           >
             Cancel
           </button>
-          <button mat-button disableRipple class="action-button-black" type="submit">
+          <button mat-button disableRipple
+                  class="action-button-black"
+                  type="submit"
+                  [disabled]="isSendButtonDisabled">
             Send event
           </button>
         </div>
@@ -129,6 +132,14 @@ import {ServersService} from '@app/common-servers';
   styleUrls: ['./send.component.scss']
 })
 export class SendComponent {
+
+  @ViewChild('sendForm', {read: NgForm}) sendForm: NgForm;
+
+  countControl: FormControl = new FormControl<number>(1, [
+    Validators.min(1),
+    Validators.required,
+  ]);
+  isSendButtonDisabled: boolean = false;
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,
@@ -152,13 +163,6 @@ export class SendComponent {
     )
   );
 
-  @ViewChild('sendForm', {read: NgForm}) sendForm: NgForm;
-
-  countControl: FormControl = new FormControl<number>(1, [
-    Validators.min(1),
-    Validators.required,
-  ]);
-
   constructor(
     private http: HttpClient,
     private sendService: SendService,
@@ -171,12 +175,14 @@ export class SendComponent {
   }
 
   onSubmit(messageData: MessageData): void {
+    this.isSendButtonDisabled = true;
     this.messageDataService.setMessageData(messageData);
     this.sendService.send$(this.servers.getSelectedServerId(), this.countControl.value, messageData)
       .pipe(first())
       .subscribe(() => {
         this.dialog.closeAll();
         this.resetForm();
+        this.isSendButtonDisabled = false;
         this.snackbar.open(`Successfully sent to ${messageData.topicName}`, '', {
           duration: 3000,
           panelClass: ['snackbar-success', 'snackbar'],
