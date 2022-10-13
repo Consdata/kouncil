@@ -187,6 +187,13 @@ export class SendComponent {
           duration: 3000,
           panelClass: ['snackbar-success', 'snackbar'],
         });
+      }, error => {
+        console.error(error);
+        this.snackbar.open(`Error occurred while sending events to ${messageData.topicName}`, '', {
+          duration: 3000,
+          panelClass: ['snackbar-error', 'snackbar']
+        });
+        this.isSendButtonDisabled = false;
       });
   }
 
