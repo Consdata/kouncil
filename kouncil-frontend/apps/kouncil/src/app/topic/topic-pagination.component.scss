@@ -36,6 +36,10 @@
 
 }
 
+::ng-deep .mat-select-trigger {
+  align-items: baseline;
+}
+
 ::ng-deep .ngx-datatable .datatable-footer .datatable-pager {
   flex: 0;
 }
