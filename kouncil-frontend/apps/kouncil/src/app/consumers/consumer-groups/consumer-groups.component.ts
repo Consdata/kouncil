@@ -159,7 +159,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
                 panelClass: ['snackbar-success', 'snackbar']
               });
             }, error => {
-              console.warn(error);
+              console.error(error);
               this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
                 duration: 3000,
                 panelClass: ['snackbar-error', 'snackbar']
