@@ -24,7 +24,10 @@ import {ServersService} from '@app/common-servers';
       <div class="kafka-topic-footer-pager-item limit">
         <span class="limit-label">Items per partition:</span>
         <mat-form-field class="select-form-field">
-          <mat-select panelClass="select-limit-panel" class="select" [(value)]="paging.size"
+          <mat-select panelClass="select-limit-panel"
+                      class="select"
+                      [(value)]="paging.size"
+                      [disableOptionCentering]="true"
                       (selectionChange)="getMessages()">
             <mat-option *ngFor="let limit of pageLimits" [value]="limit">{{limit}}</mat-option>
           </mat-select>
