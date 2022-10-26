@@ -101,7 +101,7 @@ public class TopicService {
                     log.debug("TCM62 partition={}, seekTo startOffset={}", partitionIndex, startOffsetForPartition);
                     consumer.seek(partition, startOffsetForPartition);
                 }
-                pollMessages(serverId, limit, consumer, metadata.getEndOffsets(), partition, messages);
+                pollMessages(serverId, limit, consumer, endOffsetForPartition, partition, messages);
             }
 
             log.debug("TCM90 poll completed records.size={}", messages.size());
@@ -153,13 +153,14 @@ public class TopicService {
     }
 
     /**
-     * Sometimes poll after seek returns none or few results.
-     * So we try to call it until we receive 3 consecutive empty polls or have enough messages
+     * Sometimes poll after seek returns no results.
+     * So we try to call it until we receive 5 consecutive empty polls or have enough messages or received last message
      */
-    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Map<Integer, Long> endOffsets, TopicPartition partition, List<TopicMessage> messages) {
+    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Long endOffset, TopicPartition partition, List<TopicMessage> messages) {
         int emptyPolls = 0;
         int messagesCount = 0;
-        while (emptyPolls < 3 && messagesCount < limit) {
+        long lastOffset = 0;
+        while (emptyPolls < 5 && messagesCount < limit && lastOffset < endOffset - 1) {
             ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, partition);
             if (records.isEmpty()) {
                 emptyPolls++;
@@ -167,8 +168,8 @@ public class TopicService {
                 emptyPolls = 0;
             }
             for (ConsumerRecord<Bytes, Bytes> consumerRecord : records) {
-                if (consumerRecord.offset() >= endOffsets.get(consumerRecord.partition())) {
-                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffsets.get(consumerRecord.partition()));
+                if (consumerRecord.offset() >= endOffset) {
+                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffset);
                     messagesCount = limit;
                     continue;
                 }
@@ -189,6 +190,7 @@ public class TopicService {
                             .headers(messagesHelper.mapHeaders(consumerRecord.headers()))
                             .build());
                 }
+                lastOffset = consumerRecord.offset();
             }
         }
 
@@ -196,7 +198,7 @@ public class TopicService {
 
     private ConsumerRecords<Bytes, Bytes> getConsumerRecords(KafkaConsumer<Bytes, Bytes> consumer, TopicPartition partition) {
         long startTime = System.nanoTime();
-        ConsumerRecords<Bytes, Bytes> records = consumer.poll(Duration.ofMillis(100));
+        ConsumerRecords<Bytes, Bytes> records = consumer.poll(Duration.ofMillis(200));
         log.debug("TCM40 poll took={}ms, returned {} records from {}", (System.nanoTime() - startTime) / 1000000, records.count(), partition);
         return records;
     }
