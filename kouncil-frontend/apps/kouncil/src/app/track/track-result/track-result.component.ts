@@ -5,12 +5,12 @@ import {Title} from '@angular/platform-browser';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
-import {RxStompService} from '@stomp/ng2-stompjs';
 import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {DrawerService, ProgressBarService, Crypto, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
+import {RxStompService} from "../../rx-stomp.service";
 
 @Component({
   selector: 'app-track-result',

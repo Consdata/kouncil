@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/feat-favourites"],
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-favourites"],
       "options": {
         "jestConfig": "libs/feat-favourites/jest.config.ts",
         "passWithNoTests": true

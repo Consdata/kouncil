@@ -5,8 +5,8 @@ import {Observable} from 'rxjs';
 import {TrackFilter} from './track-filter/track-filter';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
-import {RxStompService} from '@stomp/ng2-stompjs';
 import {MessageData} from '@app/message-data';
+import {RxStompService} from "../rx-stomp.service";
 
 @Injectable({
   providedIn: 'root'

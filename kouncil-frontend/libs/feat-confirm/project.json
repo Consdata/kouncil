@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/feat-confirm"],
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-confirm"],
       "options": {
         "jestConfig": "libs/feat-confirm/jest.config.ts",
         "passWithNoTests": true

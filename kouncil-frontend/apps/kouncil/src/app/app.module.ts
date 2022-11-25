@@ -20,20 +20,20 @@ import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/con
 import {topicServiceProvider} from './topic/topic.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
+import {MatLegacySnackBarModule as MatSnackBarModule} from '@angular/material/legacy-snack-bar';
 import {BrokerComponent} from './broker/broker.component';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatSelectModule} from '@angular/material/select';
+import {MatLegacySlideToggleModule as MatSlideToggleModule} from '@angular/material/legacy-slide-toggle';
+import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import {environment} from '../environments/environment';
 import {TrackComponent} from './track/track.component';
 import {TrackFilterComponent} from './track/track-filter/track-filter.component';
@@ -42,7 +42,6 @@ import {TrackService} from './track/track.service';
 import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
-import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@stomp/ng2-stompjs';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
@@ -57,6 +56,9 @@ import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
+import {RxStompConfig} from "@stomp/rx-stomp";
+import {RxStompService} from "./rx-stomp.service";
+import {rxStompServiceFactory} from "./rx-stomp-service-factory";
 
 
 export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
@@ -192,13 +194,13 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       multi: true
     },
     {
-      provide: InjectableRxStompConfig,
+      provide: RxStompConfig,
       useValue: RX_STOMP_CONFIG,
     },
     {
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
-      deps: [InjectableRxStompConfig],
+      deps: [RxStompConfig],
     },
   ],
   bootstrap: [AppComponent]

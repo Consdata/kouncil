@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/feat-no-data"],
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-no-data"],
       "options": {
         "jestConfig": "libs/feat-no-data/jest.config.ts",
         "passWithNoTests": true
