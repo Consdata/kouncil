@@ -40,7 +40,7 @@ import {ServersService} from '@app/common-servers';
       </div>
       <div>
         <mat-form-field class="filter-input">
-          <mat-placeholder *ngIf="trackFilter.topics.length == 0">Topics</mat-placeholder>
+          <mat-placeholder *ngIf="trackFilter.topics.length === 0">Topics</mat-placeholder>
           <mat-select
             name="topics"
             [(ngModel)]="trackFilter.topics"
