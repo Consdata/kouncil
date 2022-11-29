@@ -19,7 +19,7 @@ import {ServersService} from '@app/common-servers';
           name="field"
           [(ngModel)]="trackFilter.field"
         />
-        <mat-form-field class="filter-input wrapper-select" floatLabel="never">
+        <mat-form-field class="filter-input wrapper-select">
           <mat-select name="operator" [(ngModel)]="trackFilter.operator">
             <mat-option
               *ngFor="let operator of operators"
@@ -39,10 +39,9 @@ import {ServersService} from '@app/common-servers';
         />
       </div>
       <div>
-        <mat-form-field class="filter-input" floatLabel="never">
+        <mat-form-field class="filter-input">
+          <mat-placeholder *ngIf="trackFilter.topics.length === 0">Topics</mat-placeholder>
           <mat-select
-            id="topics-select"
-            placeholder="Topics"
             name="topics"
             [(ngModel)]="trackFilter.topics"
             multiple
@@ -72,29 +71,21 @@ import {ServersService} from '@app/common-servers';
       <div class="form-control">
         <div class="wrapper" ngDefaultControl [formControl]="datesControl">
           <span class="wrapper-glue-start">Track from</span>
-          <mat-form-field
-            class="filter-input date-picker-form-field"
-            floatLabel="never"
-          >
+          <mat-form-field class="filter-input date-picker-form-field">
             <input
               class="wrapper-field"
               matInput
               type="datetime-local"
-              placeholder="Start date"
               name="startDateTime"
               [(ngModel)]="trackFilter.startDateTime"
             />
           </mat-form-field>
           <span class="wrapper-glue">to</span>
-          <mat-form-field
-            class="filter-input date-picker-form-field"
-            floatLabel="never"
-          >
+          <mat-form-field class="filter-input date-picker-form-field">
             <input
               class="wrapper-field"
               matInput
               type="datetime-local"
-              placeholder="End date"
               name="stopDateTime"
               [(ngModel)]="trackFilter.stopDateTime"
             />

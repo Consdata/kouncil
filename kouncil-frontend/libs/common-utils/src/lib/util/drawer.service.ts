@@ -11,7 +11,7 @@ export class DrawerService {
   }
 
   openDrawerWithPadding<T, R = unknown>(component: ComponentType<T>,width?: string): MatDialogRef<T, R> {
-    return this.open(component, null, ['app-drawer', 'dialog-with-padding'], width);
+    return this.open(component, null, ['app-drawer'], width);
   }
 
   openDrawerWithoutPadding<T, R = unknown>(component: ComponentType<T>, data: unknown, width?: string): MatDialogRef<T, R> {

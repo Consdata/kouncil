@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/message-data"],
+      "outputs": ["{workspaceRoot}/coverage/libs/message-data"],
       "options": {
         "jestConfig": "libs/message-data/jest.config.ts",
         "passWithNoTests": true

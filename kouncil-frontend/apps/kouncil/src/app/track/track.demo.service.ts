@@ -5,10 +5,10 @@ import { TrackFilter } from './track-filter/track-filter';
 import { concatMap, delay, finalize } from 'rxjs/operators';
 import { parse } from 'date-fns';
 import { TRACK_DATE_FORMAT } from './track-date-format';
-import { RxStompService } from '@stomp/ng2-stompjs';
 import {MessageData, MessageDataHeader} from '@app/message-data';
 import {RandomUtils, Crypto} from '@app/common-utils';
 import {demoTopics} from '@app/feat-topics';
+import {RxStompService} from '../rx-stomp.service';
 
 @Injectable()
 export class TrackDemoService extends TrackService {

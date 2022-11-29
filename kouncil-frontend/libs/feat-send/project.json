@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/feat-send"],
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-send"],
       "options": {
         "jestConfig": "libs/feat-send/jest.config.ts",
         "passWithNoTests": true

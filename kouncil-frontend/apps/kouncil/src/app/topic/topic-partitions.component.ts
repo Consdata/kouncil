@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from './topic.service';
-import {MatSelectChange} from '@angular/material/select';
+import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
 import {ServersService} from '@app/common-servers';
 
 @Component({

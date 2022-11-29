@@ -14,6 +14,7 @@
     position: absolute;
     right: 0;
     width: 120px;
+    padding: 16px;
   }
 
   .wrapper {
@@ -150,18 +151,12 @@
 
   }
 
-  #topics-select {
-    ::ng-deep .mat-select-trigger {
-      top: 1px;
-      padding: 0;
-    }
-  }
-
   ::ng-deep .mat-form-field-label-wrapper {
     overflow: visible;
 
     .mat-form-field-label {
-      top: 20px;
+      top: 10px;
+      color: grey;
     }
   }
 

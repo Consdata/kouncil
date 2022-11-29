@@ -1,9 +1,7 @@
 @use '@angular/material' as mat;
 @use 'styles/palette' as pallete;
-@import '~@angular/material/theming';
 @import 'styles/ngx';
 @import 'styles/material';
-@import '~@swimlane/ngx-datatable/assets/icons.css';
 
 @include mat.core();
 
@@ -25,7 +23,7 @@ $custom-typography: mat.define-typography-config(
   $font-family: 'Inter, normal'
 );
 @include mat.typography-hierarchy($custom-typography);
-@include mat.core($custom-typography);
+@include mat.all-component-typographies($custom-typography);
 
 html, body {
   height: 100%;

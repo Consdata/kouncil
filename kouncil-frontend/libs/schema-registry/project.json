@@ -7,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/schema-registry"],
+      "outputs": ["{workspaceRoot}/coverage/libs/schema-registry"],
       "options": {
         "jestConfig": "libs/schema-registry/jest.config.ts",
         "passWithNoTests": true

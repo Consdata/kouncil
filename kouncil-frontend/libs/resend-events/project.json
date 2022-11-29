@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/resend-events"],
+      "outputs": ["{workspaceRoot}/coverage/libs/resend-events"],
       "options": {
         "jestConfig": "libs/resend-events/jest.config.js",
         "passWithNoTests": true
