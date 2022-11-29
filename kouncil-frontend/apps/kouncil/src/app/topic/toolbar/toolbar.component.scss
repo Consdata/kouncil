@@ -33,13 +33,17 @@
       border: 1px solid $main-40;
     }
 
-    ::ng-deep .mat-slide-toggle-content {
+    ::ng-deep .mdc-form-field {
+      padding-top: 10px;
+    }
+
+    ::ng-deep .mdc-form-field label {
       display: flex;
       flex-direction: row;
       align-items: center;
     }
 
-    ::ng-deep .mat-slide-toggle-bar {
+    ::ng-deep .mdc-form-field .mdc-switch {
       background: $main-30;
       height: 16px;
       width: 30px;
@@ -137,8 +141,8 @@
         transform: rotate(-45deg);
         color: white;
         position: absolute;
-        left: 12px;
-        top: 2px;
+        left: -10px;
+        top: -14px;
         font-size: 24px;
       }
     }

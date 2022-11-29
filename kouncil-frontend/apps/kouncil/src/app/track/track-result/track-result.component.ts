@@ -10,7 +10,7 @@ import {MessageData, MessageDataService} from '@app/message-data';
 import {DrawerService, ProgressBarService, Crypto, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
-import {RxStompService} from "../../rx-stomp.service";
+import {RxStompService} from '../../rx-stomp.service';
 
 @Component({
   selector: 'app-track-result',

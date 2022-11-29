@@ -31,22 +31,18 @@
   transition: all pallete.$default-transition-time;
 }
 
-mat-dialog-container.mat-dialog-container {
+mat-dialog-container.mat-mdc-dialog-container {
   padding: 0;
-}
-
-.dialog-with-padding {
-  mat-dialog-container.mat-dialog-container {
-    padding: 32px;
-  }
+  --mdc-dialog-supporting-text-line-height: 14px;
+  --mdc-dialog-supporting-text-size: 12px;
 }
 
 .app-drawer, .confirm {
 
-  .mat-dialog-container {
+  .mat-mdc-dialog-container {
     border-radius: 0;
 
-    .mat-dialog-content, form {
+    .mat-mdc-dialog-content, form {
       height: 100%;
       max-height: 100%;
       display: flex;
@@ -191,6 +187,7 @@ snack-bar-container.snackbar {
 
 .mat-select-panel {
   // angular material styles select panel through 'style' attribute, hence the 'importants'
+  background: white;
   min-width: 100% !important;
   transform: translate(0px, 44px) !important;
 }
@@ -203,6 +200,10 @@ snack-bar-container.snackbar {
   background: pallete.$blue-0;
   color: pallete.$blue-60;
   font-weight: 500;
+}
+
+.mat-select-panel:not([class*=mat-elevation-z]) {
+  box-shadow: 0 2px 4px -1px #0003, 0 4px 5px #00000024, 0 1px 10px #0000001f;
 }
 
 .mat-option-text {

@@ -8,7 +8,7 @@ import { TRACK_DATE_FORMAT } from './track-date-format';
 import {MessageData, MessageDataHeader} from '@app/message-data';
 import {RandomUtils, Crypto} from '@app/common-utils';
 import {demoTopics} from '@app/feat-topics';
-import {RxStompService} from "../rx-stomp.service";
+import {RxStompService} from '../rx-stomp.service';
 
 @Injectable()
 export class TrackDemoService extends TrackService {

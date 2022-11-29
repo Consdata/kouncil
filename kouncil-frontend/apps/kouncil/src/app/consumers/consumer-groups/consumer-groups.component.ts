@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Model} from '@swimlane/ngx-datatable';
 import {ConfirmService} from '@app/feat-confirm';
 import {FavouritesService} from '@app/feat-favourites';

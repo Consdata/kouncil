@@ -2,8 +2,8 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, 
 import {Injectable} from '@angular/core';
 import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
-import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {filter, first} from 'rxjs/operators';
 

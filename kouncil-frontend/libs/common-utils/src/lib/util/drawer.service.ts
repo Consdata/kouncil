@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ComponentType} from '@angular/cdk/overlay';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class DrawerService {
   }
 
   openDrawerWithPadding<T, R = unknown>(component: ComponentType<T>,width?: string): MatDialogRef<T, R> {
-    return this.open(component, null, ['app-drawer', 'dialog-with-padding'], width);
+    return this.open(component, null, ['app-drawer'], width);
   }
 
   openDrawerWithoutPadding<T, R = unknown>(component: ComponentType<T>, data: unknown, width?: string): MatDialogRef<T, R> {

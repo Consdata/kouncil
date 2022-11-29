@@ -6,7 +6,7 @@ import {TrackFilter} from './track-filter/track-filter';
 import {parse} from 'date-fns';
 import {TRACK_DATE_FORMAT} from './track-date-format';
 import {MessageData} from '@app/message-data';
-import {RxStompService} from "../rx-stomp.service";
+import {RxStompService} from '../rx-stomp.service';
 
 @Injectable({
   providedIn: 'root'
