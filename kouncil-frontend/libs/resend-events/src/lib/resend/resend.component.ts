@@ -29,8 +29,9 @@ import {ResendFormService} from './resend-form.service';
                         formControlName="sourceTopicName"
                         (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
               <mat-option>
-                <ngx-mat-select-search placeholderLabel="Search topic.."
-                                       [formControl]="sourceTopicFilterCtrl">
+                <ngx-mat-select-search [formControl]="sourceTopicFilterCtrl"
+                                       placeholderLabel="Search topic"
+                                       noEntriesFoundLabel="No topics found">
                 </ngx-mat-select-search>
               </mat-option>
               <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
