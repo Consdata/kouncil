@@ -10,7 +10,7 @@
   margin: 0 8px;
 }
 
-.mat-button .mat-button-focus-overlay {
+.mat-mdc-button {
   background: transparent;
 }
 
@@ -31,8 +31,7 @@
   transition: all pallete.$default-transition-time;
 }
 
-mat-dialog-container.mat-mdc-dialog-container {
-  padding: 0;
+app-message-view {
   --mdc-dialog-supporting-text-line-height: 14px;
   --mdc-dialog-supporting-text-size: 12px;
 }
@@ -183,6 +182,10 @@ snack-bar-container.snackbar {
   margin-right: 16px;
   color: pallete.$red-50;
   font-size: 24px;
+}
+
+.mat-select-search-inner {
+  border-bottom-color: lightgrey;
 }
 
 .mat-select-panel {

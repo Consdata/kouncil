@@ -24,6 +24,7 @@ export class DrawerService {
       data: data,
       height: '100%',
       width: width,
+      autoFocus: 'dialog',
       position: {
         right: '0px'
       },
