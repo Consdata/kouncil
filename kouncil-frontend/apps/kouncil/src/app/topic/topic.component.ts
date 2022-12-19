@@ -156,7 +156,7 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     this.route.queryParams.subscribe(params => {
       this.topicService.paginateMessages(this.servers.getSelectedServerId(), {page: params['page']}, this.topicName);
-    })
+    });
 
     this.searchSubscription = this.searchService
       .getPhraseState$('topic')
