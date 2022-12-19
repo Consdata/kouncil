@@ -13,9 +13,9 @@
     </parent>
 
     <properties>
-        <confluent.version>7.2.1</confluent.version>
-        <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
-        <swagger-annotations.version>2.2.2</swagger-annotations.version>
+        <confluent.version>7.2.3</confluent.version>
+        <springdoc-openapi-ui.version>1.6.13</springdoc-openapi-ui.version>
+        <swagger-annotations.version>2.2.6</swagger-annotations.version>
     </properties>
 
     <dependencies>
