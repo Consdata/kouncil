@@ -20,6 +20,15 @@ import {ServersService} from '@app/common-servers';
           [count]="paging?.totalElements"
           (change)="paginateMessages($event)">
         </datatable-pager>
+
+        <div class="page-no">
+          <span class="page-no-label">Page no:</span>
+          <mat-form-field class="page-no-form-field">
+            <input matInput class="page-no-input" type="number" [(ngModel)]="paging.pageNumber"
+                   [ngModelOptions]="{updateOn: 'blur'}"
+                   (ngModelChange)="paginateMessages({page: $event})">
+          </mat-form-field>
+        </div>
       </div>
       <div class="kafka-topic-footer-pager-item limit">
         <span class="limit-label">Items per partition:</span>
