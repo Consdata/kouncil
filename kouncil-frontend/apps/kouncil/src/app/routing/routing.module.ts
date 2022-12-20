@@ -1,11 +1,20 @@
 import {Injectable, NgModule} from '@angular/core';
 import {TopicComponent} from '../topic/topic.component';
-import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes,} from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  DetachedRouteHandle,
+  RouteReuseStrategy,
+  RouterModule,
+  Routes,
+} from '@angular/router';
 import {TrackComponent} from '../track/track.component';
 import {BrokersComponent} from '../brokers/brokers.component';
 import {ConsumerGroupsComponent} from '../consumers/consumer-groups/consumer-groups.component';
 import {ConsumerGroupComponent} from '../consumers/consumer-group/consumer-group.component';
 import {TopicsComponent} from '@app/feat-topics';
+import {LoginComponent} from '../login/login.component';
+import {AuthGuard} from './auth.guard';
+import {MainComponent} from '../main/main.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -37,43 +46,50 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
 }
 
 const routes: Routes = [
+  {path: 'login', component: LoginComponent},
   {
-    path: 'brokers',
-    component: BrokersComponent,
-  },
-  {
-    path: 'topics',
-    component: TopicsComponent,
-  },
-  {
-    path: 'topics/messages/:topic',
-    component: TopicComponent,
-  },
-  {
-    path: 'consumer-groups',
-    component: ConsumerGroupsComponent,
-  },
-  {
-    path: 'consumer-groups/:groupId',
-    component: ConsumerGroupComponent,
-  },
-  {
-    path: 'track',
-    component: TrackComponent,
-  },
-  {
-    path: '',
-    redirectTo: 'topics',
-    pathMatch: 'full',
-  },
+    path: '', component: MainComponent, canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'brokers',
+        component: BrokersComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'topics',
+        component: TopicsComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'topics/messages/:topic',
+        component: TopicComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'consumer-groups',
+        component: ConsumerGroupsComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'consumer-groups/:groupId',
+        component: ConsumerGroupComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'track',
+        component: TrackComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-    useHash: true,
-    onSameUrlNavigation: 'reload'
-}),
+      useHash: true,
+      onSameUrlNavigation: 'reload'
+    }),
   ],
   exports: [RouterModule],
   declarations: [],

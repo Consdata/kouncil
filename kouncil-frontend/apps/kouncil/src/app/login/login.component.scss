@@ -1,0 +1,55 @@
+@import '../../styles/palette';
+
+.kafka-desktop {
+  height: calc(100% - 72px);
+}
+
+.kafka-desktop-demo {
+  height: calc(100% - 120px);
+}
+
+.main-login {
+  place-items: center;
+  display: flex;
+  height: 400px;
+  width: 400px;
+  margin: 0 auto;
+  background: white;
+  top: 100px;
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid #EAEAEA;
+}
+
+.login-form {
+  place-items: center;
+  display: grid;
+  margin: 0 auto;
+  width: 250px;
+}
+
+.input {
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+  padding: 8px 8px 8px 8px;
+  font-size: 14px;
+  line-height: $default-line-height;
+}
+
+.input:hover {
+  border: 1px solid $main-40;
+  transition: all $default-transition-time;
+}
+
+.input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 3px 1px $blue-60;
+  transition: all $default-transition-time;
+}
+
+.action-button-white {
+  background: $main-0;
+  border: 1px solid $main-20;
+  color: $main-70;
+}

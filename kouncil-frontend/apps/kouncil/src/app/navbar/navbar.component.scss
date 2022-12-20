@@ -109,6 +109,7 @@
     ::ng-deep .mat-select-value-text {
       padding-left: 32px;
     }
+
     ::ng-deep .mat-select-trigger {
       align-items: baseline;
     }
@@ -124,6 +125,11 @@
     font-size: 24px;
     line-height: $default-line-height;
     font-family: 'Material Icons';
+  }
+
+  .consdata-logo {
+    height: 72px;
+    width: 320px;
   }
 
 }

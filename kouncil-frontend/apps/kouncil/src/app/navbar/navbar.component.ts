@@ -1,4 +1,11 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -6,6 +13,7 @@ import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
 import {SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
+import {LoginService} from '../login/login.service';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -14,11 +22,14 @@ import {ServersService} from '@app/common-servers';
       <img *ngIf="backendVersion$ | async as backendVersion"
            src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
            matTooltip="{{backendVersion}}"/>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/topics']">Topics</a>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/brokers']">Brokers</a>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/consumer-groups']">Consumer
-        Groups</a>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active" [routerLink]="['/track']">Track</a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/topics']" *ngIf="authService.authenticated">Topics</a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/brokers']" *ngIf="authService.authenticated">Brokers</a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/consumer-groups']" *ngIf="authService.authenticated">Consumer Groups</a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/track']" *ngIf="authService.authenticated">Track</a>
 
       <mat-divider [vertical]="true"></mat-divider>
 
@@ -29,7 +40,7 @@ import {ServersService} from '@app/common-servers';
 
       <span class="spacer"></span>
 
-      <div class="search">
+      <div class="search" *ngIf="authService.authenticated">
         <input
           accesskey="/"
           class="search-input"
@@ -39,7 +50,7 @@ import {ServersService} from '@app/common-servers';
           [(ngModel)]="searchService.currentPhrase"
           #searchInput>
       </div>
-      <mat-form-field class="servers-form-field">
+      <mat-form-field class="servers-form-field" *ngIf="authService.authenticated">
         <mat-select
           panelClass="servers-list"
           class="select servers"
@@ -49,6 +60,9 @@ import {ServersService} from '@app/common-servers';
             - {{s.label}}</mat-option>
         </mat-select>
       </mat-form-field>
+
+      <img *ngIf="!authService.authenticated" src="assets/consdata-logo-color.png" alt="logo"
+           class="consdata-logo"/>
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,7 +77,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   constructor(public searchService: SearchService,
               private router: Router,
               private http: HttpClient,
-              public servers: ServersService) {
+              public servers: ServersService,
+              public authService: LoginService) {
     router.events.subscribe(() => {
       this.searchInputElementRef?.nativeElement.focus();
     });

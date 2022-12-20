@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
@@ -15,8 +15,14 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
 import {TopicPaginationComponent} from './topic/topic-pagination.component';
-import {ConsumerGroupsService, consumerGroupsServiceFactory} from './consumers/consumer-groups/consumer-groups.service';
-import {ConsumerGroupService, consumerGroupServiceFactory} from './consumers/consumer-group/consumer-group.service';
+import {
+  ConsumerGroupsService,
+  consumerGroupsServiceFactory
+} from './consumers/consumer-groups/consumer-groups.service';
+import {
+  ConsumerGroupService,
+  consumerGroupServiceFactory
+} from './consumers/consumer-group/consumer-group.service';
 import {topicServiceProvider} from './topic/topic.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -59,10 +65,12 @@ import {FeatSendModule, SendService} from '@app/feat-send';
 import {RxStompConfig} from '@stomp/rx-stomp';
 import {RxStompService} from './rx-stomp.service';
 import {rxStompServiceFactory} from './rx-stomp-service-factory';
+import {LoginComponent} from './login/login.component';
+import {MainComponent} from './main/main.component';
 
 
-export function configProviderFactory(provider: ServersService): () => Promise<boolean> {
-  return () => provider.load();
+export function configProviderFactory(provider: ServersService): Promise<boolean> {
+  return provider.load();
 }
 
 export function serverServiceFactory(http: HttpClient,
@@ -109,6 +117,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     TrackResultComponent,
     DemoComponent,
     CachedCellComponent,
+    LoginComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -186,12 +196,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: TrackService,
       useFactory: trackServiceFactory,
       deps: [HttpClient, RxStompService]
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: configProviderFactory,
-      deps: [ServersService],
-      multi: true
     },
     {
       provide: RxStompConfig,
