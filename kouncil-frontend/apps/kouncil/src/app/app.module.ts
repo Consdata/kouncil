@@ -2,7 +2,12 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+  HttpClientXsrfModule
+} from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -147,7 +152,12 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ConfirmModule,
     FeatTopicsModule,
     FeatNoDataModule,
-    FeatSendModule
+    FeatSendModule,
+    HttpClientXsrfModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'your-custom-Xsrf-Cookie',
+      headerName: 'your-custom-Xsrf-Header'
+    })
   ],
   providers: [
     {

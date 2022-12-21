@@ -34,9 +34,10 @@ public class WebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/info/version").permitAll()
-                .antMatchers("/**").authenticated();
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/**").authenticated()
+                .antMatchers("/**").permitAll();
         return http.build();
     }
 

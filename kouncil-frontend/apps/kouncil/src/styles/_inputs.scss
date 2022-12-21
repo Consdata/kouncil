@@ -1,0 +1,22 @@
+@import 'palette';
+
+@mixin input {
+  background: $main-0;
+  border: 1px solid $main-20;
+  border-radius: $default-border-radius;
+  font-size: 14px;
+  line-height: $default-line-height;
+  padding: 8px 8px 8px 40px;
+}
+
+@mixin focus-visible {
+  outline: none;
+  box-shadow: 0 0 3px 1px $blue-60;
+  transition: all $default-transition-time;
+}
+
+@mixin hover {
+  border: 1px solid $main-40;
+  transition: all $default-transition-time;
+}
+

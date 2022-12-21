@@ -5,6 +5,7 @@ import {configProviderFactory} from '../app.module';
 import {ServersService} from '@app/common-servers';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-login',
@@ -12,16 +13,35 @@ import {environment} from '../../environments/environment';
     <app-kafka-navbar></app-kafka-navbar>
 
     <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
+      <div class="icon-login-container">
+        <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
+      </div>
       <div class="main-login">
-        <form (ngSubmit)="login()" class="login-form">
-          <input placeholder="Login" class="input" matInput type="text" [(ngModel)]="username"
-                 name="username">
+        <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
+
+          <div class="login-field-container">
+            <div class="login-field-icon-container">
+              <mat-icon class="login-field-icon">person</mat-icon>
+            </div>
+            <div class="login-field-input-container">
+              <input placeholder="Login" class="input" matInput type="text"
+                     [formControl]="getControl('username')">
+            </div>
+          </div>
           <br>
-          <input placeholder="Password" class="input" matInput type="password"
-                 [(ngModel)]="password" name="password">
+
+          <div class="login-field-container">
+            <div class="login-field-icon-container">
+              <mat-icon class="login-field-icon">lock</mat-icon>
+            </div>
+            <div class="login-field-input-container">
+              <input placeholder="Password" class="input" matInput type="password"
+                     [formControl]="getControl('password')">
+            </div>
+          </div>
           <br>
           <button mat-button disableRipple class="action-button-white" type="submit">
-            Zaloguj
+            Login
           </button>
         </form>
       </div>
@@ -34,19 +54,28 @@ import {environment} from '../../environments/environment';
 export class LoginComponent {
 
   public backend: Backend = environment.backend;
-  username: string;
-  password: string;
+  form: FormGroup;
 
-  constructor(private service: AuthService, private router: Router, private serverService: ServersService) {
+  constructor(private service: AuthService, private router: Router, private serverService: ServersService,
+              private fb: FormBuilder) {
+    this.form = this.fb.group({});
+    this.form.addControl('username', new FormControl());
+    this.form.addControl('password', new FormControl());
   }
 
   login(): void {
-    this.service.login$(this.username, this.password).subscribe(isValid => {
-      if (isValid) {
-        configProviderFactory(this.serverService).then(() => {
-          this.router.navigate(['/topics']);
-        });
-      }
-    });
+    if (this.form.valid) {
+      this.service.login$(this.getControl('username').value, this.getControl('password').value).subscribe(isValid => {
+        if (isValid) {
+          configProviderFactory(this.serverService).then(() => {
+            this.router.navigate(['/topics']);
+          });
+        }
+      });
+    }
+  }
+
+  getControl(name: string): FormControl {
+    return this.form.controls[name] as FormControl;
   }
 }

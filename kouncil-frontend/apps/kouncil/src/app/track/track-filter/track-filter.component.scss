@@ -1,3 +1,5 @@
+@use '../../../styles/buttons';
+@use '../../../styles/inputs';
 @import '../../../styles/palette';
 
 :host {
@@ -65,8 +67,7 @@
     }
 
     &:hover {
-      border: 1px solid $main-40;
-      transition: all $default-transition-time;
+      @include inputs.hover;
 
       .wrapper-glue, .wrapper-glue-start {
         color: $main-60;
@@ -74,9 +75,7 @@
     }
 
     &:focus-visible {
-      outline: none;
-      box-shadow: 0 0 3px 1px $blue-60;
-      transition: all $default-transition-time;
+      @include inputs.focus-visible;
 
       .wrapper-glue, .wrapper-glue-start {
         color: $main-60;
@@ -90,11 +89,7 @@
   }
 
   .filter-input {
-    background: $main-0;
-    border: 1px solid $main-20;
-    border-radius: $default-border-radius;
-    font-size: 14px;
-    line-height: $default-line-height;
+    @include inputs.input;
     min-width: 100px;
     max-width: 550px;
     height: 40px;
@@ -102,14 +97,11 @@
   }
 
   .filter-input:hover {
-    border: 1px solid $main-40;
-    transition: all $default-transition-time;
+    @include inputs.hover;
   }
 
   .filter-input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 3px 1px $blue-60;
-    transition: all $default-transition-time;
+    @include inputs.focus-visible;
   }
 
   .filter-button {
@@ -143,9 +135,7 @@
   }
 
   .clear-button {
-    background: $main-0;
-    border: 1px solid $main-20;
-    color: $main-70;
+    @include buttons.button-white;
     border-radius: $default-border-radius;
     height: 40px;
 

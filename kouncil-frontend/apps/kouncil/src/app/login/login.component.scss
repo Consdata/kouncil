@@ -1,16 +1,10 @@
+@use '../../styles/inputs';
+@use '../../styles/buttons';
 @import '../../styles/palette';
 
-.kafka-desktop {
-  height: calc(100% - 72px);
-}
-
-.kafka-desktop-demo {
-  height: calc(100% - 120px);
-}
-
 .main-login {
-  place-items: center;
   display: flex;
+  place-items: center;
   height: 400px;
   width: 400px;
   margin: 0 auto;
@@ -21,6 +15,27 @@
   border: 1px solid #EAEAEA;
 }
 
+.icon-login-container {
+  display: flex;
+  place-items: center;
+  height: 100px;
+  width: 100px;
+  background: #2566E8;
+  top: 125px;
+  position: absolute;
+  border-radius: 50%;
+  left: calc(50% - 50px);
+  z-index: 1;
+}
+
+.icon-login {
+  width: 75px;
+  height: 75px;
+  font-size: 75px;
+  margin: 0 auto;
+  color: $main-0;
+}
+
 .login-form {
   place-items: center;
   display: grid;
@@ -29,27 +44,42 @@
 }
 
 .input {
-  background: $main-0;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  padding: 8px 8px 8px 8px;
-  font-size: 14px;
-  line-height: $default-line-height;
+  @include inputs.input;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .input:hover {
-  border: 1px solid $main-40;
-  transition: all $default-transition-time;
+  @include inputs.hover;
 }
 
 .input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 3px 1px $blue-60;
-  transition: all $default-transition-time;
+  @include inputs.focus-visible;
 }
 
 .action-button-white {
-  background: $main-0;
-  border: 1px solid $main-20;
-  color: $main-70;
+  @include buttons.button-white;
+}
+
+.login-field-container {
+  display: flex;
+}
+
+.login-field-input-container {
+  width: 85%
+}
+
+.login-field-icon-container {
+  background: $blue-40;
+  width: 15%;
+  border-top-left-radius: $default-border-radius;
+  border-bottom-left-radius: $default-border-radius;
+}
+
+.login-field-icon {
+  display: flex;
+  place-items: center;
+  font-size: 24px;
+  color: white;
+  height: 100%;
 }
