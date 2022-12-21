@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class LoginService {
+export class AuthService {
 
   authenticated: boolean = false;
 
@@ -15,11 +15,17 @@ export class LoginService {
 
   login$(username: string, password: string): Observable<boolean> {
     return this.http.post<boolean>('/api/login', {
-      userName: username,
+      username: username,
       password: password
     }).pipe(map(data => {
       this.authenticated = data;
       return data;
+    }));
+  }
+
+  logout$(): Observable<void> {
+    return this.http.get<void>('/api/logout').pipe(map(() => {
+      this.authenticated = false;
     }));
   }
 }

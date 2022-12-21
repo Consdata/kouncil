@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails admin = User.withUsername("admin")
                 .password("{noop}admin")
-                .authorities("ROLE_ADMIN")
+                .authorities("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(admin);
     }

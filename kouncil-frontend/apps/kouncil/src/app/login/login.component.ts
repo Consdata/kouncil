@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {LoginService} from './login.service';
+import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {configProviderFactory} from '../app.module';
 import {ServersService} from '@app/common-servers';
@@ -37,7 +37,7 @@ export class LoginComponent {
   username: string;
   password: string;
 
-  constructor(private service: LoginService, private router: Router, private serverService: ServersService) {
+  constructor(private service: AuthService, private router: Router, private serverService: ServersService) {
   }
 
   login(): void {

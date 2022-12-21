@@ -13,7 +13,7 @@ import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
 import {SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
-import {LoginService} from '../login/login.service';
+import {AuthService} from '../login/auth.service';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -61,6 +61,12 @@ import {LoginService} from '../login/login.service';
         </mat-select>
       </mat-form-field>
 
+      <button *ngIf="authService.authenticated" class="menu-button" mat-button disableRipple
+      (click)="logout()">
+        Logout
+        <mat-icon aria-hidden="false">logout</mat-icon>
+      </button>
+
       <img *ngIf="!authService.authenticated" src="assets/consdata-logo-color.png" alt="logo"
            class="consdata-logo"/>
     </mat-toolbar>
@@ -78,7 +84,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
               private router: Router,
               private http: HttpClient,
               public servers: ServersService,
-              public authService: LoginService) {
+              public authService: AuthService) {
     router.events.subscribe(() => {
       this.searchInputElementRef?.nativeElement.focus();
     });
@@ -112,5 +118,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   goToGithub(): void {
     window.open('https://github.com/consdata/kouncil', '_blank');
+  }
+
+  logout(): void {
+    this.authService.logout$().subscribe(()=>{
+      this.router.navigate(['/login']);
+    });
   }
 }
