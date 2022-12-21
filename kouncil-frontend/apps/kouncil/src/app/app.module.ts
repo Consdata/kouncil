@@ -6,7 +6,6 @@ import {
   HTTP_INTERCEPTORS,
   HttpClient,
   HttpClientModule,
-  HttpClientXsrfModule
 } from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
@@ -152,12 +151,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ConfirmModule,
     FeatTopicsModule,
     FeatNoDataModule,
-    FeatSendModule,
-    HttpClientXsrfModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'your-custom-Xsrf-Cookie',
-      headerName: 'your-custom-Xsrf-Header'
-    })
+    FeatSendModule
   ],
   providers: [
     {

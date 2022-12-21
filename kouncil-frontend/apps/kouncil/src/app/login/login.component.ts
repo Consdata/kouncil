@@ -5,7 +5,7 @@ import {configProviderFactory} from '../app.module';
 import {ServersService} from '@app/common-servers';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -59,8 +59,8 @@ export class LoginComponent {
   constructor(private service: AuthService, private router: Router, private serverService: ServersService,
               private fb: FormBuilder) {
     this.form = this.fb.group({});
-    this.form.addControl('username', new FormControl());
-    this.form.addControl('password', new FormControl());
+    this.form.addControl('username', new FormControl('', Validators.required));
+    this.form.addControl('password', new FormControl('', Validators.required));
   }
 
   login(): void {
