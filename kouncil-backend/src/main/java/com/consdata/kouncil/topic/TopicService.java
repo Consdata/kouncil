@@ -6,7 +6,10 @@ import com.consdata.kouncil.MessagesHelper;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.serialization.SerializationService;
+import com.consdata.kouncil.topic.util.FieldType;
+import com.consdata.kouncil.topic.util.PlaceholderFormatUtil;
 import com.consdata.kouncil.track.TopicMetadata;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -264,15 +267,15 @@ public class TopicService {
 
     private List<Header> getFilteredOutHeaders(Headers headers) {
         return Arrays.stream(headers.toArray())
-                .filter((header) -> ArrayUtils.contains(resendHeadersToKeep, header.key()))
+                .filter(header -> ArrayUtils.contains(resendHeadersToKeep, header.key()))
                 .collect(Collectors.toList());
     }
 
     private String replaceTokens(String data, int i) {
-        return data
-                .replace("{{count}}", String.valueOf(i))
-                .replace("{{timestamp}}", String.valueOf(System.currentTimeMillis()))
-                .replace("{{uuid}}", UUID.randomUUID().toString());
+        data = PlaceholderFormatUtil.formatPlaceholder("\\{\\{count(.*?)}}", data, FieldType.STRING, i);
+        data = PlaceholderFormatUtil.formatPlaceholder("\\{\\{timestamp(.*?)}}", data, FieldType.DATE, LocalDate.now());
+        data = PlaceholderFormatUtil.formatPlaceholder("\\{\\{uuid(.*?)}}", data, FieldType.STRING, UUID.randomUUID().toString());
+        return data;
     }
 
     public void send(String topicName, int count, TopicMessage message, String serverId) {

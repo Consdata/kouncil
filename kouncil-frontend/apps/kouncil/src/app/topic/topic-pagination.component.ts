@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from './topic.service';
 import {Page} from './page';
 import {ServersService} from '@app/common-servers';
@@ -20,6 +20,15 @@ import {ServersService} from '@app/common-servers';
           [count]="paging?.totalElements"
           (change)="paginateMessages($event)">
         </datatable-pager>
+
+        <div class="page-no">
+          <span class="page-no-label">Page no:</span>
+          <mat-form-field class="page-no-form-field">
+            <input matInput class="page-no-input" type="number" [ngModel]="paging.pageNumber"
+                   [ngModelOptions]="{updateOn: 'blur'}"
+                   (ngModelChange)="paginateMessages({page: $event})">
+          </mat-form-field>
+        </div>
       </div>
       <div class="kafka-topic-footer-pager-item limit">
         <span class="limit-label">Items per partition:</span>
@@ -41,6 +50,7 @@ export class TopicPaginationComponent {
 
   @Input() paging?: Page;
   @Input() topicName?: string;
+  @Output() changeQueryParams: EventEmitter<number> = new EventEmitter<number>();
   pageLimits: number[] = [1, 5, 10, 20, 50, 100, 500, 1000];
 
   constructor(private topicService: TopicService, private servers: ServersService) {
@@ -48,6 +58,7 @@ export class TopicPaginationComponent {
 
   paginateMessages($event: { page: number }): void {
     if (this.topicName) {
+      this.changeQueryParams.emit($event.page);
       this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
     }
   }
