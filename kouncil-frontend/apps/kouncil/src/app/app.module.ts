@@ -6,6 +6,7 @@ import {
   HTTP_INTERCEPTORS,
   HttpClient,
   HttpClientModule,
+  HttpClientXsrfModule
 } from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
@@ -71,6 +72,8 @@ import {RxStompService} from './rx-stomp.service';
 import {rxStompServiceFactory} from './rx-stomp-service-factory';
 import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
+import {CommonLoginModule} from '@app/common-login';
+import {AuthService, authServiceFactory} from './login/auth.service';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -151,7 +154,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ConfirmModule,
     FeatTopicsModule,
     FeatNoDataModule,
-    FeatSendModule
+    FeatSendModule,
+    CommonLoginModule,
+    HttpClientXsrfModule
   ],
   providers: [
     {
@@ -209,6 +214,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
       deps: [RxStompConfig],
+    },
+    {
+      provide: AuthService,
+      useFactory: authServiceFactory,
+      deps: [HttpClient]
     },
   ],
   bootstrap: [AppComponent]

@@ -23,13 +23,13 @@ import {AuthService} from '../login/auth.service';
            src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
            matTooltip="{{backendVersion}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/topics']" *ngIf="authService.authenticated">Topics</a>
+         [routerLink]="['/topics']" *ngIf="isAuthenticated$ | async">Topics</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/brokers']" *ngIf="authService.authenticated">Brokers</a>
+         [routerLink]="['/brokers']" *ngIf="isAuthenticated$ | async">Brokers</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/consumer-groups']" *ngIf="authService.authenticated">Consumer Groups</a>
+         [routerLink]="['/consumer-groups']" *ngIf="isAuthenticated$ | async">Consumer Groups</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/track']" *ngIf="authService.authenticated">Track</a>
+         [routerLink]="['/track']" *ngIf="isAuthenticated$ | async">Track</a>
 
       <mat-divider [vertical]="true"></mat-divider>
 
@@ -40,7 +40,7 @@ import {AuthService} from '../login/auth.service';
 
       <span class="spacer"></span>
 
-      <div class="search" *ngIf="authService.authenticated">
+      <div class="search" *ngIf="isAuthenticated$ | async">
         <input
           accesskey="/"
           class="search-input"
@@ -50,7 +50,7 @@ import {AuthService} from '../login/auth.service';
           [(ngModel)]="searchService.currentPhrase"
           #searchInput>
       </div>
-      <mat-form-field class="servers-form-field" *ngIf="authService.authenticated">
+      <mat-form-field class="servers-form-field" *ngIf="isAuthenticated$ | async">
         <mat-select
           panelClass="servers-list"
           class="select servers"
@@ -61,13 +61,13 @@ import {AuthService} from '../login/auth.service';
         </mat-select>
       </mat-form-field>
 
-      <button *ngIf="authService.authenticated" class="menu-button" mat-button disableRipple
+      <button *ngIf="isAuthenticated$ | async" class="menu-button" mat-button disableRipple
       (click)="logout()">
         Logout
         <mat-icon aria-hidden="false">logout</mat-icon>
       </button>
 
-      <img *ngIf="!authService.authenticated" src="assets/consdata-logo-color.png" alt="logo"
+      <img *ngIf="(isAuthenticated$ | async) === false" src="assets/consdata-logo-color.png" alt="logo"
            class="consdata-logo"/>
     </mat-toolbar>
   `,
@@ -79,6 +79,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 
   backendVersion$?: Observable<string>;
+  isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
 
   constructor(public searchService: SearchService,
               private router: Router,

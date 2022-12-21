@@ -1,5 +1,6 @@
 package com.consdata.kouncil.security;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,7 +26,11 @@ class AuthControllerTest {
 
     @Test
     void should_authenticate_user() throws Exception {
-        mockMvc.perform(post("/api/login").content("{\"username\":\"admin\",\"password\":\"admin\"}").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/login")
+                        .content("{\"username\":\"admin\",\"password\":\"admin\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
                 .andExpect(status().isOk());
     }
 
