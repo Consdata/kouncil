@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
-import {configProviderFactory} from '../app.module';
-import {ServersService} from '@app/common-servers';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
 import {User} from '@app/common-login';
@@ -24,15 +22,13 @@ export class LoginComponent {
 
   public backend: Backend = environment.backend;
 
-  constructor(private service: AuthService, private router: Router, private serverService: ServersService) {
+  constructor(private service: AuthService, private router: Router) {
   }
 
   login($event: User): void {
     this.service.login$($event).subscribe(isValid => {
       if (isValid) {
-        configProviderFactory(this.serverService).then(() => {
-          this.router.navigate(['/topics']);
-        });
+        this.router.navigate(['/topics']);
       }
     });
   }

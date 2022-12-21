@@ -8,9 +8,9 @@ import {AuthService} from './auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthBackendService implements AuthService{
+export class AuthBackendService implements AuthService {
 
-  private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem("isLoggedIn") === "true");
 
   constructor(protected http: HttpClient) {
   }
@@ -26,12 +26,14 @@ export class AuthBackendService implements AuthService{
   login$(user: User): Observable<boolean> {
     return this.http.post<boolean>('/api/login', user).pipe(map(data => {
       this.setAuthenticated(data);
+      localStorage.setItem("isLoggedIn", "true");
       return data;
     }));
   }
 
   logout$(): Observable<void> {
     return this.http.get<void>('/api/logout').pipe(map(() => {
+      localStorage.removeItem("isLoggedIn");
       this.setAuthenticated(false);
     }));
   }

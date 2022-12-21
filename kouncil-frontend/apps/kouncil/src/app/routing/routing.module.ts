@@ -15,6 +15,7 @@ import {TopicsComponent} from '@app/feat-topics';
 import {LoginComponent} from '../login/login.component';
 import {AuthGuard} from './auth.guard';
 import {MainComponent} from '../main/main.component';
+import {ConfigResolver} from "./config-resolver";
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -49,6 +50,9 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {
     path: '', component: MainComponent, canActivate: [AuthGuard],
+    resolve: {
+      config: ConfigResolver
+    },
     children: [
       {
         path: 'brokers',
