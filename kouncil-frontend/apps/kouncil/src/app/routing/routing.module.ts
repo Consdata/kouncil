@@ -15,7 +15,7 @@ import {TopicsComponent} from '@app/feat-topics';
 import {LoginComponent} from '../login/login.component';
 import {AuthGuard} from './auth.guard';
 import {MainComponent} from '../main/main.component';
-import {ConfigResolver} from "./config-resolver";
+import {ConfigResolver} from './config-resolver';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {

@@ -10,7 +10,9 @@ import {AuthService} from './auth.service';
 })
 export class AuthBackendService implements AuthService {
 
-  private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem("isLoggedIn") === "true");
+  private IS_LOGGED_IN: string ='isLoggedIn';
+
+  private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.IS_LOGGED_IN) === 'true');
 
   constructor(protected http: HttpClient) {
   }
@@ -26,14 +28,14 @@ export class AuthBackendService implements AuthService {
   login$(user: User): Observable<boolean> {
     return this.http.post<boolean>('/api/login', user).pipe(map(data => {
       this.setAuthenticated(data);
-      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem(this.IS_LOGGED_IN, 'true');
       return data;
     }));
   }
 
   logout$(): Observable<void> {
     return this.http.get<void>('/api/logout').pipe(map(() => {
-      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem(this.IS_LOGGED_IN);
       this.setAuthenticated(false);
     }));
   }

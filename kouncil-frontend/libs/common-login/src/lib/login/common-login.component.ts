@@ -12,24 +12,26 @@ import {User} from "./user";
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
 
-        <div class="login-field-container">
+        <div #username class="login-field-container">
           <div class="login-field-icon-container">
             <mat-icon class="login-field-icon">person</mat-icon>
           </div>
           <div class="login-field-input-container">
             <input placeholder="Login" class="input" matInput type="text" required
-                   [formControl]="getControl('username')">
+                   [formControl]="getControl('username')" (focusin)="updateFocus(username)"
+                   (focusout)="updateFocus(username)">
           </div>
         </div>
         <br>
 
-        <div class="login-field-container">
+        <div #password class="login-field-container">
           <div class="login-field-icon-container">
             <mat-icon class="login-field-icon">lock</mat-icon>
           </div>
           <div class="login-field-input-container">
             <input placeholder="Password" class="input" matInput type="password" required
-                   [formControl]="getControl('password')">
+                   [formControl]="getControl('password')" (focusin)="updateFocus(password)"
+                   (focusout)="updateFocus(password)">
           </div>
         </div>
         <br>
@@ -61,5 +63,11 @@ export class CommonLoginComponent {
 
   getControl(name: string): FormControl {
     return this.form.controls[name] as FormControl;
+  }
+
+  updateFocus(htmlElement: HTMLElement) {
+    htmlElement.classList.contains('input-focus')
+      ? htmlElement.classList.remove('input-focus')
+      : htmlElement.classList.add('input-focus');
   }
 }

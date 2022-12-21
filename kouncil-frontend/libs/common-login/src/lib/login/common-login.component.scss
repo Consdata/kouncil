@@ -8,11 +8,11 @@
   height: 400px;
   width: 400px;
   margin: 0 auto;
-  background: white;
+  background: $main-0;
   top: 100px;
   position: relative;
   border-radius: 10px;
-  border: 1px solid #EAEAEA;
+  border: 1px solid $main-20;
 }
 
 .icon-login-container {
@@ -20,7 +20,7 @@
   place-items: center;
   height: 100px;
   width: 100px;
-  background: #2566E8;
+  background: $blue-20;
   top: 125px;
   position: absolute;
   border-radius: 50%;
@@ -33,14 +33,14 @@
   height: 75px;
   font-size: 75px;
   margin: 0 auto;
-  color: $main-0;
+  color: $blue-50;
 }
 
 .login-form {
   place-items: center;
   display: grid;
   margin: 0 auto;
-  width: 250px;
+  width: 275px;
 }
 
 .input {
@@ -54,7 +54,7 @@
 }
 
 .input:focus-visible {
-  @include inputs.focus-visible;
+  outline: none;
 }
 
 .action-button-white {
@@ -65,22 +65,29 @@
   display: flex;
 }
 
+.input-focus{
+  outline: none;
+  filter: drop-shadow(0 0 3px $blue-60);
+  transition: all $default-transition-time;
+}
+
 .login-field-input-container {
   width: 85%
 }
 
 .login-field-icon-container {
-  background: $blue-40;
+  background: $blue-20;
   width: 15%;
   border-top-left-radius: $default-border-radius;
   border-bottom-left-radius: $default-border-radius;
+  border: 1px solid $blue-20;
 }
 
 .login-field-icon {
   display: flex;
   place-items: center;
   font-size: 24px;
-  color: white;
+  color: $blue-50;
   height: 100%;
 }
 

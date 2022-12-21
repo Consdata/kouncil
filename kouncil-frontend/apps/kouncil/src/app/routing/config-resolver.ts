@@ -1,18 +1,16 @@
-import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
-import {Observable} from "rxjs";
-import {ServersService} from "@app/common-servers";
-import {configProviderFactory} from "../app.module";
+import {Injectable} from '@angular/core';
+import {Resolve} from '@angular/router';
+import {Observable} from 'rxjs';
+import {ServersService} from '@app/common-servers';
+import {configProviderFactory} from '../app.module';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ConfigResolver implements Resolve<boolean> {
-  constructor(private service: ServersService) {}
 
-  resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean>|Promise<boolean>| boolean {
-    console.log('resolve');
+  constructor(private service: ServersService) {
+  }
+
+  resolve(): Observable<boolean> | Promise<boolean> | boolean {
     return configProviderFactory(this.service);
   }
 }
