@@ -22,8 +22,11 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!----> }, {{count}<!----> },
-          {{timestamp}<!----> }
+          Available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->}
+          <br>
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!---->}).
+          Format should be given after <strong>colon (:)</strong> which precedes placeholder.
+          Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>
         <div class="drawer-section-title">Key</div>
         <input [(ngModel)]="messageData.key" matInput type="text" name="key"/>
