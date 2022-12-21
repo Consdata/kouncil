@@ -5,9 +5,9 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import { DatePipe } from '@angular/common';
+import {DatePipe, Location} from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { TopicService, topicServiceProvider } from './topic.service';
 import { Page } from './page';
@@ -73,6 +73,7 @@ import {SendComponent} from '@app/feat-send';
                 class="topic-pagination"
                 [paging]="paging$ | async"
                 [topicName]="topicName"
+                (changeQueryParams)="updateQueryParams($event)"
               ></app-topic-pagination>
             </ng-template>
           </ngx-datatable-footer>
@@ -124,7 +125,9 @@ export class TopicComponent implements OnInit, OnDestroy {
     private topicService: TopicService,
     private drawerService: DrawerService,
     private servers: ServersService,
-    private messageDataService: MessageDataService
+    private messageDataService: MessageDataService,
+    private router: Router,
+    private location: Location
   ) {
     this.jsonToGridSubscription = this.topicService
       .getConvertTopicMessagesJsonToGridObservable$()
@@ -152,6 +155,12 @@ export class TopicComponent implements OnInit, OnDestroy {
       );
       this.titleService.setTitle(this.topicName + ' Kouncil');
       this.paused = true;
+    });
+
+    this.route.queryParams.subscribe(params => {
+      if(params['page']!==undefined){
+        this.topicService.paginateMessages(this.servers.getSelectedServerId(), {page: params['page']}, this.topicName);
+      }
     });
 
     this.searchSubscription = this.searchService
@@ -355,5 +364,10 @@ export class TopicComponent implements OnInit, OnDestroy {
       columns = columns.concat(this.valueColumns);
     }
     this.columns = columns;
+  }
+
+  public updateQueryParams(page: number): void {
+    const urlTree = this.router.createUrlTree([], {relativeTo: this.route, queryParams: {page}});
+    this.location.go(urlTree.toString());
   }
 }
