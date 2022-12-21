@@ -1,5 +1,6 @@
 package com.consdata.kouncil.serde.formatter.schema;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
@@ -45,8 +46,8 @@ public class JsonSchemaMessageFormatter implements MessageFormatter {
 
             byte[] serialized = jsonSchemaSerializer.serialize(serializationData.getTopicName(), jsonNodeWithEnvelopedSchema);
             return Bytes.wrap(serialized);
-        } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize JSON record for topic " + serializationData.getTopicName(), e);
+        } catch (Exception e) {
+            throw new KouncilRuntimeException("Failed to serialize JSON record for topic " + serializationData.getTopicName(), e);
         }
     }
 

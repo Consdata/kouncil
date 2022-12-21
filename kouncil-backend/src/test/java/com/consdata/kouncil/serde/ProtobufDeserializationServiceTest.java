@@ -31,13 +31,12 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ProtobufDeserializationServiceTest {
-    private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[] {0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
+class ProtobufDeserializationServiceTest {
+    private static final byte[] PROTOBUF_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 0, 10, 17, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 16, -67, -106, 34, 26, 16, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
     private static final String LOREM = "lorem";
     private static final String CLUSTER_ID = "clusterId";
     private static ProtobufSchema PROTOBUF_SCHEMA;
@@ -68,7 +67,7 @@ public class ProtobufDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_value_with_schema() {
+    void should_deserialize_value_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -80,7 +79,7 @@ public class ProtobufDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -96,7 +95,7 @@ public class ProtobufDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_key_with_schema() {
+    void should_deserialize_key_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -108,7 +107,7 @@ public class ProtobufDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -124,7 +123,7 @@ public class ProtobufDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_with_schema_key_null() {
+    void should_deserialize_with_schema_key_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -136,7 +135,7 @@ public class ProtobufDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -152,7 +151,7 @@ public class ProtobufDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_with_schema_value_null() {
+    void should_deserialize_with_schema_value_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -164,7 +163,7 @@ public class ProtobufDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());

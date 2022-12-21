@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class JsonSchemaDeserializationServiceTest {
+class JsonSchemaDeserializationServiceTest {
     private static final byte[] JSON_SCHEMA_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 34, 44, 34, 115, 111, 109, 101, 78, 117, 109, 98, 101, 114, 34, 58, 53, 53, 57, 57, 51, 51, 44, 34, 114, 101, 99, 101, 105, 118, 101, 100, 68, 97, 116, 101, 34, 58, 34, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101, 34, 125};
     private static final String LOREM = "lorem";
     private static final String CLUSTER_ID = "clusterId";
@@ -67,7 +67,7 @@ public class JsonSchemaDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_value_with_schema() {
+    void should_deserialize_value_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -79,7 +79,7 @@ public class JsonSchemaDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -95,7 +95,7 @@ public class JsonSchemaDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_key_with_schema() {
+    void should_deserialize_key_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -107,7 +107,7 @@ public class JsonSchemaDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -123,7 +123,7 @@ public class JsonSchemaDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_with_schema_key_null() {
+    void should_deserialize_with_schema_key_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -135,7 +135,7 @@ public class JsonSchemaDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
@@ -151,7 +151,7 @@ public class JsonSchemaDeserializationServiceTest {
 
     @SneakyThrows
     @Test
-    public void should_deserialize_with_schema_value_null() {
+    void should_deserialize_with_schema_value_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -163,7 +163,7 @@ public class JsonSchemaDeserializationServiceTest {
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.JSON);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.JSON, new JsonSchemaMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
-        when(schemaAwareClusterService.getClusterSchema(eq(CLUSTER_ID))).thenReturn(SchemaAwareCluster.builder()
+        when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
                 .schemaRegistryFacade(schemaRegistryFacade)
                 .formatters(formatters)
                 .build());
