@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {TopicService} from './topic.service';
 import {Page} from './page';
 import {ServersService} from '@app/common-servers';
+import {ActivatedRoute, Router} from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-topic-pagination',
@@ -24,7 +26,7 @@ import {ServersService} from '@app/common-servers';
         <div class="page-no">
           <span class="page-no-label">Page no:</span>
           <mat-form-field class="page-no-form-field">
-            <input matInput class="page-no-input" type="number" [(ngModel)]="paging.pageNumber"
+            <input matInput class="page-no-input" type="number" [ngModel]="paging.pageNumber"
                    [ngModelOptions]="{updateOn: 'blur'}"
                    (ngModelChange)="paginateMessages({page: $event})">
           </mat-form-field>
@@ -52,11 +54,13 @@ export class TopicPaginationComponent {
   @Input() topicName?: string;
   pageLimits: number[] = [1, 5, 10, 20, 50, 100, 500, 1000];
 
-  constructor(private topicService: TopicService, private servers: ServersService) {
+  constructor(private topicService: TopicService, private servers: ServersService,
+              private router: Router, private activatedRoute: ActivatedRoute, private location: Location) {
   }
 
   paginateMessages($event: { page: number }): void {
     if (this.topicName) {
+      this.updateQueryParams($event.page);
       this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
     }
   }
@@ -65,5 +69,10 @@ export class TopicPaginationComponent {
     if (this.topicName) {
       this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
     }
+  }
+
+  private updateQueryParams(page: number) {
+    const urlTree = this.router.createUrlTree([], {relativeTo: this.activatedRoute, queryParams: {page}});
+    this.location.go(urlTree.toString());
   }
 }
