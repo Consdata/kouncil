@@ -1,0 +1,61 @@
+@use '../../../../../apps/kouncil/src/styles/inputs';
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import '../../../../../apps/kouncil/src/styles/palette';
+
+.login-field-container {
+  display: flex;
+}
+
+.login-field-container-error {
+  border: 1px solid $red-50;
+  border-radius: $default-border-radius;
+}
+
+.login-field-icon-container {
+  background: $blue-20;
+  width: 15%;
+  border-top-left-radius: $default-border-radius;
+  border-bottom-left-radius: $default-border-radius;
+  border: 1px solid $blue-20;
+  border-right: 0;
+}
+
+.login-field-icon {
+  display: flex;
+  place-items: center;
+  font-size: 24px;
+  color: $blue-50;
+  height: 100%;
+}
+
+.login-field-input-container {
+  width: 85%
+}
+
+.input {
+  @include inputs.input;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input:hover {
+  @include inputs.hover;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input-focus {
+  outline: none;
+  filter: drop-shadow(0 0 3px $blue-60);
+  transition: all $default-transition-time;
+}
+
+.error {
+  float: left;
+  width: 100%;
+  font-size: 12px;
+  margin-top: 2px;
+}
+

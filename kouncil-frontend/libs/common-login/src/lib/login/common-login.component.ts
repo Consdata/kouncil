@@ -12,28 +12,20 @@ import {User} from "./user";
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
 
-        <div #username class="login-field-container">
-          <div class="login-field-icon-container">
-            <mat-icon class="login-field-icon">person</mat-icon>
-          </div>
-          <div class="login-field-input-container">
-            <input placeholder="Login" class="input" matInput type="text" required
-                   [formControl]="getControl('username')" (focusin)="updateFocus(username)"
-                   (focusout)="updateFocus(username)">
-          </div>
-        </div>
+        <app-common-login-field [fieldName]="'username'"
+                                [control]="getControl('username')"
+                                [fieldType]="'text'"
+                                [autocomplete]="'username'"
+                                [label]="'Login'"
+                                [icon]="'person'"></app-common-login-field>
         <br>
 
-        <div #password class="login-field-container">
-          <div class="login-field-icon-container">
-            <mat-icon class="login-field-icon">lock</mat-icon>
-          </div>
-          <div class="login-field-input-container">
-            <input placeholder="Password" class="input" matInput type="password" required
-                   [formControl]="getControl('password')" (focusin)="updateFocus(password)"
-                   (focusout)="updateFocus(password)">
-          </div>
-        </div>
+        <app-common-login-field [fieldName]="'password'"
+                                [control]="getControl('password')"
+                                [fieldType]="'password'"
+                                [autocomplete]="'current-password'"
+                                [label]="'Password'"
+                                [icon]="'lock'"></app-common-login-field>
         <br>
         <button mat-button disableRipple class="action-button-white" type="submit">
           Login
@@ -56,18 +48,17 @@ export class CommonLoginComponent {
   }
 
   login(): void {
+    this.form.markAllAsTouched();
     if (this.form.valid) {
-      this.loginUser.emit(new User(this.getControl('username').value, this.getControl('password').value));
+      this.loginUser.emit({
+          username: this.getControl('username').getRawValue(),
+          password: this.getControl('password').getRawValue()
+        }
+      );
     }
   }
 
-  getControl(name: string): FormControl {
-    return this.form.controls[name] as FormControl;
-  }
-
-  updateFocus(htmlElement: HTMLElement) {
-    htmlElement.classList.contains('input-focus')
-      ? htmlElement.classList.remove('input-focus')
-      : htmlElement.classList.add('input-focus');
+  getControl(controlName: string): FormControl {
+    return this.form.controls[controlName] as FormControl;
   }
 }
