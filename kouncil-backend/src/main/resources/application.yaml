@@ -1,4 +1,7 @@
 management:
+  health:
+    ldap:
+      enabled: false
   endpoints:
     web:
       exposure:
@@ -9,5 +12,16 @@ logging:
     com.consdata.kouncil: DEBUG
     org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
 kouncil:
+  auth:
+    active-provider: inmemory # inmemory, ldap, ad
+    ldap:
+      provider-url: "ldaps://acme.com"
+      search-base: "ou=Users,dc=acme,dc=com"
+      search-filter: "(uid={0})"
+    ad:
+      domain: "acme.com"
+      url: "ldap://acme.com:389"
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=acme,DC=com))"
+
   topics:
     exclude-regex-patterns: __.*
