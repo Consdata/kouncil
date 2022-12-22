@@ -53,6 +53,7 @@ public class BrokersController {
             Collections.sort(kafkaBrokers);
             return BrokersDto.builder().brokers(kafkaBrokers).build();
         } catch (Exception e) {
+            Thread.currentThread().interrupt();
             throw new KouncilRuntimeException(e);
         }
     }
@@ -102,6 +103,7 @@ public class BrokersController {
                     .build()));
             return configs.stream().sorted().collect(Collectors.toList());
         } catch (Exception e) {
+            Thread.currentThread().interrupt();
             throw new KouncilRuntimeException(e);
         }
     }

@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class NoSchemaDeserializationServiceTest {
+class NoSchemaDeserializationServiceTest {
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
     @MockBean
@@ -30,7 +30,7 @@ public class NoSchemaDeserializationServiceTest {
     private DeserializationService deserializationService;
 
     @Test
-    public void should_deserialize_without_schema() {
+    void should_deserialize_without_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -49,7 +49,7 @@ public class NoSchemaDeserializationServiceTest {
     }
 
     @Test
-    public void should_deserialize_without_schema_key_null() {
+    void should_deserialize_without_schema_key_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(
@@ -68,7 +68,7 @@ public class NoSchemaDeserializationServiceTest {
     }
 
     @Test
-    public void should_deserialize_without_schema_value_null() {
+    void should_deserialize_without_schema_value_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
         ConsumerRecord<Bytes, Bytes> message = prepareConsumerRecord(

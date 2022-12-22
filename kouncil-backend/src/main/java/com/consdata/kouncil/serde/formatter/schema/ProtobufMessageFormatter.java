@@ -1,5 +1,6 @@
 package com.consdata.kouncil.serde.formatter.schema;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
@@ -35,7 +36,7 @@ public class ProtobufMessageFormatter implements MessageFormatter {
         try {
             return new String(ProtobufSchemaUtils.toJson(message));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to deserialize PROTOBUF record for topic " + deserializationData.getTopicName(), e);
+            throw new KouncilRuntimeException("Failed to deserialize PROTOBUF record for topic " + deserializationData.getTopicName(), e);
         }
     }
 
@@ -48,8 +49,8 @@ public class ProtobufMessageFormatter implements MessageFormatter {
             JsonFormat.parser().merge(serializationData.getPayload(), builder);
             byte[] serialized = protobufSerializer.serialize(serializationData.getTopicName(), builder.build());
             return Bytes.wrap(serialized);
-        } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize PROTOBUF record for topic " + serializationData.getTopicName(), e);
+        } catch (Exception e) {
+            throw new KouncilRuntimeException("Failed to serialize PROTOBUF record for topic " + serializationData.getTopicName(), e);
         }
     }
 
