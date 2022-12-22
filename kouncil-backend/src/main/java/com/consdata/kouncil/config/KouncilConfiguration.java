@@ -87,14 +87,6 @@ public class KouncilConfiguration {
         }
     }
 
-    public void addServer(String boostrapAddress) {
-        //servers.put(boostrapAddress.replaceAll(SPECIAL_CHARS, "_"), boostrapAddress);
-    }
-
-    public void removeServer(String serverId) {
-        //servers.remove(serverId);
-    }
-
     @PostConstruct
     public void initialize() {
         if (clusters != null) {

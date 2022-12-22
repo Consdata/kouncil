@@ -3,7 +3,9 @@ package com.consdata.kouncil.config;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,16 +36,5 @@ public class KouncilConfigurationController {
                 ));
     }
 
-    @DeleteMapping("/{serverId}")
-    @EntryExitLogger
-    public void removeServer(@PathVariable("serverId") String serverId) {
-        kouncilConfiguration.removeServer(serverId);
-    }
-
-    @PutMapping()
-    @EntryExitLogger
-    public void addServer(@RequestBody String bootstrapAddress) {
-        kouncilConfiguration.addServer(bootstrapAddress);
-    }
 
 }

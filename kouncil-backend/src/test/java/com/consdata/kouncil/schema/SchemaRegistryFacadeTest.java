@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,61 +54,61 @@ class SchemaRegistryFacadeTest {
     @SneakyThrows
     void should_get_latest_value_schema() {
         // given
-        when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-value"))).thenReturn(schemaMetadata);
+        when(mockSchemaRegistryClient.getLatestSchemaMetadata("test-topic-value")).thenReturn(schemaMetadata);
 
         // when
         Optional<SchemaMetadata> schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", false);
 
         // then
-        assertThat(schemaMetadata.isPresent()).isTrue();
+        assertThat(schemaMetadata).isPresent();
     }
 
     @Test
     @SneakyThrows
     void should_get_latest_key_schema() {
         // given
-        when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-key"))).thenReturn(schemaMetadata);
+        when(mockSchemaRegistryClient.getLatestSchemaMetadata("test-topic-key")).thenReturn(schemaMetadata);
 
         // when
         Optional<SchemaMetadata> schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", true);
 
         // then
-        assertThat(schemaMetadata.isPresent()).isTrue();
+        assertThat(schemaMetadata).isPresent();
     }
 
     @Test
     @SneakyThrows
     void should_return_empty_schema_when_rest_exception() {
         // given
-        when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-key")))
+        when(mockSchemaRegistryClient.getLatestSchemaMetadata("test-topic-key"))
                 .thenThrow(new RestClientException("", 404, 404));
 
         // when
         Optional<SchemaMetadata> schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", true);
 
         // then
-        assertThat(schemaMetadata.isPresent()).isFalse();
+        assertThat(schemaMetadata).isEmpty();
     }
 
     @Test
     @SneakyThrows
     void should_return_empty_schema_when_io_exception() {
         // given
-        when(mockSchemaRegistryClient.getLatestSchemaMetadata(eq("test-topic-key")))
+        when(mockSchemaRegistryClient.getLatestSchemaMetadata("test-topic-key"))
                 .thenThrow(new IOException());
 
         // when
         Optional<SchemaMetadata> schemaMetadata = schemaRegistryFacade.getLatestSchemaMetadata("test-topic", true);
 
         // then
-        assertThat(schemaMetadata.isPresent()).isFalse();
+        assertThat(schemaMetadata).isEmpty();
     }
 
     @Test
     @SneakyThrows
     void should_get_key_schema_format() {
         // given
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-key"), eq(1))).thenReturn(parsedProtobufSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId("test-topic-key", 1)).thenReturn(parsedProtobufSchema);
 
         // when
         MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat(
@@ -128,7 +127,7 @@ class SchemaRegistryFacadeTest {
     @SneakyThrows
     void should_get_value_schema_format() {
         // given
-        when(mockSchemaRegistryClient.getSchemaBySubjectAndId(eq("test-topic-value"), eq(1))).thenReturn(parsedProtobufSchema);
+        when(mockSchemaRegistryClient.getSchemaBySubjectAndId("test-topic-value", 1)).thenReturn(parsedProtobufSchema);
 
         // when
         MessageFormat schemaFormat = schemaRegistryFacade.getSchemaFormat(

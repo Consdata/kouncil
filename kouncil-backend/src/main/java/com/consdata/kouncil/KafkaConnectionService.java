@@ -8,7 +8,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.BytesSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -33,27 +32,25 @@ public class KafkaConnectionService {
     }
 
     public KafkaTemplate<Bytes, Bytes> getKafkaTemplate(String serverId) {
-        if (!kafkaTemplates.containsKey(serverId)) {
+        return kafkaTemplates.computeIfAbsent(serverId, k -> {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildProducerProperties();
             props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
-            kafkaTemplates.put(serverId, new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props)));
-        }
-        return kafkaTemplates.get(serverId);
+            return kafkaTemplates.put(serverId, new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props)));
+        });
     }
 
     public AdminClient getAdminClient(String serverId) {
-        if (!adminClients.containsKey(serverId)) {
+        return adminClients.computeIfAbsent(serverId, k -> {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
             props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
-            adminClients.put(serverId, AdminClient.create(props));
-        }
-        return adminClients.get(serverId);
+            return adminClients.put(serverId, AdminClient.create(props));
+        });
     }
 
     //we cannot cache this ever

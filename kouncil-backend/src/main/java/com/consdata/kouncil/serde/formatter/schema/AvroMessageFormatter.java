@@ -1,5 +1,6 @@
 package com.consdata.kouncil.serde.formatter.schema;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.serde.deserialization.DeserializationData;
 import com.consdata.kouncil.serde.serialization.SerializationData;
@@ -34,7 +35,7 @@ public class AvroMessageFormatter implements MessageFormatter {
         try {
             jsonBytes = AvroSchemaUtils.toJson(deserialized);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to deserialize AVRO record for topic " + deserializationData.getTopicName(), e);
+            throw new KouncilRuntimeException("Failed to deserialize AVRO record for topic " + deserializationData.getTopicName(), e);
         }
         return new String(jsonBytes);
     }
@@ -47,8 +48,8 @@ public class AvroMessageFormatter implements MessageFormatter {
             Object avroGeneric = AvroSchemaUtils.toObject(serializationData.getPayload(), avroSchema);
             byte[] serialized = avroSerializer.serialize(serializationData.getTopicName(), avroGeneric);
             return Bytes.wrap(serialized);
-        } catch (Throwable e) {
-            throw new RuntimeException("Failed to serialize AVRO record for topic " + serializationData.getTopicName(), e);
+        } catch (Exception e) {
+            throw new KouncilRuntimeException("Failed to serialize AVRO record for topic " + serializationData.getTopicName(), e);
         }
     }
 
