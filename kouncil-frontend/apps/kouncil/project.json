@@ -127,7 +127,7 @@
           "browserTarget": "kouncil:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "demo"
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",

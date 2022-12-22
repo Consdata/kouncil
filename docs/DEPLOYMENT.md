@@ -47,6 +47,11 @@ docker run -d -p 7070:8080 -e bootstrapServers="kafka1.cluster.local:9092" consd
 
 That will cause Kouncil to listen on port `7070`.
 
+If you want to use in memory user authentication provide `in-memory` spring profile
+```bash
+docker run -d -p 80:8080 -e bootstrapServers="kafka1.cluster.local:9092" -e spring-profiles.active=in-memory consdata/kouncil:latest
+```
+
 ## Docker - advanced configuration
 
 If you have many Kafka clusters, configuring them using `bootstrapServers` may become cumbersome. It is also impossible to express more sophisticated configuration options using such a simple configuration pattern.

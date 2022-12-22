@@ -16,6 +16,8 @@ import {LoginComponent} from '../login/login.component';
 import {AuthGuard} from './auth.guard';
 import {MainComponent} from '../main/main.component';
 import {ConfigResolver} from './config-resolver';
+import {ChangePasswordComponent} from '../login/change-password.component';
+import {MainLoginComponent} from '../login/main-login.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -47,7 +49,6 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
 }
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent},
   {
     path: '', component: MainComponent, canActivate: [AuthGuard],
     resolve: {
@@ -84,6 +85,13 @@ const routes: Routes = [
         component: TrackComponent,
         canActivate: [AuthGuard]
       }
+    ]
+  },
+  {
+    path: '', component: MainLoginComponent,
+    children: [
+      {path: 'login', component: LoginComponent},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]},
     ]
   }
 ];

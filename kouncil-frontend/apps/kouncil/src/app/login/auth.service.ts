@@ -15,6 +15,12 @@ export abstract class AuthService {
   abstract login$(user: User): Observable<boolean>;
 
   abstract logout$(): Observable<void>;
+
+  abstract firstTimeLogin$(): Observable<boolean>;
+
+  abstract changeDefaultPassword$(newPassword: string): Observable<void>;
+
+  abstract skipChange$(): Observable<void>;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {
