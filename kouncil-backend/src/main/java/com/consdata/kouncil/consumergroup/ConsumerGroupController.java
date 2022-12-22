@@ -62,15 +62,13 @@ public class ConsumerGroupController {
         ConsumerGroupDescription consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(Collections.singletonList(groupId)).describedGroups().get(groupId).get();
 
         consumerGroupSummary.members().forEach(member ->
-                member.assignment().topicPartitions().forEach((assignment -> {
-                    result.getConsumerGroupOffset().forEach(o -> {
-                        if (o.getKey().equals(assignment)) {
-                            o.setClientId(member.clientId());
-                            o.setConsumerId(member.consumerId());
-                            o.setHost(member.host());
-                        }
-                    });
-                })));
+                member.assignment().topicPartitions().forEach((assignment -> result.getConsumerGroupOffset().forEach(o -> {
+                    if (o.getKey().equals(assignment)) {
+                        o.setClientId(member.clientId());
+                        o.setConsumerId(member.consumerId());
+                        o.setHost(member.host());
+                    }
+                }))));
 
         try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(serverId)) {
             List<TopicPartition> partitions = result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList());

@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class NoSchemaSerializationServiceTest {
+class NoSchemaSerializationServiceTest {
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
     private static final String CLUSTER_ID = "clusterId";
@@ -27,7 +27,7 @@ public class NoSchemaSerializationServiceTest {
     private SerializationService serializationService;
 
     @Test
-    public void should_serialize_without_schema() {
+    void should_serialize_without_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(false);
 
