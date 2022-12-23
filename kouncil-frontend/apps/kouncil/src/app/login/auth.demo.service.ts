@@ -38,18 +38,22 @@ export class AuthDemoService implements AuthService {
     return of(undefined);
   }
 
-  github(): Observable<void> {
+  sso$(_provider: string): Observable<void> {
     return of(undefined);
   }
 
-  fetchToken(code, state): Observable<any> {
-    return of(undefined);
+  fetchToken$(_code: string, _state: string, _provider: string): Observable<string> {
+    return of('token');
   }
 
   getToken(): string {
-    return "";
+    return '';
   }
 
-  updateToken(token: string): void {
+  updateToken(_token: string): void {
+  }
+
+  ssoProviders$(): Observable<Array<string>> {
+    return of([]);
   }
 }

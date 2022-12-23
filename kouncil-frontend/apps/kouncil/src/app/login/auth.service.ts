@@ -16,11 +16,13 @@ export abstract class AuthService {
 
   abstract logout$(): Observable<void>;
 
-  abstract github(): Observable<void>;
+  abstract ssoProviders$(): Observable<Array<string>>;
+
+  abstract sso$(provider: string): Observable<void>;
 
   abstract updateToken(token: string): void;
 
-  abstract fetchToken(code, state): Observable<any>;
+  abstract fetchToken$(code: string, state: string, provider: string): Observable<string>;
 
  abstract getToken(): string;
 

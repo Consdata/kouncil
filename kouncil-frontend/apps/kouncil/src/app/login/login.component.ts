@@ -8,29 +8,23 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-login',
   template: `
-    <app-demo *ngIf="backend === 'DEMO'"></app-demo>
-    <app-kafka-navbar></app-kafka-navbar>
-
-    <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
-      <app-common-login (loginUser)="login($event)"></app-common-login>
-
-
-      <button (click)="github()">Github</button>
-    </div>
     <app-common-login (loginUser)="login($event)" [backend]="backend"
-                      [firstTimeLogin]="firstTimeLogin"></app-common-login>
+                      [availableProviders]="providers"
+                      [firstTimeLogin]="firstTimeLogin" (ssoEvent)="sso($event)"></app-common-login>
   `,
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements AfterViewInit {
 
   firstTimeLogin: boolean = false;
+  providers: Array<string>;
   public backend: Backend = environment.backend;
 
   constructor(private service: AuthService, private router: Router) {
   }
 
   ngAfterViewInit(): void {
+    this.service.ssoProviders$().subscribe(providers => this.providers = providers);
     this.service.firstTimeLogin$().subscribe(firstTime => {
       this.firstTimeLogin = firstTime;
     });
@@ -48,7 +42,7 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
-  github() {
-this.service.github().subscribe();
+  sso(provider: string): void {
+    this.service.sso$(provider).subscribe();
   }
 }

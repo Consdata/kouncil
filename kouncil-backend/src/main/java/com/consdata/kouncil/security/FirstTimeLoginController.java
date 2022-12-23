@@ -1,5 +1,6 @@
 package com.consdata.kouncil.security;
 
+import com.consdata.kouncil.config.security.UserManager;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

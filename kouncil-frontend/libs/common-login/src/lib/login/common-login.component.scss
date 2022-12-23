@@ -16,7 +16,7 @@
 }
 
 @keyframes slide-in {
-  from{
+  from {
     opacity: 0;
     max-height: 0;
   }
@@ -24,4 +24,66 @@
     opacity: 1;
     max-height: 120px;
   }
+}
+
+.sso-container {
+  place-items: center;
+  width: 400px;
+  top: 100px;
+  position: relative;
+  display: grid;
+  margin: 20px auto 0;
+}
+
+.sso-label-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  color: $main-40;
+}
+
+.divider {
+  height: 1px;
+  background-color: currentcolor;
+  flex: 1 1 0;
+}
+
+.divider-left {
+  margin-right: 1rem;
+}
+
+.divider-right {
+  margin-left: 1rem;
+}
+
+.sso-label {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1rem;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  text-align: center;
+  color: $main-40;
+  font-size: 0.75rem;
+}
+
+.sso-button {
+  width: 75px;
+  height: 75px;
+  border-radius: $default-border-radius;
+  background: $main-0;
+  border: 1px solid $main-20;
+  filter: drop-shadow(0 0 3px $main-40)
+}
+
+.sso-provider-icon {
+  width: 40px;
+  height: 40px;
 }

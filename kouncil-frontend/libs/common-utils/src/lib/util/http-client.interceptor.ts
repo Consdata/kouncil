@@ -10,20 +10,18 @@ import {catchError} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Injectable} from '@angular/core';
 import {ProgressBarService} from './progress-bar.service';
-import {AuthService} from "../../../../../apps/kouncil/src/app/login/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpClientInterceptor implements HttpInterceptor {
 
-  constructor(public snackBar: MatSnackBar, private progressBarService: ProgressBarService,
-              private auth: AuthService) {
+  constructor(public snackBar: MatSnackBar, private progressBarService: ProgressBarService) {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
-    request.headers.set('Authorization', `Bearer ${this.auth.getToken()}`);
+    // request.headers.set('Authorization', `Bearer ${this.auth.getToken()}`);
 
 
     return next.handle(request)

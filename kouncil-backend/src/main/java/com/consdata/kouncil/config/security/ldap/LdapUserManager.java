@@ -1,5 +1,6 @@
-package com.consdata.kouncil.security;
+package com.consdata.kouncil.config.security.ldap;
 
+import com.consdata.kouncil.config.security.UserManager;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -7,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "ad")
-public class AdUserManager implements UserManager {
+@ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "ldap")
+public class LdapUserManager implements UserManager {
 
     @PostConstruct
 

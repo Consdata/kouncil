@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {User} from "./user";
-import {Backend} from "@app/common-model";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {User} from './user';
+import {Backend} from '@app/common-model';
+import {SSOProvider} from './sso-provider';
 
 @Component({
   selector: 'app-common-login',
@@ -40,6 +41,21 @@ import {Backend} from "@app/common-model";
         </button>
       </form>
     </div>
+
+    <div class="sso-container" *ngIf="availableProviders && availableProviders.length >0">
+      <div class="sso-label-container">
+        <div class="divider divider-left"></div>
+        <span class="sso-label">OR SIGN IN WITH</span>
+        <div class="divider divider-right"></div>
+      </div>
+      <ng-container *ngFor="let provider of availableProviders">
+        <button mat-button type="button" (click)="sso(getProviderData(provider).name)"
+                class="sso-button">
+          <img [src]="getProviderData(provider).icon" class="sso-provider-icon"
+               [title]="getProviderData(provider).title" alt="logo">
+        </button>
+      </ng-container>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./common-login.component.scss', '../common-login.scss']
@@ -48,8 +64,14 @@ export class CommonLoginComponent {
 
   form: FormGroup;
   @Input() backend: Backend;
+  @Input() availableProviders: Array<string>;
   @Input() firstTimeLogin: boolean = false;
   @Output() loginUser: EventEmitter<User> = new EventEmitter<User>();
+  @Output() ssoEvent: EventEmitter<string> = new EventEmitter<string>();
+
+  private supportedProviders: Map<string, SSOProvider> = new Map<string, SSOProvider>([
+    ['github', {name: 'github', icon: '/assets/github-mark.svg', title: 'GitHub'}],
+  ]);
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
@@ -70,5 +92,13 @@ export class CommonLoginComponent {
 
   getControl(controlName: string): FormControl {
     return this.form.controls[controlName] as FormControl;
+  }
+
+  sso(provider: string) {
+    this.ssoEvent.emit(provider);
+  }
+
+  getProviderData(provider: string) {
+    return this.supportedProviders.get(provider);
   }
 }

@@ -74,7 +74,7 @@ import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
 import {CommonLoginModule} from '@app/common-login';
 import {AuthService, authServiceFactory} from './login/auth.service';
-import {OAuthRedirectComponent} from "./oauth/o-auth-redirect.component";
+import {OAuthRedirectComponent} from './oauth/o-auth-redirect.component';
 import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
 

@@ -13,7 +13,7 @@ logging:
     org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
 kouncil:
   auth:
-    active-provider: inmemory # inmemory, ldap, ad
+    active-provider: inmemory # inmemory, ldap, ad, sso
     ldap:
       provider-url: "ldaps://kouncil.io"
       search-base: "OU=Users,DC=kouncil,DC=io"
@@ -22,5 +22,8 @@ kouncil:
       domain: "acme.com"
       url: "ldap://acme.com:389"
       search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+    sso:
+      supported:
+        providers: github, google
   topics:
     exclude-regex-patterns: __.*

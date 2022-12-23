@@ -1,5 +1,6 @@
-package com.consdata.kouncil.security;
+package com.consdata.kouncil.config.security.inmemory;
 
+import com.consdata.kouncil.config.security.UserManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

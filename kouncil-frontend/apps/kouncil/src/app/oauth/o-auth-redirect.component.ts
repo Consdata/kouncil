@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {AuthService} from "../login/auth.service";
+import {AuthService} from '../login/auth.service';
 
 @Component({
   selector: 'app-oauth-redirect',
@@ -18,12 +18,15 @@ export class OAuthRedirectComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    console.log('init')
     this.route.queryParams.subscribe(params=>{
-      this.service.fetchToken(params['code'], params['state']).subscribe(data=>{
-        this.service.updateToken(data['accessToken']);
-        this.router.navigate(['/topics']);
-      })
-    })
+      this.fetchToken(params);
+    });
+  }
+
+  private fetchToken(params: Params) {
+    this.service.fetchToken$(params['code'], params['state'], localStorage.getItem('selectedProvider')).subscribe(data=>{
+      this.service.updateToken(data['accessToken']);
+      this.router.navigate(['/topics']);
+    });
   }
 }

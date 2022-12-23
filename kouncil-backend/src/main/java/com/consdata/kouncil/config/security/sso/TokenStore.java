@@ -1,4 +1,4 @@
-package com.consdata.kouncil.config;
+package com.consdata.kouncil.config.security.sso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +15,5 @@ public class TokenStore {
         String token = UUID.randomUUID().toString();
         cache.put(token, authentication);
         return token;
-    }
-
-
-    public Authentication getAuth(String token) {
-        return cache.getOrDefault(token, null);
     }
 }

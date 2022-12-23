@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {AuthService} from './auth.service';
 
 @Component({
   selector: 'app-home-login',
@@ -20,9 +19,6 @@ export class MainLoginComponent {
 
   public backend: Backend = environment.backend;
 
-  constructor(private auth: AuthService) {
-    this.auth.isAuthenticated$.subscribe(result=>{
-      console.log(result);
-    });
+  constructor() {
   }
 }

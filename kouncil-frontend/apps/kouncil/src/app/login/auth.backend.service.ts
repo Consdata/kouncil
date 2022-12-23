@@ -45,8 +45,9 @@ export class AuthBackendService implements AuthService {
     }));
   }
 
-  github(): Observable<void> {
-    window.open('http://localhost:8080/oauth2/authorization/github', '_self');
+  sso$(provider: string): Observable<void> {
+    window.open(`http://localhost:8010/oauth2/authorization/${provider}`, '_self');
+    localStorage.setItem('selectedProvider', provider);
     return of(undefined);
   }
 
@@ -54,11 +55,12 @@ export class AuthBackendService implements AuthService {
     localStorage.setItem(this.TOKEN, token);
   }
 
-  fetchToken(code, state): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/login/oauth2/code/github?code=${code}&state=${state}`).pipe(map(data=>{
-      this.setAuthenticated(true)
+  fetchToken$(code: string, state: string, provider: string): Observable<string> {
+    return this.http.get<string>(`/login/oauth2/code/${provider}?code=${code}&state=${state}`).pipe(map(data => {
+      this.setAuthenticated(true);
+      localStorage.removeItem('selectedProvider');
       return data;
-    }))
+    }));
   }
 
   getToken(): string {
@@ -77,5 +79,11 @@ export class AuthBackendService implements AuthService {
 
   skipChange$(): Observable<void> {
     return this.http.get<void>('/api/skipChangeDefaultPassword');
+  }
+
+  ssoProviders$(): Observable<Array<string>> {
+    return this.http.get<Array<string>>('/api/ssoproviders').pipe(map((providers) => {
+      return providers;
+    }));
   }
 }

@@ -1,4 +1,4 @@
-package com.consdata.kouncil.config;
+package com.consdata.kouncil.config.security.sso;
 
 import java.util.HashMap;
 import java.util.Map;
