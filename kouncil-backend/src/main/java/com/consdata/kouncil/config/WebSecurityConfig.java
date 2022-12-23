@@ -24,6 +24,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @EnableWebSecurity
 @Configuration
 @Slf4j
@@ -82,12 +84,4 @@ public class WebSecurityConfig {
                 .build();
     }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails admin = User.withUsername("admin")
-                .password("{noop}admin")
-                .authorities("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(admin);
-    }
 }
