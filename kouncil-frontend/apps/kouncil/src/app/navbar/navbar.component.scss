@@ -1,3 +1,4 @@
+@use '../../styles/inputs';
 @import '../../styles/palette';
 
 :host {
@@ -48,24 +49,16 @@
   }
 
   .search-input {
-    background: $main-0;
-    border: 1px solid $main-20;
-    border-radius: $default-border-radius;
-    padding: 8px 8px 8px 40px;
-    font-size: 14px;
-    line-height: $default-line-height;
+    @include inputs.input;
     min-width: 400px;
   }
 
   .search-input:hover {
-    border: 1px solid $main-40;
-    transition: all $default-transition-time;
+    @include inputs.hover;
   }
 
   .search-input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 3px 1px $blue-60;
-    transition: all $default-transition-time;
+    @include inputs.focus-visible;
   }
 
   .search {
@@ -109,6 +102,7 @@
     ::ng-deep .mat-select-value-text {
       padding-left: 32px;
     }
+
     ::ng-deep .mat-select-trigger {
       align-items: baseline;
     }
@@ -124,6 +118,11 @@
     font-size: 24px;
     line-height: $default-line-height;
     font-family: 'Material Icons';
+  }
+
+  .consdata-logo {
+    height: 72px;
+    width: 320px;
   }
 
 }

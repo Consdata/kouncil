@@ -1,6 +1,7 @@
 // global styles regarding angular material
 
 @use 'palette' as pallete;
+@use 'buttons' as buttons;
 
 .mat-icon {
   color: pallete.$main-50;
@@ -122,9 +123,7 @@ app-message-view {
     }
 
     .action-button-white {
-      background: pallete.$main-0;
-      border: 1px solid pallete.$main-20;
-      color: pallete.$main-70;
+      @include buttons.button-white;
     }
 
     .action-button-black {

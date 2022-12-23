@@ -1,3 +1,4 @@
+@use '../../../styles/buttons';
 @import '../../../styles/palette';
 
 :host {
@@ -100,16 +101,11 @@
   }
 
   .action-button-black {
-    background: $main-100;
-    color: $main-0;
-    border-radius: $default-border-radius;
-    height: 40px;
+    @include buttons.button-black;
   }
 
   .action-button-white {
-    background: $main-0;
-    border: 1px solid $main-20;
-    color: $main-70;
+    @include buttons.button-white;
   }
 
   .offset-wrapper {
