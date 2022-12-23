@@ -13,8 +13,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class KafkaConnectionService {
@@ -23,9 +23,9 @@ public class KafkaConnectionService {
     protected static final String RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE = "10000";
     private final KouncilConfiguration kouncilConfiguration;
     //we can cache this
-    private final Map<String, KafkaTemplate<Bytes, Bytes>> kafkaTemplates = new HashMap<>();
+    private final Map<String, KafkaTemplate<Bytes, Bytes>> kafkaTemplates = new ConcurrentHashMap<>();
     //we can cache this
-    private final Map<String, AdminClient> adminClients = new HashMap<>();
+    private final Map<String, AdminClient> adminClients = new ConcurrentHashMap<>();
 
     public KafkaConnectionService(KouncilConfiguration kouncilConfiguration) {
         this.kouncilConfiguration = kouncilConfiguration;
@@ -39,7 +39,7 @@ public class KafkaConnectionService {
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(ProducerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
-            return kafkaTemplates.put(serverId, new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props)));
+            return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
         });
     }
 
@@ -49,7 +49,7 @@ public class KafkaConnectionService {
             props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
-            return adminClients.put(serverId, AdminClient.create(props));
+            return AdminClient.create(props);
         });
     }
 
