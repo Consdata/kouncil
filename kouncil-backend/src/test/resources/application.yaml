@@ -2,3 +2,5 @@ bootstrapServers: "localhost:9092"
 kouncil:
   topics:
     resend-headers-to-keep: requestId, version
+  auth:
+    active-provider: inmemory
