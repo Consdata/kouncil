@@ -23,6 +23,12 @@ export abstract class AuthService {
   abstract fetchToken(code, state): Observable<any>;
 
  abstract getToken(): string;
+
+  abstract firstTimeLogin$(): Observable<boolean>;
+
+  abstract changeDefaultPassword$(newPassword: string): Observable<void>;
+
+  abstract skipChange$(): Observable<void>;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {

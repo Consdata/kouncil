@@ -63,6 +63,11 @@ public class WebSecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(this::authenticationEntryPoint);
 
+                .antMatchers("/api/info/version").permitAll()
+                .antMatchers("/api/firstTimeLogin").permitAll()
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/**").authenticated()
+                .antMatchers("/**").permitAll();
         return http.build();
     }
 
@@ -83,5 +88,4 @@ public class WebSecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .build();
     }
-
 }

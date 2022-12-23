@@ -14,8 +14,8 @@ export class AuthDemoService implements AuthService {
     return of(this.authenticated);
   }
 
-  login$(user: User): Observable<boolean> {
-    this.authenticated = (user.username.length > 0 && user.password.length > 0);
+  login$(_user: User): Observable<boolean> {
+    this.authenticated = true;
     localStorage.setItem(this.IS_LOGGED_IN, 'true');
     return of(true);
   }
@@ -23,6 +23,18 @@ export class AuthDemoService implements AuthService {
   logout$(): Observable<void> {
     this.authenticated = false;
     localStorage.removeItem(this.IS_LOGGED_IN);
+    return of(undefined);
+  }
+
+  changeDefaultPassword$(_newPassword: string): Observable<void> {
+    return of(undefined);
+  }
+
+  firstTimeLogin$(): Observable<boolean> {
+    return of(false);
+  }
+
+  skipChange$(): Observable<void> {
     return of(undefined);
   }
 

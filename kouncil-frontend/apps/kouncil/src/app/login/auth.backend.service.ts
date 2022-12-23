@@ -64,4 +64,18 @@ export class AuthBackendService implements AuthService {
   getToken(): string {
     return localStorage.getItem(this.TOKEN);
   }
+
+  changeDefaultPassword$(newPassword: string): Observable<void> {
+    return this.http.post<void>('/api/changeDefaultPassword', newPassword);
+  }
+
+  firstTimeLogin$(): Observable<boolean> {
+    return this.http.get<boolean>('/api/firstTimeLogin').pipe(map(isFirstTime => {
+      return isFirstTime;
+    }));
+  }
+
+  skipChange$(): Observable<void> {
+    return this.http.get<void>('/api/skipChangeDefaultPassword');
+  }
 }
