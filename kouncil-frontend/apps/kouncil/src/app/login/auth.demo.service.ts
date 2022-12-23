@@ -25,4 +25,19 @@ export class AuthDemoService implements AuthService {
     localStorage.removeItem(this.IS_LOGGED_IN);
     return of(undefined);
   }
+
+  github(): Observable<void> {
+    return of(undefined);
+  }
+
+  fetchToken(code, state): Observable<any> {
+    return of(undefined);
+  }
+
+  getToken(): string {
+    return "";
+  }
+
+  updateToken(token: string): void {
+  }
 }

@@ -16,6 +16,7 @@ import {LoginComponent} from '../login/login.component';
 import {AuthGuard} from './auth.guard';
 import {MainComponent} from '../main/main.component';
 import {ConfigResolver} from './config-resolver';
+import {OAuthRedirectComponent} from "../oauth/o-auth-redirect.component";
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -48,6 +49,7 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
+  {path: 'oauth2', component: OAuthRedirectComponent},
   {
     path: '', component: MainComponent, canActivate: [AuthGuard],
     resolve: {
@@ -91,7 +93,6 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
       onSameUrlNavigation: 'reload'
     }),
   ],

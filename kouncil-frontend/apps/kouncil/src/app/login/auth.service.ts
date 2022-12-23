@@ -15,6 +15,14 @@ export abstract class AuthService {
   abstract login$(user: User): Observable<boolean>;
 
   abstract logout$(): Observable<void>;
+
+  abstract github(): Observable<void>;
+
+  abstract updateToken(token: string): void;
+
+  abstract fetchToken(code, state): Observable<any>;
+
+ abstract getToken(): string;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {

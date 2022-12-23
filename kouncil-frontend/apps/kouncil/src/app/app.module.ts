@@ -74,6 +74,7 @@ import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
 import {CommonLoginModule} from '@app/common-login';
 import {AuthService, authServiceFactory} from './login/auth.service';
+import {OAuthRedirectComponent} from "./oauth/o-auth-redirect.component";
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -125,7 +126,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     DemoComponent,
     CachedCellComponent,
     LoginComponent,
-    MainComponent
+    MainComponent,
+    OAuthRedirectComponent
   ],
   imports: [
     BrowserModule,

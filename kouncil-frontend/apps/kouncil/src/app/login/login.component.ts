@@ -13,6 +13,9 @@ import {User} from '@app/common-login';
 
     <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
       <app-common-login (loginUser)="login($event)"></app-common-login>
+
+
+      <button (click)="github()">Github</button>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,5 +34,9 @@ export class LoginComponent {
         this.router.navigate(['/topics']);
       }
     });
+  }
+
+  github() {
+this.service.github().subscribe();
   }
 }
