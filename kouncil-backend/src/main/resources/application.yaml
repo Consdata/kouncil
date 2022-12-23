@@ -15,13 +15,12 @@ kouncil:
   auth:
     active-provider: inmemory # inmemory, ldap, ad
     ldap:
-      provider-url: "ldaps://acme.com"
-      search-base: "ou=Users,dc=acme,dc=com"
-      search-filter: "(uid={0})"
+      provider-url: "ldaps://kouncil.io"
+      search-base: "OU=Users,DC=kouncil,DC=io"
+      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
     ad:
       domain: "acme.com"
       url: "ldap://acme.com:389"
-      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=acme,DC=com))"
-
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
   topics:
     exclude-regex-patterns: __.*
