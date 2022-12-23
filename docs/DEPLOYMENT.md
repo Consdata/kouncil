@@ -204,3 +204,47 @@ By default, WebSocket allowed origins are set to *, which can be inefficient fro
 ```bash
 docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest
 ```
+
+## Authentication
+Kouncil supports multiple authentication methods along with LDAP, Active Directory and SSO. There are a lot of different configuration scenarios. Here are examples of most common ones:
+
+* LDAPS authentication for all users.
+```yaml
+kouncil:
+  auth:
+    active-provider: ldap
+    ldap:
+      provider-url: "ldaps:///kouncil.io"
+      search-base: "ou=Users,dc=kouncil,dc=io"
+      search-filter: "(uid={0})"
+```
+
+* LDAP authentication with a technical user for users who belongs to a KOUNCIL group.
+```yaml
+kouncil:
+  auth:
+    active-provider: ldap
+    ldap:
+      provider-url: "ldaps://kouncil.io"
+      technical-user-name: "admin@kouncil.io"
+      technical-user-password: "q1w2e3r4"
+      search-base: "ou=Users,dc=kouncil,dc=io"
+      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+```
+
+* Active Directory authentication for users who belongs to a KOUNCIL group.
+```yaml
+kouncil:
+  auth:
+    active-provider: ad
+    ad:
+      domain: "kouncil.io"
+      url: "ldap://kouncil.io:389"
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+```
+* Github SSO
+```yaml
+todo
+```
+
+
