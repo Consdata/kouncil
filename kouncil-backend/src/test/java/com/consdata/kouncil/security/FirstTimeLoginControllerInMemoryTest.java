@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.consdata.kouncil.config.InMemoryWebSecurity;
 import com.consdata.kouncil.config.WebSecurityConfig;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,16 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ActiveProfiles("in-memory")
-@ContextConfiguration(classes = {FirstTimeLoginController.class, WebSecurityConfig.class, DefaultUserManagerImpl.class, InMemoryUserManager.class,
-        AuthController.class})
+@ContextConfiguration(classes = {FirstTimeLoginController.class, WebSecurityConfig.class, InMemoryUserManager.class, InMemoryWebSecurity.class})
 class FirstTimeLoginControllerInMemoryTest {
 
     @Autowired

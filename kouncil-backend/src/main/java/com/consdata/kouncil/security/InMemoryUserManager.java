@@ -5,29 +5,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
-@Profile("in-memory")
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
 public class InMemoryUserManager implements UserManager {
 
     private static final String ADMIN_CONFIG = "default_admin_password.txt";
     private final UserDetailsManager userDetailsManager;
 
-    @GetMapping("/api/firstTimeLogin")
     public boolean firstTimeLogin() {
         Path path = Paths.get(ADMIN_CONFIG);
         return !Files.exists(path);
     }
 
     @Override
-    @GetMapping("/api/skipChangeDefaultPassword")
     public void skipChangeDefaultPassword() throws IOException {
         Path path = Paths.get(ADMIN_CONFIG);
         byte[] strToBytes = "admin".getBytes();
@@ -35,7 +31,6 @@ public class InMemoryUserManager implements UserManager {
     }
 
     @Override
-    @PostMapping("/api/changeDefaultPassword")
     public void changeDefaultPassword(@RequestBody String password) throws IOException {
         Path path = Paths.get(ADMIN_CONFIG);
         String oldPassword;

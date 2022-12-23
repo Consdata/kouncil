@@ -46,23 +46,4 @@ public class WebSecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .build();
     }
-
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        Path path = Paths.get("default_user_password.txt");
-        String adminPass = "admin";
-        if (Files.exists(path)) {
-            try {
-                adminPass = Files.readString(path);
-            } catch (IOException e) {
-                throw new KouncilRuntimeException(e);
-            }
-        }
-
-        UserDetails admin = User.withUsername("admin")
-                .password(String.format("{noop}%s", adminPass))
-                .authorities("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(admin);
-    }
 }
