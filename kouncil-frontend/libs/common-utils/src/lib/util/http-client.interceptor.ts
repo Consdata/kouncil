@@ -20,10 +20,6 @@ export class HttpClientInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-
-    // request.headers.set('Authorization', `Bearer ${this.auth.getToken()}`);
-
-
     return next.handle(request)
     .pipe(
       catchError((error: HttpErrorResponse) => {

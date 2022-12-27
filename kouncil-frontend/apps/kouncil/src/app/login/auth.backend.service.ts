@@ -4,6 +4,7 @@ import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,8 @@ export class AuthBackendService implements AuthService {
 
   private IS_LOGGED_IN: string = 'isLoggedIn';
   private TOKEN: string = 'token';
+
+  private baseUrl: string = environment.baseUrl;
 
   private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     localStorage.getItem(this.IS_LOGGED_IN) === 'true'
@@ -46,7 +49,7 @@ export class AuthBackendService implements AuthService {
   }
 
   sso$(provider: string): Observable<void> {
-    window.open(`http://localhost:8010/oauth2/authorization/${provider}`, '_self');
+    window.open(`${this.baseUrl}/oauth2/authorization/${provider}`, '_self');
     localStorage.setItem('selectedProvider', provider);
     return of(undefined);
   }

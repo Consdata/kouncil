@@ -95,13 +95,12 @@ const routes: Routes = [
       {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]},
     ]
   },
-  {path: 'oauth2', component: OAuthRedirectComponent}
+  {path: 'oauth', component: OAuthRedirectComponent}
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
       onSameUrlNavigation: 'reload'
     }),
   ],
