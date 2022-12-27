@@ -39,7 +39,7 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
-  getIconContainerClass() {
+  getIconContainerClass(): string {
     return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 }
