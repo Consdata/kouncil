@@ -1,11 +1,16 @@
 package com.consdata.kouncil;
 
 import com.consdata.kouncil.config.KouncilConfiguration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.utils.Bytes;
@@ -13,14 +18,14 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Service
 public class KafkaConnectionService {
 
     protected static final String RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE = "5000";
     protected static final String RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE = "10000";
+    protected static final String SASL_PLAIN = "PLAIN";
+    protected static final String SASL_PLAINTEXT = "SASL_PLAINTEXT";
+    protected static final String SASL_JAAS_CONFIG = "%s required username=\"%s\" password=\"%s\";";
     private final KouncilConfiguration kouncilConfiguration;
     //we can cache this
     private final Map<String, KafkaTemplate<Bytes, Bytes>> kafkaTemplates = new ConcurrentHashMap<>();
@@ -49,6 +54,9 @@ public class KafkaConnectionService {
             props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
+            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SASL_PLAINTEXT);
+            props.put(SaslConfigs.SASL_MECHANISM, SASL_PLAIN);
+            props.put(SaslConfigs.SASL_JAAS_CONFIG, String.format(SASL_JAAS_CONFIG, PlainLoginModule.class.getName(), "user", "bitnami"));
             return AdminClient.create(props);
         });
     }
