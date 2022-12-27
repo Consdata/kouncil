@@ -1,26 +1,22 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "./user";
-import {Backend} from "@app/common-model";
 
 @Component({
   selector: 'app-common-login',
   template: `
-    <div class="icon-login-container"
-         [ngClass]="backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo'">
+    <div class="icon-login-container" [ngClass]="iconContainerClass">
       <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
     </div>
     <div class="main-login">
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
 
-        <span *ngIf="firstTimeLogin" class="first-time-login">
-          Default user credentials:
-          <br>
-          username: admin
-          <br>
-          password: admin
-        </span>
+        <div *ngIf="firstTimeLogin" class="first-time-login">
+          <span>Default user credentials:</span>
+          <span>username: admin</span>
+          <span>password: admin</span>
+        </div>
 
         <app-common-login-field [fieldName]="'username'"
                                 [control]="getControl('username')"
@@ -42,12 +38,12 @@ import {Backend} from "@app/common-model";
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./common-login.component.scss', '../common-login.scss']
+  styleUrls: ['./common-login.component.scss']
 })
 export class CommonLoginComponent {
 
   form: FormGroup;
-  @Input() backend: Backend;
+  @Input() iconContainerClass: string;
   @Input() firstTimeLogin: boolean = false;
   @Output() loginUser: EventEmitter<User> = new EventEmitter<User>();
 

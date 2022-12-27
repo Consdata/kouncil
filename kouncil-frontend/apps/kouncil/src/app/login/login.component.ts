@@ -8,7 +8,7 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-login',
   template: `
-    <app-common-login (loginUser)="login($event)" [backend]="backend"
+    <app-common-login (loginUser)="login($event)" [iconContainerClass]="getIconContainerClass()"
                       [firstTimeLogin]="firstTimeLogin"></app-common-login>
   `,
   styleUrls: ['./login.component.scss']
@@ -37,5 +37,9 @@ export class LoginComponent implements AfterViewInit {
         }
       }
     });
+  }
+
+  getIconContainerClass() {
+    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 }

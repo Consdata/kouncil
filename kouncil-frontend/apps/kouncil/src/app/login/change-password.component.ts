@@ -8,7 +8,8 @@ import {environment} from '../../environments/environment';
   selector: 'app-change-password',
   template: `
     <app-common-change-password (changePasswordEvent)="changePassword($event)"
-                                (skipChangeEvent)="skipChange()" [backend]="backend"></app-common-change-password>
+                                (skipChangeEvent)="skipChange()"
+                                [iconContainerClass]="getIconContainerClass()"></app-common-change-password>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./change-password.component.scss']
@@ -30,5 +31,9 @@ export class ChangePasswordComponent {
     this.service.skipChange$().subscribe(() => {
       this.router.navigate(['/topics']);
     });
+  }
+
+  getIconContainerClass() {
+    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 }

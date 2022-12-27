@@ -1,5 +1,6 @@
 @use '../../../../../apps/kouncil/src/styles/buttons';
 @import '../../../../../apps/kouncil/src/styles/palette';
+@import '../common-login';
 
 .main-login {
   margin: 20px auto 0;
@@ -10,7 +11,7 @@
   font-size: 12px;
   float: left;
   margin-bottom: 20px;
-  display: block;
+  display: grid;
   width: 275px;
   animation: 1s slide-in;
 }
