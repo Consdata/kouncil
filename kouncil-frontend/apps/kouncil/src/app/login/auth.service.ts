@@ -15,6 +15,8 @@ export abstract class AuthService {
   abstract login$(user: User): Observable<boolean>;
 
   abstract logout$(): Observable<void>;
+
+  abstract clearLoggedIn(): void;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {
