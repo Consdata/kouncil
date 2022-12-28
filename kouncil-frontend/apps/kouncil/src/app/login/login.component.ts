@@ -1,5 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
@@ -14,8 +13,7 @@ import {environment} from '../../environments/environment';
   `,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements AfterViewInit {
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   firstTimeLogin: boolean = false;
   public backend: Backend = environment.backend;

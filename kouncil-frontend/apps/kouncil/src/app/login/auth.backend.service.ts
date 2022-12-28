@@ -10,7 +10,7 @@ import {AuthService} from './auth.service';
 })
 export class AuthBackendService implements AuthService {
 
-  private IS_LOGGED_IN: string ='isLoggedIn';
+  private IS_LOGGED_IN: string = 'isLoggedIn';
 
   private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.IS_LOGGED_IN) === 'true');
 
