@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {Backend} from '@app/common-model';
@@ -18,11 +18,15 @@ import {User} from '@app/common-login';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   public backend: Backend = environment.backend;
 
   constructor(private service: AuthService, private router: Router) {
+  }
+
+  ngOnInit(): void {
+    this.service.clearLoggedIn();
   }
 
   login($event: User): void {
