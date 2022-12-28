@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  ElementRef, Input,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -23,13 +23,15 @@ import {AuthService} from '../login/auth.service';
            src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
            matTooltip="{{backendVersion}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/topics']" *ngIf="isAuthenticated$ | async">Topics</a>
+         [routerLink]="['/topics']" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Topics</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/brokers']" *ngIf="isAuthenticated$ | async">Brokers</a>
+         [routerLink]="['/brokers']" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Brokers</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/consumer-groups']" *ngIf="isAuthenticated$ | async">Consumer Groups</a>
+         [routerLink]="['/consumer-groups']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Consumer Groups</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/track']" *ngIf="isAuthenticated$ | async">Track</a>
+         [routerLink]="['/track']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Track</a>
 
       <mat-divider [vertical]="true"></mat-divider>
 
@@ -40,34 +42,35 @@ import {AuthService} from '../login/auth.service';
 
       <span class="spacer"></span>
 
-      <div class="search" *ngIf="isAuthenticated$ | async">
-        <input
-          accesskey="/"
-          class="search-input"
-          type="text"
-          placeholder="Search"
-          (input)="onPhraseChange($any($event).target.value)"
-          [(ngModel)]="searchService.currentPhrase"
-          #searchInput>
+      <div class="search" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">
+        <input accesskey="/"
+               class="search-input"
+               type="text"
+               placeholder="Search"
+               (input)="onPhraseChange($any($event).target.value)"
+               [(ngModel)]="searchService.currentPhrase"
+               #searchInput>
       </div>
-      <mat-form-field class="servers-form-field" *ngIf="isAuthenticated$ | async">
-        <mat-select
-          panelClass="servers-list"
-          class="select servers"
-          [(value)]="servers.selectedServerId"
-          (selectionChange)="serverSelectionChanged()">
+      <mat-form-field class="servers-form-field"
+                      *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">
+        <mat-select panelClass="servers-list"
+                    class="select servers"
+                    [(value)]="servers.selectedServerId"
+                    (selectionChange)="serverSelectionChanged()">
           <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{s.serverId}}
             - {{s.label}}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button *ngIf="isAuthenticated$ | async" class="menu-button" mat-button disableRipple
-      (click)="logout()">
+      <button *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated" class="menu-button"
+              mat-button disableRipple
+              (click)="logout()">
         Logout
         <mat-icon aria-hidden="false">logout</mat-icon>
       </button>
 
-      <img *ngIf="(isAuthenticated$ | async) === false" src="assets/consdata-logo-color.png" alt="logo"
+      <img *ngIf="((isAuthenticated$ | async) && !hideForAuthenticated) === false"
+           src="assets/consdata-logo-color.png" alt="logo"
            class="consdata-logo"/>
     </mat-toolbar>
   `,
@@ -77,6 +80,8 @@ import {AuthService} from '../login/auth.service';
 export class NavbarComponent implements OnInit, AfterViewInit {
 
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
+
+  @Input() hideForAuthenticated: boolean = false;
 
   backendVersion$?: Observable<string>;
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
@@ -122,7 +127,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   logout(): void {
-    this.authService.logout$().subscribe(()=>{
+    this.authService.logout$().subscribe(() => {
       this.router.navigate(['/login']);
     });
   }

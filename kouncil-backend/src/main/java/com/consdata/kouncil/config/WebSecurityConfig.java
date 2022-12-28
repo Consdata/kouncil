@@ -34,6 +34,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/info/version").permitAll()
+                .antMatchers("/api/firstTimeLogin").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/**").permitAll();
@@ -45,5 +46,4 @@ public class WebSecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .build();
     }
-
 }

@@ -1,28 +1,42 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
+import {User} from '@app/common-login';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {User} from '@app/common-login';
 
 @Component({
   selector: 'app-login',
   template: `
-    <app-demo *ngIf="backend === 'DEMO'"></app-demo>
-    <app-kafka-navbar></app-kafka-navbar>
+    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
+                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
+    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
+                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
 
-    <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
-      <app-common-login (loginUser)="login($event)"></app-common-login>
-    </div>
+    <app-common-login (loginUser)="login($event)">
+
+      <div info *ngIf="firstTimeLogin" class="first-time-login">
+        <span>Default user credentials:</span>
+        <span>username: admin</span>
+        <span>password: admin</span>
+      </div>
+
+    </app-common-login>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
+  firstTimeLogin: boolean = false;
   public backend: Backend = environment.backend;
 
   constructor(private service: AuthService, private router: Router) {
+  }
+
+  ngAfterViewInit(): void {
+    this.service.firstTimeLogin$().subscribe(firstTime => {
+      this.firstTimeLogin = firstTime;
+    });
   }
 
   ngOnInit(): void {
@@ -32,8 +46,16 @@ export class LoginComponent implements OnInit {
   login($event: User): void {
     this.service.login$($event).subscribe(isValid => {
       if (isValid) {
-        this.router.navigate(['/topics']);
+        if (this.firstTimeLogin) {
+          this.router.navigate(['/changePassword']);
+        } else {
+          this.router.navigate(['/topics']);
+        }
       }
     });
+  }
+
+  getIconContainerClass(): string {
+    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 }

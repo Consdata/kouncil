@@ -1,22 +1,21 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-home-login',
   template: `
     <app-demo *ngIf="backend === 'DEMO'"></app-demo>
-    <app-kafka-navbar></app-kafka-navbar>
+    <app-kafka-navbar [hideForAuthenticated]="true"></app-kafka-navbar>
 
     <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
       <app-progress-bar></app-progress-bar>
       <router-outlet></router-outlet>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./main.component.scss']
+  styleUrls: ['./main-login.component.scss']
 })
-export class MainComponent {
+export class MainLoginComponent {
 
   public backend: Backend = environment.backend;
 

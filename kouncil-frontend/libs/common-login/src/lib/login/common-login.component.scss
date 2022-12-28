@@ -1,52 +1,19 @@
 @use '../../../../../apps/kouncil/src/styles/buttons';
 @import '../../../../../apps/kouncil/src/styles/palette';
+@import '../common-login';
 
 .main-login {
-  display: flex;
-  place-items: center;
-  height: 400px;
-  width: 400px;
-  margin: 0 auto;
-  background: $main-0;
-  top: 100px;
-  position: relative;
-  border-radius: 10px;
-  border: 1px solid $main-20;
+  margin: 20px auto 0;
 }
 
-.icon-login-container {
-  display: flex;
-  place-items: center;
-  height: 100px;
-  width: 100px;
-  background: $blue-20;
-  top: 125px;
-  position: absolute;
-  border-radius: 50%;
-  left: calc(50% - 50px);
-  z-index: 1;
-}
 
-.icon-login {
-  width: 75px;
-  height: 75px;
-  font-size: 75px;
-  margin: 0 auto;
-  color: $blue-50;
-}
-
-.login-form {
-  place-items: center;
-  display: grid;
-  margin: 0 auto;
-  width: 275px;
-}
-
-.action-button-white {
-  @include buttons.button-white;
-}
-
-.login-info {
-  color: $main-60;
-  margin-bottom: 20px;
+@keyframes slide-in {
+  from{
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 120px;
+  }
 }
