@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.springframework.util.CollectionUtils;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
@@ -124,7 +125,9 @@ public class KouncilConfiguration {
                             .url(schemaRegistryUrl)
                             .build());
                 }
-                initializeSaslBrokerConfig(initialBootstrapServer, brokerHost, brokerPort, simpleClusterConfig);
+                if (!CollectionUtils.isEmpty(sasl)) {
+                    initializeSaslBrokerConfig(initialBootstrapServer, brokerHost, brokerPort, simpleClusterConfig);
+                }
                 this.clusterConfig.put(clusterId, simpleClusterConfig);
             } else {
                 throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
