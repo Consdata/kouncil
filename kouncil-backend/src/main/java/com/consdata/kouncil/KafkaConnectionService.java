@@ -1,7 +1,9 @@
 package com.consdata.kouncil;
 
+import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -17,6 +19,8 @@ import org.apache.kafka.common.utils.Bytes;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
 public class KafkaConnectionService {
@@ -51,14 +55,28 @@ public class KafkaConnectionService {
     public AdminClient getAdminClient(String serverId) {
         return adminClients.computeIfAbsent(serverId, k -> {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
-            props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
+            String serverByClusterId = this.kouncilConfiguration.getServerByClusterId(serverId);
+            props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, serverByClusterId);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
-            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SASL_PLAINTEXT);
-            props.put(SaslConfigs.SASL_MECHANISM, SASL_PLAIN);
-            props.put(SaslConfigs.SASL_JAAS_CONFIG, String.format(SASL_JAAS_CONFIG, PlainLoginModule.class.getName(), "user", "bitnami"));
+
+            addJAASProperties(props, serverByClusterId, serverId);
             return AdminClient.create(props);
         });
+    }
+
+    private void addJAASProperties(Map<String, Object> props, String serverByClusterId, String serverId) {
+        String[] hostPort = serverByClusterId.split(":");
+        Optional<BrokerConfig> brokerConfigFromCluster = kouncilConfiguration.getBrokerConfigFromCluster(serverId, hostPort[0], Integer.parseInt(hostPort[1]));
+        if (brokerConfigFromCluster.isPresent()) {
+            BrokerConfig brokerConfig = brokerConfigFromCluster.get();
+            if (isNotBlank(brokerConfig.getSaslUsername()) && isNotBlank(brokerConfig.getSaslPassword())) {
+                props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SASL_PLAINTEXT);
+                props.put(SaslConfigs.SASL_MECHANISM, SASL_PLAIN);
+                props.put(SaslConfigs.SASL_JAAS_CONFIG,
+                        String.format(SASL_JAAS_CONFIG, PlainLoginModule.class.getName(), brokerConfig.getSaslUsername(), brokerConfig.getSaslPassword()));
+            }
+        }
     }
 
     //we cannot cache this ever

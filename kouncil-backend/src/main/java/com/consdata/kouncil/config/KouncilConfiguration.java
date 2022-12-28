@@ -25,7 +25,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Component
 @Slf4j
 @Data
-@ConfigurationProperties("kouncil")
+@ConfigurationProperties(prefix = "kouncil")
 public class KouncilConfiguration {
 
     protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
@@ -37,6 +37,8 @@ public class KouncilConfiguration {
 
     @Value("${schemaRegistryUrl:}")
     private String schemaRegistryUrl;
+
+    private List<SaslBrokerConfig> sasl;
 
     private List<ClusterConfig> clusters;
 
@@ -73,8 +75,7 @@ public class KouncilConfiguration {
     }
 
     /**
-     * hosts may be specified either in IP or hostname form, this method
-     * allows us to compare them regardless of their form
+     * hosts may be specified either in IP or hostname form, this method allows us to compare them regardless of their form
      */
     private boolean compareHosts(String host1, String host2) {
         try {
@@ -99,6 +100,7 @@ public class KouncilConfiguration {
 
     private void initializeSimpleConfig() {
         log.info("Using simple Kouncil configuration: bootstrapServers={}, schemaRegistryUrl={}", initialBootstrapServers, schemaRegistryUrl);
+        log.info("{}", sasl);
         clusterConfig = new HashMap<>();
         for (String initialBootstrapServer : initialBootstrapServers) {
             String clusterId = sanitizeClusterId(initialBootstrapServer);
@@ -122,11 +124,34 @@ public class KouncilConfiguration {
                             .url(schemaRegistryUrl)
                             .build());
                 }
+                initializeSaslBrokerConfig(initialBootstrapServer, brokerHost, brokerPort, simpleClusterConfig);
                 this.clusterConfig.put(clusterId, simpleClusterConfig);
             } else {
                 throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
             }
         }
+    }
+
+    private void initializeSaslBrokerConfig(String initialBootstrapServer, String brokerHost, int brokerPort, ClusterConfig simpleClusterConfig) {
+        Optional<SaslBrokerConfig> brokerSasl = getBrokerSasl(initialBootstrapServer);
+        if (brokerSasl.isPresent()) {
+            SaslBrokerConfig saslBrokerConfig = brokerSasl.get();
+            Optional<BrokerConfig> brokerConfigFromCluster = simpleClusterConfig
+                    .getBrokers()
+                    .stream()
+                    .filter(broker -> compareHosts(brokerHost, broker.getHost()) && broker.getPort().equals(brokerPort))
+                    .findFirst();
+
+            if (brokerConfigFromCluster.isPresent()) {
+                BrokerConfig brokerConfig = brokerConfigFromCluster.get();
+                brokerConfig.setSaslUsername(saslBrokerConfig.getUsername());
+                brokerConfig.setSaslPassword(saslBrokerConfig.getPassword());
+            }
+        }
+    }
+
+    private Optional<SaslBrokerConfig> getBrokerSasl(String initialBootstrapServer) {
+        return sasl.stream().filter(brokerConfig -> initialBootstrapServer.equals(brokerConfig.getBrokerUrl())).findFirst();
     }
 
     private void initializeAdvancedConfig() {

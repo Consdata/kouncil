@@ -193,6 +193,25 @@ kouncil:
            port: 9092
 ```
 
+## Advanced config - SASL Authentication
+
+If one of your brokers needs SASL authentication You could specify saslUsername and saslPassword for each broker, like so: 
+
+```yaml
+kouncil:
+  clusters:
+    - name: transaction-cluster
+      brokers:
+        - host: 192.10.0.1
+          port: 9092
+          saslUsername: username
+          saslPassword: password
+        - host: 192.10.0.2
+          port: 9093
+        - host: 192.10.0.3
+          port: 9094
+```
+
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 
