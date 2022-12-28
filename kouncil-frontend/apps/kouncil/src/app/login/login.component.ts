@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
@@ -13,8 +13,7 @@ import {environment} from '../../environments/environment';
     <app-common-login-icon *ngIf="this.backend === 'DEMO'"
                            [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
 
-    <app-common-login (loginUser)="login($event)" [availableProviders]="providers"
-                      (ssoEvent)="sso($event)">
+    <app-common-login (loginUser)="login($event)">
 
       <div info *ngIf="firstTimeLogin" class="first-time-login">
         <span>Default user credentials:</span>
@@ -23,10 +22,15 @@ import {environment} from '../../environments/environment';
       </div>
 
     </app-common-login>
+
+    <app-common-login-sso *ngIf="providers && providers.length >0"
+                          [availableProviders]="providers"
+                          (ssoEvent)="sso($event)"></app-common-login-sso>
+
   `,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit {
 
   firstTimeLogin: boolean = false;
   providers: Array<string>;
@@ -35,15 +39,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
   constructor(private service: AuthService, private router: Router) {
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    this.service.clearLoggedIn();
     this.service.ssoProviders$().subscribe(providers => this.providers = providers);
     this.service.firstTimeLogin$().subscribe(firstTime => {
       this.firstTimeLogin = firstTime;
     });
-  }
-
-  ngOnInit(): void {
-    this.service.clearLoggedIn();
   }
 
   login($event: User): void {

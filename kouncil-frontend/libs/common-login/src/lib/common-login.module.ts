@@ -8,6 +8,7 @@ import {CommonLoginFieldComponent} from "./login-field/common-login-field.compon
 import {CommonChangePasswordComponent} from "./change-password/common-change-password.component";
 import {CommonLoginIconComponent} from "./login-icon/common-login-icon.component";
 import {CommonLoginComponent} from "./login/common-login.component";
+import {CommonLoginSsoComponent} from "./login-sso/common-login-sso.component";
 
 @NgModule({
   imports: [
@@ -21,12 +22,14 @@ import {CommonLoginComponent} from "./login/common-login.component";
     CommonLoginComponent,
     CommonLoginFieldComponent,
     CommonChangePasswordComponent,
-    CommonLoginIconComponent
+    CommonLoginIconComponent,
+    CommonLoginSsoComponent
   ],
   exports: [
     CommonLoginComponent,
     CommonChangePasswordComponent,
-    CommonLoginIconComponent
+    CommonLoginIconComponent,
+    CommonLoginSsoComponent
   ]
 })
 export class CommonLoginModule {

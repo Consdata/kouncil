@@ -24,6 +24,6 @@ kouncil:
       search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
     sso:
       supported:
-        providers: github, google
+        providers: github
   topics:
     exclude-regex-patterns: __.*
