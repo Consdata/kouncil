@@ -6,15 +6,6 @@
   margin: 20px auto 0;
 }
 
-.first-time-login {
-  color: $main-60;
-  font-size: 12px;
-  float: left;
-  margin-bottom: 20px;
-  display: grid;
-  width: 275px;
-  animation: 1s slide-in;
-}
 
 @keyframes slide-in {
   from{

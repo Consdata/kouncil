@@ -7,9 +7,13 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-change-password',
   template: `
+    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
+                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
+    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
+                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+
     <app-common-change-password (changePasswordEvent)="changePassword($event)"
-                                (skipChangeEvent)="skipChange()"
-                                [iconContainerClass]="getIconContainerClass()"></app-common-change-password>
+                                (skipChangeEvent)="skipChange()"></app-common-change-password>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./change-password.component.scss']

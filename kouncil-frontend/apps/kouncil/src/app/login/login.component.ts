@@ -8,8 +8,20 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-login',
   template: `
-    <app-common-login (loginUser)="login($event)" [iconContainerClass]="getIconContainerClass()"
-                      [firstTimeLogin]="firstTimeLogin"></app-common-login>
+    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
+                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
+    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
+                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+
+    <app-common-login (loginUser)="login($event)">
+
+      <div info *ngIf="firstTimeLogin" class="first-time-login">
+        <span>Default user credentials:</span>
+        <span>username: admin</span>
+        <span>password: admin</span>
+      </div>
+
+    </app-common-login>
   `,
   styleUrls: ['./login.component.scss']
 })

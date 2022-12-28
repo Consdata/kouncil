@@ -1,22 +1,15 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "./user";
 
 @Component({
   selector: 'app-common-login',
   template: `
-    <div class="icon-login-container" [ngClass]="iconContainerClass">
-      <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
-    </div>
     <div class="main-login">
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
 
-        <div *ngIf="firstTimeLogin" class="first-time-login">
-          <span>Default user credentials:</span>
-          <span>username: admin</span>
-          <span>password: admin</span>
-        </div>
+        <ng-content select="[info]"></ng-content>
 
         <app-common-login-field [fieldName]="'username'"
                                 [control]="getControl('username')"
@@ -43,8 +36,6 @@ import {User} from "./user";
 export class CommonLoginComponent {
 
   form: FormGroup;
-  @Input() iconContainerClass: string;
-  @Input() firstTimeLogin: boolean = false;
   @Output() loginUser: EventEmitter<User> = new EventEmitter<User>();
 
   constructor(private fb: FormBuilder) {
