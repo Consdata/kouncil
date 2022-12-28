@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "ldap")
 public class LdapUserManager implements UserManager {
 
-    @PostConstruct
-
     @Override
     public boolean firstTimeLogin() {
         return false;

@@ -6,6 +6,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CommonLoginFieldComponent} from "./login-field/common-login-field.component";
 import {CommonChangePasswordComponent} from "./change-password/common-change-password.component";
+import {CommonLoginIconComponent} from "./login-icon/common-login-icon.component";
 import {CommonLoginComponent} from "./login/common-login.component";
 
 @NgModule({
@@ -19,11 +20,13 @@ import {CommonLoginComponent} from "./login/common-login.component";
   declarations: [
     CommonLoginComponent,
     CommonLoginFieldComponent,
-    CommonChangePasswordComponent
+    CommonChangePasswordComponent,
+    CommonLoginIconComponent
   ],
   exports: [
     CommonLoginComponent,
-    CommonChangePasswordComponent
+    CommonChangePasswordComponent,
+    CommonLoginIconComponent
   ]
 })
 export class CommonLoginModule {

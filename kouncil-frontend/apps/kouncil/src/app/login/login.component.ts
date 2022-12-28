@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
@@ -8,13 +8,24 @@ import {environment} from '../../environments/environment';
 @Component({
   selector: 'app-login',
   template: `
-    <app-common-login (loginUser)="login($event)" [backend]="backend"
-                      [availableProviders]="providers"
-                      [firstTimeLogin]="firstTimeLogin" (ssoEvent)="sso($event)"></app-common-login>
+    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
+                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
+    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
+                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+
+    <app-common-login (loginUser)="login($event)">
+
+      <div info *ngIf="firstTimeLogin" class="first-time-login">
+        <span>Default user credentials:</span>
+        <span>username: admin</span>
+        <span>password: admin</span>
+      </div>
+
+    </app-common-login>
   `,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   firstTimeLogin: boolean = false;
   providers: Array<string>;
@@ -28,6 +39,10 @@ export class LoginComponent implements AfterViewInit {
     this.service.firstTimeLogin$().subscribe(firstTime => {
       this.firstTimeLogin = firstTime;
     });
+  }
+
+  ngOnInit(): void {
+    this.service.clearLoggedIn();
   }
 
   login($event: User): void {
@@ -44,5 +59,9 @@ export class LoginComponent implements AfterViewInit {
 
   sso(provider: string): void {
     this.service.sso$(provider).subscribe();
+  }
+
+  getIconContainerClass(): string {
+    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 }

@@ -13,6 +13,7 @@ export class AuthBackendService implements AuthService {
 
   private IS_LOGGED_IN: string = 'isLoggedIn';
   private TOKEN: string = 'token';
+  private IS_LOGGED_IN: string = 'isLoggedIn';
 
   private baseUrl: string = environment.baseUrl;
 
@@ -82,6 +83,11 @@ export class AuthBackendService implements AuthService {
 
   skipChange$(): Observable<void> {
     return this.http.get<void>('/api/skipChangeDefaultPassword');
+  }
+
+  clearLoggedIn(): void {
+    localStorage.removeItem(this.IS_LOGGED_IN);
+    this.setAuthenticated(false);
   }
 
   ssoProviders$(): Observable<Array<string>> {

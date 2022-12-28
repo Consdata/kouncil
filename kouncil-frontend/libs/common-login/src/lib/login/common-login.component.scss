@@ -1,19 +1,11 @@
 @use '../../../../../apps/kouncil/src/styles/buttons';
 @import '../../../../../apps/kouncil/src/styles/palette';
+@import '../common-login';
 
 .main-login {
   margin: 20px auto 0;
 }
 
-.first-time-login {
-  color: $main-60;
-  font-size: 12px;
-  float: left;
-  margin-bottom: 20px;
-  display: block;
-  width: 275px;
-  animation: 1s slide-in;
-}
 
 @keyframes slide-in {
   from {

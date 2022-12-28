@@ -1,14 +1,9 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Backend} from "@app/common-model";
 
 @Component({
   selector: 'app-common-change-password',
   template: `
-    <div class="icon-login-container"
-         [ngClass]="backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo'">
-      <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
-    </div>
     <div class="main-login">
       <form class="login-form" [formGroup]="form" (ngSubmit)="changePassword()">
         <span class="login-info">First login password change</span>
@@ -40,14 +35,12 @@ import {Backend} from "@app/common-model";
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./common-change-password.component.scss', '../common-login.scss']
+  styleUrls: ['./common-change-password.component.scss']
 })
 export class CommonChangePasswordComponent {
 
   form: FormGroup;
   passwordNotMatch: boolean = false;
-
-  @Input() backend: Backend;
   @Output() changePasswordEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() skipChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 

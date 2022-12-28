@@ -1,3 +1,6 @@
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {User} from "./user";
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from './user';
@@ -7,21 +10,11 @@ import {SSOProvider} from './sso-provider';
 @Component({
   selector: 'app-common-login',
   template: `
-    <div class="icon-login-container"
-         [ngClass]="backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo'">
-      <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
-    </div>
     <div class="main-login">
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
 
-        <span *ngIf="firstTimeLogin" class="first-time-login">
-          Default user credentials:
-          <br>
-          username: admin
-          <br>
-          password: admin
-        </span>
+        <ng-content select="[info]"></ng-content>
 
         <app-common-login-field [fieldName]="'username'"
                                 [control]="getControl('username')"
@@ -58,7 +51,7 @@ import {SSOProvider} from './sso-provider';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./common-login.component.scss', '../common-login.scss']
+  styleUrls: ['./common-login.component.scss']
 })
 export class CommonLoginComponent {
 
