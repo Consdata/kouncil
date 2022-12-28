@@ -13,7 +13,8 @@ import {environment} from '../../environments/environment';
     <app-common-login-icon *ngIf="this.backend === 'DEMO'"
                            [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
 
-    <app-common-login (loginUser)="login($event)">
+    <app-common-login (loginUser)="login($event)" [availableProviders]="providers"
+                      (ssoEvent)="sso($event)">
 
       <div info *ngIf="firstTimeLogin" class="first-time-login">
         <span>Default user credentials:</span>

@@ -13,7 +13,6 @@ export class AuthBackendService implements AuthService {
 
   private IS_LOGGED_IN: string = 'isLoggedIn';
   private TOKEN: string = 'token';
-  private IS_LOGGED_IN: string = 'isLoggedIn';
 
   private baseUrl: string = environment.baseUrl;
 
