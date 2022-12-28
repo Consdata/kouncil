@@ -53,4 +53,9 @@ export class AuthBackendService implements AuthService {
   skipChange$(): Observable<void> {
     return this.http.get<void>('/api/skipChangeDefaultPassword');
   }
+
+  clearLoggedIn(): void {
+    localStorage.removeItem(this.IS_LOGGED_IN);
+    this.setAuthenticated(false);
+  }
 }

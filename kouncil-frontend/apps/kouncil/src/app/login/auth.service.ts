@@ -16,6 +16,8 @@ export abstract class AuthService {
 
   abstract logout$(): Observable<void>;
 
+  abstract clearLoggedIn(): void;
+
   abstract firstTimeLogin$(): Observable<boolean>;
 
   abstract changeDefaultPassword$(newPassword: string): Observable<void>;

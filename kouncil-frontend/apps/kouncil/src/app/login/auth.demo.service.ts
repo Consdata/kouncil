@@ -6,7 +6,7 @@ import {User} from '@app/common-login';
 @Injectable()
 export class AuthDemoService implements AuthService {
 
-  private IS_LOGGED_IN: string ='isLoggedIn';
+  private IS_LOGGED_IN: string = 'isLoggedIn';
 
   private authenticated: boolean = localStorage.getItem(this.IS_LOGGED_IN) === 'true';
 
@@ -36,5 +36,10 @@ export class AuthDemoService implements AuthService {
 
   skipChange$(): Observable<void> {
     return of(undefined);
+  }
+
+  clearLoggedIn(): void {
+    localStorage.removeItem(this.IS_LOGGED_IN);
+    this.authenticated = false;
   }
 }
