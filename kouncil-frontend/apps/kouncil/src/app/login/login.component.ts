@@ -33,7 +33,7 @@ import {environment} from '../../environments/environment';
 export class LoginComponent implements OnInit {
 
   firstTimeLogin: boolean = false;
-  providers: Array<string>;
+  providers: Array<string> = [];
   public backend: Backend = environment.backend;
 
   constructor(private service: AuthService, private router: Router) {
@@ -41,9 +41,12 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.clearLoggedIn();
-    this.service.ssoProviders$().subscribe(providers => this.providers = providers);
-    this.service.firstTimeLogin$().subscribe(firstTime => {
-      this.firstTimeLogin = firstTime;
+    this.service.activeProvider$().subscribe(activeProvider => {
+      if (activeProvider === 'inmemory') {
+        this.fetchFirstTimeLoginInfo();
+      } else if (activeProvider === 'sso') {
+        this.techSsoProviders();
+      }
     });
   }
 
@@ -65,5 +68,15 @@ export class LoginComponent implements OnInit {
 
   getIconContainerClass(): string {
     return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
+  }
+
+  private techSsoProviders() {
+    this.service.ssoProviders$().subscribe(providers => this.providers = providers);
+  }
+
+  private fetchFirstTimeLoginInfo() {
+    this.service.firstTimeLogin$().subscribe(firstTime => {
+      this.firstTimeLogin = firstTime;
+    });
   }
 }

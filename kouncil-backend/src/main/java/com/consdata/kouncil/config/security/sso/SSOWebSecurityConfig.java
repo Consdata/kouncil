@@ -48,7 +48,7 @@ public class SSOWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/firstTimeLogin").permitAll()
+                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()

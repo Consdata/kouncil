@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,14 @@ public class AuthController {
 
     @Resource(name = "authenticationManager")
     private AuthenticationManager authManager;
+
+    @Value("${kouncil.auth.active-provider}")
+    private String activeProvider;
+
+    @GetMapping("/api/activeProvider")
+    public String activeProvider() {
+        return activeProvider;
+    }
 
     @PostMapping("/api/login")
     public boolean login(HttpServletRequest req, @RequestBody User user) {

@@ -16,6 +16,8 @@ export abstract class AuthService {
 
   abstract logout$(): Observable<void>;
 
+  abstract activeProvider$(): Observable<string>;
+
   abstract ssoProviders$(): Observable<Array<string>>;
 
   abstract sso$(provider: string): Observable<void>;

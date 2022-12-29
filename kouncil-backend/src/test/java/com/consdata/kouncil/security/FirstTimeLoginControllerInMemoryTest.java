@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.consdata.kouncil.config.security.inmemory.FirstTimeLoginController;
 import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
 import com.consdata.kouncil.config.security.sso.TokenStore;
 import com.consdata.kouncil.config.security.inmemory.InMemoryUserManager;

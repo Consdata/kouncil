@@ -94,4 +94,10 @@ export class AuthBackendService implements AuthService {
       return providers;
     }));
   }
+
+  activeProvider$(): Observable<string> {
+    return this.http.get('/api/activeProvider',{responseType: 'text'}).pipe(map((providers) => {
+      return providers;
+    }));
+  }
 }

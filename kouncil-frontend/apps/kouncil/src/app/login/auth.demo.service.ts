@@ -61,4 +61,8 @@ export class AuthDemoService implements AuthService {
     localStorage.removeItem(this.IS_LOGGED_IN);
     this.authenticated = false;
   }
+
+  activeProvider$(): Observable<string> {
+    return of('inmemory');
+  }
 }

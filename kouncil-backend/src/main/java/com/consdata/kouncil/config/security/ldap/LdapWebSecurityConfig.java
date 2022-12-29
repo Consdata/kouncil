@@ -45,7 +45,7 @@ public class LdapWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login").permitAll()
+                .antMatchers("/api/info/version", "/api/login", "/api/activeProvider").permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
