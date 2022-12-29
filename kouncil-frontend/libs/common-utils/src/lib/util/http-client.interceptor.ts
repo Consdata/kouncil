@@ -11,6 +11,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Injectable} from '@angular/core';
 import {ProgressBarService} from './progress-bar.service';
 import {Router} from '@angular/router';
+import {SnackBarComponent} from "./snack-bar.component";
+import {SnackBarData} from "./snack-bar-data";
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +33,10 @@ export class HttpClientInterceptor implements HttpInterceptor {
         } else {
           console.log(JSON.stringify(error));
           const consoleErrorMessage = `Error Code: ${error.status}<br>Message: ${error.message}\nError message: ${error.error}`;
-          this.snackBar.open(error.error, 'Close', {
-            duration: 5000,
-            panelClass: ['snackbar-error', 'snackbar']
+          this.snackBar.openFromComponent(SnackBarComponent, {
+            data: new SnackBarData(error.error, 'snackbar-error', 'Close'),
+            panelClass: ['snackbar'],
+            duration: 5000
           });
           this.progressBarService.setProgress(false);
           return throwError(new Error(consoleErrorMessage));

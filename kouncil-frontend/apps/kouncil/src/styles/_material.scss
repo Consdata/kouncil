@@ -183,6 +183,11 @@ snack-bar-container.snackbar {
   font-size: 24px;
 }
 
+app-custom-snack-bar{
+  display: flex;
+  height: 20px;
+}
+
 .mat-select-search-inner {
   border-bottom-color: lightgrey;
 }
