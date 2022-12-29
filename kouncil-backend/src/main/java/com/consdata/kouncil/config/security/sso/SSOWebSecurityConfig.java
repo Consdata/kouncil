@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -29,7 +28,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "sso")
 public class SSOWebSecurityConfig {
 
-    private final TokenStore tokenStore;
     private final ObjectMapper mapper;
 
     @Bean
@@ -55,10 +53,10 @@ public class SSOWebSecurityConfig {
                 .authorizationEndpoint()
                 .authorizationRequestRepository(new InMemoryAuthRepository())
                 .and()
-                .successHandler(this::successHandler)
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(this::authenticationEntryPoint);
+
         return http.build();
     }
 
@@ -66,12 +64,6 @@ public class SSOWebSecurityConfig {
             throws IOException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.getWriter().write(mapper.writeValueAsString(Collections.singletonMap("error", "Unauthenticated")));
-    }
-
-    private void successHandler(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication)
-            throws IOException {
-        String token = tokenStore.generateToken(authentication);
-        httpServletResponse.getWriter().write(mapper.writeValueAsString(Collections.singletonMap("accessToken", token)));
     }
 
     @Bean

@@ -27,6 +27,7 @@ export class HttpClientInterceptor implements HttpInterceptor {
     return next.handle(request)
     .pipe(
       catchError((error: HttpErrorResponse) => {
+        this.progressBarService.setProgress(false);
         if (error.status === 401 || error.status === 403) {
           this.router.navigate(['/login']);
           return null;
@@ -38,7 +39,6 @@ export class HttpClientInterceptor implements HttpInterceptor {
             panelClass: ['snackbar'],
             duration: 5000
           });
-          this.progressBarService.setProgress(false);
           return throwError(new Error(consoleErrorMessage));
         }
       })
