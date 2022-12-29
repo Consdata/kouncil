@@ -86,6 +86,7 @@ export class AuthBackendService implements AuthService {
 
   clearLoggedIn(): void {
     localStorage.removeItem(this.IS_LOGGED_IN);
+    localStorage.removeItem(this.TOKEN);
     this.setAuthenticated(false);
   }
 
