@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.consdata.kouncil.config.security.inmemory.FirstTimeLoginController;
 import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
-import com.consdata.kouncil.config.security.sso.TokenStore;
 import com.consdata.kouncil.config.security.inmemory.InMemoryUserManager;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ContextConfiguration(classes = {FirstTimeLoginController.class, InMemoryUserManager.class, InMemoryWebSecurityConfig.class, TokenStore.class})
+@ContextConfiguration(classes = {FirstTimeLoginController.class, InMemoryUserManager.class, InMemoryWebSecurityConfig.class})
 class FirstTimeLoginControllerInMemoryTest {
 
     @Autowired
