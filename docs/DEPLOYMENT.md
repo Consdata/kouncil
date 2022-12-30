@@ -195,7 +195,7 @@ kouncil:
 
 ## Advanced config - SASL Authentication
 
-If one of your brokers needs SASL authentication You could specify saslUsername and saslPassword for each broker, like so: 
+If one of your brokers in cluster type environment needs SASL authentication You could specify `saslUsername` and `saslPassword` for each broker, like so: 
 
 ```yaml
 kouncil:
@@ -210,6 +210,15 @@ kouncil:
           port: 9093
         - host: 192.10.0.3
           port: 9094
+```
+
+or if you don't use simple configuration you could provide SASL credentials like this:
+```yaml
+kouncil:
+  sasl:
+    - brokerUrl: 192.10.0.1:9092
+      saslUsername: username
+      saslPassword: password
 ```
 
 ## WebSocket allowed origins configuration

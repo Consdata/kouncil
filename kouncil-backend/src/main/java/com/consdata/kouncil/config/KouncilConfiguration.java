@@ -100,8 +100,7 @@ public class KouncilConfiguration {
     }
 
     private void initializeSimpleConfig() {
-        log.info("Using simple Kouncil configuration: bootstrapServers={}, schemaRegistryUrl={}", initialBootstrapServers, schemaRegistryUrl);
-        log.info("{}", sasl);
+        log.info("Using simple Kouncil configuration: bootstrapServers={}, schemaRegistryUrl={}, sasl={}", initialBootstrapServers, schemaRegistryUrl, sasl);
         clusterConfig = new HashMap<>();
         for (String initialBootstrapServer : initialBootstrapServers) {
             String clusterId = sanitizeClusterId(initialBootstrapServer);
