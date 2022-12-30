@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
-import com.consdata.kouncil.config.security.sso.TokenStore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ContextConfiguration(classes = {AuthController.class, InMemoryWebSecurityConfig.class, TokenStore.class})
+@ContextConfiguration(classes = {AuthController.class, InMemoryWebSecurityConfig.class})
 class AuthControllerTest {
 
     @Autowired
