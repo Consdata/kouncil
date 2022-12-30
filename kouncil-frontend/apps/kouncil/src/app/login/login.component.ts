@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
@@ -22,25 +22,32 @@ import {environment} from '../../environments/environment';
       </div>
 
     </app-common-login>
+
+    <app-common-login-sso *ngIf="providers && providers.length >0"
+                          [availableProviders]="providers"
+                          (ssoEvent)="sso($event)"></app-common-login-sso>
+
   `,
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit {
 
   firstTimeLogin: boolean = false;
+  providers: Array<string> = [];
   public backend: Backend = environment.backend;
 
   constructor(private service: AuthService, private router: Router) {
   }
 
-  ngAfterViewInit(): void {
-    this.service.firstTimeLogin$().subscribe(firstTime => {
-      this.firstTimeLogin = firstTime;
-    });
-  }
-
   ngOnInit(): void {
     this.service.clearLoggedIn();
+    this.service.activeProvider$().subscribe(activeProvider => {
+      if (activeProvider === 'inmemory') {
+        this.fetchFirstTimeLoginInfo();
+      } else if (activeProvider === 'sso') {
+        this.techSsoProviders();
+      }
+    });
   }
 
   login($event: User): void {
@@ -55,7 +62,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
     });
   }
 
+  sso(provider: string): void {
+    this.service.sso$(provider).subscribe();
+  }
+
   getIconContainerClass(): string {
     return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
+  }
+
+  private techSsoProviders() {
+    this.service.ssoProviders$().subscribe(providers => this.providers = providers);
+  }
+
+  private fetchFirstTimeLoginInfo() {
+    this.service.firstTimeLogin$().subscribe(firstTime => {
+      this.firstTimeLogin = firstTime;
+    });
   }
 }

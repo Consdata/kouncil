@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "./user";
+import {Backend} from '@app/common-model';
 
 @Component({
   selector: 'app-common-login',
@@ -36,7 +37,10 @@ import {User} from "./user";
 export class CommonLoginComponent {
 
   form: FormGroup;
+  @Input() backend: Backend;
+  @Input() firstTimeLogin: boolean = false;
   @Output() loginUser: EventEmitter<User> = new EventEmitter<User>();
+
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
@@ -58,4 +62,5 @@ export class CommonLoginComponent {
   getControl(controlName: string): FormControl {
     return this.form.controls[controlName] as FormControl;
   }
+
 }

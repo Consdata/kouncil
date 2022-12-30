@@ -2,22 +2,21 @@ package com.consdata.kouncil.config;
 
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/connection")
+@RequestMapping("/api")
 @AllArgsConstructor
 public class KouncilConfigurationController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
-    @GetMapping
+    @GetMapping("/connection")
     @EntryExitLogger
     public Map<String, String> getAllConnections() {
         return kouncilConfiguration
@@ -35,6 +34,4 @@ public class KouncilConfigurationController {
                                 .orElseThrow(() -> new KouncilRuntimeException("Broker not found"))
                 ));
     }
-
-
 }

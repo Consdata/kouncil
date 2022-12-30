@@ -1,4 +1,4 @@
-package com.consdata.kouncil.security;
+package com.consdata.kouncil.config.security;
 
 import java.io.IOException;
 

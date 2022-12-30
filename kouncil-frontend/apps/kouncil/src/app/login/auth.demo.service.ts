@@ -38,8 +38,31 @@ export class AuthDemoService implements AuthService {
     return of(undefined);
   }
 
+  sso$(_provider: string): Observable<void> {
+    return of(undefined);
+  }
+
+  fetchToken$(_code: string, _state: string, _provider: string): Observable<string> {
+    return of('token');
+  }
+
+  getToken(): string {
+    return '';
+  }
+
+  updateToken(_token: string): void {
+  }
+
+  ssoProviders$(): Observable<Array<string>> {
+    return of([]);
+  }
+
   clearLoggedIn(): void {
     localStorage.removeItem(this.IS_LOGGED_IN);
     this.authenticated = false;
+  }
+
+  activeProvider$(): Observable<string> {
+    return of('inmemory');
   }
 }

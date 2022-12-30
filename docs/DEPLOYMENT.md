@@ -239,7 +239,18 @@ kouncil:
 ```
 * Github SSO
 ```yaml
-todo
+kouncil:
+  auth:
+    active-provider: sso # inmemory, ldap, ad, sso
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: your-client-id
+            client-secret: your-client-secret
+            redirect-uri: http://your-application-url/oauth
 ```
 
 
