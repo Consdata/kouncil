@@ -2,7 +2,7 @@
 <configuration>
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-  <!-- PROPERTIESY -->
+  <!-- PROPERTIES -->
   <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] [%clr(${LOG_LEVEL_PATTERN:-%5p})] [%clr(%logger){cyan}]: %msg %n"/>
   <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [${LOG_LEVEL_PATTERN:-%5p}] [%logger]: %msg %n"/>
   <property name="LOG_FILE" value="logs/kouncil.log"/>
@@ -10,7 +10,7 @@
   <property name="LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE" value="${logging.file.max.size:-100MB}"/>
   <property name="LOGBACK_ROLLINGPOLICY_MAX_HISTORY" value="${logging.file.max.history:-10}"/>
 
-  <!-- APPENDERY -->
+  <!-- APPENDERS -->
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_FILE}</file>
     <encoder>
@@ -32,7 +32,7 @@
     <appender-ref ref="FILE" />
   </root>
 
-  <!-- LOGGERY -->
+  <!-- LOGGERS -->
   <logger name="com.consdata" level="DEBUG" />
   <logger name="org.springframework.security" level="INFO"/>
 
