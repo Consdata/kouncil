@@ -1,16 +1,16 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "./user";
+import {Backend} from '@app/common-model';
 
 @Component({
   selector: 'app-common-login',
   template: `
-    <div class="icon-login-container">
-      <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
-    </div>
     <div class="main-login">
       <form (ngSubmit)="login()" class="login-form" [formGroup]="form">
         <span class="login-info">Log in to your account</span>
+
+        <ng-content select="[info]"></ng-content>
 
         <app-common-login-field [fieldName]="'username'"
                                 [control]="getControl('username')"
@@ -18,7 +18,6 @@ import {User} from "./user";
                                 [autocomplete]="'username'"
                                 [label]="'Login'"
                                 [icon]="'person'"></app-common-login-field>
-        <br>
 
         <app-common-login-field [fieldName]="'password'"
                                 [control]="getControl('password')"
@@ -26,7 +25,6 @@ import {User} from "./user";
                                 [autocomplete]="'current-password'"
                                 [label]="'Password'"
                                 [icon]="'lock'"></app-common-login-field>
-        <br>
         <button mat-button disableRipple class="action-button-white" type="submit">
           Login
         </button>
@@ -39,7 +37,10 @@ import {User} from "./user";
 export class CommonLoginComponent {
 
   form: FormGroup;
+  @Input() backend: Backend;
+  @Input() firstTimeLogin: boolean = false;
   @Output() loginUser: EventEmitter<User> = new EventEmitter<User>();
+
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
@@ -61,4 +62,5 @@ export class CommonLoginComponent {
   getControl(controlName: string): FormControl {
     return this.form.controls[controlName] as FormControl;
   }
+
 }

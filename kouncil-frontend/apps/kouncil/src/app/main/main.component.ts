@@ -7,9 +7,8 @@ import {environment} from '../../environments/environment';
   template: `
     <app-demo *ngIf="backend === 'DEMO'"></app-demo>
     <app-kafka-navbar></app-kafka-navbar>
-    <div
-      [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'"
-    >
+
+    <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
       <app-progress-bar></app-progress-bar>
       <router-outlet></router-outlet>
     </div>

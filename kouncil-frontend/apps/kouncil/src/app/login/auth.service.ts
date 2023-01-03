@@ -15,6 +15,26 @@ export abstract class AuthService {
   abstract login$(user: User): Observable<boolean>;
 
   abstract logout$(): Observable<void>;
+
+  abstract activeProvider$(): Observable<string>;
+
+  abstract ssoProviders$(): Observable<Array<string>>;
+
+  abstract sso$(provider: string): Observable<void>;
+
+  abstract updateToken(token: string): void;
+
+  abstract fetchToken$(code: string, state: string, provider: string): Observable<string>;
+
+ abstract getToken(): string;
+
+  abstract clearLoggedIn(): void;
+
+  abstract firstTimeLogin$(): Observable<boolean>;
+
+  abstract changeDefaultPassword$(newPassword: string): Observable<void>;
+
+  abstract skipChange$(): Observable<void>;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {

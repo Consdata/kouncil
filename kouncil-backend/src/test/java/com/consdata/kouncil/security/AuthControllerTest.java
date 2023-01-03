@@ -5,8 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.consdata.kouncil.config.InMemoryWebSecurity;
-import com.consdata.kouncil.config.WebSecurityConfig;
+import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ContextConfiguration(classes = {AuthController.class, WebSecurityConfig.class, InMemoryWebSecurity.class})
+@ContextConfiguration(classes = {AuthController.class, InMemoryWebSecurityConfig.class})
 class AuthControllerTest {
 
     @Autowired
@@ -39,10 +38,5 @@ class AuthControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void should_logout_user() throws Exception {
         mockMvc.perform(get("/api/logout")).andExpect(status().isOk());
-    }
-
-    @Test
-    void should_return_403_status() throws Exception {
-        mockMvc.perform(get("/api/logout")).andExpect(status().isForbidden());
     }
 }

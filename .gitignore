@@ -8,3 +8,4 @@ local
 /node_modules/
 docker-compose.yml
 .firebase
+default_admin_password.txt

@@ -163,7 +163,7 @@ public class TopicService {
         int emptyPolls = 0;
         int messagesCount = 0;
         long lastOffset = 0;
-        while (emptyPolls < 5 && messagesCount < limit && lastOffset < endOffset - 1) {
+        while (emptyPolls < 5 && messagesCount < limit && lastOffset <= endOffset - 1) {
             ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, partition);
             if (records.isEmpty()) {
                 emptyPolls++;
