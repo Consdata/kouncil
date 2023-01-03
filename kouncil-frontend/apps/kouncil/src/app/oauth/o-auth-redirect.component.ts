@@ -24,8 +24,7 @@ export class OAuthRedirectComponent implements OnInit{
   }
 
   private fetchToken(params: Params) {
-    this.service.fetchToken$(params['code'], params['state'], localStorage.getItem('selectedProvider')).subscribe(data=>{
-      this.service.updateToken(data['accessToken']);
+    this.service.fetchToken$(params['code'], params['state'], localStorage.getItem('selectedProvider')).subscribe(()=>{
       this.router.navigate(['/topics']);
     });
   }
