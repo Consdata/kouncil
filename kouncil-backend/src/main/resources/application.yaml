@@ -10,7 +10,9 @@ logging:
   level:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     com.consdata.kouncil: DEBUG
-    org.apache.kafka.clients.consumer.ConsumerConfig: ERROR
+    org.apache.kafka.clients: WARN
+    org.apache.kafka.clients.NetworkClient: INFO
+    org.apache.kafka.common.utils.AppInfoParser: WARN
 kouncil:
   auth:
     active-provider: inmemory # inmemory, ldap, ad, sso
