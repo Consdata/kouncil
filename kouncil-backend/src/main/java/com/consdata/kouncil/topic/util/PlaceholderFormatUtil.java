@@ -24,7 +24,7 @@ public class PlaceholderFormatUtil {
                     if (fieldType == FieldType.STRING) {
                         replacement = String.format(String.format("%%%s", pattern), value);
                     } else if (fieldType == FieldType.DATE) {
-                        replacement = LocalDate.now().format(DateTimeFormatter.ofPattern(pattern));
+                        replacement = ((LocalDate) value).format(DateTimeFormatter.ofPattern(pattern));
                     }
                 }
             }
