@@ -212,15 +212,6 @@ kouncil:
           port: 9094
 ```
 
-or if you don't use simple configuration you could provide SASL credentials like this:
-```yaml
-kouncil:
-  sasl:
-    - brokerUrl: 192.10.0.1:9092
-      saslUsername: username
-      saslPassword: password
-```
-
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 

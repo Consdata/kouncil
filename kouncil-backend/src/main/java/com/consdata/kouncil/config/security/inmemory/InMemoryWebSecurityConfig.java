@@ -47,7 +47,7 @@ public class InMemoryWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/firstTimeLogin", "/api/login", "/api/activeProvider").permitAll()
+                .antMatchers("/api/info/version", "/api/firstTimeLogin", "/api/login", "/api/activeProvider", "/*", "/assets/**").permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
