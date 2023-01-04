@@ -42,15 +42,8 @@ export class AuthDemoService implements AuthService {
     return of(undefined);
   }
 
-  fetchToken$(_code: string, _state: string, _provider: string): Observable<string> {
-    return of('token');
-  }
-
-  getToken(): string {
-    return '';
-  }
-
-  updateToken(_token: string): void {
+  fetchToken$(_code: string, _state: string, _provider: string): Observable<void> {
+    return of(undefined);
   }
 
   ssoProviders$(): Observable<Array<string>> {

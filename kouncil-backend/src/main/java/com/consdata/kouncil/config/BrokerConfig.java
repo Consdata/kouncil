@@ -23,6 +23,10 @@ public class BrokerConfig {
 
     private String jmxPassword;
 
+    private String saslUsername;
+
+    private String saslPassword;
+
     public String getAddress() {
         return format("%s:%s", host, port);
     }

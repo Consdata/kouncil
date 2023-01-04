@@ -25,7 +25,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Component
 @Slf4j
 @Data
-@ConfigurationProperties("kouncil")
+@ConfigurationProperties(prefix = "kouncil")
 public class KouncilConfiguration {
 
     protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
@@ -73,8 +73,7 @@ public class KouncilConfiguration {
     }
 
     /**
-     * hosts may be specified either in IP or hostname form, this method
-     * allows us to compare them regardless of their form
+     * hosts may be specified either in IP or hostname form, this method allows us to compare them regardless of their form
      */
     private boolean compareHosts(String host1, String host2) {
         try {

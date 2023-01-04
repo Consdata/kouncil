@@ -22,11 +22,7 @@ export abstract class AuthService {
 
   abstract sso$(provider: string): Observable<void>;
 
-  abstract updateToken(token: string): void;
-
-  abstract fetchToken$(code: string, state: string, provider: string): Observable<string>;
-
- abstract getToken(): string;
+  abstract fetchToken$(code: string, state: string, provider: string): Observable<void>;
 
   abstract clearLoggedIn(): void;
 

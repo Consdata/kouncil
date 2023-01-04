@@ -1,11 +1,18 @@
 package com.consdata.kouncil;
 
+import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.utils.Bytes;
@@ -13,14 +20,16 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
 public class KafkaConnectionService {
 
     protected static final String RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE = "5000";
     protected static final String RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE = "10000";
+    protected static final String SASL_PLAIN = "PLAIN";
+    protected static final String SASL_PLAINTEXT = "SASL_PLAINTEXT";
+    protected static final String SASL_JAAS_CONFIG = "%s required username=\"%s\" password=\"%s\";";
     private final KouncilConfiguration kouncilConfiguration;
     //we can cache this
     private final Map<String, KafkaTemplate<Bytes, Bytes>> kafkaTemplates = new ConcurrentHashMap<>();
@@ -46,11 +55,28 @@ public class KafkaConnectionService {
     public AdminClient getAdminClient(String serverId) {
         return adminClients.computeIfAbsent(serverId, k -> {
             Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
-            props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, this.kouncilConfiguration.getServerByClusterId(serverId));
+            String serverByClusterId = this.kouncilConfiguration.getServerByClusterId(serverId);
+            props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, serverByClusterId);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, RECONNECT_BACKOFF_MAX_MS_CONFIG_CONSTANT_VALUE);
+
+            addJAASProperties(props, serverByClusterId, serverId);
             return AdminClient.create(props);
         });
+    }
+
+    private void addJAASProperties(Map<String, Object> props, String serverByClusterId, String serverId) {
+        String[] hostPort = serverByClusterId.split(":");
+        Optional<BrokerConfig> brokerConfigFromCluster = kouncilConfiguration.getBrokerConfigFromCluster(serverId, hostPort[0], Integer.parseInt(hostPort[1]));
+        if (brokerConfigFromCluster.isPresent()) {
+            BrokerConfig brokerConfig = brokerConfigFromCluster.get();
+            if (isNotBlank(brokerConfig.getSaslUsername()) && isNotBlank(brokerConfig.getSaslPassword())) {
+                props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SASL_PLAINTEXT);
+                props.put(SaslConfigs.SASL_MECHANISM, SASL_PLAIN);
+                props.put(SaslConfigs.SASL_JAAS_CONFIG,
+                        String.format(SASL_JAAS_CONFIG, PlainLoginModule.class.getName(), brokerConfig.getSaslUsername(), brokerConfig.getSaslPassword()));
+            }
+        }
     }
 
     //we cannot cache this ever
