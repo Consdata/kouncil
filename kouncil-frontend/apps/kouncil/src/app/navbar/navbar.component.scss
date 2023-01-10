@@ -19,11 +19,6 @@
     background: $main-0;
   }
 
-  ::ng-deep .mat-divider-vertical {
-    border-right-color: $main-20;
-    height: $default-line-height;
-  }
-
   mat-divider {
     margin: 0 16px;
   }
@@ -96,16 +91,6 @@
     margin-left: 16px;
     min-width: 300px;
     max-width: 300px;
-  }
-
-  .servers {
-    ::ng-deep .mat-select-value-text {
-      padding-left: 32px;
-    }
-
-    ::ng-deep .mat-select-trigger {
-      align-items: baseline;
-    }
   }
 
   .servers::before {

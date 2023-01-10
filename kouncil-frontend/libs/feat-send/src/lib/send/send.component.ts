@@ -22,14 +22,19 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->}
+          Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}<!----> }
           <br>
-          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!---->}).
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!----> }).
           Format should be given after <strong>colon (:)</strong> which precedes placeholder.
           Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>
         <div class="drawer-section-title">Key</div>
-        <input [(ngModel)]="messageData.key" matInput type="text" name="key"/>
+
+        <div>
+          <mat-form-field [appearance]="'outline'" class="full-width">
+            <input [(ngModel)]="messageData.key" matInput type="text" name="key"/>
+          </mat-form-field>
+        </div>
 
         <div class="drawer-section-title">
           Headers
@@ -43,33 +48,17 @@ import {ServersService} from '@app/common-servers';
             +
           </button>
         </div>
-        <div
-          class="header"
-          *ngFor="let header of messageData.headers; let i = index"
-        >
-          <input
-            class="header"
-            [(ngModel)]="header.key"
-            placeholder="Header key"
-            matInput
-            type="text"
-            name="header-key-{{ i }}"
-          />
-          <input
-            class="header"
-            [(ngModel)]="header.value"
-            placeholder="Header value"
-            matInput
-            type="text"
-            name="header-value-{{ i }}"
-          />
-          <button
-            type="button"
-            class="small-button"
-            mat-button
-            disableRipple
-            (click)="removeHeader(i, messageData.headers)"
-          >
+        <div class="header" *ngFor="let header of messageData.headers; let i = index">
+          <mat-form-field [appearance]="'outline'" style="width: 48%; padding: 8px">
+            <input class="header" [(ngModel)]="header.key" placeholder="Header key" matInput
+                   type="text" name="header-key-{{ i }}"/>
+          </mat-form-field>
+          <mat-form-field [appearance]="'outline'" style="width: 48%; padding: 8px">
+            <input class="header" [(ngModel)]="header.value" placeholder="Header value" matInput
+                   type="text" name="header-value-{{ i }}"/>
+          </mat-form-field>
+          <button type="button" class="small-button" mat-button disableRipple
+                  (click)="removeHeader(i, messageData.headers)">
             -
           </button>
         </div>
@@ -82,33 +71,20 @@ import {ServersService} from '@app/common-servers';
         <div class="drawer-section-subtitle">
           How many times you want to send this event?
         </div>
-        <div class="count">
-          <input
-            matInput
-            type="number"
-            min="1"
-            [formControl]="countControl"
-            name="count"
-          />
-          <button
-            type="button"
-            class="small-button"
-            mat-button
-            disableRipple
-            (click)="decreaseCount()"
-          >
-            -
-          </button>
-          <button
-            type="button"
-            class="small-button"
-            mat-button
-            disableRipple
-            (click)="increaseCount()"
-          >
-            +
-          </button>
-        </div>
+
+        <mat-form-field [appearance]="'outline'" class="count">
+          <input matInput type="number" min="1" [formControl]="countControl" name="count"/>
+          <div matSuffix>
+            <button type="button" class="small-button" mat-button disableRipple
+                    (click)="decreaseCount()">
+              -
+            </button>
+            <button type="button" class="small-button" mat-button disableRipple
+                    (click)="increaseCount()">
+              +
+            </button>
+          </div>
+        </mat-form-field>
 
         <span class="spacer"></span>
 
@@ -181,23 +157,23 @@ export class SendComponent {
     this.isSendButtonDisabled = true;
     this.messageDataService.setMessageData(messageData);
     this.sendService.send$(this.servers.getSelectedServerId(), this.countControl.value, messageData)
-      .pipe(first())
-      .subscribe(() => {
-        this.dialog.closeAll();
-        this.resetForm();
-        this.isSendButtonDisabled = false;
-        this.snackbar.open(`Successfully sent to ${messageData.topicName}`, '', {
-          duration: 3000,
-          panelClass: ['snackbar-success', 'snackbar'],
-        });
-      }, error => {
-        console.error(error);
-        this.snackbar.open(`Error occurred while sending events to ${messageData.topicName}`, '', {
-          duration: 3000,
-          panelClass: ['snackbar-error', 'snackbar']
-        });
-        this.isSendButtonDisabled = false;
+    .pipe(first())
+    .subscribe(() => {
+      this.dialog.closeAll();
+      this.resetForm();
+      this.isSendButtonDisabled = false;
+      this.snackbar.open(`Successfully sent to ${messageData.topicName}`, '', {
+        duration: 3000,
+        panelClass: ['snackbar-success', 'snackbar'],
       });
+    }, error => {
+      console.error(error);
+      this.snackbar.open(`Error occurred while sending events to ${messageData.topicName}`, '', {
+        duration: 3000,
+        panelClass: ['snackbar-error', 'snackbar']
+      });
+      this.isSendButtonDisabled = false;
+    });
   }
 
   increaseCount(): void {

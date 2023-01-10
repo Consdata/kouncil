@@ -22,18 +22,12 @@ import {ResendFormService} from './resend-form.service';
 
         <div class="drawer-section-title">Source topic</div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Topic</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select select-topic"
                         formControlName="sourceTopicName"
                         (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
-              <mat-option>
-                <ngx-mat-select-search [formControl]="sourceTopicFilterCtrl"
-                                       placeholderLabel="Search topic"
-                                       noEntriesFoundLabel="No topics found">
-                </ngx-mat-select-search>
-              </mat-option>
               <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
                           [value]="topic.caption()">
                 {{topic.caption()}}
@@ -42,9 +36,9 @@ import {ResendFormService} from './resend-form.service';
           </mat-form-field>
         </div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Partition</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select"
                         formControlName="sourceTopicPartition">
               <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
@@ -57,31 +51,26 @@ import {ResendFormService} from './resend-form.service';
 
         <div class="field-with-label">
           <mat-label class="field-label">Start offset</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <input matInput type="number" min="0" formControlName="offsetBeginning"/>
           </mat-form-field>
         </div>
 
         <div class="field-with-label">
           <mat-label class="field-label">End offset</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <input matInput type="number" min="0" formControlName="offsetEnd"/>
           </mat-form-field>
         </div>
 
         <div class="drawer-section-title">Destination topic</div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Topic</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select select-topic"
                         formControlName="destinationTopicName"
                         (valueChange)="resendFilterService.setPartitionsOnDestTopicChanged($event)">
-              <mat-option>
-                <ngx-mat-select-search placeholderLabel="Search topic.."
-                                       [formControl]="destinationTopicFilterCtrl">
-                </ngx-mat-select-search>
-              </mat-option>
               <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
                           [value]="topic.caption()">
                 {{topic.caption()}}
@@ -90,9 +79,9 @@ import {ResendFormService} from './resend-form.service';
           </mat-form-field>
         </div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Partition</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select"
                         formControlName="destinationTopicPartition">
               <mat-option [value]="-1">None</mat-option>

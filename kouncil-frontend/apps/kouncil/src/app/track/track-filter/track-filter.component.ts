@@ -10,68 +10,56 @@ import {ServersService} from '@app/common-servers';
   selector: 'app-track-filter',
   template: `
     <form #filtersForm="ngForm">
+
       <div class="wrapper">
-        <input
-          class="filter-input wrapper-field"
-          placeholder="Correlation field"
-          matInput
-          type="text"
-          name="field"
-          [(ngModel)]="trackFilter.field"
-        />
-        <mat-form-field class="filter-input wrapper-select">
+        <mat-form-field [appearance]="'outline'">
+          <input
+            class="filter-input wrapper-field"
+            placeholder="Correlation field"
+            matInput
+            type="text"
+            name="field"
+            [(ngModel)]="trackFilter.field"
+          />
+        </mat-form-field>
+        <mat-form-field class="filter-input wrapper-select" [appearance]="'outline'">
           <mat-select name="operator" [(ngModel)]="trackFilter.operator">
             <mat-option
               *ngFor="let operator of operators"
-              [value]="operator.index"
-            >
+              [value]="operator.index">
               {{ operator.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <input
-          class="filter-input wrapper-field"
-          placeholder="Correlation value"
-          matInput
-          type="text"
-          name="value"
-          [(ngModel)]="trackFilter.value"
-        />
+        <mat-form-field [appearance]="'outline'">
+          <input
+            class="filter-input wrapper-field"
+            placeholder="Correlation value"
+            matInput
+            type="text"
+            name="value"
+            [(ngModel)]="trackFilter.value"
+          />
+        </mat-form-field>
       </div>
+
       <div>
-        <mat-form-field class="filter-input">
-          <mat-placeholder *ngIf="trackFilter.topics.length === 0">Topics</mat-placeholder>
-          <mat-select
-            name="topics"
-            [(ngModel)]="trackFilter.topics"
-            multiple
-            disableRipple
-          >
-            <mat-option>
-              <ngx-mat-select-search
-                [showToggleAllCheckbox]="true"
-                [toggleAllCheckboxChecked]="
-                  trackFilter.topics.length === visibleTopicList.length
-                "
-                (toggleAll)="toggleAllTopics()"
-                [formControl]="topicFilterControl"
-                placeholderLabel="Search topics"
-                noEntriesFoundLabel="No topics found"
-              >
-              </ngx-mat-select-search>
-            </mat-option>
+        <mat-form-field class="filter-input" [appearance]="'outline'">
+          <mat-select name="topics" [(ngModel)]="trackFilter.topics" multiple disableRipple
+                      [placeholder]="trackFilter.topics.length === 0 ? 'Topics' : ''">
             <mat-option
               *ngFor="let topic of visibleTopicList"
               [value]="topic"
-              >{{ topic }}</mat-option
+            >{{ topic }}</mat-option
             >
           </mat-select>
         </mat-form-field>
       </div>
+
       <div class="form-control">
         <div class="wrapper" ngDefaultControl [formControl]="datesControl">
           <span class="wrapper-glue-start">Track from</span>
-          <mat-form-field class="filter-input date-picker-form-field">
+          <mat-form-field class="filter-input date-picker-form-field" [appearance]="'outline'">
             <input
               class="wrapper-field"
               matInput
@@ -81,7 +69,7 @@ import {ServersService} from '@app/common-servers';
             />
           </mat-form-field>
           <span class="wrapper-glue">to</span>
-          <mat-form-field class="filter-input date-picker-form-field">
+          <mat-form-field class="filter-input date-picker-form-field" [appearance]="'outline'">
             <input
               class="wrapper-field"
               matInput
@@ -95,6 +83,7 @@ import {ServersService} from '@app/common-servers';
           {{ datesControl.errors['validation'].message }}
         </div>
       </div>
+
       <button
         mat-button
         disableRipple
@@ -104,6 +93,7 @@ import {ServersService} from '@app/common-servers';
       >
         Clear
       </button>
+
       <button
         mat-button
         disableRipple
@@ -115,6 +105,7 @@ import {ServersService} from '@app/common-servers';
         Track events
       </button>
     </form>
+
     <mat-slide-toggle
       [class.active]="asyncModeState === true"
       disableRipple
@@ -129,14 +120,14 @@ import {ServersService} from '@app/common-servers';
   styleUrls: ['./track-filter.component.scss'],
 })
 export class TrackFilterComponent implements OnInit {
-  @ViewChild('filtersForm', { static: false }) filtersForm?: NgForm;
+  @ViewChild('filtersForm', {static: false}) filtersForm?: NgForm;
 
   operators: { name: string; index: number }[] = Object.keys(TrackOperator)
-    .filter((e) => !isNaN(+e))
-    .map((o) => ({
-      index: +o,
-      name: TrackOperator[o],
-    }));
+  .filter((e) => !isNaN(+e))
+  .map((o) => ({
+    index: +o,
+    name: TrackOperator[o],
+  }));
 
   topicList: string[] = [];
   visibleTopicList: string[] = [];
@@ -159,15 +150,15 @@ export class TrackFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.topicsService
-      .getTopics$(this.servers.getSelectedServerId())
-      .subscribe((topics: Topics) => {
-        this.topicList = topics.topics.map((tm) => tm.name);
-        this.visibleTopicList = topics.topics.map((tm) => tm.name);
-      });
+    .getTopics$(this.servers.getSelectedServerId())
+    .subscribe((topics: Topics) => {
+      this.topicList = topics.topics.map((tm) => tm.name);
+      this.visibleTopicList = topics.topics.map((tm) => tm.name);
+    });
     this.trackFilter = this.trackService.getStoredTrackFilter();
     this.topicFilterControl.valueChanges
-      .pipe()
-      .subscribe(() => this.filterTopics());
+    .pipe()
+    .subscribe(() => this.filterTopics());
     this.trackService.trackFinished.subscribe(() => {
       this.loading = false;
     });

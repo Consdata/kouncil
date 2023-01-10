@@ -34,14 +34,14 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
-import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
-import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
+import {MatSelectModule} from '@angular/material/select';
 import {MessageViewComponent} from './topic/message/message-view.component';
 import {FileSizePipe} from './brokers/filze-size.pipe';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -52,7 +52,6 @@ import {TrackResultComponent} from './track/track-result/track-result.component'
 import {TrackService} from './track/track.service';
 import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
@@ -153,7 +152,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatSnackBarModule,
     MatSlideToggleModule,
     MatSelectModule,
-    NgxMatSelectSearchModule,
     MatTooltipModule,
     CommonUtilsModule,
     ResendModule,

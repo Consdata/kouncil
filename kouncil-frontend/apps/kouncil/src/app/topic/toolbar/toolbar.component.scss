@@ -109,21 +109,11 @@
   }
 
   .offset-wrapper {
-    border: 1px solid $main-20;
-    border-radius: $default-border-radius;
-
-    &:hover {
-      border: 1px solid $main-40;
-      transition: all $default-transition-time;
-    }
-
     .offset-input {
-      background: $main-0;
       font-size: 14px;
       line-height: $default-line-height;
       min-width: 100px;
       max-width: 150px;
-      height: 40px;
       padding: 0 8px;
     }
 
@@ -131,15 +121,15 @@
       min-width: 42px;
       max-width: 42px;
       border-radius: 0 $default-border-radius $default-border-radius 0;
+      z-index: 1;
 
-      .search-icon::before {
-        content: '\26B2';
-        transform: rotate(-45deg);
+      .search-icon {
         color: white;
+        left: 7px;
+        top: 7px;
+        font-size: 30px;
+        margin: 0 !important;
         position: absolute;
-        left: -10px;
-        top: -14px;
-        font-size: 24px;
       }
     }
   }

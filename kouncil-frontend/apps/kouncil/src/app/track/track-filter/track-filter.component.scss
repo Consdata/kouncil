@@ -89,19 +89,10 @@
   }
 
   .filter-input {
-    @include inputs.input;
     min-width: 100px;
     max-width: 550px;
     height: 40px;
     padding: 0 8px;
-  }
-
-  .filter-input:hover {
-    @include inputs.hover;
-  }
-
-  .filter-input:focus-visible {
-    @include inputs.focus-visible;
   }
 
   .filter-button {

@@ -51,7 +51,7 @@ import {AuthService} from '../login/auth.service';
                [(ngModel)]="searchService.currentPhrase"
                #searchInput>
       </div>
-      <mat-form-field class="servers-form-field"
+      <mat-form-field class="servers-form-field" [appearance]="'outline'"
                       *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">
         <mat-select panelClass="servers-list"
                     class="select servers"
