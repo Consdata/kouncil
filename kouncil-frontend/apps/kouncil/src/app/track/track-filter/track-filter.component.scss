@@ -60,12 +60,6 @@
       color: $main-40;
     }
 
-    .wrapper-select {
-      color: $main-40;
-      height: 1px;
-      padding: 0 0;
-    }
-
     &:hover {
       @include inputs.hover;
 
@@ -92,7 +86,14 @@
     min-width: 100px;
     max-width: 550px;
     height: 40px;
-    padding: 0 8px;
+
+    .mat-mdc-text-field-wrapper {
+      padding: 0 8px;
+    }
+  }
+
+  .right-padding{
+    padding-right: 2px;
   }
 
   .filter-button {
@@ -128,8 +129,6 @@
   .clear-button {
     @include buttons.button-white;
     border-radius: $default-border-radius;
-    height: 40px;
-
   }
 
   ::ng-deep .mat-form-field-label-wrapper {

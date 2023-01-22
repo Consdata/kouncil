@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "common-components": "libs/common-components",
     "common-login": "libs/common-login",
     "common-model": "libs/common-model",
     "common-servers": "libs/common-servers",

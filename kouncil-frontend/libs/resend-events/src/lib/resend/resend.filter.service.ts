@@ -43,10 +43,12 @@ export class ResendFilterService {
   }
 
   public setPartitionsOnSrcTopicChanged(selectedTopicName: string): void {
+    this.resendFormService.resendForm.get('sourceTopicName').setValue(selectedTopicName);
     this.setPartitionsOnTopicChanged(selectedTopicName, 'sourceTopicPartition', this.srcPartitions$, 0);
   }
 
   public setPartitionsOnDestTopicChanged(selectedTopicName: string): void {
+    this.resendFormService.resendForm.get('destinationTopicName').setValue(selectedTopicName);
     this.setPartitionsOnTopicChanged(selectedTopicName, 'destinationTopicPartition', this.destPartitions$, -1);
   }
 

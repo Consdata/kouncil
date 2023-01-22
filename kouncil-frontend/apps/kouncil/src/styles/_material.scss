@@ -209,6 +209,15 @@ app-custom-snack-bar {
   font-weight: 500;
 }
 
+.mat-mdc-option.mdc-list-item--selected:not(.mat-mdc-option-multiple):not(.mdc-list-item--disabled) {
+  background: pallete.$blue-0 !important;
+
+  .mdc-list-item__primary-text {
+    color: pallete.$blue-60 !important;
+    font-weight: 500 !important;
+  }
+}
+
 .mat-select-panel:not([class*=mat-elevation-z]) {
   box-shadow: 0 2px 4px -1px #0003, 0 4px 5px #00000024, 0 1px 10px #0000001f;
 }
@@ -275,17 +284,16 @@ app-custom-snack-bar {
 
 
 .mat-mdc-form-field-infix {
-  height: 41px;
+  height: 40px;
   padding: 10px 0 !important;
   min-height: auto !important;
-  color: pallete.$main-100;
   font-size: 14px;
   line-height: 24px;
   z-index: 1;
 }
 
 .mdc-notched-outline {
-  height: 41px !important;
+  height: 40px !important;
   background: pallete.$main-0;
 }
 
@@ -327,5 +335,69 @@ mat-form-field:hover {
     transition: all pallete.$default-transition-time;
     border-radius: pallete.$default-border-radius !important;
     box-shadow: 0 0 3px 1px pallete.$blue-60;
+  }
+}
+
+.mdc-list-item__primary-text {
+  flex-grow: 1;
+}
+
+.mat-mdc-option {
+  line-height: 48px !important;
+}
+
+.mdc-text-field__input::-webkit-calendar-picker-indicator {
+  display: block !important;
+}
+
+.filter-input {
+  div {
+    div {
+      div {
+        .mdc-notched-outline__leading {
+          border-left: 0 !important;
+          border-top: 0 !important;
+          border-bottom: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.filter-input {
+  div {
+    div {
+      div {
+        .mdc-notched-outline__trailing {
+          border-right: 0 !important;
+          border-top: 0 !important;
+          border-bottom: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.wrapper-select {
+  div {
+    div {
+      .mdc-notched-outline {
+        background: pallete.$main-10;
+      }
+    }
+  }
+}
+
+.transparent-select {
+  div {
+    .mat-mdc-select-value {
+      color: #B0B0B0 !important;
+    }
+  }
+}
+
+.filter-input {
+  .mat-mdc-text-field-wrapper {
+    padding: 0 8px;
   }
 }

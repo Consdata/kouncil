@@ -76,6 +76,8 @@ import {AuthService, authServiceFactory} from './login/auth.service';
 import {OAuthRedirectComponent} from './oauth/o-auth-redirect.component';
 import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {CommonComponentsModule} from "@app/common-components";
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -160,7 +162,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     FeatNoDataModule,
     FeatSendModule,
     CommonLoginModule,
-    HttpClientXsrfModule
+    HttpClientXsrfModule,
+    MatAutocompleteModule,
+    CommonComponentsModule
   ],
   providers: [
     {
