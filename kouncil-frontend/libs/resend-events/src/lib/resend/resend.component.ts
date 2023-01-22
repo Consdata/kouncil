@@ -28,12 +28,13 @@ import {ResendFormService} from './resend-form.service';
             <input type="text"
                    placeholder="Search topic"
                    matInput
-                   (click)="clearValue()"
+                   (click)="clearValue(sourceTopicFilterCtrl)"
                    [formControl]="sourceTopicFilterCtrl"
+                   formControlName="sourceTopicName"
                    [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" class="select select-topic"
                               (optionSelected)="resendFilterService.setPartitionsOnSrcTopicChanged($event.option.value)"
-                              (closed)="handleClose()">
+                              (closed)="handleClose(sourceTopicFilterCtrl, 'sourceTopicName')">
               <mat-option disabled
                           *ngIf="(resendFilterService.sourceFilteredTopicsObs$ | async)?.length === 0">
                 No topics found
@@ -81,18 +82,20 @@ import {ResendFormService} from './resend-form.service';
             <input type="text"
                    placeholder="Search topic"
                    matInput
-                   (click)="clearDestinationValue()"
+                   (click)="clearValue(destinationTopicFilterCtrl)"
                    [formControl]="destinationTopicFilterCtrl"
+                   formControlName="destinationTopicName"
                    [matAutocomplete]="destinationAuto">
             <mat-autocomplete #destinationAuto="matAutocomplete" class="select select-topic"
                               (optionSelected)="resendFilterService.setPartitionsOnDestTopicChanged($event.option.value)"
-                              (closed)="handleDestinationClose()">
+                              (closed)="handleClose(destinationTopicFilterCtrl, 'destinationTopicName')">
               <mat-option disabled
                           *ngIf="(resendFilterService.destinationFilteredTopicsObs$ | async)?.length === 0">
                 No topics found
               </mat-option>
-              <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
-                          [value]="topic.caption()">
+              <mat-option
+                *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
+                [value]="topic.caption()">
                 {{topic.caption()}}
               </mat-option>
             </mat-autocomplete>
@@ -113,7 +116,8 @@ import {ResendFormService} from './resend-form.service';
           </mat-form-field>
         </div>
 
-        <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers</mat-checkbox>
+        <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers
+        </mat-checkbox>
 
         <span class="spacer"></span>
 
@@ -169,16 +173,16 @@ export class ResendComponent implements OnInit, OnDestroy {
       this.resendFilterService.setPartitionsOnSrcTopicChanged(this.resendFormService.resendForm.value['sourceTopicName']);
 
       this.sourceTopicFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy$))
-        .subscribe(() => {
-          this.resendFilterService.filterSrcTopics(this.sourceTopicFilterCtrl);
-        });
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
+        this.resendFilterService.filterSrcTopics(this.sourceTopicFilterCtrl);
+      });
 
       this.destinationTopicFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy$))
-        .subscribe(() => {
-          this.resendFilterService.filterDestTopics(this.destinationTopicFilterCtrl);
-        });
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
+        this.resendFilterService.filterDestTopics(this.destinationTopicFilterCtrl);
+      });
     });
   }
 
@@ -191,23 +195,13 @@ export class ResendComponent implements OnInit, OnDestroy {
     this.resendFormService.submit();
   }
 
-  clearValue() {
-    this.sourceTopicFilterCtrl.setValue('');
+  clearValue(control: FormControl) {
+    control.setValue('');
   }
 
-  handleClose() {
-    if(this.sourceTopicFilterCtrl.value.length===0){
-      this.sourceTopicFilterCtrl.setValue(this.resendFormService.resendForm.get('sourceTopicName').getRawValue());
-    }
-  }
-
-  clearDestinationValue(){
-    this.destinationTopicFilterCtrl.setValue('');
-  }
-
-  handleDestinationClose() {
-    if(this.destinationTopicFilterCtrl.value.length===0){
-      this.destinationTopicFilterCtrl.setValue(this.resendFormService.resendForm.get('destinationTopicName').getRawValue());
+  handleClose(control: FormControl, name: string) {
+    if (control.value.length === 0) {
+      control.setValue(this.resendFormService.resendForm.get(name).getRawValue());
     }
   }
 }

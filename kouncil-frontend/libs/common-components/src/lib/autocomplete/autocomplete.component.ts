@@ -1,15 +1,27 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import {SelectableItem} from "./selectable-item";
 import {map, Observable, startWith} from "rxjs";
+import {MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-common-autocomplete',
   template: `
-    <mat-form-field [appearance]="'outline'">
-      <input matInput type="text"
-             [placeholder]="placeholder"
-             [formControl]="control"
-             [matAutocomplete]="autocomplete">
+    <mat-form-field [appearance]="'outline'" class="autocomplete-field">
+      <div class="autocomplete-input-container">
+        <mat-checkbox (change)="selectAll($event)">
+        </mat-checkbox>
+        <input matInput type="text" class="autocomplete-input"
+               [placeholder]="placeholder"
+               [formControl]="control"
+               [matAutocomplete]="autocomplete">
+      </div>
     </mat-form-field>
 
     <mat-autocomplete #autocomplete="matAutocomplete"
@@ -38,8 +50,8 @@ export class AutocompleteComponent implements OnInit {
   @Input() placeholder: string
   @Input() emptyFilteredMsg: string
   @Input() panelWidth: number
+  @Output() selectedValueEvent: EventEmitter<Array<string>> = new EventEmitter();
 
-  selectedData: Array<SelectableItem> = [];
   filteredData: Observable<Array<SelectableItem>>;
   filterString: string = '';
 
@@ -54,17 +66,23 @@ export class AutocompleteComponent implements OnInit {
     );
   }
 
-  displayFn = (): string => this.control.getRawValue() != null ? this.control.getRawValue().map((item: SelectableItem) => item.label).join(', ') : '';
+  displayFn = (): string => this.control.getRawValue() != null
+    ? this.control.getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')
+    : '';
 
   filter = (filter: string): Array<SelectableItem> => {
-    this.filterString = filter;
-    if (filter.length > 0) {
-      return this.data.filter(option => {
-        return option.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0;
-      });
-    } else {
-      return this.data.slice();
+    if (!this.data) {
+      return [];
     }
+    if (!filter) {
+      return this.data;
+    } else {
+      filter = filter.toLowerCase();
+    }
+    const terms = filter.split(/\s+/);
+    return this.data.filter((topic) => {
+      return terms.every((term) => topic.label.toLowerCase().indexOf(term) > -1);
+    });
   };
 
   optionClicked = (event: Event, data: SelectableItem): void => {
@@ -74,13 +92,10 @@ export class AutocompleteComponent implements OnInit {
 
   toggleSelection = (data: SelectableItem): void => {
     data.selected = !data.selected;
-    if (data.selected) {
-      this.selectedData.push(data);
-    } else {
-      const i = this.selectedData.findIndex(value => value.value === data.value);
-      this.selectedData.splice(i, 1);
+    if (!data.selected) {
+      const i = this.data.findIndex(value => value.value === data.value);
+      this.data[i].selected = false;
     }
-    this.control.setValue(this.selectedData);
   };
 
   panelOpened() {
@@ -89,6 +104,15 @@ export class AutocompleteComponent implements OnInit {
   }
 
   panelClosed() {
-    this.control.setValue(this.selectedData);
+    this.control.setValue(this.data);
+    this.selectedValueEvent.emit(this.data.filter(item => item.selected).map(item => item.value));
+  }
+
+  selectAll($event: MatCheckboxChange) {
+    this.data.forEach(
+      item => {
+        item.selected = $event.checked;
+      }
+    );
   }
 }

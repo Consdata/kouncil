@@ -5,7 +5,7 @@ import {TrackFilter, TrackOperator} from './track-filter';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
-import {SelectableItem} from "@app/common-components";
+import {SelectableItem} from '@app/common-components';
 
 @Component({
   selector: 'app-track-filter',
@@ -13,7 +13,8 @@ import {SelectableItem} from "@app/common-components";
     <form #filtersForm="ngForm">
 
       <div class="wrapper">
-        <mat-form-field class="filter-input right-padding" [appearance]="'outline'">
+        <mat-form-field class="filter-input right-padding correlation-field"
+                        [appearance]="'outline'">
           <input class="wrapper-field"
                  placeholder="Correlation field"
                  matInput
@@ -22,7 +23,8 @@ import {SelectableItem} from "@app/common-components";
                  [(ngModel)]="trackFilter.field"
           />
         </mat-form-field>
-        <mat-form-field class="filter-input wrapper-select right-padding" [appearance]="'outline'">
+        <mat-form-field class="filter-input wrapper-select right-padding correlation-field"
+                        [appearance]="'outline'">
           <mat-select name="operator" [(ngModel)]="trackFilter.operator" class="transparent-select">
             <mat-option *ngFor="let operator of operators"
                         [value]="operator.index">
@@ -30,7 +32,7 @@ import {SelectableItem} from "@app/common-components";
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="filter-input" [appearance]="'outline'">
+        <mat-form-field class="filter-input correlation-field" [appearance]="'outline'">
           <input class="wrapper-field"
                  placeholder="Correlation value"
                  matInput
@@ -46,7 +48,8 @@ import {SelectableItem} from "@app/common-components";
                                  [data]="topicList"
                                  [placeholder]="'Topics'"
                                  [emptyFilteredMsg]="'No topics found'"
-                                 [panelWidth]="250"></app-common-autocomplete>
+                                 [panelWidth]="250"
+                                 (selectedValueEvent)="updateTopics($event)"></app-common-autocomplete>
       </div>
 
       <div class="form-control">
@@ -137,58 +140,20 @@ export class TrackFilterComponent implements OnInit {
     this.topicsService
     .getTopics$(this.servers.getSelectedServerId())
     .subscribe((topics: Topics) => {
-      this.topicList = topics.topics.map((tm) => {
-          let selectableItem = new SelectableItem();
-          selectableItem.value = tm.name;
-          selectableItem.label = tm.name;
-          selectableItem.selected = false;
-          return selectableItem;
-        }
-      );
+      this.topicList = topics.topics.map((tm) => new SelectableItem(tm.name, tm.name, false));
       this.visibleTopicList = topics.topics.map((tm) => tm.name);
     });
     this.trackFilter = this.trackService.getStoredTrackFilter();
-    // this.topicFilterControl.valueChanges
-    // .pipe()
-    // .subscribe(() => this.filterTopics());
-    // this.trackService.trackFinished.subscribe(() => {
-    //   this.loading = false;
-    // });
   }
 
   toggleAsyncMode(): void {
     this.trackService.toggleAsyncMode();
   }
 
-  // filterTopics(): void {
-  //   if (!this.topicList) {
-  //     return;
-  //   }
-  //   let search = this.topicFilterControl.value;
-  //   if (!search) {
-  //     this.visibleTopicList = this.topicList;
-  //     return;
-  //   } else {
-  //     search = search.toLowerCase();
-  //   }
-  //   const terms = search.split(/\s+/);
-  //   this.visibleTopicList = this.topicList.filter((topic) => {
-  //     return terms.every((term) => topic.toLowerCase().indexOf(term) > -1);
-  //   });
-  // }
-
-  toggleAllTopics(): void {
-    if (this.trackFilter) {
-      if (this.trackFilter.topics.length === this.visibleTopicList.length) {
-        this.trackFilter.topics = [];
-      } else {
-        this.trackFilter.topics = this.visibleTopicList;
-      }
-    }
-  }
-
   clearFilter(): void {
     this.trackFilter = this.trackService.defaultFilter();
+    this.topicFilterControl.setValue([]);
+    this.topicList.forEach(topic => topic.selected = false);
   }
 
   setFilter(): void {
@@ -214,5 +179,9 @@ export class TrackFilterComponent implements OnInit {
 
     this.datesControl.setErrors(null);
     return true;
+  }
+
+  updateTopics($event: Array<string>): void {
+    this.trackFilter.topics = $event;
   }
 }

@@ -247,26 +247,6 @@ app-custom-snack-bar {
   padding: 8px 12px;
 }
 
-.select {
-  //height: 40px;
-  //border: 1px solid pallete.$main-20;
-  //border-radius: pallete.$default-border-radius;
-  //background: pallete.$main-0;
-  //color: pallete.$main-100;
-  //font-size: 14px;
-  //line-height: 24px;
-  //
-  //&:hover {
-  //  border: 1px solid pallete.$main-40;
-  //}
-  //
-  //&[aria-expanded=true] {
-  //  outline: none;
-  //  box-shadow: 0 0 3px 1px pallete.$blue-60;
-  //  transition: all pallete.$default-transition-time;
-  //}
-}
-
 .mat-select-trigger {
   align-items: baseline !important;
 }
@@ -351,53 +331,41 @@ mat-form-field:hover {
 }
 
 .filter-input {
-  div {
-    div {
-      div {
-        .mdc-notched-outline__leading {
-          border-left: 0 !important;
-          border-top: 0 !important;
-          border-bottom: 0 !important;
-        }
-      }
-    }
+  .mdc-notched-outline__leading {
+    border-left: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
   }
 }
 
 .filter-input {
-  div {
-    div {
-      div {
-        .mdc-notched-outline__trailing {
-          border-right: 0 !important;
-          border-top: 0 !important;
-          border-bottom: 0 !important;
-        }
-      }
-    }
+  .mdc-notched-outline__trailing {
+    border-right: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
   }
 }
 
 .wrapper-select {
-  div {
-    div {
-      .mdc-notched-outline {
-        background: pallete.$main-10;
-      }
-    }
+  .mdc-notched-outline {
+    background: pallete.$main-10;
   }
 }
 
 .transparent-select {
-  div {
-    .mat-mdc-select-value {
-      color: #B0B0B0 !important;
-    }
+  .mat-mdc-select-value {
+    color: #B0B0B0 !important;
   }
 }
 
 .filter-input {
   .mat-mdc-text-field-wrapper {
     padding: 0 8px;
+  }
+}
+
+.autocomplete-field {
+  .mdc-notched-outline {
+    height: 42px !important;
   }
 }
