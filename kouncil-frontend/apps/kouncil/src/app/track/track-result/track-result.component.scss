@@ -1,26 +1,5 @@
-::ng-deep .datatable-scroll, ::ng-deep .datatable-body-row, ::ng-deep .datatable-row-wrapper {
-  // ngx datable sets its width through 'style' attribute, hence the 'important'
-  width: 100% !important;
-}
-
-::ng-deep .datatable-body-row {
-  border-bottom: none;
-}
-
-::ng-deep .page-count {
-  padding: 0 24px;
-}
-
-
 .track {
-  ::ng-deep .datatable-body {
-    // ngx datable sets its height through 'style' attribute, hence the 'importants'
-    min-height: calc(100% - 122px) !important;
-    height: calc(100% - 122px) !important;
-  }
-
   .track-table {
     margin-top: 24px;
   }
-
 }

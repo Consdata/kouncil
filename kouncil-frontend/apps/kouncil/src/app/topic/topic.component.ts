@@ -1,30 +1,22 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import {Component, OnDestroy, OnInit,} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {DatePipe, Location} from '@angular/common';
-import { Title } from '@angular/platform-browser';
-import { TopicService, topicServiceProvider } from './topic.service';
-import { Page } from './page';
-import { ResendComponent } from '@app/resend-events';
-import { MessageViewComponent } from './message/message-view.component';
-import { LiveUpdateState } from './toolbar/toolbar.component';
-import { TableColumn } from '@swimlane/ngx-datatable/lib/types/table-column.type';
-import { JsonGridData } from './json-grid-data';
-import { CustomTableColumn } from './custom-table-column';
-import { Observable, Subscription } from 'rxjs';
-import { JsonGrid } from './json-grid';
-import { TopicMessages } from './topic-messages';
-import {Model} from '@swimlane/ngx-datatable';
+import {Title} from '@angular/platform-browser';
+import {TopicService, topicServiceProvider} from './topic.service';
+import {Page} from './page';
+import {ResendComponent} from '@app/resend-events';
+import {MessageViewComponent} from './message/message-view.component';
+import {LiveUpdateState} from './toolbar/toolbar.component';
+import {JsonGridData} from './json-grid-data';
+import {Observable, Subscription} from 'rxjs';
+import {JsonGrid} from './json-grid';
+import {TopicMessages} from './topic-messages';
 import {MessageData, MessageDataService} from '@app/message-data';
 import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {SendComponent} from '@app/feat-send';
+import {TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-topic',
@@ -48,46 +40,21 @@ import {SendComponent} from '@app/feat-send';
             [objectTypeName]="'Message'"
           ></app-no-data-placeholder>
         </ng-template>
-        <ngx-datatable
-          *ngIf="
-            filteredRows && filteredRows.length > 0;
-            else noDataPlaceholder
-          "
-          class="topic-table material expandable"
-          [rows]="filteredRows"
-          [columns]="columns"
-          [rowHeight]="48"
-          [headerHeight]="48"
-          [footerHeight]="80"
-          [scrollbarH]="true"
-          [scrollbarV]="true"
-          [columnMode]="'force'"
-          [rowClass]="getRowClass"
-          [loadingIndicator]="loading$ | async"
-          (activate)="showMessage($event)"
-          #table
-        >
-          <ngx-datatable-footer>
-            <ng-template ngx-datatable-footer-template>
-              <app-topic-pagination
-                class="topic-pagination"
-                [paging]="paging$ | async"
-                [topicName]="topicName"
-                (changeQueryParams)="updateQueryParams($event)"
-              ></app-topic-pagination>
-            </ng-template>
-          </ngx-datatable-footer>
-        </ngx-datatable>
-      </div>
 
-      <ng-template #headerTemplate let-column="column" let-sort="sortFn">
-        <span
-          class="datatable-header-cell-wrapper datatable-header-cell-label"
-          title="{{ column.name }}"
-          (click)="sort()"
-          >{{ column.nameShort }}</span
-        >
-      </ng-template>
+        <section style="max-width: 100%; overflow:auto; height: calc(100% - 138px)"
+                 *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder">
+
+          <app-common-table [tableData]="filteredRows" [columns]="columns"
+                            (rowClickedAction)="showMessage($event)"></app-common-table>
+
+        </section>
+        <app-topic-pagination *ngIf="filteredRows && filteredRows.length > 0;"
+                              class="topic-pagination"
+                              [paging]="paging$ | async"
+                              [topicName]="topicName"
+                              (changeQueryParams)="updateQueryParams($event)"
+        ></app-topic-pagination>
+      </div>
     </div>
   `,
   styleUrls: ['./topic.component.scss'],
@@ -113,9 +80,6 @@ export class TopicComponent implements OnInit, OnDestroy {
   paging$: Observable<Page> = this.topicService.getPagination$();
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
-  @ViewChild('headerTemplate', { static: true })
-  headerTemplate?: TemplateRef<unknown>;
-
   constructor(
     private route: ActivatedRoute,
     private searchService: SearchService,
@@ -130,16 +94,16 @@ export class TopicComponent implements OnInit, OnDestroy {
     private location: Location
   ) {
     this.jsonToGridSubscription = this.topicService
-      .getConvertTopicMessagesJsonToGridObservable$()
-      .subscribe((value) => {
-        this.jsonToGrid(value);
-      });
+    .getConvertTopicMessagesJsonToGridObservable$()
+    .subscribe((value) => {
+      this.jsonToGrid(value);
+    });
   }
 
   private static tryParseJson(message: string): Record<string, unknown> {
     try {
       const parsedMessage = JSON.parse(message);
-      return parsedMessage && typeof parsedMessage === 'object' ? parsedMessage: {};
+      return parsedMessage && typeof parsedMessage === 'object' ? parsedMessage : {};
     } catch (e) {
       return {};
     }
@@ -158,16 +122,16 @@ export class TopicComponent implements OnInit, OnDestroy {
     });
 
     this.route.queryParams.subscribe(params => {
-      if(params['page']!==undefined){
+      if (params['page'] !== undefined) {
         this.topicService.paginateMessages(this.servers.getSelectedServerId(), {page: params['page']}, this.topicName);
       }
     });
 
     this.searchSubscription = this.searchService
-      .getPhraseState$('topic')
-      .subscribe((phrase) => {
-        this.filterRows(phrase);
-      });
+    .getPhraseState$('topic')
+    .subscribe((phrase) => {
+      this.filterRows(phrase);
+    });
   }
 
   ngOnDestroy(): void {
@@ -204,22 +168,21 @@ export class TopicComponent implements OnInit, OnDestroy {
     }
   }
 
-  showMessage(event: Model): void {
-    if (event.type === 'click') {
-      const messageData = {
-        value: event.row.kouncilValueJson && Object.keys(event.row.kouncilValueJson).length > 0 ?
-          event.row.kouncilValueJson : event.row.kouncilValue,
-        valueFormat: event.row.kouncilValueFormat,
-        headers: event.row.headers,
-        key: event.row.kouncilKeyJson && Object.keys(event.row.kouncilKeyJson).length > 0 ?
-          event.row.kouncilKeyJson : event.row.kouncilKey,
-        keyFormat: event.row.kouncilKeyFormat,
-        topicName: this.topicName,
-        timestamp: event.row.kouncilTimestampEpoch,
-      } as MessageData;
-      this.messageDataService.setMessageData(messageData);
-      this.drawerService.openDrawerWithPadding(MessageViewComponent);
-    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+  showMessage(event: any): void {
+    const messageData = {
+      value: event.kouncilValueJson && Object.keys(event.kouncilValueJson).length > 0 ?
+        event.kouncilValueJson : event.kouncilValue,
+      valueFormat: event.kouncilValueFormat,
+      headers: event.headers,
+      key: event.kouncilKeyJson && Object.keys(event.kouncilKeyJson).length > 0 ?
+        event.kouncilKeyJson : event.kouncilKey,
+      keyFormat: event.kouncilKeyFormat,
+      topicName: this.topicName,
+      timestamp: event.kouncilTimestampEpoch,
+    } as MessageData;
+    this.messageDataService.setMessageData(messageData);
+    this.drawerService.openDrawerWithPadding(MessageViewComponent);
   }
 
   openSendPopup(): void {
@@ -260,71 +223,69 @@ export class TopicComponent implements OnInit, OnDestroy {
 
     this.commonColumns = [];
     this.commonColumns.push({
-      width: 100,
-      resizeable: true,
-      sortable: true,
-      draggable: true,
-      canAutoResize: true,
-      frozenLeft: true,
       name: 'partition',
       prop: 'kouncilPartition',
-    });
-    this.commonColumns.push({
-      width: 100,
+      sticky: true,
       resizeable: true,
       sortable: true,
       draggable: true,
-      canAutoResize: true,
-      frozenLeft: true,
+      width: 100
+    });
+    this.commonColumns.push({
       name: 'offset',
       prop: 'kouncilOffset',
-    });
-    this.commonColumns.push({
-      width: 200,
+      sticky: true,
       resizeable: true,
       sortable: true,
       draggable: true,
-      canAutoResize: true,
-      frozenLeft: true,
+      width: 100,
+    });
+    this.commonColumns.push({
       name: 'key',
       prop: 'kouncilKey',
-    });
-    this.commonColumns.push({
-      width: 215,
+      sticky: true,
       resizeable: true,
       sortable: true,
       draggable: true,
-      canAutoResize: true,
-      frozenLeft: true,
+      width: 150,
+    });
+    this.commonColumns.push({
       name: 'timestamp',
       prop: 'kouncilTimestamp',
+      sticky: true,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      width: 215,
     });
     this.valueColumns = [
       {
-        width: 200,
+        name: 'value',
+        prop: 'kouncilValue',
+        sticky: false,
         resizeable: true,
         sortable: true,
         draggable: true,
-        canAutoResize: true,
-        name: 'value',
-        prop: 'kouncilValue',
+        width: 200,
       },
     ];
-    const gridColumns: CustomTableColumn[] = [];
+    const gridColumns: TableColumn[] = [];
     Array.from(this.jsonGrid.getColumns().values()).forEach((column) => {
       gridColumns.push({
-        canAutoResize: true,
-        prop: column.name,
         name: column.name,
-        nameShort: column.nameShort,
-        headerTemplate: this.headerTemplate,
+        prop: column.name,
+        sticky: false,
+        resizeable: true,
+        sortable: true,
+        draggable: false,
+        width: 200
       });
     });
 
     this.jsonColumns = gridColumns.filter(
-      (c: CustomTableColumn) => !c.name?.startsWith('H[')
+      (c: TableColumn) => !c.name?.startsWith('H[')
     );
-    this.headerColumns = gridColumns.filter((c: CustomTableColumn) =>
+    this.headerColumns = gridColumns.filter((c: TableColumn) =>
       c.name?.startsWith('H[')
     );
 

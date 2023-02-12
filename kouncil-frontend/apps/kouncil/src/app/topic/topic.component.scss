@@ -13,63 +13,7 @@
     height: 100%;
   }
 
-  .topic-table {
-    height: calc(100% - 88px);
-    margin-top: 24px;
-
-    ::ng-deep datatable-body-row {
-      .datatable-row-left {
-        background-color: $main-0;
-        border-right: 1px solid $main-20;
-      }
-
-      &:hover {
-        .datatable-row-left {
-          background-color: $main-10;
-        }
-      }
-    }
-
-    ::ng-deep datatable-header {
-      padding: 0;
-
-      .datatable-header-inner {
-        height: 100%;
-
-        .datatable-row-left {
-          background-color: $main-10;
-          border-right: 1px solid $main-20;
-          padding-left: 24px;
-          margin-right: 24px;
-        }
-      }
-    }
-
-    ::ng-deep .datatable-body-row {
-      border-bottom: none;
-    }
-
-    ::ng-deep .datatable-header-cell-template-wrap {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      max-width: 100%;
-      min-height: 26px;
-
-      .datatable-header-cell-label {
-        max-width: calc(100% - 30px);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        direction: rtl;
-        text-align: left;
-      }
-
-    }
-
-  }
-
   .topic-pagination {
     width: 100%;
   }
-
 }

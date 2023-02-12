@@ -1,16 +1,23 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
-import {Model} from '@swimlane/ngx-datatable';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {DrawerService, ProgressBarService, Crypto, SearchService} from '@app/common-utils';
+import {Crypto, DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
 import {RxStompService} from '../../rx-stomp.service';
+import {TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-track-result',
@@ -22,46 +29,12 @@ import {RxStompService} from '../../rx-stomp.service';
           #noDataPlaceholderComponent
         ></app-no-data-placeholder>
       </ng-template>
-      <ngx-datatable
-        *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
-        class="track-table material expandable"
-        [rows]="filteredRows"
-        [rowHeight]="48"
-        [headerHeight]="48"
-        [footerHeight]="0"
-        [scrollbarH]="true"
-        [scrollbarV]="true"
-        [columnMode]="'force'"
-        [loadingIndicator]="loading$ | async"
-        (activate)="showMessage($event)"
-        #table
-      >
-        <ngx-datatable-column prop="timestamp" name="timestamp" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value | date: 'yyyy-MM-dd HH:mm:ss.SSS' }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="topic" name="topic" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="partition" name="partition" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="offset" name="offset" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="key" name="key" [width]="190">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+
+      <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder">
+        <app-common-table [tableData]="filteredRows" [columns]="columns"
+                          (rowClickedAction)="showMessage($event)"></app-common-table>
+
+      </section>
     </div>
   `,
   styleUrls: ['./track-result.component.scss'],
@@ -76,6 +49,56 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   filteredRows: unknown[] = [];
   allRows: unknown[] = [];
   asyncHandle?: string;
+
+  columns: TableColumn[] = [
+    {
+      name: 'timestamp',
+      prop: 'timestamp',
+      sticky: false,
+      width: 190,
+      resizeable: false,
+      sortable: true,
+      draggable: true,
+      isDate: true,
+      dateFormat: 'yyyy-MM-dd HH:mm:ss.SSS'
+    },
+    {
+      name: 'topic',
+      prop: 'topic',
+      sticky: false,
+      width: 190,
+      resizeable: false,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'partition',
+      prop: 'partition',
+      sticky: false,
+      width: 190,
+      resizeable: false,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'offset',
+      prop: 'offset',
+      sticky: false,
+      width: 190,
+      resizeable: false,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'key',
+      prop: 'key',
+      sticky: false,
+      width: 190,
+      resizeable: false,
+      sortable: true,
+      draggable: true
+    }
+  ];
 
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
@@ -107,10 +130,10 @@ export class TrackResultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchSubscription = this.searchService
-      .getPhraseState$('track')
-      .subscribe((phrase) => {
-        this.filterRows(phrase);
-      });
+    .getPhraseState$('track')
+    .subscribe((phrase) => {
+      this.filterRows(phrase);
+    });
     this.trackFilterSubscription =
       this.trackService.trackFilterObservable$.subscribe((trackFilter) => {
         this.getEvents(trackFilter);
@@ -124,7 +147,6 @@ export class TrackResultComponent implements OnInit, OnDestroy {
   }
 
   onMessageReceived(message: { body: string }): void {
-    this.filteredRows = [];
     setTimeout(() => {
       const items = JSON.parse(message.body);
       if (items.length === 0) {
@@ -136,19 +158,18 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMessage(event: Model): void {
-    if (event.type === 'click') {
-      const messageData = {
-        value: TrackResultComponent.tryParseJson(event.row.value),
-        valueFormat: event.row.valueFormat,
-        headers: event.row.headers,
-        key: TrackResultComponent.tryParseJson(event.row.key),
-        keyFormat: event.row.keyFormat,
-        topicName: event.row.topic
-      } as MessageData;
-      this.messageDataService.setMessageData(messageData);
-      this.drawerService.openDrawerWithPadding(MessageViewComponent);
-    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+  showMessage(event: any): void {
+    const messageData = {
+      value: TrackResultComponent.tryParseJson(event.value),
+      valueFormat: event.valueFormat,
+      headers: event.headers,
+      key: TrackResultComponent.tryParseJson(event.key),
+      keyFormat: event.keyFormat,
+      topicName: event.topic
+    } as MessageData;
+    this.messageDataService.setMessageData(messageData);
+    this.drawerService.openDrawerWithPadding(MessageViewComponent);
   }
 
   private filterRows(phrase?: string): void {
@@ -172,32 +193,31 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       this.asyncHandle = Crypto.uuidv4();
       this.topicSubscription?.unsubscribe();
       this.topicSubscription = this.rxStompService
-        .watch(TrackResultComponent.getDestination(this.asyncHandle))
-        .subscribe((message) => {
-          this.onMessageReceived(message);
-        });
+      .watch(TrackResultComponent.getDestination(this.asyncHandle))
+      .subscribe((message) => {
+        this.onMessageReceived(message);
+      });
     } else {
       this.asyncHandle = null;
     }
-    this.filteredRows = [];
     this.allRows = [];
     this.changeDetectorRef.detectChanges();
     setTimeout(() => {
       this.trackService
-        .getEvents$(
-          this.servers.getSelectedServerId(),
-          trackFilter,
-          this.asyncHandle
-        )
-        .subscribe((events: MessageData[]) => {
-          if (events && events.length > 0) {
-            this.allRows = [...this.allRows, ...events];
-            this.filterRows(this.searchService.currentPhrase);
-          }
-          if (!this.trackService.isAsyncEnable()) {
-            this.trackService.trackFinished.emit();
-          }
-        });
+      .getEvents$(
+        this.servers.getSelectedServerId(),
+        trackFilter,
+        this.asyncHandle
+      )
+      .subscribe((events: MessageData[]) => {
+        if (events && events.length > 0) {
+          this.allRows = [...this.allRows, ...events];
+          this.filterRows(this.searchService.currentPhrase);
+        }
+        if (!this.trackService.isAsyncEnable()) {
+          this.trackService.trackFinished.emit();
+        }
+      });
     });
   }
 }

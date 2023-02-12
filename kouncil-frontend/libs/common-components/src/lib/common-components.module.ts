@@ -6,6 +6,11 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
+import {TableComponent} from "./table/table.component";
+import {MatTableModule} from "@angular/material/table";
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatSortModule} from "@angular/material/sort";
+import {ResizeColumnDirective} from "./table/resize-column-directive";
 
 @NgModule({
   imports: [
@@ -15,13 +20,19 @@ import {MatInputModule} from "@angular/material/input";
     MatCheckboxModule,
     MatInputModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatTableModule,
+    DragDropModule,
+    MatSortModule
   ],
   declarations: [
-    AutocompleteComponent
+    AutocompleteComponent,
+    TableComponent,
+    ResizeColumnDirective
   ],
   exports: [
-    AutocompleteComponent
+    AutocompleteComponent,
+    TableComponent
   ]
 })
 export class CommonComponentsModule {
