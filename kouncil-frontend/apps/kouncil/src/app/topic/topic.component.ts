@@ -16,7 +16,7 @@ import {MessageData, MessageDataService} from '@app/message-data';
 import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {SendComponent} from '@app/feat-send';
-import {TableColumn} from '@app/common-components';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-topic',
@@ -41,11 +41,17 @@ import {TableColumn} from '@app/common-components';
           ></app-no-data-placeholder>
         </ng-template>
 
-        <section style="max-width: 100%; overflow:auto; height: calc(100% - 138px)"
+        <section class="topic-table"
                  *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder">
 
           <app-common-table [tableData]="filteredRows" [columns]="columns"
-                            (rowClickedAction)="showMessage($event)"></app-common-table>
+                            (rowClickedAction)="showMessage($event)" matSort
+                            cdkDropList cdkDropListOrientation="horizontal"
+                            (cdkDropListDropped)="drop($event)">
+            <ng-container *ngFor="let column of columns; let index = index">
+              <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+            </ng-container>
+          </app-common-table>
 
         </section>
         <app-topic-pagination *ngIf="filteredRows && filteredRows.length > 0;"
@@ -60,7 +66,8 @@ import {TableColumn} from '@app/common-components';
   styleUrls: ['./topic.component.scss'],
   providers: [JsonGrid, DatePipe, topicServiceProvider],
 })
-export class TopicComponent implements OnInit, OnDestroy {
+export class TopicComponent extends AbstractTableComponent implements OnInit, OnDestroy {
+
   topicName: string = '';
   columns: TableColumn[] = [];
   commonColumns: TableColumn[] = [];
@@ -93,6 +100,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location
   ) {
+    super();
     this.jsonToGridSubscription = this.topicService
     .getConvertTopicMessagesJsonToGridObservable$()
     .subscribe((value) => {

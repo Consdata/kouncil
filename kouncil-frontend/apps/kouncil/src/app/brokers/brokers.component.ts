@@ -5,9 +5,10 @@ import {BrokerService} from './broker.service';
 import {first} from 'rxjs/operators';
 import {BrokerComponent} from '../broker/broker.component';
 import {Broker} from './broker';
-import {Model} from '@swimlane/ngx-datatable';
 import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {FileSizePipe} from './filze-size.pipe';
 
 @Component({
   selector: 'app-kafka-brokers',
@@ -16,61 +17,127 @@ import {ServersService} from '@app/common-servers';
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Broker'"></app-no-data-placeholder>
       </ng-template>
-      <ngx-datatable *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder"
-                     class="brokers-table material expandable"
-                     [rows]="filteredBrokers"
-                     [rowHeight]="48"
-                     [headerHeight]="48"
-                     [scrollbarH]="false"
-                     [scrollbarV]="false"
-                     [columnMode]="'force'"
-                     (activate)="showBrokerDetails($event)"
-                     #table>
 
-        <ngx-datatable-column [width]="150" prop="id" name="ID"></ngx-datatable-column>
-        <ngx-datatable-column [width]="200" prop="host" name="Host"></ngx-datatable-column>
-        <ngx-datatable-column [width]="150" prop="port" name="Port"></ngx-datatable-column>
-        <ngx-datatable-column prop="rack" name="Rack"></ngx-datatable-column>
-        <ngx-datatable-column prop="system" name="System" *ngIf="showJmxStats"></ngx-datatable-column>
-        <ngx-datatable-column prop="availableProcessors" name="CPUs" *ngIf="showJmxStats"></ngx-datatable-column>
-        <ngx-datatable-column prop="systemLoadAverage" name="Load Average" *ngIf="showJmxStats">
-          <ng-template let-value="value" ngx-datatable-cell-template>{{value ? value.toFixed(2) : ''}}</ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="freeMem" name="Free Mem" *ngIf="showJmxStats">
-          <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="totalMem" name="Total Mem" *ngIf="showJmxStats">
-          <ng-template let-value="value" ngx-datatable-cell-template>{{value | fileSize}}</ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+      <section *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder">
+        <app-common-table [tableData]="filteredBrokers" [columns]="columns"
+                          (rowClickedAction)="showBrokerDetails($event)"
+                          matSort
+                          cdkDropList cdkDropListOrientation="horizontal"
+                          (cdkDropListDropped)="drop($event)">
+          <ng-container *ngFor="let column of columns; let index = index">
+            <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+          </ng-container>
+
+
+        </app-common-table>
+
+      </section>
     </div>
   `,
   styleUrls: ['./brokers.component.scss']
 })
-export class BrokersComponent implements OnInit {
+export class BrokersComponent extends AbstractTableComponent implements OnInit {
 
   allBrokers?: Broker[];
   filteredBrokers?: Broker[];
   private subscription?: Subscription;
   showJmxStats: boolean = false;
 
+  columns: TableColumn[] = [
+    {
+      name: 'ID',
+      prop: 'id',
+      sticky: false,
+      width: 150,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'Host',
+      prop: 'host',
+      sticky: false,
+      width: 200,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'Port',
+      prop: 'port',
+      sticky: false,
+      width: 150,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {name: 'Rack', prop: 'rack', sticky: false, resizeable: true, sortable: true, draggable: true},
+  ];
+
+  jmxColumns: TableColumn[] = [
+    {
+      name: 'System',
+      prop: 'system',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'CPUs',
+      prop: 'availableProcessors',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'Load Average',
+      prop: 'systemLoadAverage',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => value ? value.toFixed(2) : ''
+    },
+    {
+      name: 'Free Mem',
+      prop: 'freeMem',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => new FileSizePipe().transform(value)
+    },
+    {
+      name: 'Total Mem',
+      prop: 'totalMem',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => new FileSizePipe().transform(value)
+    },
+  ];
+
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
               private drawerService: DrawerService,
               private servers: ServersService) {
+    super();
   }
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.brokerService.getBrokers$(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe(data => {
-        this.allBrokers = data.brokers;
-        this.filterRows(this.searchService.currentPhrase);
-        this.filterJmxDetails();
-        this.progressBarService.setProgress(false);
-      });
+    .pipe(first())
+    .subscribe(data => {
+      this.allBrokers = data.brokers;
+      this.filterRows(this.searchService.currentPhrase);
+      this.filterJmxDetails();
+      this.progressBarService.setProgress(false);
+    });
 
     this.subscription = this.searchService.getPhraseState$('brokers').subscribe(
       phrase => {
@@ -81,6 +148,9 @@ export class BrokersComponent implements OnInit {
   private filterJmxDetails(): void {
     if (this.filteredBrokers) {
       this.showJmxStats = this.filteredBrokers.filter(broker => broker.jmxStats).length > 0;
+      if (this.showJmxStats) {
+        this.columns = this.columns.concat(this.jmxColumns);
+      }
     }
   }
 
@@ -92,15 +162,13 @@ export class BrokersComponent implements OnInit {
     }
   }
 
-  showBrokerDetails(event: Model): void {
-    if (event.type === 'click') {
-      this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.row.id)
-        .pipe(first())
-        .subscribe(data => {
-          this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
-            config: data
-          }, '987px');
-        });
-    }
+  showBrokerDetails(event: Broker): void {
+    this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.id)
+    .pipe(first())
+    .subscribe(data => {
+      this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
+        config: data
+      }, '987px');
+    });
   }
 }

@@ -17,7 +17,8 @@ import {Crypto, DrawerService, ProgressBarService, SearchService} from '@app/com
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
 import {RxStompService} from '../../rx-stomp.service';
-import {TableColumn} from '@app/common-components';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-track-result',
@@ -30,17 +31,23 @@ import {TableColumn} from '@app/common-components';
         ></app-no-data-placeholder>
       </ng-template>
 
-      <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder">
-        <app-common-table [tableData]="filteredRows" [columns]="columns"
-                          (rowClickedAction)="showMessage($event)"></app-common-table>
-
+      <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+               class="track-table">
+        <app-common-table [tableData]="filteredRows" [columns]="columns" matSort
+                          cdkDropList cdkDropListOrientation="horizontal"
+                          (cdkDropListDropped)="drop($event)"
+                          (rowClickedAction)="showMessage($event)">
+          <ng-container *ngFor="let column of columns; let index = index">
+            <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+          </ng-container>
+        </app-common-table>
       </section>
     </div>
   `,
   styleUrls: ['./track-result.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush, // otherwise ngx datatable flickers like hell
 })
-export class TrackResultComponent implements OnInit, OnDestroy {
+export class TrackResultComponent extends AbstractTableComponent implements OnInit, OnDestroy {
   @ViewChild('noDataPlaceholderComponent')
   noDataPlaceholderComponent?: NoDataPlaceholderComponent;
   searchSubscription?: Subscription;
@@ -56,18 +63,17 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       prop: 'timestamp',
       sticky: false,
       width: 190,
-      resizeable: false,
+      resizeable: true,
       sortable: true,
       draggable: true,
-      isDate: true,
-      dateFormat: 'yyyy-MM-dd HH:mm:ss.SSS'
+      valueFormatter: (value: Date | string | number): string => new DatePipe(navigator.language).transform(value, 'yyyy-MM-dd HH:mm:ss.SSS')
     },
     {
       name: 'topic',
       prop: 'topic',
       sticky: false,
       width: 190,
-      resizeable: false,
+      resizeable: true,
       sortable: true,
       draggable: true
     },
@@ -76,7 +82,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       prop: 'partition',
       sticky: false,
       width: 190,
-      resizeable: false,
+      resizeable: true,
       sortable: true,
       draggable: true
     },
@@ -85,7 +91,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       prop: 'offset',
       sticky: false,
       width: 190,
-      resizeable: false,
+      resizeable: true,
       sortable: true,
       draggable: true
     },
@@ -94,7 +100,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
       prop: 'key',
       sticky: false,
       width: 190,
-      resizeable: false,
+      resizeable: true,
       sortable: true,
       draggable: true
     }
@@ -114,6 +120,7 @@ export class TrackResultComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private messageDataService: MessageDataService
   ) {
+    super();
   }
 
   private static tryParseJson(message: string): string {

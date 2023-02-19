@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrokerConfig} from '../brokers/broker';
 import {first} from 'rxjs/operators';
-import {TableColumn} from '@app/common-components';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-broker',
@@ -17,7 +17,14 @@ import {TableColumn} from '@app/common-components';
       <div class="broker-details-table">
 
         <section *ngIf="isAnimationDone">
-          <app-common-table [tableData]="data.config" [columns]="columns"></app-common-table>
+          <app-common-table [tableData]="data.config" [columns]="columns" matSort
+                            cdkDropList cdkDropListOrientation="horizontal"
+                            (cdkDropListDropped)="drop($event)">
+
+            <ng-container *ngFor="let column of columns; let index = index">
+              <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+            </ng-container>
+          </app-common-table>
         </section>
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
@@ -25,7 +32,7 @@ import {TableColumn} from '@app/common-components';
   `,
   styleUrls: ['./broker.component.scss']
 })
-export class BrokerComponent implements OnInit {
+export class BrokerComponent extends AbstractTableComponent implements OnInit {
 
   isAnimationDone: boolean = false;
 
@@ -62,6 +69,7 @@ export class BrokerComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {
       config: BrokerConfig[]
     }) {
+    super();
   }
 
   ngOnInit(): void {

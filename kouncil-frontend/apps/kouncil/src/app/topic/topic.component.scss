@@ -16,4 +16,10 @@
   .topic-pagination {
     width: 100%;
   }
+
+  .topic-table {
+    max-width: 100%;
+    overflow: auto;
+    height: calc(100% - 138px)
+  }
 }

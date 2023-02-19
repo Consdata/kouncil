@@ -10,7 +10,8 @@ import {TableComponent} from "./table/table.component";
 import {MatTableModule} from "@angular/material/table";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatSortModule} from "@angular/material/sort";
-import {ResizeColumnDirective} from "./table/resize-column-directive";
+import {TableColumnComponent} from "./table-column/table-column.component";
+import {ResizeColumnDirective} from "./table-column/resize-column.directive";
 
 @NgModule({
   imports: [
@@ -28,11 +29,13 @@ import {ResizeColumnDirective} from "./table/resize-column-directive";
   declarations: [
     AutocompleteComponent,
     TableComponent,
-    ResizeColumnDirective
+    ResizeColumnDirective,
+    TableColumnComponent
   ],
   exports: [
     AutocompleteComponent,
-    TableComponent
+    TableComponent,
+    TableColumnComponent,
   ]
 })
 export class CommonComponentsModule {

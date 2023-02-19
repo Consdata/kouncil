@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { interval, Observable, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { ConsumerGroupService } from './consumer-group.service';
-import { switchMap, tap } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {interval, Observable, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {ConsumerGroupService} from './consumer-group.service';
+import {switchMap, tap} from 'rxjs/operators';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {ConsumerGroupOffset, ConsumerGroupResponse} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {DecimalPipe} from '@angular/common';
 
 @Component({
   selector: 'app-kafka-consumer-group',
@@ -21,86 +23,37 @@ import {ServersService} from '@app/common-servers';
         [name]="groupId"
         [parentName]="'Consumer Groups'"
       ></app-breadcrumb>
-      <ngx-datatable
-        *ngIf="
-          filteredAssignments && filteredAssignments.length > 0;
-          else noDataPlaceholder
-        "
-        class="brokers-table material"
-        [rows]="filteredAssignments"
-        [rowHeight]="48"
-        [headerHeight]="48"
-        [scrollbarH]="false"
-        [scrollbarV]="false"
-        [columnMode]="'force'"
-        [loadingIndicator]="loading$ | async"
-        #table
-      >
-        <ngx-datatable-column prop="clientId" name="clientId">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <app-cached-cell
-              [property]="'clientId'"
-              [row]="row"
-              [showLastSeenTimestamp]="true"
-            ></app-cached-cell>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="consumerId" name="consumerId">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <app-cached-cell
-              [property]="'consumerId'"
-              [row]="row"
-            ></app-cached-cell>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="host" name="host">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <app-cached-cell [property]="'host'" [row]="row"></app-cached-cell>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="topic" name="topic"></ngx-datatable-column>
-        <ngx-datatable-column
-          prop="partition"
-          name="partition"
-        ></ngx-datatable-column>
-        <ngx-datatable-column prop="offset" name="offset">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value | number }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="endOffset" name="endOffset">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value | number }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="lag" name="lag">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value | number }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="pace" name="pace">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            <div *ngIf="value === 0; then noPace; else paceBlock"></div>
-            <ng-template #noPace>=</ng-template>
-            <ng-template #paceBlock>
-              <div
-                *ngIf="value > 0; then upperArrowBlock; else downArrowBlock"
-              ></div>
-              <ng-template #upperArrowBlock
-                >↑ ({{ value | number }})</ng-template
-              >
-              <ng-template #downArrowBlock
-                >↓ ({{ value | number }})</ng-template
-              >
-            </ng-template>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+      <section
+        *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder">
+        <app-common-table [tableData]="filteredAssignments" matSort [columns]="columns"
+                          [additionalColumns]="additionalColumns"
+                          cdkDropList cdkDropListOrientation="horizontal"
+                          (cdkDropListDropped)="drop($event)">
+
+          <ng-container *ngFor="let column of additionalColumns; let index = index">
+            <app-common-table-column [column]="column" [index]="index"
+                                     [template]="cellTemplate">
+
+              <ng-template #cellTemplate let-element>
+                <app-cached-cell [property]="column.prop"
+                                 [row]="element"
+                                 [showLastSeenTimestamp]="true"
+                ></app-cached-cell>
+              </ng-template>
+            </app-common-table-column>
+          </ng-container>
+
+          <ng-container *ngFor="let column of columns; let index = index">
+            <app-common-table-column [column]="column"
+                                     [index]="index + this.additionalColumns.length"></app-common-table-column>
+          </ng-container>
+        </app-common-table>
+      </section>
     </div>
   `,
   styleUrls: ['./consumer-group.component.scss'],
 })
-export class ConsumerGroupComponent implements OnInit, OnDestroy {
+export class ConsumerGroupComponent extends AbstractTableComponent implements OnInit, OnDestroy {
   private searchSubscription?: Subscription;
   private intervalSubscription?: Subscription;
   groupId: string = '';
@@ -110,13 +63,107 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
   lastLags: IHash = {};
   loading$: Observable<boolean> = this.progressBarService.loading$;
 
+  additionalColumns: TableColumn[] = [
+    {
+      name: 'clientId',
+      prop: 'clientId',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'consumerId',
+      prop: 'consumerId',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'host',
+      prop: 'host',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+  ];
+
+  columns: TableColumn[] = [
+    {
+      name: 'topic',
+      prop: 'topic',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'partition',
+      prop: 'partition',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'offset',
+      prop: 'offset',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+    },
+    {
+      name: 'endOffset',
+      prop: 'endOffset',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+    },
+    {
+      name: 'lag',
+      prop: 'lag',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+    },
+    {
+      name: 'pace',
+      prop: 'pace',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      valueFormatter: (value: number): string => {
+        if (value === 0) {
+          return '=';
+        } else {
+          if (value > 0) {
+            return `↑ ${new DecimalPipe(navigator.language).transform(value)}`;
+          } else {
+            return `↓ ${new DecimalPipe(navigator.language).transform(value)}`;
+          }
+        }
+      }
+    },
+  ];
+
   constructor(
     private searchService: SearchService,
     private route: ActivatedRoute,
     private progressBarService: ProgressBarService,
     private consumerGroupService: ConsumerGroupService,
     private servers: ServersService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
@@ -126,10 +173,10 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
     });
 
     this.searchSubscription = this.searchService
-      .getPhraseState$('consumer-group')
-      .subscribe((phrase) => {
-        this.filter(phrase);
-      });
+    .getPhraseState$('consumer-group')
+    .subscribe((phrase) => {
+      this.filter(phrase);
+    });
   }
 
   ngOnDestroy(): void {
@@ -143,21 +190,21 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
       return;
     }
     this.intervalSubscription = interval(1000)
-      .pipe(
-        switchMap(() =>
-          this.consumerGroupService
-            .getConsumerGroup$(this.servers.getSelectedServerId(), this.groupId)
-            .pipe(
-              tap((data: ConsumerGroupResponse) => {
-                this.allAssignments = data.consumerGroupOffset;
-                this.calculateLags();
-                this.filter(this.searchService.currentPhrase);
-                this.progressBarService.setProgress(false);
-              })
-            )
+    .pipe(
+      switchMap(() =>
+        this.consumerGroupService
+        .getConsumerGroup$(this.servers.getSelectedServerId(), this.groupId)
+        .pipe(
+          tap((data: ConsumerGroupResponse) => {
+            this.allAssignments = data.consumerGroupOffset;
+            this.calculateLags();
+            this.filter(this.searchService.currentPhrase);
+            this.progressBarService.setProgress(false);
+          })
         )
       )
-      .subscribe();
+    )
+    .subscribe();
   }
 
   private filter(phrase?: string): void {
@@ -166,8 +213,8 @@ export class ConsumerGroupComponent implements OnInit, OnDestroy {
         return (
           !phrase ||
           JSON.stringify(consumerGroupOffset)
-            .toLowerCase()
-            .indexOf(phrase.toLowerCase()) > -1
+          .toLowerCase()
+          .indexOf(phrase.toLowerCase()) > -1
         );
       }
     );

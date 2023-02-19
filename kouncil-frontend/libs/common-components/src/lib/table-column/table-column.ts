@@ -7,7 +7,6 @@ export interface TableColumn {
   sortable: boolean;
   draggable: boolean;
   width?: number;
-  isDate?: boolean;
-  dateFormat?: string;
+  valueFormatter?: (value: any) => string;
 
 }
