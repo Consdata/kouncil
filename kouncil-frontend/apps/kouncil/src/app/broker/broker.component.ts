@@ -19,7 +19,8 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
         <section *ngIf="isAnimationDone">
           <app-common-table [tableData]="data.config" [columns]="columns" matSort
                             cdkDropList cdkDropListOrientation="horizontal"
-                            (cdkDropListDropped)="drop($event)">
+                            (cdkDropListDropped)="drop($event)"
+                            [headerClass]="'white-table-header'">
 
             <ng-container *ngFor="let column of columns; let index = index">
               <app-common-table-column [column]="column" [index]="index"></app-common-table-column>

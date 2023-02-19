@@ -21,7 +21,7 @@ import {TableColumnComponent} from "../table-column/table-column.component";
 
       <ng-content></ng-content>
 
-      <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true"></tr>
+      <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true" [class]="headerClass"></tr>
       <tr mat-row *matRowDef="let row; columns: getColumnNames();"
           (click)="rowClickedAction.emit(row)"></tr>
     </table>
@@ -34,6 +34,7 @@ export class TableComponent implements AfterContentInit {
   allColumns: TableColumn[] = [];
   @Input() additionalColumns: TableColumn[] = [];
   @Input() columns: TableColumn[] = [];
+  @Input() headerClass: string = 'default-table-header';
   @Output() rowClickedAction: EventEmitter<any> = new EventEmitter<any>();
   @ContentChildren(TableColumnComponent) tableColumnComponents: QueryList<TableColumnComponent>;
   @ViewChild(MatTable, {static: true}) table: MatTable<any>;

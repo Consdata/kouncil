@@ -25,7 +25,8 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
         <app-common-table [tableData]="vm.messageData.headers" [columns]="columns" matSort
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)"
-                          (rowClickedAction)="navigateToTrack($event, vm.messageData)">
+                          (rowClickedAction)="navigateToTrack($event, vm.messageData)"
+                          [headerClass]="'white-table-header'">
 
           <ng-container *ngFor="let column of columns; let index = index">
             <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
