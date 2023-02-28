@@ -1,15 +1,15 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ConsumerGroupsService} from './consumer-groups.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Model} from '@swimlane/ngx-datatable';
 import {ConfirmService} from '@app/feat-confirm';
 import {FavouritesService} from '@app/feat-favourites';
 import {ConsumerGroup, ConsumerGroupsResponse} from '@app/common-model';
 import {ArraySortService, ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
+import {TableColumn} from '@app/common-components';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -20,60 +20,52 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Consumer group'"></app-no-data-placeholder>
       </ng-template>
-      <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
-                     class="consumer-groups-table material"
-                     [rows]="filtered"
-                     [rowHeight]="48"
-                     [headerHeight]="24"
-                     [scrollbarH]="false"
-                     [scrollbarV]="false"
-                     [columnMode]="'force'"
-                     [groupRowsBy]="'group'"
-                     [groupExpansionDefault]="true"
-                     [limit]="4"
-                     (sort)="customSort($event)"
-                     (activate)="navigateToConsumerGroup($event)"
-                     #table>
 
-        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
-            <div
-              class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All consumer groups'}}</div>
-            <span class="datatable-header-divider"></span>
-            <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
-          <span *ngIf="expanded">HIDE</span>
-          <span *ngIf="!expanded">SHOW</span>
-        </span>
-          </ng-template>
-        </ngx-datatable-group-header>
+      <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
+                        [tableData]="filtered" [columns]="columns"
+                        [additionalColumns]="additionalColumns" matSort
+                        [actionColumns]="actionColumns"
+                        (rowClickedAction)="navigateToConsumerGroup($event)"
+                        [groupHeaderName]="groupHeaderName"
+                        [groupedTable]="true"
+                        [groupByColumns]="['group']">
 
-        <ngx-datatable-column prop="groupId" name="Group id" cellClass="datatable-cell-wrapper" [width]="500">
-          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', value]">
-              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'"
-                        (click)="onFavouriteClick($event, row)">star
-              </mat-icon>
-              {{value}}
-            </a>
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-container *ngFor="let column of additionalColumns; let index = index">
+          <app-common-table-column [column]="column" [index]="index"
+                                   [template]="cellTemplate">
 
-        <ngx-datatable-column prop="status" name="Status" cellClass="datatable-cell-wrapper" [width]="190">
-          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-            <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', row.groupId]"
-               [ngClass]="getStatusClass(value)">
-              {{value}}
-            </a>
-          </ng-template>
-        </ngx-datatable-column>
+            <ng-template #cellTemplate let-element>
+              <div class="datatable-cell-anchor">
+                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+                          (click)="onFavouriteClick($event, element)">star
+                </mat-icon>
+                {{element.groupId}}
+              </div>
+            </ng-template>
+          </app-common-table-column>
+        </ng-container>
 
-        <ngx-datatable-column prop="groupId" name="" cellClass="ngx-actions-column" [width]="240"
-                              [sortable]="false" [resizeable]="false" [canAutoResize]="false">
-          <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-            <button class="ngx-action-button" (click)="deleteConsumerGroup(value)">Delete</button>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+        <ng-container *ngFor="let column of columns; let index = index">
+          <app-common-table-column [column]="column"
+                                   [index]="index + additionalColumns.length"></app-common-table-column>
+        </ng-container>
+
+
+        <ng-container *ngFor="let column of actionColumns; let index = index">
+          <app-common-table-column [column]="column"
+                                   [index]="index + additionalColumns.length + columns.length"
+                                   [template]="cellTemplate">
+
+            <ng-template #cellTemplate let-element>
+              <div class="actions-column" style="z-index: 1000">
+                <button class="action-button" (click)="deleteConsumerGroup(element.groupId)">
+                  Delete
+                </button>
+              </div>
+            </ng-template>
+          </app-common-table-column>
+        </ng-container>
+      </app-common-table>
     </div>
   `,
   styleUrls: ['./consumer-groups.component.scss']
@@ -82,7 +74,43 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  @ViewChild('table') private table?: ElementRef;
+
+  additionalColumns: TableColumn[] = [
+    {
+      name: 'Group id',
+      prop: 'groupId',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      width: 500
+    }
+  ];
+
+  columns: TableColumn[] =
+    [
+      {
+        name: 'Status',
+        prop: 'status',
+        sticky: false,
+        resizeable: true,
+        sortable: true,
+        draggable: true,
+        width: 190
+      }
+    ];
+
+  actionColumns: TableColumn[] = [
+    {
+      name: ' ',
+      prop: 'actions',
+      sticky: false,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      width: 240
+    }
+  ];
 
   private searchSubscription?: Subscription;
 
@@ -106,15 +134,19 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       });
   }
 
+  groupHeaderName: (group) => string = (group) => {
+    return group.group === 'FAVOURITES' ? 'Favourites' : 'All consumer groups';
+  };
+
   private loadConsumerGroups(): void {
     this.consumerGroupsService.getConsumerGroups$(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe((data: ConsumerGroupsResponse) => {
-        this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
-        this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
-        this.filter(this.searchService.currentPhrase);
-        this.progressBarService.setProgress(false);
-      });
+    .pipe(first())
+    .subscribe((data: ConsumerGroupsResponse) => {
+      this.consumerGroups = data.consumerGroups.map(t => new ConsumerGroup(t.groupId, t.status, null));
+      this.favouritesService.applyFavourites(this.consumerGroups, CONSUMER_GROUP_FAVOURITE_KEY, this.servers.getSelectedServerId());
+      this.filter(this.searchService.currentPhrase);
+      this.progressBarService.setProgress(false);
+    });
   }
 
   ngOnDestroy(): void {
@@ -145,36 +177,33 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
       subtitle: 'Are you sure you want to delete:',
       sectionLine1: value
     })
-      .pipe(first())
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.progressBarService.setProgress(true);
-          this.consumerGroupsService.deleteConsumerGroup$(this.servers.getSelectedServerId(), value)
-            .pipe(first())
-            // eslint-disable-next-line rxjs/no-nested-subscribe
-            .subscribe(() => {
-              this.loadConsumerGroups();
-              this.snackbar.open(`Consumer group ${value} deleted`, '', {
-                duration: 3000,
-                panelClass: ['snackbar-success', 'snackbar']
-              });
-            }, error => {
-              console.error(error);
-              this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
-                duration: 3000,
-                panelClass: ['snackbar-error', 'snackbar']
-              });
-              this.progressBarService.setProgress(false);
-            });
-        }
-      });
+    .pipe(first())
+    .subscribe((confirmed) => {
+      if (confirmed) {
+        this.progressBarService.setProgress(true);
+        this.consumerGroupsService.deleteConsumerGroup$(this.servers.getSelectedServerId(), value)
+        .pipe(first())
+        // eslint-disable-next-line rxjs/no-nested-subscribe
+        .subscribe(() => {
+          this.loadConsumerGroups();
+          this.snackbar.open(`Consumer group ${value} deleted`, '', {
+            duration: 3000,
+            panelClass: ['snackbar-success', 'snackbar']
+          });
+        }, error => {
+          console.error(error);
+          this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
+            duration: 3000,
+            panelClass: ['snackbar-error', 'snackbar']
+          });
+          this.progressBarService.setProgress(false);
+        });
+      }
+    });
   }
 
-  navigateToConsumerGroup(event: Model): void {
-    const element = event.event.target as HTMLElement;
-    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
-      this.router.navigate(['/consumer-groups/', event.row.groupId]);
-    }
+  navigateToConsumerGroup(event: ConsumerGroup): void {
+    this.router.navigate(['/consumer-groups/', event.groupId]);
   }
 
   customSort(event: { column: { prop: string }, newValue: string }): void {

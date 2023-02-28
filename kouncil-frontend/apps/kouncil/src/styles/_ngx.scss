@@ -1,23 +1,8 @@
 // global styles regarding ngx-datatable
 @use 'palette' as pallete;
 
-ngx-datatable.ngx-datatable {
-}
-
 .ngx-datatable {
   font-family: 'Inter';
-}
-
-.datatable-body {
-}
-
-.datatable-header {
-  padding: 0 24px;
-}
-
-.datatable-header-cell-label {
-  font-size: 14px;
-  font-weight: 500;
 }
 
 .group-header {
@@ -28,10 +13,11 @@ ngx-datatable.ngx-datatable {
 }
 
 .datatable-group-header {
-  padding: 24px 24px 16px 24px;
+  padding: 24px 24px 16px 24px !important;
   display: flex;
   flex-direction: row;
   align-items: center;
+  background: pallete.$main-10 !important;
 
   .group-header {
     flex-grow: 0;
@@ -55,67 +41,29 @@ ngx-datatable.ngx-datatable {
   }
 }
 
-.datatable-body-row {
+.action-button {
+  opacity: 0;
+  background: pallete.$main-100;
+  color: pallete.$main-text-light-color;
+  font-size: 14px;
+  border-radius: pallete.$default-border-radius;
+  height: 32px;
+  border: none;
+  padding: 4px 10px;
   cursor: pointer;
-  background: pallete.$main-0;
-  border-top: 1px solid pallete.$main-20;
-  border-bottom: 1px solid pallete.$main-20;
-  margin-bottom: -1px;
-
-  .ngx-action-button {
-    visibility: hidden;
-    background: pallete.$main-100;
-    color: pallete.$main-text-light-color;
-    font-size: 14px;
-    border-radius: pallete.$default-border-radius;
-    height: 32px;
-    border: none;
-    padding: 4px 10px;
-    cursor: pointer;
-  }
-
-  &:hover {
-    background: pallete.$main-10;
-
-    .ngx-action-button {
-      visibility: visible;
-    }
-  }
 }
 
-.ngx-actions-column {
+.action-button:hover {
+  opacity: 1;
+}
+
+.actions-column {
+  display: flex;
   flex-direction: row-reverse;
   padding-right: 24px;
 }
 
-.datatable-body-cell {
-  font-size: 14px;
-  text-decoration: none;
-  color: pallete.$main-100;
-  padding-left: 24px;
-
-  .datatable-body-cell-label {
-    display: flex;
-    align-items: center;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
-  padding-top: 0;
-  padding-bottom: 0;
-  display: flex;
-  align-items: center;
-}
-
-.ngx-datatable.material datatable-progress {
-  display: none;
-}
-
-mat-icon.ngx-star-favourite {
+mat-icon.star-favourite {
   color: pallete.$blue-60;
   font-size: 24px;
   margin-left: 0;

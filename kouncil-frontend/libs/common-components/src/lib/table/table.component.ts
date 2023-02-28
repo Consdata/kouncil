@@ -1,5 +1,5 @@
 import {
-  AfterContentInit,
+  AfterContentInit, AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
@@ -13,6 +13,7 @@ import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {TableColumn} from "../table-column/table-column";
 import {TableColumnComponent} from "../table-column/table-column.component";
+import {TableGroup} from "./table-group";
 
 @Component({
   selector: 'app-common-table',
@@ -21,20 +22,47 @@ import {TableColumnComponent} from "../table-column/table-column.component";
 
       <ng-content></ng-content>
 
-      <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true" [class]="headerClass"></tr>
-      <tr mat-row *matRowDef="let row; columns: getColumnNames();"
-          (click)="rowClickedAction.emit(row)"></tr>
+      <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true"
+          [class]="headerClass"></tr>
+      <tr mat-row *matRowDef="let row; columns: getColumnNames();" [ngClass]="rowClass(row)"
+          (click)="rowClicked($event, row)"></tr>
+
+      <!-- Group header -->
+      <ng-container *ngIf="groupedTable">
+        <ng-container matColumnDef="groupHeader">
+          <td mat-cell colspan="999" *matCellDef="let group">
+            <div class="datatable-group-header">
+              <div class="group-header">{{groupHeaderName(group)}}</div>
+              <span class="datatable-header-divider"></span>
+              <span class="datatable-header-hide" (click)="toggleExpandGroup(group)">
+              <span *ngIf="group.expanded">HIDE</span>
+              <span *ngIf="!group.expanded">SHOW</span>
+            </span>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"></tr>
+      </ng-container>
+
     </table>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements AfterContentInit {
+export class TableComponent implements AfterContentInit, AfterViewInit {
 
   allColumns: TableColumn[] = [];
-  @Input() additionalColumns: TableColumn[] = [];
   @Input() columns: TableColumn[] = [];
+  @Input() additionalColumns: TableColumn[] = [];
+  @Input() actionColumns: TableColumn[] = [];
   @Input() headerClass: string = 'default-table-header';
+  @Input() groupHeaderName: (group: TableGroup) => string;
+  @Input() rowClass: (row) => {} = () => {
+    return {}
+  };
+  @Input() groupedTable: boolean = false;
+  @Input() groupByColumns: string[];
+  @Input() tableData: unknown[];
   @Output() rowClickedAction: EventEmitter<any> = new EventEmitter<any>();
   @ContentChildren(TableColumnComponent) tableColumnComponents: QueryList<TableColumnComponent>;
   @ViewChild(MatTable, {static: true}) table: MatTable<any>;
@@ -46,11 +74,17 @@ export class TableComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     this.tableColumnComponents.forEach(columnDef => this.table.addColumnDef(columnDef.columnDef));
-    this.allColumns = this.additionalColumns.concat(this.columns);
+    this.allColumns = this.additionalColumns.concat(this.columns.concat(this.actionColumns));
   }
 
-  @Input() set tableData(value: unknown[]) {
-    this.dataSource.data = value;
+  ngAfterViewInit() {
+    if (this.groupedTable && this.tableData) {
+      this.dataSource.data = this.addGroups(this.tableData, this.groupByColumns);
+      this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
+      this.dataSource.filter = performance.now().toString();
+    } else {
+      this.dataSource.data = this.tableData;
+    }
   }
 
   getColumnNames() {
@@ -73,5 +107,91 @@ export class TableComponent implements AfterContentInit {
     }
 
     moveItemInArray(this.allColumns, previousIndex, currentIndex);
+  }
+
+  isGroup(index, item): boolean {
+    return item.level;
+  }
+
+  addGroups(data: any[], groupByColumns: string[]): any[] {
+    const rootGroup: TableGroup = new TableGroup();
+    rootGroup.expanded = true;
+    return this.getSublevel(data, 0, groupByColumns, rootGroup);
+  }
+
+  getSublevel(data: any[], level: number, groupByColumns: string[], parent: TableGroup): any[] {
+    if (level >= groupByColumns.length) {
+      return data;
+    }
+    const groups = this.uniqueBy(
+      data.map(
+        row => {
+          const result: TableGroup = new TableGroup();
+          result.level = level + 1;
+          result.parent = parent;
+          for (let i = 0; i <= level; i++) {
+            result[groupByColumns[i]] = row[groupByColumns[i]];
+          }
+          return result;
+        }
+      ),
+      JSON.stringify);
+
+    const currentColumn = groupByColumns[level];
+    let subGroups = [];
+    groups.forEach(group => {
+      const rowsInGroup = data.filter(row => group[currentColumn] === row[currentColumn]);
+      group.totalCounts = rowsInGroup.length;
+      const subGroup = this.getSublevel(rowsInGroup, level + 1, groupByColumns, group);
+      subGroup.unshift(group);
+      subGroups = subGroups.concat(subGroup);
+    });
+    return subGroups;
+  }
+
+  uniqueBy(a, key) {
+    const seen = {};
+    return a.filter((item) => {
+      const k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    });
+  }
+
+  toggleExpandGroup(group: TableGroup) {
+    group.expanded = !group.expanded;
+    this.dataSource.filter = performance.now().toString();
+  }
+
+  customFilterPredicate(data: any | TableGroup): boolean {
+    return data instanceof TableGroup ? data.visible : this.getDataRowVisible(data);
+  }
+
+  getDataRowVisible(data: any): boolean {
+    const groupRows = this.dataSource.data.filter((row) => {
+      if (!(row instanceof TableGroup)) {
+        return false;
+      }
+      let match = true;
+      this.groupByColumns.forEach((column) => {
+        if (!row[column] || !data[column] || row[column] !== data[column]) {
+          match = false;
+        }
+      });
+      return match;
+    });
+
+    if (groupRows.length === 0) {
+      return true;
+    }
+    const parent = groupRows[0] as TableGroup;
+
+    return parent.visible && parent.expanded;
+  }
+
+  rowClicked($event: MouseEvent, row) {
+    const element = $event.target as HTMLElement;
+    if ($event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
+      this.rowClickedAction.emit(row);
+    }
   }
 }

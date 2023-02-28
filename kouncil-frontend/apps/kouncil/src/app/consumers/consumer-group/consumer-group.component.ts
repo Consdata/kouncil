@@ -45,7 +45,7 @@ import {DecimalPipe} from '@angular/common';
 
           <ng-container *ngFor="let column of columns; let index = index">
             <app-common-table-column [column]="column"
-                                     [index]="index + this.additionalColumns.length"></app-common-table-column>
+                                     [index]="index + additionalColumns.length"></app-common-table-column>
           </ng-container>
         </app-common-table>
       </section>

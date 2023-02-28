@@ -59,15 +59,15 @@ html, body {
 }
 
 .row-dlq {
-  div {
-    color: darkred;
+  td {
+    color: darkred !important;
     font-style: italic;
   }
 }
 
 .row-retry {
-  div {
-    color: darkorange;
+  td {
+    color: darkorange !important;
     font-style: italic;
   }
 }
