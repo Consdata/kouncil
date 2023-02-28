@@ -41,10 +41,6 @@
 
 }
 
-::ng-deep .mat-select-trigger {
-  align-items: baseline;
-}
-
 ::ng-deep .ngx-datatable .datatable-footer .datatable-pager {
   flex: 0;
 }
@@ -96,24 +92,14 @@
 .limit-label, .page-no-label {
   font-size: 14px;
   color: $main-60;
+  padding-left: 10px;
+}
+
+.page-no-form-field{
+  width: 100px;
+  padding-left: 10px;
 }
 
 .page-no-input {
-  background: $main-0;
-  border: 1px solid $main-20;
-  border-radius: $default-border-radius;
-  padding: 8px 8px 8px 12px;
   font-size: 14px;
-  width: 100px;
-}
-
-.page-no-input:hover {
-  border: 1px solid $main-40;
-  transition: all $default-transition-time;
-}
-
-.page-no-input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 3px 1px $blue-60;
-  transition: all $default-transition-time;
 }

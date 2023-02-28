@@ -1,0 +1,20 @@
+.no-padding {
+  padding: 0 !important;
+}
+
+.autocomplete-field {
+  @media screen and (max-width: 1500px) {
+    width: 180px;
+  }
+}
+
+.autocomplete-input-container {
+  display: flex;
+  position: absolute;
+  top: 1px;
+  margin-left: -10px
+}
+
+.autocomplete-input {
+  text-overflow: ellipsis;
+}

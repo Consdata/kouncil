@@ -22,29 +22,34 @@ import {ResendFormService} from './resend-form.service';
 
         <div class="drawer-section-title">Source topic</div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Topic</mat-label>
-          <mat-form-field>
-            <mat-select class="select select-topic"
-                        formControlName="sourceTopicName"
-                        (valueChange)="resendFilterService.setPartitionsOnSrcTopicChanged($event)">
-              <mat-option>
-                <ngx-mat-select-search [formControl]="sourceTopicFilterCtrl"
-                                       placeholderLabel="Search topic"
-                                       noEntriesFoundLabel="No topics found">
-                </ngx-mat-select-search>
+          <mat-form-field [appearance]="'outline'">
+            <input type="text"
+                   placeholder="Search topic"
+                   matInput
+                   (click)="clearValue(sourceTopicFilterCtrl)"
+                   [formControl]="sourceTopicFilterCtrl"
+                   formControlName="sourceTopicName"
+                   [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" class="select select-topic"
+                              (optionSelected)="resendFilterService.setPartitionsOnSrcTopicChanged($event.option.value)"
+                              (closed)="handleClose(sourceTopicFilterCtrl, 'sourceTopicName')">
+              <mat-option disabled
+                          *ngIf="(resendFilterService.sourceFilteredTopicsObs$ | async)?.length === 0">
+                No topics found
               </mat-option>
               <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
                           [value]="topic.caption()">
                 {{topic.caption()}}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Partition</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select"
                         formControlName="sourceTopicPartition">
               <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
@@ -57,42 +62,49 @@ import {ResendFormService} from './resend-form.service';
 
         <div class="field-with-label">
           <mat-label class="field-label">Start offset</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <input matInput type="number" min="0" formControlName="offsetBeginning"/>
           </mat-form-field>
         </div>
 
         <div class="field-with-label">
           <mat-label class="field-label">End offset</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <input matInput type="number" min="0" formControlName="offsetEnd"/>
           </mat-form-field>
         </div>
 
         <div class="drawer-section-title">Destination topic</div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Topic</mat-label>
-          <mat-form-field>
-            <mat-select class="select select-topic"
-                        formControlName="destinationTopicName"
-                        (valueChange)="resendFilterService.setPartitionsOnDestTopicChanged($event)">
-              <mat-option>
-                <ngx-mat-select-search placeholderLabel="Search topic.."
-                                       [formControl]="destinationTopicFilterCtrl">
-                </ngx-mat-select-search>
+          <mat-form-field [appearance]="'outline'">
+            <input type="text"
+                   placeholder="Search topic"
+                   matInput
+                   (click)="clearValue(destinationTopicFilterCtrl)"
+                   [formControl]="destinationTopicFilterCtrl"
+                   formControlName="destinationTopicName"
+                   [matAutocomplete]="destinationAuto">
+            <mat-autocomplete #destinationAuto="matAutocomplete" class="select select-topic"
+                              (optionSelected)="resendFilterService.setPartitionsOnDestTopicChanged($event.option.value)"
+                              (closed)="handleClose(destinationTopicFilterCtrl, 'destinationTopicName')">
+              <mat-option disabled
+                          *ngIf="(resendFilterService.destinationFilteredTopicsObs$ | async)?.length === 0">
+                No topics found
               </mat-option>
-              <mat-option *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
-                          [value]="topic.caption()">
+              <mat-option
+                *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
+                [value]="topic.caption()">
                 {{topic.caption()}}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
 
-        <div>
+        <div class="field-with-label">
           <mat-label class="field-label">Partition</mat-label>
-          <mat-form-field>
+          <mat-form-field [appearance]="'outline'">
             <mat-select class="select"
                         formControlName="destinationTopicPartition">
               <mat-option [value]="-1">None</mat-option>
@@ -104,7 +116,8 @@ import {ResendFormService} from './resend-form.service';
           </mat-form-field>
         </div>
 
-        <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers</mat-checkbox>
+        <mat-checkbox class="checkbox" formControlName="shouldFilterOutHeaders">Filter out headers
+        </mat-checkbox>
 
         <span class="spacer"></span>
 
@@ -160,16 +173,16 @@ export class ResendComponent implements OnInit, OnDestroy {
       this.resendFilterService.setPartitionsOnSrcTopicChanged(this.resendFormService.resendForm.value['sourceTopicName']);
 
       this.sourceTopicFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy$))
-        .subscribe(() => {
-          this.resendFilterService.filterSrcTopics(this.sourceTopicFilterCtrl);
-        });
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
+        this.resendFilterService.filterSrcTopics(this.sourceTopicFilterCtrl);
+      });
 
       this.destinationTopicFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy$))
-        .subscribe(() => {
-          this.resendFilterService.filterDestTopics(this.destinationTopicFilterCtrl);
-        });
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
+        this.resendFilterService.filterDestTopics(this.destinationTopicFilterCtrl);
+      });
     });
   }
 
@@ -182,4 +195,13 @@ export class ResendComponent implements OnInit, OnDestroy {
     this.resendFormService.submit();
   }
 
+  clearValue(control: FormControl) {
+    control.setValue('');
+  }
+
+  handleClose(control: FormControl, name: string) {
+    if (control.value.length === 0) {
+      control.setValue(this.resendFormService.resendForm.get(name).getRawValue());
+    }
+  }
 }

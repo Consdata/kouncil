@@ -19,11 +19,6 @@
     background: $main-0;
   }
 
-  ::ng-deep .mat-divider-vertical {
-    border-right-color: $main-20;
-    height: $default-line-height;
-  }
-
   mat-divider {
     margin: 0 16px;
   }
@@ -38,6 +33,21 @@
     color: $main-60;
     padding: 10px;
 
+    @media screen and (max-width: 1750px) {
+      margin: 0 10px;
+      padding: 7px;
+    }
+
+    @media screen and (max-width: 1600px) {
+      margin: 0 8px;
+      padding: 5px;
+    }
+
+    @media screen and (max-width: 1500px) {
+      margin: 0 4px;
+      padding: 2px;
+    }
+
     &:focus {
       background: transparent;
     }
@@ -50,7 +60,19 @@
 
   .search-input {
     @include inputs.input;
-    min-width: 400px;
+    width: 400px;
+
+    @media screen and (max-width: 1800px) {
+      width: 350px;
+    }
+
+    @media screen and (max-width: 1625px) {
+      width: 325px;
+    }
+
+    @media screen and (max-width: 1550px) {
+      width: 275px;
+    }
   }
 
   .search-input:hover {
@@ -96,16 +118,6 @@
     margin-left: 16px;
     min-width: 300px;
     max-width: 300px;
-  }
-
-  .servers {
-    ::ng-deep .mat-select-value-text {
-      padding-left: 32px;
-    }
-
-    ::ng-deep .mat-select-trigger {
-      align-items: baseline;
-    }
   }
 
   .servers::before {

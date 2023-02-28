@@ -290,7 +290,7 @@ export class TopicComponent implements OnInit, OnDestroy {
       prop: 'kouncilKey',
     });
     this.commonColumns.push({
-      width: 180,
+      width: 215,
       resizeable: true,
       sortable: true,
       draggable: true,

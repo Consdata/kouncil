@@ -1,5 +1,7 @@
 package com.consdata.kouncil.config.security.inmemory;
 
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
+
 import com.consdata.kouncil.KouncilRuntimeException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,7 +64,7 @@ public class InMemoryWebSecurityConfig {
     @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
     public UserDetailsManager userDetailsService() {
         log.info("Initializing inmemory authentication");
-        Path path = Paths.get("default_user_password.txt");
+        Path path = Paths.get(ADMIN_CONFIG);
         String adminPass = "admin";
         if (Files.exists(path)) {
             try {

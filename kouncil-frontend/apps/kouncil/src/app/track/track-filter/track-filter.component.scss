@@ -58,12 +58,10 @@
       border-bottom-left-radius: $default-border-radius;
       border-top-left-radius: $default-border-radius;
       color: $main-40;
-    }
 
-    .wrapper-select {
-      color: $main-40;
-      height: 1px;
-      padding: 0 0;
+      @media screen and (max-width: 1625px){
+        padding: 0 4px;
+      }
     }
 
     &:hover {
@@ -89,19 +87,25 @@
   }
 
   .filter-input {
-    @include inputs.input;
-    min-width: 100px;
-    max-width: 550px;
     height: 40px;
-    padding: 0 8px;
+
+    .mat-mdc-text-field-wrapper {
+      padding: 0 8px;
+    }
   }
 
-  .filter-input:hover {
-    @include inputs.hover;
+  .correlation-field{
+    @media screen and (max-width: 1625px){
+      width: 175px;
+    }
+
+    @media screen and (max-width: 1550px){
+      width: 160px;
+    }
   }
 
-  .filter-input:focus-visible {
-    @include inputs.focus-visible;
+  .right-padding {
+    padding-right: 2px;
   }
 
   .filter-button {
@@ -137,45 +141,16 @@
   .clear-button {
     @include buttons.button-white;
     border-radius: $default-border-radius;
-    height: 40px;
-
-  }
-
-  ::ng-deep .mat-form-field-label-wrapper {
-    overflow: visible;
-
-    .mat-form-field-label {
-      top: 10px;
-      color: grey;
-    }
-  }
-
-  ::ng-deep .mat-option.mat-selected:not(.mat-option-disabled) {
-    background: $blue-10;
-
-    .mat-option-text {
-      color: $main-100;
-    }
-
-    .mat-pseudo-checkbox {
-      background: $blue-60;
-    }
-  }
-
-  .date-picker-form-field {
-
-    ::ng-deep .mat-form-field-infix {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 0;
-    }
   }
 
   .date-picker-form-field {
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    @media screen and (max-width: 1600px) {
+      width: 170px;
+    }
   }
 
   .form-control {

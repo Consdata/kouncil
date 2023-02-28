@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from './topic.service';
-import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
+import {MatSelectChange} from '@angular/material/select';
 import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-topic-partitions',
   template: `
-    <mat-form-field>
+    <mat-form-field [appearance]="'outline'">
       <mat-select class="select" [(value)]="selectedPartition" (selectionChange)="togglePartition($event)">
-        <mat-option value="all">All partitions</mat-option>
+        <mat-option [value]="'all'">All partitions</mat-option>
         <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>
       </mat-select>
     </mat-form-field>

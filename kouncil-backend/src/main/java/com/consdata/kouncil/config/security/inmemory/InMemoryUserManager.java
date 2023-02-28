@@ -1,5 +1,7 @@
 package com.consdata.kouncil.config.security.inmemory;
 
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
+
 import com.consdata.kouncil.config.security.UserManager;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
 public class InMemoryUserManager implements UserManager {
 
-    private static final String ADMIN_CONFIG = "default_admin_password.txt";
     private final UserDetailsManager userDetailsManager;
 
     public boolean firstTimeLogin() {

@@ -20,26 +20,23 @@
     border: 1px solid $main-20;
     background: $main-10;
     padding: 0;
+    z-index: 1;
   }
 
   .count {
     display: inline-flex;
     align-items: center;
-
-    border: 1px solid $main-20;
-    border-radius: $default-border-radius;
     width: 50%;
     height: 40px;
-
-    &:hover, &:focus-visible {
-      border: 1px solid $main-40;
-      transition: all $default-transition-time;
-    }
 
     input {
       border: none;
       padding: 0 32px 0 8px;
     }
+  }
+
+  .full-width {
+    width: 100%;
   }
 
 }

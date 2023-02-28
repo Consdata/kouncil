@@ -23,7 +23,7 @@ import {ServersService} from '@app/common-servers';
 
         <div class="page-no">
           <span class="page-no-label">Page no:</span>
-          <mat-form-field class="page-no-form-field">
+          <mat-form-field class="page-no-form-field" [appearance]="'outline'">
             <input matInput class="page-no-input" type="number" [ngModel]="paging.pageNumber"
                    [ngModelOptions]="{updateOn: 'blur'}"
                    (ngModelChange)="paginateMessages({page: $event})">
@@ -32,7 +32,7 @@ import {ServersService} from '@app/common-servers';
       </div>
       <div class="kafka-topic-footer-pager-item limit">
         <span class="limit-label">Items per partition:</span>
-        <mat-form-field class="select-form-field">
+        <mat-form-field class="select-form-field" [appearance]="'outline'">
           <mat-select panelClass="select-limit-panel"
                       class="select"
                       [(value)]="paging.size"

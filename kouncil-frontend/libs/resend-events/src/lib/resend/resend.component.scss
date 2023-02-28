@@ -1,12 +1,13 @@
 @import 'apps/kouncil/src/styles/palette';
 
 :host {
-  ::ng-deep .mat-select-trigger {
-    align-items: baseline;
-  }
-
   .drawer-section-title {
     font-size: 17px;
+  }
+
+  .field-with-label {
+    display: flex;
+    flex-flow: column;
   }
 
   .field-label {
