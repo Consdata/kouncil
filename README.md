@@ -22,7 +22,7 @@ Here are some of **the main features of [Kouncil](https://kouncil.io)**. For a m
 The easiest way to start working with Kouncil is by using Docker:
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
 ```
 #### Authentication
 Default credentials to log in to Kouncil are admin/admin.

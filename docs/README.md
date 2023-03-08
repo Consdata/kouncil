@@ -18,11 +18,11 @@ If you wish to simply check out Kouncil in action, without having to install it,
 The easiest way to start working with Kouncil is by using Docker:
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="KAFKA_BROKER_HOST:9092" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
 ```
-There is only one required environment variable, `bootstrapServers`, which should point to one of the brokers in your Kafka cluster. For example, if your cluster consists of three brokers - kafka1.cluster.local, kafka2.cluster.local, kafka3.cluster.local - you only have to specify one of them (`-e bootstrapServers="kafka1.cluster.local:9092"`), and you are good to go, Kouncil will automatically do the rest!
+There is only two required environment variables: `bootstrapServers` which should point to one of the brokers in your Kafka cluster and `kouncil.auth.active-provider` which specified authentication mode. For example, if your cluster consists of three brokers - kafka1:9092, kafka2:9092, kafka3:9092 - you only have to specify one of them (`-e bootstrapServers="kafka1:9092"`), and you are good to go, Kouncil will automatically do the rest!
 
-Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="CLUSTER_1:9092,CLUSTER_2:9092" consdata/kouncil:latest`
+Additionally, Kouncil supports multiple clusters. Hosts specified in `bootstrapServers` may point to brokers in several clusters, and Kouncil will recognize that properly. Brokers should be separated using comma, i.e.: `docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092,kafka1.another.cluster:8001" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest`
 
 After the `docker run` command head to [http://localhost](http://localhost).
 
