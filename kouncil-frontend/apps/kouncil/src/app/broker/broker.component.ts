@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrokerConfig} from '../brokers/broker';
 import {first} from 'rxjs/operators';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-broker',
@@ -14,33 +15,62 @@ import {first} from 'rxjs/operators';
       </div>
 
       <div class="broker-details-table">
-        <ngx-datatable *ngIf="isAnimationDone" class="config-table-detail material"
-                       [rows]="data.config"
-                       [rowHeight]="48"
-                       [headerHeight]="48"
-                       [scrollbarH]="false"
-                       [scrollbarV]="false"
-                       [columnMode]="'force'"
-                       #brokerConfig>
-          <ngx-datatable-column [width]="350" prop="name" name="name"></ngx-datatable-column>
-          <ngx-datatable-column prop="value" name="value"></ngx-datatable-column>
-          <ngx-datatable-column prop="source" name="source"></ngx-datatable-column>
-        </ngx-datatable>
+
+        <section *ngIf="isAnimationDone">
+          <app-common-table [tableData]="data.config" [columns]="columns" matSort
+                            cdkDropList cdkDropListOrientation="horizontal"
+                            (cdkDropListDropped)="drop($event)"
+                            [headerClass]="'white-table-header'">
+
+            <ng-container *ngFor="let column of columns; let index = index">
+              <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+            </ng-container>
+          </app-common-table>
+        </section>
         <div *ngIf="!isAnimationDone" class="kafka-progress"></div>
       </div>
     </div>
   `,
   styleUrls: ['./broker.component.scss']
 })
-export class BrokerComponent implements OnInit {
+export class BrokerComponent extends AbstractTableComponent implements OnInit {
 
   isAnimationDone: boolean = false;
+
+  columns: TableColumn[] = [
+    {
+      name: 'name',
+      prop: 'name',
+      sticky: false,
+      draggable: true,
+      resizeable: true,
+      width: 350,
+      sortable: true
+    },
+    {
+      name: 'value',
+      prop: 'value',
+      sticky: false,
+      draggable: true,
+      resizeable: true,
+      sortable: true
+    },
+    {
+      name: 'source',
+      prop: 'source',
+      sticky: false,
+      draggable: true,
+      resizeable: true,
+      sortable: true
+    },
+  ];
 
   constructor(
     private dialogRef: MatDialogRef<BrokerComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       config: BrokerConfig[]
     }) {
+    super();
   }
 
   ngOnInit(): void {

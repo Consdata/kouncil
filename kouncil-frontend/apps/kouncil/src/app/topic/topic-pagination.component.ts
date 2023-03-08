@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {TopicService} from './topic.service';
 import {Page} from './page';
 import {ServersService} from '@app/common-servers';
+import {DataTablePagerComponent} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-topic-pagination',
@@ -25,7 +26,7 @@ import {ServersService} from '@app/common-servers';
           <span class="page-no-label">Page no:</span>
           <mat-form-field class="page-no-form-field" [appearance]="'outline'">
             <input matInput class="page-no-input" type="number" [ngModel]="paging.pageNumber"
-                   [ngModelOptions]="{updateOn: 'blur'}"
+                   [ngModelOptions]="{updateOn: 'blur'}" [min]="1" [max]="this.pager?.totalPages"
                    (ngModelChange)="paginateMessages({page: $event})">
           </mat-form-field>
         </div>
@@ -53,10 +54,14 @@ export class TopicPaginationComponent {
   @Output() changeQueryParams: EventEmitter<number> = new EventEmitter<number>();
   pageLimits: number[] = [1, 5, 10, 20, 50, 100, 500, 1000];
 
+  @ViewChild(DataTablePagerComponent) pager: DataTablePagerComponent;
+
   constructor(private topicService: TopicService, private servers: ServersService) {
   }
 
   paginateMessages($event: { page: number }): void {
+    this.validatePageNumber($event);
+
     if (this.topicName) {
       this.changeQueryParams.emit($event.page);
       this.topicService.paginateMessages(this.servers.getSelectedServerId(), $event, this.topicName);
@@ -66,6 +71,18 @@ export class TopicPaginationComponent {
   getMessages(): void {
     if (this.topicName) {
       this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName);
+    }
+  }
+
+  private validatePageNumber($event: { page: number }) {
+    if (this.paging !== undefined) {
+      if (this.pager.totalPages < $event.page) {
+        $event.page = this.pager.totalPages;
+      }
+
+      if (1 > $event.page) {
+        $event.page = 1;
+      }
     }
   }
 }

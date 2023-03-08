@@ -5,11 +5,11 @@ import {Router} from '@angular/router';
 import {TrackService} from '../../track/track.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Clipboard} from '@angular/cdk/clipboard';
-import {Model} from '@swimlane/ngx-datatable';
-import {MessageData, MessageDataService} from '@app/message-data';
+import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {DrawerService} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
 
 @Component({
   selector: 'app-message-view',
@@ -22,17 +22,18 @@ import {SendComponent} from '@app/feat-send';
       </div>
       <div class="headers" *ngIf="vm.messageData.headers.length > 0 && vm.isAnimationDone">
         <div class="label">Headers</div>
-        <ngx-datatable class="headers-table-detail material"
-                       [rows]="vm.messageData.headers"
-                       [rowHeight]="38"
-                       [headerHeight]="38"
-                       [scrollbarH]="false"
-                       [scrollbarV]="false"
-                       [columnMode]="'force'"
-                       (activate)="navigateToTrack($event, vm.messageData)">
-          <ngx-datatable-column prop="key" name="header key"></ngx-datatable-column>
-          <ngx-datatable-column prop="value" name="header value"></ngx-datatable-column>
-        </ngx-datatable>
+        <app-common-table [tableData]="vm.messageData.headers" [columns]="columns" matSort
+                          cdkDropList cdkDropListOrientation="horizontal"
+                          (cdkDropListDropped)="drop($event)"
+                          (rowClickedAction)="navigateToTrack($event, vm.messageData)"
+                          [headerClass]="'white-table-header'">
+
+          <ng-container *ngFor="let column of columns; let index = index">
+            <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+          </ng-container>
+
+        </app-common-table>
+
         <div *ngIf="!vm.isAnimationDone" class="kafka-progress"></div>
       </div>
       <div class="payload">
@@ -47,12 +48,17 @@ import {SendComponent} from '@app/feat-send';
       </div>
 
       <div class="actions">
-        <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">Cancel</button>
+        <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">
+          Cancel
+        </button>
         <span class="spacer"></span>
-        <button mat-button disableRipple class="action-button-white" (click)="copyToClipboard(vm.messageData.value)">Copy to
+        <button mat-button disableRipple class="action-button-white"
+                (click)="copyToClipboard(vm.messageData.value)">Copy to
           clipboard
         </button>
-        <button mat-button disableRipple class="action-button-black" (click)="resend(vm.messageData)">Resend event</button>
+        <button mat-button disableRipple class="action-button-black"
+                (click)="resend(vm.messageData)">Resend event
+        </button>
       </div>
 
     </mat-dialog-content>
@@ -60,9 +66,28 @@ import {SendComponent} from '@app/feat-send';
   styleUrls: ['./message-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessageViewComponent implements OnInit {
+export class MessageViewComponent extends AbstractTableComponent implements OnInit {
 
   private isAnimationDone$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  columns: TableColumn[] = [
+    {
+      name: 'header key',
+      prop: 'key',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+    {
+      name: 'header value',
+      prop: 'value',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true
+    },
+  ];
 
   vm$: Observable<{
     messageData: MessageData, isAnimationDone: boolean
@@ -84,6 +109,7 @@ export class MessageViewComponent implements OnInit {
     private clipboard: Clipboard,
     private dialogRef: MatDialogRef<MessageViewComponent>,
     private messageDataService: MessageDataService) {
+    super();
   }
 
   copyToClipboard(object: string): void {
@@ -108,13 +134,9 @@ export class MessageViewComponent implements OnInit {
     });
   }
 
-  navigateToTrack(event: Model, messageData: MessageData): void {
-    const element = event.event.target as HTMLElement;
-    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
-      this.dialogRef.close();
-      this.trackService.storeTrackFilter(event.row.key, event.row.value, messageData.timestamp, messageData.topicName);
-      this.router.navigate(['/track']);
-    }
+  navigateToTrack(event: MessageDataHeader, messageData: MessageData): void {
+    this.dialogRef.close();
+    this.trackService.storeTrackFilter(event.key, event.value, messageData.timestamp, messageData.topicName);
+    this.router.navigate(['/track']);
   }
-
 }

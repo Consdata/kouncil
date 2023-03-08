@@ -369,3 +369,57 @@ mat-form-field:hover {
     height: 42px !important;
   }
 }
+
+.mat-mdc-table-sticky-border-elem-left {
+  border-right: 1px solid pallete.$main-20;
+}
+
+.mat-mdc-row:hover {
+  background: pallete.$main-10 !important;
+  cursor: pointer;
+}
+
+.mat-focus-indicator {
+  position: unset !important;
+}
+
+.mat-mdc-table {
+  &.resizing {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: col-resize;
+  }
+
+  .mat-mdc-cell {
+    span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .mat-mdc-header-cell {
+    position: relative;
+
+    &:not(:last-child) {
+      .resize-holder {
+        cursor: col-resize;
+        width: 20px;
+        height: 100%;
+        position: absolute;
+        right: -10px;
+        top: 0;
+        z-index: 1;
+      }
+    }
+  }
+}
+
+.default-table-header {
+  background: pallete.$main-10 !important;
+}
+
+.white-table-header {
+  background: pallete.$main-0 !important;
+}

@@ -78,6 +78,8 @@ import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CommonComponentsModule} from '@app/common-components';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatSortModule} from '@angular/material/sort';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -164,7 +166,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     CommonLoginModule,
     HttpClientXsrfModule,
     MatAutocompleteModule,
-    CommonComponentsModule
+    CommonComponentsModule,
+    MatSortModule,
+    DragDropModule,
   ],
   providers: [
     {

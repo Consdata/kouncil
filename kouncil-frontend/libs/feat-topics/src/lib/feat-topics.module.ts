@@ -7,15 +7,16 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatDialogModule} from '@angular/material/dialog';
-import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {RouterModule} from '@angular/router';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from "@angular/material/table";
+import {CommonComponentsModule} from "@app/common-components";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   imports: [CommonModule,
     FeatNoDataModule,
-    NgxDatatableModule,
     RouterModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -23,7 +24,7 @@ import {MatButtonModule} from '@angular/material/button';
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,
-    MatDialogModule],
+    MatDialogModule, MatTableModule, CommonComponentsModule, MatSortModule],
   declarations: [
     TopicsComponent
   ],

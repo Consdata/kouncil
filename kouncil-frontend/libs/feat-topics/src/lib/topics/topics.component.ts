@@ -1,13 +1,18 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {TopicsService} from './topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {Model} from '@swimlane/ngx-datatable';
 import {FavouritesService} from '@app/feat-favourites';
-import {ArraySortService, DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {
+  ArraySortService,
+  DrawerService,
+  ProgressBarService,
+  SearchService
+} from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
+import {TableColumn} from "@app/common-components";
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -18,54 +23,37 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
       </ng-template>
-      <ngx-datatable *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
-                     class="topics-table material"
-                     [rows]="filtered"
-                     [rowHeight]="48"
-                     [headerHeight]="24"
-                     [scrollbarH]="false"
-                     [scrollbarV]="false"
-                     [columnMode]="'force'"
-                     [groupRowsBy]="'group'"
-                     [groupExpansionDefault]="true"
-                     [limit]="4"
-                     (sort)="customSort($event)"
-                     (activate)="navigateToTopic($event)"
-                     [rowClass]="getRowClass"
-                     #table>
 
-        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template
-                       class="datatable-group-header-wrapper">
-            <div class="group-header">{{group.value[0].group === 'FAVOURITES' ? 'Favourites' : 'All topics'}}</div>
-            <span class="datatable-header-divider"></span>
-            <span class="datatable-header-hide" (click)="table.groupHeader.toggleExpandGroup(group)">
-          <span *ngIf="expanded">HIDE</span>
-          <span *ngIf="!expanded">SHOW</span>
-        </span>
-          </ng-template>
-        </ngx-datatable-group-header>
+      <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
+                        [tableData]="filtered" [columns]="columns"
+                        [additionalColumns]="additionalColumns" matSort
+                        (rowClickedAction)="navigateToTopic($event)"
+                        [groupHeaderName]="groupHeaderName"
+                        [groupedTable]="true" [rowClass]="getRowClass"
+                        [groupByColumns]="['group']">
 
-        <ngx-datatable-column name="Name" cellClass="datatable-cell-wrapper" [width]="500">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
-              <mat-icon class="ngx-star-favourite" [class.gray]="row.group !== 'FAVOURITES'"
-                        (click)="onFavouriteClick($event, row)">star
-              </mat-icon>
-              {{row.name}}
-            </a>
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-container *ngFor="let column of additionalColumns; let index = index">
 
-        <ngx-datatable-column name="Partitions" cellClass="datatable-cell-wrapper" [width]="150">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', row.name]">
-              {{row.partitions}}
-            </a>
-          </ng-template>
-        </ngx-datatable-column>
+          <app-common-table-column [column]="column" [index]="index"
+                                   [template]="cellTemplate">
 
-      </ngx-datatable>
+            <ng-template #cellTemplate let-element>
+              <div class="datatable-cell-anchor">
+                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+                          (click)="onFavouriteClick($event, element)">star
+                </mat-icon>
+                {{element.name}}
+              </div>
+            </ng-template>
+          </app-common-table-column>
+        </ng-container>
+
+        <ng-container *ngFor="let column of columns; let index = index">
+          <app-common-table-column [column]="column"
+                                   [index]="index + additionalColumns.length"></app-common-table-column>
+        </ng-container>
+
+      </app-common-table>
     </div>
   `,
   styleUrls: ['./topics.component.scss']
@@ -74,7 +62,35 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
-  @ViewChild('table') private table?: ElementRef;
+
+  additionalColumns: TableColumn[] = [
+    {
+      name: 'Name',
+      prop: 'name',
+      sticky: false,
+      resizeable: true,
+      sortable: true,
+      draggable: true,
+      width: 500
+    }
+  ];
+
+  columns: TableColumn[] =
+    [
+      {
+        name: 'Partitions',
+        prop: 'partitions',
+        sticky: false,
+        resizeable: true,
+        sortable: true,
+        draggable: true,
+        width: 150
+      }
+    ];
+
+  groupHeaderName = (group) => {
+    return group.group === 'FAVOURITES' ? 'Favourites' : 'All topics'
+  }
 
   private searchSubscription?: Subscription;
 
@@ -99,13 +115,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   private loadTopics(): void {
     this.topicsService.getTopics$(this.servers.getSelectedServerId())
-      .pipe(first())
-      .subscribe((data: Topics) => {
-        this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
-        this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
-        this.filter(this.searchService.currentPhrase);
-        this.progressBarService.setProgress(false);
-      });
+    .pipe(first())
+    .subscribe((data: Topics) => {
+      this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
+      this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
+      this.filter(this.searchService.currentPhrase);
+      this.progressBarService.setProgress(false);
+    });
   }
 
   ngOnDestroy(): void {
@@ -130,11 +146,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToTopic(event: Model): void {
-    const element = event.event.target as HTMLElement;
-    if (event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
-      this.router.navigate(['/topics/messages', event.row.name]);
-    }
+  navigateToTopic(event: TopicMetadata): void {
+    this.router.navigate(['/topics/messages', event.name]);
   }
 
   customSort(event: { column: { prop: string }, newValue: string }): void {
