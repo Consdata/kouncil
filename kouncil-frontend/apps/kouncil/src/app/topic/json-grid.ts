@@ -51,6 +51,8 @@ export class JsonGrid {
   }
 
   replaceObjects(objects: JsonGridData[]): void {
+    this.columns = new Set<Column>();
+    this.columnNames = new Set<string>();
     this.rows.length = 0;
     const firstLoad = this.rows.length === 0;
     objects.forEach((object) => {
