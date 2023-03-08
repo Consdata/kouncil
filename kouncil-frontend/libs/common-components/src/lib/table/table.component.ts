@@ -1,5 +1,6 @@
 import {
-  AfterContentInit, AfterViewInit,
+  AfterContentInit,
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
@@ -52,9 +53,12 @@ import {TableGroup} from "./table-group";
 export class TableComponent implements AfterContentInit, AfterViewInit {
 
   allColumns: TableColumn[] = [];
-  @Input() columns: TableColumn[] = [];
-  @Input() additionalColumns: TableColumn[] = [];
-  @Input() actionColumns: TableColumn[] = [];
+  _columns: TableColumn[] = [];
+  _additionalColumns: TableColumn[] = [];
+  _actionColumns: TableColumn[] = [];
+  _tableData: unknown[];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+
   @Input() headerClass: string = 'default-table-header';
   @Input() groupHeaderName: (group: TableGroup) => string;
   @Input() rowClass: (row) => {} = () => {
@@ -62,28 +66,57 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   };
   @Input() groupedTable: boolean = false;
   @Input() groupByColumns: string[];
-  @Input() tableData: unknown[];
   @Output() rowClickedAction: EventEmitter<any> = new EventEmitter<any>();
   @ContentChildren(TableColumnComponent) tableColumnComponents: QueryList<TableColumnComponent>;
   @ViewChild(MatTable, {static: true}) table: MatTable<any>;
 
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
-
   constructor() {
+  }
+
+  @Input()
+  set tableData(tableData: unknown[]) {
+    this._tableData = tableData;
+    if (this.groupedTable && this._tableData) {
+      this.dataSource.data = this.addGroups(this._tableData, this.groupByColumns);
+    } else {
+      this.dataSource.data = this._tableData;
+    }
+  }
+
+  @Input()
+  set columns(columns: TableColumn[]) {
+    this._columns = columns;
+    this.updateAllColumns();
+  }
+
+  @Input()
+  set additionalColumns(additionalColumns: TableColumn[]) {
+    this._additionalColumns = additionalColumns;
+    this.updateAllColumns();
+  }
+
+  @Input()
+  set actionColumns(actionColumns: TableColumn[]) {
+    this._actionColumns = actionColumns;
+    this.updateAllColumns();
   }
 
   ngAfterContentInit() {
     this.tableColumnComponents.forEach(columnDef => this.table.addColumnDef(columnDef.columnDef));
-    this.allColumns = this.additionalColumns.concat(this.columns.concat(this.actionColumns));
+    this.updateAllColumns();
+  }
+
+  private updateAllColumns() {
+    this.allColumns = this._additionalColumns.concat(this._columns.concat(this._actionColumns));
   }
 
   ngAfterViewInit() {
-    if (this.groupedTable && this.tableData) {
-      this.dataSource.data = this.addGroups(this.tableData, this.groupByColumns);
+    if (this.groupedTable && this._tableData) {
+      this.dataSource.data = this.addGroups(this._tableData, this.groupByColumns);
       this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
       this.dataSource.filter = performance.now().toString();
     } else {
-      this.dataSource.data = this.tableData;
+      this.dataSource.data = this._tableData;
     }
   }
 
