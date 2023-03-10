@@ -9,7 +9,7 @@ There are two ways in which Kouncil can be configured:
 Simple configuration is passed directly into `docker run` command using `bootstrapServers` environment variable, just as we've seen in [Quick start](README.md#quick-start):
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" consdata/kouncil:latest
 ```
 
 `bootstrapServers` variable expects a comma-separated list of brokers, each belonging to a different cluster. Kouncil only needs to know about a single broker from the cluster in order to work.
@@ -17,7 +17,7 @@ docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.activ
 The simplest possible configuration looks like this:
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" consdata/kouncil:latest
 ```
 
 After that, visit [http://localhost](http://localhost) in your browser, and you should be greeted with a list of topics from your cluster.
@@ -25,24 +25,24 @@ After that, visit [http://localhost](http://localhost) in your browser, and you 
 If you have multiple clusters and wish to manage them all with Kouncil, you can do so by simply specifying one broker from each cluster using comma-separated list:
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092,kafka1.another.cluster:8001" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092,kafka1.another.cluster:8001" consdata/kouncil:latest
 ```
 
 If you want to set Schema Registry url use `schemaRegistryUrl` environment variable, for instance:
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" -e schemaRegistryUrl="http://schema.registry:8081" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e schemaRegistryUrl="http://schema.registry:8081" consdata/kouncil:latest
 ```
 This url will be used for every cluster in `boostrapServers` variable. If you want to be more specific go to [Advanced configuration](#docker---advanced-configuration).
 
 If you want to set list of headers to keep while resending events from one topic to another you can use `resendHeadersToKeep` environment variable and pass list of comma-seperated header names, for example:
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" -e resendHeadersToKeep="requestId,version" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e resendHeadersToKeep="requestId,version" consdata/kouncil:latest
 ```
 
 In order to change the port on which Kouncil listens for connections, just modify the `-p` argument, like so:
 
 ```bash
-docker run -d -p 7070:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+docker run -d -p 7070:8080 -e bootstrapServers="kafka1:9092" consdata/kouncil:latest
 ```
 
 That will cause Kouncil to listen on port `7070`.
@@ -216,7 +216,7 @@ kouncil:
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e allowedOrigins="http://localhost:*, https://yourdomain.com" consdata/kouncil:latest
 ```
 
 ## Authentication
@@ -267,7 +267,7 @@ kouncil:
 ```yaml
 kouncil:
   auth:
-    active-provider: sso # inmemory, ldap, ad, sso
+    active-provider: sso
 spring:
   security:
     oauth2:
@@ -284,7 +284,7 @@ Kouncil supports logging to external log file. We suggest to use logback. If you
 If you use provided `logback.xml` logs will be placed under logs/kouncil.log
 
 ```bash
-docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e kouncil.auth.active-provider="inmemory" -e logging.config="path_to_your_logback_xml_file_in_docker_container" -v path_to_your_local_logback_xml_folder:/path_to_your_container_logback_xml_folder consdata/kouncil:latest
+docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e logging.config="path_to_your_logback_xml_file_in_docker_container" -v path_to_your_local_logback_xml_folder:/path_to_your_container_logback_xml_folder consdata/kouncil:latest
 ```
 If you want the logs to be accessible outside the docker container, you could pass another volume in docker run command like this:
 ```bash
