@@ -19,32 +19,33 @@ import {ServersService} from '@app/common-servers';
 import {RxStompService} from '../../rx-stomp.service';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {DatePipe} from '@angular/common';
+import {JsonGridData} from '../../topic/json-grid-data';
+import {JsonGrid} from '../../topic/json-grid';
 
 @Component({
   selector: 'app-track-result',
   template: `
-    <div class="track">
-      <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder
-          [objectTypeName]="'Message'"
-          #noDataPlaceholderComponent
-        ></app-no-data-placeholder>
-      </ng-template>
+    <ng-template #noDataPlaceholder>
+      <app-no-data-placeholder
+        [objectTypeName]="'Message'"
+        #noDataPlaceholderComponent
+      ></app-no-data-placeholder>
+    </ng-template>
 
-      <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
-               class="track-table">
-        <app-common-table [tableData]="filteredRows" [columns]="columns" matSort
-                          cdkDropList cdkDropListOrientation="horizontal"
-                          (cdkDropListDropped)="drop($event)"
-                          (rowClickedAction)="showMessage($event)">
-          <ng-container *ngFor="let column of columns; let index = index">
-            <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
-          </ng-container>
-        </app-common-table>
-      </section>
-    </div>
+    <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
+             class="track-table">
+      <app-common-table [tableData]="filteredRows" [columns]="allColumns" matSort
+                        cdkDropList cdkDropListOrientation="horizontal"
+                        (cdkDropListDropped)="drop($event)"
+                        (rowClickedAction)="showMessage($event)">
+        <ng-container *ngFor="let column of allColumns; let index = index">
+          <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
+        </ng-container>
+      </app-common-table>
+    </section>
   `,
   styleUrls: ['./track-result.component.scss'],
+  providers: [JsonGrid, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush, // otherwise ngx datatable flickers like hell
 })
 export class TrackResultComponent extends AbstractTableComponent implements OnInit, OnDestroy {
@@ -57,12 +58,14 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
   allRows: unknown[] = [];
   asyncHandle?: string;
 
-  columns: TableColumn[] = [
+  allColumns: TableColumn[] = [];
+
+  commonColumns: TableColumn[] = [
     {
       name: 'timestamp',
-      prop: 'timestamp',
-      sticky: false,
-      width: 190,
+      prop: 'kouncilTimestamp',
+      sticky: true,
+      width: 215,
       resizeable: true,
       sortable: true,
       draggable: true,
@@ -70,36 +73,36 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
     },
     {
       name: 'topic',
-      prop: 'topic',
-      sticky: false,
-      width: 190,
+      prop: 'kouncilTopic',
+      sticky: true,
+      width: 200,
       resizeable: true,
       sortable: true,
       draggable: true
     },
     {
       name: 'partition',
-      prop: 'partition',
-      sticky: false,
-      width: 190,
+      prop: 'kouncilPartition',
+      sticky: true,
+      width: 100,
       resizeable: true,
       sortable: true,
       draggable: true
     },
     {
       name: 'offset',
-      prop: 'offset',
-      sticky: false,
-      width: 190,
+      prop: 'kouncilOffset',
+      sticky: true,
+      width: 100,
       resizeable: true,
       sortable: true,
       draggable: true
     },
     {
       name: 'key',
-      prop: 'key',
-      sticky: false,
-      width: 190,
+      prop: 'kouncilKey',
+      sticky: true,
+      width: 150,
       resizeable: true,
       sortable: true,
       draggable: true
@@ -118,7 +121,8 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
     private servers: ServersService,
     private rxStompService: RxStompService,
     private changeDetectorRef: ChangeDetectorRef,
-    private messageDataService: MessageDataService
+    private messageDataService: MessageDataService,
+    private jsonGrid: JsonGrid
   ) {
     super();
   }
@@ -128,6 +132,15 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
       return JSON.parse(message);
     } catch (e) {
       return message;
+    }
+  }
+
+  private static tryParseJsonToRecord(message: string): Record<string, unknown> {
+    try {
+      const parsedMessage = JSON.parse(message);
+      return parsedMessage && typeof parsedMessage === 'object' ? parsedMessage : {};
+    } catch (e) {
+      return {};
     }
   }
 
@@ -189,8 +202,7 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
 
     this.changeDetectorRef.detectChanges();
     if (this.noDataPlaceholderComponent) {
-      this.noDataPlaceholderComponent.currentPhrase =
-        this.searchService.currentPhrase;
+      this.noDataPlaceholderComponent.currentPhrase = this.searchService.currentPhrase;
       this.noDataPlaceholderComponent.detectChanges();
     }
   }
@@ -218,7 +230,33 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
       )
       .subscribe((events: MessageData[]) => {
         if (events && events.length > 0) {
-          this.allRows = [...this.allRows, ...events];
+          const columnNames: Array<string> = this.generateGridColumnNames(events);
+
+          const gridColumns: TableColumn[] = [];
+          if (columnNames.length > 0) {
+
+            columnNames.forEach((column) => {
+              gridColumns.push({
+                name: column,
+                prop: column,
+                sticky: false,
+                resizeable: true,
+                sortable: true,
+                draggable: false,
+                width: 200
+              });
+            });
+
+            this.parseObjectValues(events);
+          }
+
+          let columns: TableColumn[] = [...this.commonColumns];
+          if (gridColumns) {
+            columns = columns.concat(gridColumns);
+          }
+          this.allColumns = columns;
+
+          this.allRows = [...this.allRows, ...this.jsonGrid.getRows()];
           this.filterRows(this.searchService.currentPhrase);
         }
         if (!this.trackService.isAsyncEnable()) {
@@ -226,5 +264,46 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
         }
       });
     });
+  }
+
+  private generateGridColumnNames(events: MessageData[]): Array<string> {
+    let columnNames: Array<string> = [];
+    events.every(event => {
+      const keys = Object.keys(TrackResultComponent.tryParseJson(event.value));
+      if (columnNames.length === 0) {
+        // empty list - add all object properties to possible column array
+        columnNames = keys;
+      } else {
+        let copy = columnNames;
+        columnNames.every(columnName => {
+          if (!keys.includes(columnName)) {
+            copy = copy.splice(copy.indexOf(columnName), 1);
+          }
+          return true;
+        });
+      }
+      return true;
+    });
+    return columnNames;
+  }
+
+  private parseObjectValues(events: MessageData[]): void {
+    const values: JsonGridData[] = [];
+    events.forEach((event: MessageData) => {
+      values.push({
+        value: event.value,
+        valueFormat: event.valueFormat,
+        valueJson: TrackResultComponent.tryParseJsonToRecord(event.value),
+        partition: event.partition,
+        offset: event.offset,
+        key: event.key,
+        keyFormat: event.keyFormat,
+        keyJson: TrackResultComponent.tryParseJsonToRecord(event.key),
+        timestamp: event.timestamp,
+        headers: event.headers,
+        topic: event.topic
+      } as JsonGridData);
+    });
+    this.jsonGrid.replaceObjects(values, false, false);
   }
 }

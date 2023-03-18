@@ -144,6 +144,10 @@ export class TrackFilterComponent implements OnInit {
       this.visibleTopicList = topics.topics.map((tm) => tm.name);
     });
     this.trackFilter = this.trackService.getStoredTrackFilter();
+
+    this.trackService.trackFinished.subscribe(() => {
+      this.loading = false;
+    });
   }
 
   toggleAsyncMode(): void {
