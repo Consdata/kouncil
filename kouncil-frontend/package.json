@@ -44,6 +44,7 @@
     "@angular/compiler-cli": "15.0.1",
     "@angular/language-service": "15.0.1",
     "@consdata/eslint-config": "0.21.0",
+    "@ngneat/spectator": "12.2.1",
     "@nrwl/cli": "15.2.1",
     "@nrwl/eslint-plugin-nx": "15.2.1",
     "@nrwl/jest": "15.2.1",

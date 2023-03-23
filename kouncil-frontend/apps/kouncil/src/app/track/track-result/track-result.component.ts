@@ -181,10 +181,12 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   showMessage(event: any): void {
     const messageData = {
-      value: TrackResultComponent.tryParseJson(event.value),
+      value: event.kouncilValueJson && Object.keys(event.kouncilValueJson).length > 0 ?
+        event.kouncilValueJson : event.kouncilValue,
       valueFormat: event.valueFormat,
       headers: event.headers,
-      key: TrackResultComponent.tryParseJson(event.key),
+      key: event.kouncilKeyJson && Object.keys(event.kouncilKeyJson).length > 0 ?
+        event.kouncilKeyJson : event.kouncilKey,
       keyFormat: event.keyFormat,
       topicName: event.topic
     } as MessageData;
