@@ -19,9 +19,8 @@ import {AuthService} from '../login/auth.service';
   selector: 'app-kafka-navbar',
   template: `
     <mat-toolbar>
-      <img *ngIf="backendVersion$ | async as backendVersion"
-           src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
-           matTooltip="{{backendVersion}}"/>
+      <img src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
+           matTooltip="{{backendVersion$ | async}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/topics']" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Topics</a>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
