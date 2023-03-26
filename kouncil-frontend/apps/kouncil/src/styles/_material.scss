@@ -323,7 +323,8 @@ mat-form-field:hover {
 }
 
 .mat-mdc-option {
-  line-height: 48px !important;
+  line-height: 40px !important;
+  min-height: 40px !important;
 }
 
 .mdc-text-field__input::-webkit-calendar-picker-indicator {
@@ -422,4 +423,8 @@ mat-form-field:hover {
 
 .white-table-header {
   background: pallete.$main-0 !important;
+}
+
+mat-option > span {
+  margin: 0 15px 0 0;
 }
