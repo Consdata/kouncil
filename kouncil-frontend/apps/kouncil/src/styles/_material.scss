@@ -98,7 +98,7 @@ app-message-view {
   }
 
   textarea {
-    height: 250px;
+    min-height: 250px;
   }
 
   input:hover, input:focus-visible, textarea:hover, textarea:focus-visible {
