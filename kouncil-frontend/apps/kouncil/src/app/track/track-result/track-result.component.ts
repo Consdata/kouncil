@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Inject, LOCALE_ID,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -66,7 +66,7 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
       resizeable: true,
       sortable: true,
       draggable: true,
-      valueFormatter: (value: Date | string | number): string => new DatePipe(navigator.language).transform(value, 'yyyy-MM-dd HH:mm:ss.SSS')
+      valueFormatter: (value: Date | string | number): string => new DatePipe(this.locale).transform(value, 'yyyy-MM-dd HH:mm:ss.SSS')
     },
     {
       name: 'topic',
@@ -118,7 +118,8 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
     private servers: ServersService,
     private rxStompService: RxStompService,
     private changeDetectorRef: ChangeDetectorRef,
-    private messageDataService: MessageDataService
+    private messageDataService: MessageDataService,
+    @Inject(LOCALE_ID) public locale: string
   ) {
     super();
   }
