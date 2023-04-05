@@ -8,7 +8,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
       <div class="divider">
         <mat-icon class="arrow">arrow_forward_ios</mat-icon>
       </div>
-      <div class="name">{{name}}</div>
+      <div class="name"><span [matTooltip]="name">{{name}}</span></div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

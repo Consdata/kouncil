@@ -13,6 +13,7 @@ import {MatSortModule} from "@angular/material/sort";
 import {TableColumnComponent} from "./table-column/table-column.component";
 import {ResizeColumnDirective} from "./table-column/resize-column.directive";
 import {MatIconModule} from "@angular/material/icon";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import {MatIconModule} from "@angular/material/icon";
     MatTableModule,
     DragDropModule,
     MatSortModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   declarations: [
     AutocompleteComponent,
