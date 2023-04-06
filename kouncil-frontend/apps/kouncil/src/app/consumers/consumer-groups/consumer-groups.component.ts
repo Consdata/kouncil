@@ -96,7 +96,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
         resizeable: true,
         sortable: true,
         draggable: true,
-        width: 190
+        width: 190,
+        columnClass: this.getStatusClass
       }
     ];
 

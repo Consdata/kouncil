@@ -8,5 +8,6 @@ export interface TableColumn {
   draggable: boolean;
   width?: number;
   valueFormatter?: (value: any) => string;
+  columnClass?: (value: any) => string;
 
 }
