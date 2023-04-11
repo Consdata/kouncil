@@ -122,8 +122,7 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
     private rxStompService: RxStompService,
     private changeDetectorRef: ChangeDetectorRef,
     private messageDataService: MessageDataService,
-    private jsonGrid: JsonGrid
-    private messageDataService: MessageDataService,
+    private jsonGrid: JsonGrid,
     @Inject(LOCALE_ID) public locale: string
   ) {
     super();
