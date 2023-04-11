@@ -11,4 +11,5 @@ export interface MessageData {
   timestamp?: number | null;
   headers?: MessageDataHeader[];
   topicName: string;
+  topic: string;
 }

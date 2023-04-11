@@ -10,7 +10,7 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {MatColumnDef, MatTable, MatTableDataSource} from "@angular/material/table";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {TableColumn} from "../table-column/table-column";
 import {TableColumnComponent} from "../table-column/table-column.component";
@@ -118,6 +118,15 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     } else {
       this.dataSource.data = this._tableData;
     }
+
+    this.tableColumnComponents.changes.subscribe(() => {
+      // remove all the columns
+      let from: Array<MatColumnDef> = Array.from(this.table["_customColumnDefs"].values());
+      from.forEach((column: MatColumnDef) => this.table.removeColumnDef(column));
+      this.tableColumnComponents.forEach(columnDef => {
+        this.table.addColumnDef(columnDef.columnDef);
+      });
+    });
   }
 
   getColumnNames() {
