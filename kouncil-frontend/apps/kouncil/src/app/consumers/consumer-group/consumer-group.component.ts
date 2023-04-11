@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, LOCALE_ID, OnDestroy, OnInit} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {ConsumerGroupService} from './consumer-group.service';
@@ -114,7 +114,7 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
       resizeable: true,
       sortable: true,
       draggable: true,
-      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+      valueFormatter: (value: number): string => new DecimalPipe(this.locale).transform(value)
     },
     {
       name: 'endOffset',
@@ -123,7 +123,7 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
       resizeable: true,
       sortable: true,
       draggable: true,
-      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+      valueFormatter: (value: number): string => new DecimalPipe(this.locale).transform(value)
     },
     {
       name: 'lag',
@@ -132,7 +132,7 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
       resizeable: true,
       sortable: true,
       draggable: true,
-      valueFormatter: (value: number): string => new DecimalPipe(navigator.language).transform(value)
+      valueFormatter: (value: number): string => new DecimalPipe(this.locale).transform(value)
     },
     {
       name: 'pace',
@@ -146,9 +146,9 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
           return '=';
         } else {
           if (value > 0) {
-            return `↑ ${new DecimalPipe(navigator.language).transform(value)}`;
+            return `↑ ${new DecimalPipe(this.locale).transform(value)}`;
           } else {
-            return `↓ ${new DecimalPipe(navigator.language).transform(value)}`;
+            return `↓ ${new DecimalPipe(this.locale).transform(value)}`;
           }
         }
       }
@@ -160,7 +160,8 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
     private route: ActivatedRoute,
     private progressBarService: ProgressBarService,
     private consumerGroupService: ConsumerGroupService,
-    private servers: ServersService
+    private servers: ServersService,
+    @Inject(LOCALE_ID) public locale: string
   ) {
     super();
   }

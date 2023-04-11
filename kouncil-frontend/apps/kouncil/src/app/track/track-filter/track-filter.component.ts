@@ -48,7 +48,7 @@ import {SelectableItem} from '@app/common-components';
                                  [data]="topicList"
                                  [placeholder]="'Topics'"
                                  [emptyFilteredMsg]="'No topics found'"
-                                 [panelWidth]="250"
+                                 [panelWidth]="'auto'"
                                  (selectedValueEvent)="updateTopics($event)"></app-common-autocomplete>
       </div>
 

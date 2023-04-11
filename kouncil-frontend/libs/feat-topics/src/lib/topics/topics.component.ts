@@ -38,12 +38,12 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [template]="cellTemplate">
 
             <ng-template #cellTemplate let-element>
-              <div class="datatable-cell-anchor">
-                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
-                          (click)="onFavouriteClick($event, element)">star
-                </mat-icon>
-                {{element.name}}
-              </div>
+                <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', element.name]">
+                  <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+                            (click)="onFavouriteClick($event, element)">star
+                  </mat-icon>
+                  {{element.name}}
+                </a>
             </ng-template>
           </app-common-table-column>
         </ng-container>

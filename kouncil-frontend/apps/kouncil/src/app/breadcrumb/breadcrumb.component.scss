@@ -34,6 +34,41 @@
 
     .name {
       color: $main-100;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+
+      @media screen and (max-width: 1800px) {
+        width: 400px;
+      }
+
+      @media screen and (max-width: 1750px) {
+        width: 350px;
+      }
+
+      @media screen and (max-width: 1700px) {
+        width: 300px;
+      }
+
+      @media screen and (max-width: 1650px) {
+        width: 250px;
+      }
+
+      @media screen and (max-width: 1600px) {
+        width: 200px;
+      }
+
+      @media screen and (max-width: 1550px) {
+        width: 150px;
+      }
+
+      @media screen and (max-width: 1500px) {
+        width: 100px;
+      }
+
+      @media screen and (max-width: 1450px) {
+        width: 75px;
+      }
     }
   }
 }

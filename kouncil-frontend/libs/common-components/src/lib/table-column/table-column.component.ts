@@ -17,12 +17,8 @@ import {MatColumnDef} from "@angular/material/table";
       <td mat-cell *matCellDef="let element" [style.min-width.px]="column.width"
           class="cell">
 
-        <span *ngIf="!template">
-          {{
-          column.valueFormatter
-            ? column.valueFormatter(element[column.prop])
-            : element[column.prop]
-          }}
+        <span *ngIf="!template" [matTooltip]="getColumnValue(element, column)">
+          {{getColumnValue(element, column)}}
         </span>
 
         <ng-container *ngIf="template" [ngTemplateOutlet]="template"
@@ -41,4 +37,10 @@ export class TableColumnComponent {
   @Input() value: number;
   @Input() template: TemplateRef<any>;
   @ViewChild(MatColumnDef, {static: false}) columnDef: MatColumnDef;
+
+  getColumnValue(element: unknown, column: TableColumn) {
+    return column.valueFormatter
+      ? column.valueFormatter(element[column.prop])
+      : element[column.prop];
+  }
 }

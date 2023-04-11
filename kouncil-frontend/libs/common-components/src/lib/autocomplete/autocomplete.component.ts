@@ -49,7 +49,7 @@ export class AutocompleteComponent implements OnInit {
   @Input() control;
   @Input() placeholder: string
   @Input() emptyFilteredMsg: string
-  @Input() panelWidth: number
+  @Input() panelWidth: string | number
   @Output() selectedValueEvent: EventEmitter<Array<string>> = new EventEmitter();
 
   filteredData: Observable<Array<SelectableItem>>;
