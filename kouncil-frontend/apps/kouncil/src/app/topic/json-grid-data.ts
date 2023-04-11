@@ -12,4 +12,5 @@ export interface JsonGridData {
   keyJson: Record<string, unknown>;
   timestamp: number | null;
   headers: MessageDataHeader[];
+  topic: string;
 }

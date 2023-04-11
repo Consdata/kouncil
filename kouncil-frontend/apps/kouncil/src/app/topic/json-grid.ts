@@ -34,9 +34,9 @@ export class JsonGrid {
   private static escapeHtml(propertyValue: unknown) {
     if (typeof propertyValue === 'string') {
       return propertyValue
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
     } else {
       return propertyValue;
     }
@@ -50,7 +50,7 @@ export class JsonGrid {
     }
   }
 
-  replaceObjects(objects: JsonGridData[]): void {
+  replaceObjects(objects: JsonGridData[], formatPath: boolean = true, addColumn: boolean = true): void {
     this.columns = new Set<Column>();
     this.columnNames = new Set<string>();
     this.rows.length = 0;
@@ -62,7 +62,9 @@ export class JsonGrid {
           object.headers.forEach((header) => {
             const headerPath = 'H[' + header.key + ']';
             row[headerPath] = header.value;
-            this.addColumn(headerPath);
+            if (addColumn) {
+              this.addColumn(headerPath);
+            }
           });
         }
         if (object.valueJson) {
@@ -72,7 +74,9 @@ export class JsonGrid {
               object.valueJson[propertyName],
               row,
               propertyName,
-              false
+              false,
+              formatPath,
+              addColumn
             );
           });
         }
@@ -83,7 +87,9 @@ export class JsonGrid {
               object.keyJson[propertyName],
               row,
               propertyName,
-              true
+              true,
+              formatPath,
+              addColumn
             );
           });
         }
@@ -92,6 +98,7 @@ export class JsonGrid {
         row['kouncilKeyJson'] = object.keyJson;
         row['kouncilOffset'] = object.offset;
         row['kouncilPartition'] = object.partition;
+        row['kouncilTopic'] = object.topic;
         row['kouncilTimestamp'] = this.formatTimestamp(object.timestamp);
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
@@ -122,24 +129,29 @@ export class JsonGrid {
     return this.rows;
   }
 
-  private handleObject(level: number, value: unknown, row: Record<string, unknown>, path: string, isKey: boolean): void {
+  private handleObject(level: number, value: unknown, row: Record<string, unknown>, path: string, isKey: boolean, formatPath: boolean = true,
+                       addColumn: boolean = true): void {
     if (level > JsonGrid.MAX_OBJECT_DEPTH) {
       return;
     }
     if (JsonGrid.isScalar(value) || value === null) {
       // scalar value
-      const formattedPath = this.formatPath(path, isKey);
-      this.addColumn(formattedPath);
+      const formattedPath = formatPath ? this.formatPath(path, isKey) : path;
+      if (addColumn) {
+        this.addColumn(formattedPath);
+      }
       row[formattedPath] = JsonGrid.escapeHtml(JsonGrid.limitChars(value));
     } else if (typeof value === 'object' && Array.isArray(value)) {
       // array
       if (value.length <= JsonGrid.EXPAND_LIST_LIMIT) {
         value.forEach((arrayValue, i) =>
-          this.handleObject(level + 1, arrayValue, row, `${path}[${i}]`, isKey)
+          this.handleObject(level + 1, arrayValue, row, `${path}[${i}]`, isKey, formatPath, addColumn)
         );
       } else {
-        const formattedPath = this.formatPath(path, isKey);
-        this.addColumn(formattedPath);
+        const formattedPath = formatPath ? this.formatPath(path, isKey) : path;
+        if (addColumn) {
+          this.addColumn(formattedPath);
+        }
         row[formattedPath] = `[Array of ${value.length} elements]`;
       }
     } else {
@@ -151,12 +163,16 @@ export class JsonGrid {
             value[property],
             row,
             `${path}.${property}`,
-            isKey
+            isKey,
+            formatPath,
+            addColumn
           )
         );
       } else {
-        const formattedPath = this.formatPath(path, isKey);
-        this.addColumn(formattedPath);
+        const formattedPath = formatPath ? this.formatPath(path, isKey) : path;
+        if (addColumn) {
+          this.addColumn(formattedPath);
+        }
         row[formattedPath] = `[Object with ${Object.keys(value).length} properties]`;
       }
     }
@@ -164,18 +180,18 @@ export class JsonGrid {
 
   private shortenPath(path: string): string {
     return path
-      .split('.')
-      .map((p) => {
-        const indexMatch = p.match('[[0-9]+]$');
-        if (path.endsWith(p)) {
-          return p;
-        } else if (indexMatch) {
-          return `${p.substr(0, 3)}~${indexMatch[0]}`;
-        } else {
-          return p.substr(0, 3) + '~';
-        }
-      })
-      .join('.');
+    .split('.')
+    .map((p) => {
+      const indexMatch = p.match('[[0-9]+]$');
+      if (path.endsWith(p)) {
+        return p;
+      } else if (indexMatch) {
+        return `${p.substr(0, 3)}~${indexMatch[0]}`;
+      } else {
+        return p.substr(0, 3) + '~';
+      }
+    })
+    .join('.');
   }
 
   private limitRows(): void {

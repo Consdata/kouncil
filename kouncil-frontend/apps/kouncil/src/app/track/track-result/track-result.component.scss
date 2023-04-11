@@ -1,5 +1,6 @@
-.track {
-  .track-table {
-    margin-top: 40px;
-  }
+.track-table {
+  margin-top: 40px;
+  max-width: 100%;
+  overflow: auto;
+  height: calc(100% - 116px)
 }
