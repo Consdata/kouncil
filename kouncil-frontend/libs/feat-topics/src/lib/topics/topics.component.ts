@@ -12,7 +12,8 @@ import {
 } from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
-import {TableColumn} from "@app/common-components";
+import {AbstractTableComponent, TableColumn} from "@app/common-components";
+import {MatSort} from "@angular/material/sort";
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -26,11 +27,14 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                         [tableData]="filtered" [columns]="columns"
-                        [additionalColumns]="additionalColumns" matSort
+                        [additionalColumns]="additionalColumns"
+                        matSort [sort]="sort" (sortEvent)="customSort($event)"
                         (rowClickedAction)="navigateToTopic($event)"
                         [groupHeaderName]="groupHeaderName"
                         [groupedTable]="true" [rowClass]="getRowClass"
-                        [groupByColumns]="['group']">
+                        cdkDropList cdkDropListOrientation="horizontal"
+                        (cdkDropListDropped)="drop($event)"
+                        [groupByColumns]="['group']" >
 
         <ng-container *ngFor="let column of additionalColumns; let index = index">
 
@@ -38,12 +42,12 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [template]="cellTemplate">
 
             <ng-template #cellTemplate let-element>
-                <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', element.name]">
-                  <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
-                            (click)="onFavouriteClick($event, element)">star
-                  </mat-icon>
-                  {{element.name}}
-                </a>
+              <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', element.name]">
+                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+                          (click)="onFavouriteClick($event, element)">star
+                </mat-icon>
+                {{element.name}}
+              </a>
             </ng-template>
           </app-common-table-column>
         </ng-container>
@@ -58,7 +62,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
   `,
   styleUrls: ['./topics.component.scss']
 })
-export class TopicsComponent implements OnInit, OnDestroy {
+export class TopicsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
@@ -102,6 +106,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
               private drawerService: DrawerService,
               private servers: ServersService,
               private favouritesService: FavouritesService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -150,8 +155,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/topics/messages', event.name]);
   }
 
-  customSort(event: { column: { prop: string }, newValue: string }): void {
-    this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
+  customSort(sort: MatSort): void {
+    console.log('custom sort')
+    this.filtered = this.arraySortService.transform(this.filtered, sort.active, sort.direction);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

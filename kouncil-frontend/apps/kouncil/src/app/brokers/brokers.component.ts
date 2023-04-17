@@ -21,7 +21,7 @@ import {FileSizePipe} from './filze-size.pipe';
       <section *ngIf="filteredBrokers && filteredBrokers.length > 0; else noDataPlaceholder">
         <app-common-table [tableData]="filteredBrokers" [columns]="columns"
                           (rowClickedAction)="showBrokerDetails($event)"
-                          matSort
+                          matSort [sort]="sort"
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)">
           <ng-container *ngFor="let column of columns; let index = index">

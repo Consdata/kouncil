@@ -34,7 +34,7 @@ import {JsonGrid} from '../../topic/json-grid';
 
     <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
              class="track-table">
-      <app-common-table [tableData]="filteredRows" [columns]="allColumns" matSort
+      <app-common-table [tableData]="filteredRows" [columns]="allColumns" matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
                         (cdkDropListDropped)="drop($event)"
                         (rowClickedAction)="showMessage($event)">
