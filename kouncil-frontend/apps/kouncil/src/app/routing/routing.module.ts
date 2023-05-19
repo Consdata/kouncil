@@ -19,6 +19,9 @@ import {ConfigResolver} from './config-resolver';
 import {ChangePasswordComponent} from '../login/change-password.component';
 import {MainLoginComponent} from '../login/main-login.component';
 import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
+import {KouncilRole} from '../login/kouncil-role';
+import {AccessDeniedComponent} from '../access-denied/access-denied.component';
+import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -59,32 +62,54 @@ const routes: Routes = [
       {
         path: 'brokers',
         component: BrokersComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_ADMIN]
+        }
       },
       {
         path: 'topics',
         component: TopicsComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+        }
       },
       {
         path: 'topics/messages/:topic',
         component: TopicComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+        }
       },
       {
         path: 'consumer-groups',
         component: ConsumerGroupsComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_ADMIN]
+        }
       },
       {
         path: 'consumer-groups/:groupId',
         component: ConsumerGroupComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_ADMIN]
+        }
       },
       {
         path: 'track',
         component: TrackComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+        }
+      },
+      {
+        path: 'access-denied',
+        component: AccessDeniedComponent
       }
     ]
   },
@@ -92,10 +117,20 @@ const routes: Routes = [
     path: '', component: MainLoginComponent,
     children: [
       {path: 'login', component: LoginComponent},
-      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}
     ]
   },
-  {path: 'oauth', component: OAuthRedirectComponent}
+  {path: 'oauth', component: OAuthRedirectComponent},
+  {
+    path: '', component: MainComponent,
+    children: [
+      {
+        path: '**',
+        pathMatch: 'full',
+        component: PageNotFoundComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({

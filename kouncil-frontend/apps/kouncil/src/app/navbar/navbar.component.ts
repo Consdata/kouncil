@@ -14,6 +14,7 @@ import {Backend} from '@app/common-model';
 import {SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {AuthService} from '../login/auth.service';
+import {KouncilRole} from '../login/kouncil-role';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -22,15 +23,30 @@ import {AuthService} from '../login/auth.service';
       <img src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
            matTooltip="{{backendVersion$ | async}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/topics']" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Topics</a>
+         [routerLink]="['/topics']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
+         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+        Topics
+      </a>
+
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/brokers']" *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Brokers</a>
+         [routerLink]="['/brokers']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+        Brokers
+      </a>
+
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/consumer-groups']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Consumer Groups</a>
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+        Consumer Groups
+      </a>
+
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/track']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Track</a>
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
+         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+        Track
+      </a>
 
       <mat-divider [vertical]="true"></mat-divider>
 
@@ -81,6 +97,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 
   @Input() hideForAuthenticated: boolean = false;
+
+  KouncilRole: typeof KouncilRole = KouncilRole;
 
   backendVersion$?: Observable<string>;
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;

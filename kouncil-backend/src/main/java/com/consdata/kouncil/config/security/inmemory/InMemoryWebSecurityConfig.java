@@ -1,22 +1,38 @@
 package com.consdata.kouncil.config.security.inmemory;
 
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_USERNAME;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_CONFIG;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_USERNAME;
 
 import com.consdata.kouncil.KouncilRuntimeException;
+import com.consdata.kouncil.security.UserRolesMapping;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -31,7 +47,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
+@EnableGlobalMethodSecurity(jsr250Enabled=true, securedEnabled=true, prePostEnabled=true)
 public class InMemoryWebSecurityConfig {
+
+    private final UserRolesMapping userRolesMapping;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -64,20 +83,38 @@ public class InMemoryWebSecurityConfig {
     @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
     public UserDetailsManager userDetailsService() {
         log.info("Initializing inmemory authentication");
-        Path path = Paths.get(ADMIN_CONFIG);
-        String adminPass = "admin";
+        return new InMemoryUserDetailsManager(
+                createUser(ADMIN_CONFIG, ADMIN_USERNAME, ADMIN_DEFAULT_PASSWORD, ADMIN_DEFAULT_ROLE),
+                createUser(EDITOR_CONFIG, EDITOR_USERNAME, EDITOR_DEFAULT_PASSWORD, EDITOR_DEFAULT_ROLE),
+                createUser(VIEWER_CONFIG, VIEWER_USERNAME, VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_ROLE)
+        );
+    }
+
+    private UserDetails createUser(String configFile, String username, String defaultPassword, String defaultRole){
+        Path path = Paths.get(configFile);
+        String password = defaultPassword;
+        String role = defaultRole;
+
         if (Files.exists(path)) {
             try {
-                adminPass = Files.readString(path);
+                String fileConfigData = Files.readString(path);
+                String[] config = fileConfigData.split(";");
+                if(StringUtils.isNotEmpty(config[0])){
+                    password = config[0];
+                }
+                if(StringUtils.isNotEmpty(config[1])){
+                    role = config[1];
+                }
             } catch (IOException e) {
                 throw new KouncilRuntimeException(e);
             }
         }
 
-        UserDetails admin = User.withUsername("admin")
-                .password(String.format("{noop}%s", adminPass))
-                .authorities("ADMIN")
+        Set<GrantedAuthority> roles = userRolesMapping.mapToKouncilRoles(Set.of(role));
+
+        return User.withUsername(username)
+                .password(String.format("{noop}%s", password))
+                .authorities(roles)
                 .build();
-        return new InMemoryUserDetailsManager(admin);
     }
 }

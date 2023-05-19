@@ -1,6 +1,10 @@
 package com.consdata.kouncil.topic;
 
+import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
+
 import com.consdata.kouncil.logging.EntryExitLogger;
+import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,8 @@ public class TopicController {
 
     private final TopicService topicService;
 
+
+    @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
     @GetMapping("/api/topic/messages/{topicName}/{partition}")
     public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
                                              @PathVariable("partition") String partitions,
@@ -32,6 +38,7 @@ public class TopicController {
         return topicService.getTopicMessages(topicName, partitions, pageParam, limitParam, beginningTimestampMillis, endTimestampMillis, offset, serverId);
     }
 
+    @RolesAllowed({EDITOR_ROLE})
     @PostMapping("/api/topic/send/{topicName}/{count}")
     @EntryExitLogger
     public void send(@PathVariable("topicName") String topicName,
@@ -43,6 +50,7 @@ public class TopicController {
         log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);
     }
 
+    @RolesAllowed({EDITOR_ROLE})
     @PostMapping("/api/topic/resend")
     @EntryExitLogger
     public void resend(@RequestBody TopicResendEventsModel resendData,

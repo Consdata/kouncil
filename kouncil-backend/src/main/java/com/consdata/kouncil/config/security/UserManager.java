@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public interface UserManager {
 
-    boolean firstTimeLogin();
+    boolean firstTimeLogin(String username);
 
     default void skipChangeDefaultPassword() throws IOException {
     }

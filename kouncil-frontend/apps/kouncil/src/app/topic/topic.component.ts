@@ -24,21 +24,18 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
     <div class="topic">
       <div class="topic-table-area">
         <div class="topic-toolbar-area">
-          <app-kafka-toolbar
-            [name]="topicName"
-            (toggleLiveEvent)="toggleLiveEventHandler($event)"
-            (openSendPopupEvent)="openSendPopup()"
-            (openResendPopupEvent)="openResendPopup()"
-            (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
-            (toggleJsonEvent)="toggleJsonEventHandler($event)"
+          <app-kafka-toolbar [name]="topicName"
+                             (toggleLiveEvent)="toggleLiveEventHandler($event)"
+                             (openSendPopupEvent)="openSendPopup()"
+                             (openResendPopupEvent)="openResendPopup()"
+                             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
+                             (toggleJsonEvent)="toggleJsonEventHandler($event)"
           >
           </app-kafka-toolbar>
         </div>
 
         <ng-template #noDataPlaceholder>
-          <app-no-data-placeholder
-            [objectTypeName]="'Message'"
-          ></app-no-data-placeholder>
+          <app-no-data-placeholder [objectTypeName]="'Message'"></app-no-data-placeholder>
         </ng-template>
 
         <section class="topic-table"
