@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
 import {map} from 'rxjs/operators';
 import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
+import {JSONSchemaFaker} from "json-schema-faker";
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +33,12 @@ export class SchemaFacadeService {
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.JSON:
-        console.log('JSON IS NOT IMPLEMENTED');
+        example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
+        console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
-        console.log('AVRO IS NOT IMPLEMENTED');
+        example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
+        console.log(`Found schema, isKey=[${isKey}]`);
         break;
       default:
         console.log(`No schema, isKey=[${isKey}]`);
