@@ -31,8 +31,8 @@ export class SchemaFacadeService {
         example = this.protobufUtilsService.fillProtobufSchemaWithData(plainTextSchema);
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
-      case MessageFormat.JSON_SCHEMA:
-        console.log('JSON_SCHEMA IS NOT IMPLEMENTED');
+      case MessageFormat.JSON:
+        console.log('JSON IS NOT IMPLEMENTED');
         break;
       case MessageFormat.AVRO:
         console.log('AVRO IS NOT IMPLEMENTED');

@@ -7,7 +7,13 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {FavouritesService} from '@app/feat-favourites';
 import {ConsumerGroup, ConsumerGroupsResponse} from '@app/common-model';
-import {ArraySortService, ProgressBarService, SearchService} from '@app/common-utils';
+import {
+  ArraySortService,
+  ProgressBarService,
+  SearchService,
+  SnackBarComponent,
+  SnackBarData
+} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {TableColumn} from '@app/common-components';
 
@@ -186,15 +192,18 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs/no-nested-subscribe
         .subscribe(() => {
           this.loadConsumerGroups();
-          this.snackbar.open(`Consumer group ${value} deleted`, '', {
-            duration: 3000,
-            panelClass: ['snackbar-success', 'snackbar']
+
+          this.snackbar.openFromComponent(SnackBarComponent, {
+            data: new SnackBarData(`Consumer group ${value} deleted`, 'snackbar-success', ''),
+            panelClass: ['snackbar'],
+            duration: 3000
           });
         }, error => {
           console.error(error);
-          this.snackbar.open(`Consumer group ${value} couldn't be deleted`, '', {
-            duration: 3000,
-            panelClass: ['snackbar-error', 'snackbar']
+          this.snackbar.openFromComponent(SnackBarComponent, {
+            data: new SnackBarData(`Consumer group ${value} couldn't be deleted`, 'snackbar-error', ''),
+            panelClass: ['snackbar'],
+            duration: 3000
           });
           this.progressBarService.setProgress(false);
         });
