@@ -139,7 +139,6 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     OAuthRedirectComponent,
     AccessDeniedComponent,
     PageNotFoundComponent,
-    OAuthRedirectComponent,
     SchemasComponent
   ],
   imports: [
@@ -174,7 +173,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatAutocompleteModule,
     CommonComponentsModule,
     MatSortModule,
-    DragDropModule,
+    DragDropModule
   ],
   providers: [
     {

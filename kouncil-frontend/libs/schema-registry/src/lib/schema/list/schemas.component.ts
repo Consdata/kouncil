@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {SchemaRegistryService} from "../schema-registry.service";
-import {Schemas} from "../schemas.model";
-import {ServersService} from "@app/common-servers";
-import {TableColumn} from "@app/common-components";
-import {ProgressBarService} from "@app/common-utils";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {SchemaRegistryService} from '../schema-registry.service';
+import {Schemas} from '../schemas.model';
+import {ServersService} from '@app/common-servers';
+import {TableColumn, TableComponent} from '@app/common-components';
+import {ProgressBarService} from '@app/common-utils';
+import {MatSort} from '@angular/material/sort';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-schemas',
@@ -14,7 +16,9 @@ import {ProgressBarService} from "@app/common-utils";
       </ng-template>
 
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
-                        [tableData]="filtered" [columns]="columns" matSort>
+                        [tableData]="filtered" [columns]="columns" matSort [sort]="sort"
+                        cdkDropList cdkDropListOrientation="horizontal"
+                        (cdkDropListDropped)="drop($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
@@ -64,6 +68,15 @@ export class SchemasComponent implements OnInit {
     }
   ];
 
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(TableComponent, {static: false}) table: TableComponent;
+
+  @ViewChild(MatSort, {static: false}) set content(sort: MatSort) {
+    if (this.table) {
+      this.sort = sort;
+    }
+  }
+
   constructor(private progressBarService: ProgressBarService,
               private schemaRegistry: SchemaRegistryService,
               private servers: ServersService) {
@@ -80,5 +93,9 @@ export class SchemasComponent implements OnInit {
       this.filtered = data
       this.progressBarService.setProgress(false);
     })
+  }
+
+  drop($event: CdkDragDrop<string[]>) {
+    this.table.drop($event);
   }
 }

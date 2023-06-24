@@ -29,13 +29,6 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
                              (openSendPopupEvent)="openSendPopup()"
                              (openResendPopupEvent)="openResendPopup()"
                              (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
-                             (toggleJsonEvent)="toggleJsonEventHandler($event)"
-          >
-          <app-kafka-toolbar [name]="topicName"
-                             (toggleLiveEvent)="toggleLiveEventHandler($event)"
-                             (openSendPopupEvent)="openSendPopup()"
-                             (openResendPopupEvent)="openResendPopup()"
-                             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
                              (toggleJsonEvent)="toggleJsonEventHandler($event)">
           </app-kafka-toolbar>
         </div>
