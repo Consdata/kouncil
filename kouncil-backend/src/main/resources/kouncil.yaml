@@ -14,18 +14,14 @@ logging:
     org.apache.kafka.clients.NetworkClient: INFO
     org.apache.kafka.common.utils.AppInfoParser: WARN
 kouncil:
+  clusters:
+    - name: local_kafka
+      schemaRegistry:
+        url: "http://localhost:8085"
+      brokers:
+        - host: localhost
+          port: 9092
   auth:
-    active-provider: inmemory # inmemory, ldap, ad, sso
-    ldap:
-      provider-url: "ldaps://kouncil.io"
-      search-base: "OU=Users,DC=kouncil,DC=io"
-      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
-    ad:
-      domain: "acme.com"
-      url: "ldap://acme.com:389"
-      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
-    sso:
-      supported:
-        providers: github
-  topics:
-    exclude-regex-patterns: __.*
+    active-provider: inmemory
+
+

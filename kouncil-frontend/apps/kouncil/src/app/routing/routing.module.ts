@@ -19,6 +19,7 @@ import {ConfigResolver} from './config-resolver';
 import {ChangePasswordComponent} from '../login/change-password.component';
 import {MainLoginComponent} from '../login/main-login.component';
 import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
+import {SchemasComponent} from "@app/schema-registry";
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -84,6 +85,11 @@ const routes: Routes = [
       {
         path: 'track',
         component: TrackComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'schemas',
+        component: SchemasComponent,
         canActivate: [AuthGuard]
       }
     ]

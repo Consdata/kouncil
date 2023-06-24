@@ -31,6 +31,9 @@ import {AuthService} from '../login/auth.service';
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/track']"
          *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Track</a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/schemas']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">Schemas</a>
 
       <mat-divider [vertical]="true"></mat-divider>
 

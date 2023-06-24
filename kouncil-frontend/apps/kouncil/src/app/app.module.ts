@@ -56,7 +56,7 @@ import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
-import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
+import {SchemaRegistryService, SchemasComponent, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
@@ -134,7 +134,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MainComponent,
     ChangePasswordComponent,
     MainLoginComponent,
-    OAuthRedirectComponent
+    OAuthRedirectComponent,
+    SchemasComponent
   ],
   imports: [
     BrowserModule,

@@ -15,8 +15,6 @@ import java.util.Optional;
 
 @Slf4j
 public class SchemaRegistryFacade {
-    private static final String KEY_SCHEMA_SUFFIX = "-key";
-    private static final String VALUE_SCHEMA_SUFFIX = "-value";
 
     @Getter
     private final SchemaRegistryClient schemaRegistryClient;
@@ -34,7 +32,7 @@ public class SchemaRegistryFacade {
      * This method is not using Schema cache to fetch the latest metadata
      */
     public Optional<SchemaMetadata> getLatestSchemaMetadata(String topic, boolean isKey) {
-        final String subject = topic.concat(getSubjectSuffix(isKey));
+        final String subject = topic.concat(TopicUtils.getSubjectSuffix(isKey));
         try {
             return Optional.ofNullable(schemaRegistryClient.getLatestSchemaMetadata(subject));
         } catch (RestClientException e) {
@@ -51,11 +49,9 @@ public class SchemaRegistryFacade {
      */
     @SneakyThrows
     public ParsedSchema getSchemaByTopicAndId(KouncilSchemaMetadata metadata) {
-        final String subject = metadata.getSchemaTopic().concat(getSubjectSuffix(metadata.isKey()));
+        final String subject = metadata.getSchemaTopic().concat(TopicUtils.getSubjectSuffix(metadata.isKey()));
         return schemaRegistryClient.getSchemaBySubjectAndId(subject, metadata.getSchemaId());
     }
 
-    private String getSubjectSuffix(boolean isKey) {
-        return isKey ? KEY_SCHEMA_SUFFIX : VALUE_SCHEMA_SUFFIX;
-    }
+
 }

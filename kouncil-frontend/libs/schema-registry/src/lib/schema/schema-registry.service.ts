@@ -18,5 +18,9 @@ export class SchemaRegistryService {
     const params = new HttpParams().set('serverId', serverId);
     return this.httpClient.get<Schemas>(`/api/schemas/latest/${topicName}`, {params});
   }
+
+  loadAllSchemasForServer$(selectedServerId: string) {
+    return this.httpClient.get<Schemas[]>(`/api/schemas/${selectedServerId}`);
+  }
 }
 
