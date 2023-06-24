@@ -1,8 +1,20 @@
 package com.consdata.kouncil.topic;
 
+import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
+
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
@@ -12,11 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -28,6 +35,8 @@ public class TopicsController {
     @Value("${kouncil.topics.exclude-regex-patterns:}")
     private List<String> excludePatterns;
 
+
+    @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
     @GetMapping("/api/topics")
     @EntryExitLogger
     public TopicsDto getTopics(@RequestParam("serverId") String serverId) {

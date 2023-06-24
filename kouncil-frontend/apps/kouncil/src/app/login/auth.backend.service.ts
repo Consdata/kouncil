@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
+import {KouncilRole} from './kouncil-role';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,8 @@ import {environment} from '../../environments/environment';
 export class AuthBackendService implements AuthService {
 
   private IS_LOGGED_IN: string = 'isLoggedIn';
+  private USER_ROLES: string = 'userRoles';
+  private userRoles: Array<KouncilRole> = [];
 
   private baseUrl: string = environment.baseUrl;
 
@@ -61,8 +64,8 @@ export class AuthBackendService implements AuthService {
     return this.http.post<void>('/api/changeDefaultPassword', newPassword);
   }
 
-  firstTimeLogin$(): Observable<boolean> {
-    return this.http.get<boolean>('/api/firstTimeLogin').pipe(map(isFirstTime => {
+  firstTimeLogin$(username: string): Observable<boolean> {
+    return this.http.get<boolean>(`/api/firstTimeLogin/${username}`).pipe(map(isFirstTime => {
       return isFirstTime;
     }));
   }
@@ -83,8 +86,23 @@ export class AuthBackendService implements AuthService {
   }
 
   activeProvider$(): Observable<string> {
-    return this.http.get('/api/activeProvider',{responseType: 'text'}).pipe(map((providers) => {
+    return this.http.get('/api/activeProvider', {responseType: 'text'}).pipe(map((providers) => {
       return providers;
     }));
+  }
+
+  getUserRoles$(): Observable<void> {
+    return this.http.get<Array<KouncilRole>>('/api/userRoles').pipe(map((userRoles) => {
+      this.userRoles = userRoles;
+      localStorage.setItem(this.USER_ROLES, JSON.stringify(this.userRoles));
+    }));
+  }
+
+  canAccess(roles: KouncilRole[]): boolean {
+    const localStorageUserRoles = JSON.parse(localStorage.getItem(this.USER_ROLES));
+    if (this.userRoles.length === 0 && localStorageUserRoles.length > 0) {
+      this.userRoles = localStorageUserRoles;
+    }
+    return this.userRoles.some(userRole => roles.includes(userRole));
   }
 }

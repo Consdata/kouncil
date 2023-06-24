@@ -1,5 +1,9 @@
 package com.consdata.kouncil.schema.registry;
 
+import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
+
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.schema.SchemasConfigurationDTO;
@@ -7,6 +11,7 @@ import com.consdata.kouncil.schema.SchemasDTO;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.serde.MessageFormat;
+import javax.annotation.security.RolesAllowed;
 import com.consdata.kouncil.topic.TopicsController;
 import com.consdata.kouncil.topic.TopicsDto;
 import java.util.ArrayList;
@@ -32,6 +37,7 @@ public class SchemaRegistryController {
         this.topicsController = topicsController;
     }
 
+    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
     @GetMapping("/api/schemas/configs")
     public List<SchemasConfigurationDTO> getSchemasConfiguration() {
         return kouncilConfiguration.getClusterConfig()
@@ -44,6 +50,7 @@ public class SchemaRegistryController {
                 ).toList();
     }
 
+    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
     @GetMapping("/api/schemas/latest/{topicName}")
     public SchemasDTO getLatestSchemas(@PathVariable String topicName, @RequestParam String serverId) {
         if (schemaAwareClusterService.clusterHasSchemaRegistry(serverId)) {

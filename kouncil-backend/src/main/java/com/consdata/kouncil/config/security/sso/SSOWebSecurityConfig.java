@@ -1,9 +1,12 @@
 package com.consdata.kouncil.config.security.sso;
 
+import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,6 +36,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SSOWebSecurityConfig {
 
     private final ObjectMapper mapper;
+
+    private final UserRolesMapping userRolesMapping;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,12 +62,28 @@ public class SSOWebSecurityConfig {
                 .authorizationEndpoint()
                 .authorizationRequestRepository(new InMemoryAuthRepository())
                 .and()
-                .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication)->{})
+                .userInfoEndpoint(userInfo -> userInfo
+                        .userAuthoritiesMapper(this.authoritiesMapper())
+                        .and()
+                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
+                )
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(this::authenticationEntryPoint);
 
         return http.build();
+    }
+
+    private GrantedAuthoritiesMapper authoritiesMapper() {
+        return authorities -> {
+            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+            authorities.forEach(authority -> {
+                if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
+                    mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
+                }
+            });
+            return mappedAuthorities;
+        };
     }
 
     private void authenticationEntryPoint(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e)

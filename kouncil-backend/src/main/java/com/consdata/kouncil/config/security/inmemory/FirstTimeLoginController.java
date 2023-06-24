@@ -5,6 +5,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +17,9 @@ public class FirstTimeLoginController {
 
     private final UserManager defaultUserManager;
 
-    @GetMapping("/api/firstTimeLogin")
-    public boolean firstTimeLogin() {
-        return defaultUserManager.firstTimeLogin();
+    @GetMapping("/api/firstTimeLogin/{username}")
+    public boolean firstTimeLogin(@PathVariable("username") String username) {
+        return defaultUserManager.firstTimeLogin(username);
     }
 
     @GetMapping("/api/skipChangeDefaultPassword")
