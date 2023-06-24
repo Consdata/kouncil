@@ -428,3 +428,23 @@ mat-form-field:hover {
 mat-option > span {
   margin: 0 15px 0 0;
 }
+
+.status-preparingrebalance {
+  color: #be7b00;
+}
+
+.status-completingrebalance {
+  color: #be7b00;
+}
+
+.status-stable {
+  color: #109810;
+}
+
+.status-dead {
+  color: #b10101;
+}
+
+.status-empty {
+  color: pallete.$main-40;
+}
