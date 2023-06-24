@@ -28,6 +28,8 @@
     "@swimlane/ngx-datatable": "20.1.0",
     "core-js": "3.25.5",
     "date-fns": "2.29.3",
+    "json-schema-faker": "^0.5.3",
+    "monaco-editor": "^0.38.0",
     "ngx-json-viewer": "3.2.1",
     "ngx-mat-select-search": "6.0.0",
     "protobufjs": "7.1.2",

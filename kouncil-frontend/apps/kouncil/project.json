@@ -19,10 +19,16 @@
         "inlineStyleLanguage": "scss",
         "assets": [
           "apps/kouncil/src/favicon.ico",
-          "apps/kouncil/src/assets"
+          "apps/kouncil/src/assets",
+          {
+            "glob": "**/*",
+            "input": "node_modules/monaco-editor",
+            "output": "assets/monaco-editor"
+          }
         ],
         "styles": [
           "apps/kouncil/src/styles.scss",
+          "node_modules/monaco-editor/min/vs/editor/editor.main.css",
           "node_modules/@angular/material/_theming.scss",
           "node_modules/@swimlane/ngx-datatable/assets/icons.css"
         ],

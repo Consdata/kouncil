@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnDestroy, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FormControl, NgForm, Validators} from '@angular/forms';
 import {SendService} from './send.service';
@@ -7,8 +7,17 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {combineLatest, iif, Observable, of} from 'rxjs';
-import {SchemaFacadeService, SchemaStateService} from '@app/schema-registry';
+import {
+  MessageFormat,
+  SchemaFacadeService,
+  SchemaRegistryService,
+  SchemaStateService
+} from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
+import {EditorComponent, MonacoEditorService} from "@app/common-components";
+import {SnackBarComponent, SnackBarData} from "@app/common-utils";
+
+declare var monaco: any;
 
 @Component({
   selector: 'app-send',
@@ -22,29 +31,21 @@ import {ServersService} from '@app/common-servers';
         </div>
 
         <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}<!----> }
+          Available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->}
           <br>
-          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!----> }).
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!---->}).
           Format should be given after <strong>colon (:)</strong> which precedes placeholder.
           Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>
         <div class="drawer-section-title">Key</div>
 
-        <div>
-          <mat-form-field [appearance]="'outline'" class="full-width">
-            <input [(ngModel)]="messageData.key" matInput type="text" name="key"/>
-          </mat-form-field>
-        </div>
+        <app-common-editor [schemaName]="'key'" [schemaType]="keySchemaType"
+                           [(ngModel)]="messageData.key" name="key"></app-common-editor>
 
         <div class="drawer-section-title">
           Headers
-          <button
-            type="button"
-            class="small-button"
-            mat-button
-            disableRipple
-            (click)="addHeader(messageData.headers)"
-          >
+          <button type="button" class="small-button" mat-button disableRipple
+                  (click)="addHeader(messageData.headers)">
             +
           </button>
         </div>
@@ -65,7 +66,9 @@ import {ServersService} from '@app/common-servers';
 
         <div class="drawer-section-title">Value</div>
 
-        <textarea rows="10" [(ngModel)]="messageData.value" name="value"></textarea>
+        <app-common-editor [schemaName]="'value'"
+                           [schemaType]="valueSchemaType"
+                           [(ngModel)]="messageData.value" name="value"></app-common-editor>
 
         <div class="drawer-section-title">Count</div>
         <div class="drawer-section-subtitle">
@@ -89,13 +92,8 @@ import {ServersService} from '@app/common-servers';
         <span class="spacer"></span>
 
         <div class="actions">
-          <button
-            type="button"
-            mat-dialog-close
-            mat-button
-            disableRipple
-            class="action-button-white"
-          >
+          <button type="button" mat-dialog-close mat-button disableRipple
+                  class="action-button-white">
             Cancel
           </button>
           <button mat-button disableRipple
@@ -110,7 +108,7 @@ import {ServersService} from '@app/common-servers';
   `,
   styleUrls: ['./send.component.scss']
 })
-export class SendComponent {
+export class SendComponent implements OnDestroy {
 
   @ViewChild('sendForm', {read: NgForm}) sendForm: NgForm;
 
@@ -119,6 +117,11 @@ export class SendComponent {
     Validators.required,
   ]);
   isSendButtonDisabled: boolean = false;
+
+  keySchemaType: MessageFormat;
+  valueSchemaType: MessageFormat;
+
+  @ViewChildren(EditorComponent) monacoEditors: QueryList<EditorComponent>;
 
   messageData$: Observable<MessageData> = combineLatest([
     this.messageDataService.messageData$,
@@ -150,30 +153,61 @@ export class SendComponent {
     private servers: ServersService,
     private schemaFacade: SchemaFacadeService,
     private schemaStateService: SchemaStateService,
-    private messageDataService: MessageDataService) {
+    private messageDataService: MessageDataService,
+    private schemaRegistry: SchemaRegistryService,
+    private monacoEditorService: MonacoEditorService
+  ) {
+    schemaRegistry.getLatestSchemas$(this.servers.getSelectedServerId(), "TestTopic").subscribe(result => {
+      this.keySchemaType = result.keyMessageFormat;
+      this.valueSchemaType = result.valueMessageFormat;
+
+      if (this.keySchemaType !== MessageFormat.STRING) {
+        this.monacoEditorService.addSchema('key', JSON.parse(result.keyPlainTextSchema));
+      }
+      if (this.valueSchemaType !== MessageFormat.STRING) {
+        this.monacoEditorService.addSchema('value', JSON.parse(result.valuePlainTextSchema));
+      }
+
+      this.monacoEditorService.registerSchemas();
+    })
+  }
+
+  ngOnDestroy() {
+    this.monacoEditorService.clearSchemas();
   }
 
   onSubmit(messageData: MessageData): void {
-    this.isSendButtonDisabled = true;
-    this.messageDataService.setMessageData(messageData);
-    this.sendService.send$(this.servers.getSelectedServerId(), this.countControl.value, messageData)
-    .pipe(first())
-    .subscribe(() => {
-      this.dialog.closeAll();
-      this.resetForm();
-      this.isSendButtonDisabled = false;
-      this.snackbar.open(`Successfully sent to ${messageData.topicName}`, '', {
-        duration: 3000,
-        panelClass: ['snackbar-success', 'snackbar'],
+    let modelMarkers = monaco.editor.getModelMarkers({});
+    if (modelMarkers.length === 0) {
+      this.isSendButtonDisabled = true;
+      this.messageDataService.setMessageData(messageData);
+      this.sendService.send$(this.servers.getSelectedServerId(), this.countControl.value, messageData)
+      .pipe(first())
+      .subscribe(() => {
+        this.dialog.closeAll();
+        this.resetForm();
+        this.isSendButtonDisabled = false;
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Successfully sent to ${messageData.topicName}`, 'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+      }, error => {
+        console.error(error);
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Error occurred while sending events to ${messageData.topicName}`, 'snackbar-error', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+        this.isSendButtonDisabled = false;
       });
-    }, error => {
-      console.error(error);
-      this.snackbar.open(`Error occurred while sending events to ${messageData.topicName}`, '', {
-        duration: 3000,
-        panelClass: ['snackbar-error', 'snackbar']
+    } else {
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(`Schema validation error`, 'snackbar-error', ''),
+        panelClass: ['snackbar'],
+        duration: 3000
       });
-      this.isSendButtonDisabled = false;
-    });
+    }
   }
 
   increaseCount(): void {
@@ -198,5 +232,4 @@ export class SendComponent {
   removeHeader(i: number, headers: MessageDataHeader[]): void {
     headers.splice(i, 1);
   }
-
 }

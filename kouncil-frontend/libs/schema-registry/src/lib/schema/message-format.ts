@@ -1,5 +1,5 @@
 export enum MessageFormat {
-  JSON_SCHEMA = 'JSON_SCHEMA',
+  JSON = 'JSON',
   PROTOBUF = 'PROTOBUF',
   AVRO = 'AVRO',
   STRING = 'STRING'
