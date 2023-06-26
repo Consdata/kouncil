@@ -11,12 +11,15 @@ import com.consdata.kouncil.schema.SchemasDTO;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.serde.MessageFormat;
-import javax.annotation.security.RolesAllowed;
 import com.consdata.kouncil.topic.TopicsController;
 import com.consdata.kouncil.topic.TopicsDto;
+import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -115,5 +118,11 @@ public class SchemaRegistryController {
             throw new SchemaRegistryNotConfiguredException(
                     String.format("Schema registry not configured for specified cluster=[%s]", serverId));
         }
+    }
+
+    @DeleteMapping("/api/schemas/{serverId}/{subject}/{version}")
+    public void deleteSchema(@PathVariable String serverId, @PathVariable String subject, @PathVariable String version)
+            throws RestClientException, IOException {
+        schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().deleteSchema(subject, version);
     }
 }

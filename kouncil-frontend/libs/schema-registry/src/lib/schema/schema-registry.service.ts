@@ -22,5 +22,9 @@ export class SchemaRegistryService {
   loadAllSchemasForServer$(selectedServerId: string) {
     return this.httpClient.get<Schemas[]>(`/api/schemas/${selectedServerId}`);
   }
+
+  deleteSchema(selectedServerId: string, subject: string, version: string) {
+    return this.httpClient.delete<void>(`/api/schemas/${selectedServerId}/${subject}/${version}`);
+  }
 }
 
