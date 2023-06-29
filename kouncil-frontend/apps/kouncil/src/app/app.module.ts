@@ -56,7 +56,7 @@ import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
-import {SchemaRegistryService, SchemasComponent, SchemaStateService} from '@app/schema-registry';
+import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
@@ -82,6 +82,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
 import {AccessDeniedComponent} from './access-denied/access-denied.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {SchemasComponent} from './schemas/list/schemas.component';
+import {SchemaEditComponent} from './schemas/edit/schema-edit.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -139,7 +142,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     OAuthRedirectComponent,
     AccessDeniedComponent,
     PageNotFoundComponent,
-    SchemasComponent
+    SchemasComponent,
+    SchemaEditComponent
   ],
   imports: [
     BrowserModule,
@@ -173,7 +177,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MatAutocompleteModule,
     CommonComponentsModule,
     MatSortModule,
-    DragDropModule
+    DragDropModule,
+    MatCheckboxModule
   ],
   providers: [
     {

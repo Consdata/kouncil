@@ -1,11 +1,15 @@
 package com.consdata.kouncil.schema.registry;
 
+import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.serde.KouncilSchemaMetadata;
 import com.consdata.kouncil.serde.MessageFormat;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
+import io.confluent.kafka.schemaregistry.avro.AvroSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
+import io.confluent.kafka.schemaregistry.json.JsonSchema;
+import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import java.io.IOException;
 import java.util.Optional;
 import lombok.Getter;
@@ -56,5 +60,21 @@ public class SchemaRegistryFacade {
     public void deleteSchema(String subject, String version) throws RestClientException, IOException {
         log.info("Delete schema [subject={}, version={}]", subject, version);
         schemaRegistryClient.deleteSchemaVersion(subject, version);
+        schemaRegistryClient.reset();
+    }
+
+    public SchemaMetadata getLatestSchema(String subject) throws RestClientException, IOException {
+        return schemaRegistryClient.getLatestSchemaMetadata(subject);
+    }
+
+    public void updateSchema(SchemaDTO schema) throws RestClientException, IOException {
+        ParsedSchema parsedSchema;
+        switch (schema.getMessageFormat()) {
+            case JSON -> parsedSchema = new JsonSchema(schema.getPlainTextSchema());
+            case AVRO -> parsedSchema = new AvroSchema(schema.getPlainTextSchema());
+            case PROTOBUF -> parsedSchema = new ProtobufSchema(schema.getPlainTextSchema());
+            default -> throw new IllegalStateException("Unexpected value: " + schema.getMessageFormat());
+        }
+        schemaRegistryClient.register(schema.getSubjectName(), parsedSchema, true);
     }
 }

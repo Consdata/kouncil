@@ -46,7 +46,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.initMonaco()
+    this.initMonaco();
   }
 
   ngOnDestroy() {

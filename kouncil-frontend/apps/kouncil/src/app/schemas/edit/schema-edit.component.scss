@@ -1,0 +1,20 @@
+.schema-edit-form {
+  margin: 50px 100px 0 100px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.schema-base-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+}

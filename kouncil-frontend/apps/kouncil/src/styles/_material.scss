@@ -37,7 +37,7 @@ app-message-view {
   --mdc-dialog-supporting-text-size: 12px;
 }
 
-.app-drawer, .confirm {
+.app-drawer, .confirm, .schema-edit-form {
 
   .mat-mdc-dialog-container {
     border-radius: 0;
@@ -127,8 +127,7 @@ app-message-view {
     }
 
     .action-button-black {
-      color: pallete.$main-0;
-      background: pallete.$main-100;
+      @include buttons.button-black;
     }
 
     .action-button-black:disabled {

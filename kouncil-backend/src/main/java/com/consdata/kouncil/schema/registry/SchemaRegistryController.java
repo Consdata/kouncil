@@ -13,6 +13,7 @@ import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.topic.TopicsController;
 import com.consdata.kouncil.topic.TopicsDto;
+import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -80,12 +83,12 @@ public class SchemaRegistryController {
     }
 
     @GetMapping("/api/schemas/{serverId}")
-    public List<SchemaDTO> getAllSchemasForServer(@PathVariable String serverId) {
+    public List<SchemaDTO> getAllSchemasForServer(@PathVariable String serverId, @RequestParam("topicNames") List<String> topicNames) {
         if (schemaAwareClusterService.clusterHasSchemaRegistry(serverId)) {
             List<SchemaDTO> schemas = new ArrayList<>();
             TopicsDto topics = topicsController.getTopics(serverId);
 
-            topics.getTopics().forEach(topic -> {
+            topics.getTopics().stream().filter(topic -> topicNames.isEmpty() || topicNames.contains(topic.getName())).forEach(topic -> {
                 SchemaAwareCluster schemaAwareCluster = schemaAwareClusterService.getClusterSchema(serverId);
 
                 schemaAwareCluster.getSchemaRegistryFacade()
@@ -124,5 +127,23 @@ public class SchemaRegistryController {
     public void deleteSchema(@PathVariable String serverId, @PathVariable String subject, @PathVariable String version)
             throws RestClientException, IOException {
         schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().deleteSchema(subject, version);
+    }
+
+    @GetMapping("/api/schemas/{serverId}/{subject}")
+    public SchemaDTO getSchema(@PathVariable String serverId, @PathVariable String subject) throws RestClientException, IOException {
+        SchemaMetadata schema = schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().getLatestSchema(subject);
+
+        return SchemaDTO.builder()
+                .subjectName(subject)
+                .messageFormat(MessageFormat.valueOf(schema.getSchemaType()))
+                .plainTextSchema(schema.getSchema())
+                .version(schema.getVersion())
+                .topicName(TopicUtils.getTopicName(subject))
+                .build();
+    }
+
+    @PutMapping("/api/schemas/{serverId}")
+    public void updateSchema(@PathVariable String serverId, @RequestBody SchemaDTO schema) throws RestClientException, IOException {
+        schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().updateSchema(schema);
     }
 }

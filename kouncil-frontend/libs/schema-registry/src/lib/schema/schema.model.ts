@@ -1,6 +1,6 @@
 import {MessageFormat} from './message-format';
 
-export interface Schemas {
+export interface Schema {
   messageFormat: MessageFormat;
   plainTextSchema: string;
   topicName: string;
