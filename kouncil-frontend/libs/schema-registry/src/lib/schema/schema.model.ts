@@ -6,4 +6,5 @@ export interface Schema {
   topicName: string;
   subjectName: string;
   version: number;
+  isKey: boolean;
 }

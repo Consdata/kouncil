@@ -16,4 +16,7 @@ public final class TopicUtils {
     public static String getTopicName(String subject) {
         return subject.replace(KEY_SCHEMA_SUFFIX, "").replace(VALUE_SCHEMA_SUFFIX, "");
     }
+    public static boolean isKey(String subject) {
+        return subject.contains(KEY_SCHEMA_SUFFIX);
+    }
 }

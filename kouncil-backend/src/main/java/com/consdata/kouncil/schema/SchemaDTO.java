@@ -17,5 +17,5 @@ public class SchemaDTO {
     private String topicName;
     private String subjectName;
     private int version;
-
+    private Boolean isKey;
 }

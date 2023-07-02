@@ -24,6 +24,7 @@ import {AccessDeniedComponent} from '../access-denied/access-denied.component';
 import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
 import {SchemasComponent} from '../schemas/list/schemas.component';
 import {SchemaEditComponent} from '../schemas/edit/schema-edit.component';
+import {SchemaCreateComponent} from '../schemas/create/schema-create.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -123,8 +124,16 @@ const routes: Routes = [
         }
       },
       {
-        path: 'schemas/:subjectName',
+        path: 'schemas/edit/:subjectName',
         component: SchemaEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR]
+        }
+      },
+      {
+        path: 'schemas/create',
+        component: SchemaCreateComponent,
         canActivate: [AuthGuard],
         data: {
           roles: [KouncilRole.KOUNCIL_EDITOR]

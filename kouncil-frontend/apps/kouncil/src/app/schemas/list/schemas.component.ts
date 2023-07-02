@@ -36,7 +36,8 @@ import {Topics} from '@app/common-model';
           </button>
 
           <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
-                  class="action-button-black" style="margin-right: 16px">
+                  class="action-button-black" style="margin-right: 16px"
+                  [routerLink]="['/schemas/create']">
             Add new schema
           </button>
         </div>
@@ -64,7 +65,7 @@ import {Topics} from '@app/common-model';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column" style="z-index: 1000">
-                <button class="action-button" [routerLink]="['/schemas/' + element.subjectName]">
+                <button class="action-button" [routerLink]="['/schemas/edit/' + element.subjectName]">
                   Edit
                 </button>
                 <button class="action-button"

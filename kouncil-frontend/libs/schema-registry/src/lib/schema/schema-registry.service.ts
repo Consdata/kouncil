@@ -37,7 +37,10 @@ export class SchemaRegistryService {
 
   addNewSchemaVersion$(model: Schema, selectedServerId: string) {
     return this.httpClient.put<void>(`/api/schemas/${selectedServerId}`, model);
+  }
 
+  addNewSchema$(model: Schema, selectedServerId: string) {
+    return this.httpClient.post<void>(`/api/schemas/${selectedServerId}`, model);
   }
 }
 

@@ -85,6 +85,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {SchemasComponent} from './schemas/list/schemas.component';
 import {SchemaEditComponent} from './schemas/edit/schema-edit.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SchemaCreateComponent} from './schemas/create/schema-create.component';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -143,7 +144,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     AccessDeniedComponent,
     PageNotFoundComponent,
     SchemasComponent,
-    SchemaEditComponent
+    SchemaEditComponent,
+    SchemaCreateComponent
   ],
   imports: [
     BrowserModule,

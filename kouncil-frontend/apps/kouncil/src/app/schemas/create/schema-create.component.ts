@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {ProgressBarService} from '@app/common-utils';
 import {MessageFormat, Schema, SchemaRegistryService} from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
 import {ActivatedRoute, Router} from '@angular/router';
-import {first} from 'rxjs/operators';
+import {TopicsService} from '@app/feat-topics';
+import {Topics} from '@app/common-model';
+import {SelectableItem} from '@app/common-components';
 
 @Component({
-  selector: 'app-schema-edit',
+  selector: 'app-schema-create',
   template: `
     <form *ngIf="model" (ngSubmit)="saveSchema()" class="form schema-edit-form">
 
@@ -14,24 +15,24 @@ import {first} from 'rxjs/operators';
         <div>
           <div class="label">Topic</div>
           <mat-form-field [appearance]="'outline'">
-            <input matInput
-                   disabled
-                   type="text"
-                   name="topicName"
-                   [(ngModel)]="model.topicName"
-            />
+            <mat-select name="topicName" [(ngModel)]="model.topicName">
+              <mat-option *ngFor="let topic of topics" [value]="topic.value">
+                {{ topic.label }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
         <div class="checkbox-field">
-          <mat-checkbox disabled [checked]="model.isKey" [labelPosition]="'before'">
+          <mat-checkbox [checked]="model.isKey" [labelPosition]="'before'"
+                        [(ngModel)]="model.isKey" name="isKey">
             isKey
           </mat-checkbox>
         </div>
         <div style="margin-bottom: 20px">
           <div class="label">Message format</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="messageFormat" [(ngModel)]="model.messageFormat" disabled>
+            <mat-select name="messageFormat" [(ngModel)]="model.messageFormat">
               <mat-option *ngFor="let messageFormat of messageFormats" [value]="messageFormat">
                 {{ messageFormat }}
               </mat-option>
@@ -58,43 +59,38 @@ import {first} from 'rxjs/operators';
     </form>
 
   `,
-  styleUrls: ['./schema-edit.component.scss']
+  styleUrls: ['./schema-create.component.scss']
 })
-export class SchemaEditComponent implements OnInit {
+export class SchemaCreateComponent implements OnInit {
 
-  model: Schema;
+  model: Schema = {
+    isKey: false
+  } as Schema;
+
+  topics: SelectableItem[] = [];
 
   messageFormats: string[] = Object.keys(MessageFormat).map(format => format);
 
   constructor(private schemaRegistry: SchemaRegistryService,
               private servers: ServersService,
-              private progressBarService: ProgressBarService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private topicsService: TopicsService) {
   }
 
   ngOnInit(): void {
-    this.progressBarService.setProgress(true);
-    this.route.params.subscribe((params) => {
-      const subjectName = params['subjectName'];
-      this.loadSchema(subjectName);
+    this.topicsService
+    .getTopics$(this.servers.getSelectedServerId())
+    .subscribe((topics: Topics) => {
+      this.topics = topics.topics.map((tm) => new SelectableItem(tm.name, tm.name, false));
     });
   }
 
   saveSchema(): void {
-    this.schemaRegistry.addNewSchemaVersion$(this.model, this.servers.getSelectedServerId())
+    this.schemaRegistry.addNewSchema$(this.model, this.servers.getSelectedServerId())
     .pipe()
     .subscribe(() => {
       this.router.navigate(['/schemas']);
-    });
-  }
-
-  private loadSchema(subjectName: string): void {
-    this.schemaRegistry.getLatestSchema$(this.servers.getSelectedServerId(), subjectName)
-    .pipe(first())
-    .subscribe((result: Schema) => {
-      this.model = result;
-      this.progressBarService.setProgress(false);
     });
   }
 }

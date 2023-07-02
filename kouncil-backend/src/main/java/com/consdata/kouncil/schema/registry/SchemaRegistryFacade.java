@@ -1,5 +1,6 @@
 package com.consdata.kouncil.schema.registry;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.serde.KouncilSchemaMetadata;
 import com.consdata.kouncil.serde.MessageFormat;
@@ -68,13 +69,26 @@ public class SchemaRegistryFacade {
     }
 
     public void updateSchema(SchemaDTO schema) throws RestClientException, IOException {
+        schemaRegistryClient.register(schema.getSubjectName(), getSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
+    }
+
+    private ParsedSchema getSchema(MessageFormat messageFormat, String schema) {
         ParsedSchema parsedSchema;
-        switch (schema.getMessageFormat()) {
-            case JSON -> parsedSchema = new JsonSchema(schema.getPlainTextSchema());
-            case AVRO -> parsedSchema = new AvroSchema(schema.getPlainTextSchema());
-            case PROTOBUF -> parsedSchema = new ProtobufSchema(schema.getPlainTextSchema());
-            default -> throw new IllegalStateException("Unexpected value: " + schema.getMessageFormat());
+        switch (messageFormat) {
+            case JSON -> parsedSchema = new JsonSchema(schema);
+            case AVRO -> parsedSchema = new AvroSchema(schema);
+            case PROTOBUF -> parsedSchema = new ProtobufSchema(schema);
+            default -> throw new IllegalStateException("Unexpected value: " + messageFormat);
         }
-        schemaRegistryClient.register(schema.getSubjectName(), parsedSchema, true);
+        return parsedSchema;
+    }
+
+    public void createSchema(SchemaDTO schema) throws RestClientException, IOException {
+        String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getIsKey()));
+        if (getLatestSchemaMetadata(schema.getTopicName(), schema.getIsKey()).isEmpty()) {
+            schemaRegistryClient.register(subject, getSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
+        } else {
+            throw new KouncilRuntimeException(String.format("Schema for subject %s already exist", subject));
+        }
     }
 }
