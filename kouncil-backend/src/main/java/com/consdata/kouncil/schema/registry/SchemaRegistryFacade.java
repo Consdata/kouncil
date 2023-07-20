@@ -4,6 +4,7 @@ import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.serde.KouncilSchemaMetadata;
 import com.consdata.kouncil.serde.MessageFormat;
+import com.consdata.kouncil.serde.SubjectType;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.avro.AvroSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
@@ -12,6 +13,7 @@ import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientExcept
 import io.confluent.kafka.schemaregistry.json.JsonSchema;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -64,15 +66,32 @@ public class SchemaRegistryFacade {
         schemaRegistryClient.reset();
     }
 
-    public SchemaMetadata getLatestSchema(String subject) throws RestClientException, IOException {
-        return schemaRegistryClient.getLatestSchemaMetadata(subject);
+    public void createSchema(SchemaDTO schema) throws RestClientException, IOException {
+        String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getSubjectType()));
+        schema.setSubjectName(subject);
+
+        if (getLatestSchemaMetadata(schema.getTopicName(), SubjectType.KEY.equals(schema.getSubjectType())).isEmpty()) {
+            changeSubjectCompatibility(schema);
+            schemaRegistryClient.register(subject, parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
+        } else {
+            throw new KouncilRuntimeException(String.format("Schema for subject %s already exist", subject));
+        }
     }
 
     public void updateSchema(SchemaDTO schema) throws RestClientException, IOException {
-        schemaRegistryClient.register(schema.getSubjectName(), getSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
+        changeSubjectCompatibility(schema);
+        schemaRegistryClient.register(schema.getSubjectName(), parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
     }
 
-    private ParsedSchema getSchema(MessageFormat messageFormat, String schema) {
+    private void changeSubjectCompatibility(SchemaDTO schema) throws RestClientException, IOException {
+        if (schema.getCompatibility() != null) {
+            schemaRegistryClient.updateCompatibility(schema.getSubjectName(), schema.getCompatibility().name());
+        } else if (getCompatibility(schema.getSubjectName()) != null) {
+            schemaRegistryClient.deleteCompatibility(schema.getSubjectName());
+        }
+    }
+
+    private ParsedSchema parseSchema(MessageFormat messageFormat, String schema) {
         ParsedSchema parsedSchema;
         switch (messageFormat) {
             case JSON -> parsedSchema = new JsonSchema(schema);
@@ -83,12 +102,20 @@ public class SchemaRegistryFacade {
         return parsedSchema;
     }
 
-    public void createSchema(SchemaDTO schema) throws RestClientException, IOException {
-        String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getIsKey()));
-        if (getLatestSchemaMetadata(schema.getTopicName(), schema.getIsKey()).isEmpty()) {
-            schemaRegistryClient.register(subject, getSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
-        } else {
-            throw new KouncilRuntimeException(String.format("Schema for subject %s already exist", subject));
+    public List<Integer> getAllVersions(String subject) throws RestClientException, IOException {
+        return schemaRegistryClient.getAllVersions(subject);
+    }
+
+    public SchemaMetadata getSchemaVersion(String subject, Integer version) throws RestClientException, IOException {
+        return schemaRegistryClient.getSchemaMetadata(subject, version);
+    }
+
+    public String getCompatibility(String subject) {
+        try {
+            return schemaRegistryClient.getCompatibility(subject);
+        } catch (IOException | RestClientException e) {
+            log.warn("Get compatibility for subject {} error", subject, e);
+            return null;
         }
     }
 }

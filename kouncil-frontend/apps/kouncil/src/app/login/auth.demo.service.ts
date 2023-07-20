@@ -9,7 +9,7 @@ export class AuthDemoService implements AuthService {
 
   private IS_LOGGED_IN: string = 'isLoggedIn';
   private USER_ROLES: string = 'userRoles';
-  private userRoles: Array<KouncilRole> = [];
+  private userRoles: Array<KouncilRole> = JSON.parse(localStorage.getItem(this.USER_ROLES));
 
   private authenticated: boolean = localStorage.getItem(this.IS_LOGGED_IN) === 'true';
 

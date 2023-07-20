@@ -62,7 +62,12 @@ import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
-import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './app-factories';
+import {
+  resendServiceFactory,
+  schemaRegistryServiceFactory,
+  sendServiceFactory,
+  topicsServiceFactory
+} from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
@@ -83,9 +88,11 @@ import {MatSortModule} from '@angular/material/sort';
 import {AccessDeniedComponent} from './access-denied/access-denied.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {SchemasComponent} from './schemas/list/schemas.component';
-import {SchemaEditComponent} from './schemas/edit/schema-edit.component';
+import {SchemaEditComponent} from './schemas/form/edit/schema-edit.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {SchemaCreateComponent} from './schemas/create/schema-create.component';
+import {SchemaCreateComponent} from './schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from './schemas/form/details/schema-details.component';
+import {SchemaFormComponent} from './schemas/form/form/schema-form.component';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -145,7 +152,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     PageNotFoundComponent,
     SchemasComponent,
     SchemaEditComponent,
-    SchemaCreateComponent
+    SchemaCreateComponent,
+    SchemaDetailsComponent,
+    SchemaFormComponent
   ],
   imports: [
     BrowserModule,
@@ -190,6 +199,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     },
     SearchService,
     topicServiceProvider,
+    {
+      provide: SchemaRegistryService,
+      useFactory: schemaRegistryServiceFactory,
+      deps: [HttpClient]
+    },
     {
       provide: BrokerService,
       useFactory: brokerServiceFactory,
@@ -243,7 +257,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: AuthService,
       useFactory: authServiceFactory,
       deps: [HttpClient]
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })

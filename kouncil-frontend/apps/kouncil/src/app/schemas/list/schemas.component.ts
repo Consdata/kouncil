@@ -11,14 +11,14 @@ import {AuthService} from '../../login/auth.service';
 import {FormControl} from '@angular/forms';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-schemas',
   template: `
     <div class="main-container">
       <div class="toolbar-container">
-        <div class="toolbar">
-
+        <div class="toolbar" style="margin-right: 16px">
           <app-common-autocomplete [control]="topicFilterControl"
                                    [data]="topicList"
                                    [placeholder]="'Topics'"
@@ -36,8 +36,7 @@ import {Topics} from '@app/common-model';
           </button>
 
           <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
-                  class="action-button-black" style="margin-right: 16px"
-                  [routerLink]="['/schemas/create']">
+                  class="action-button-black" [routerLink]="['/schemas/create']">
             Add new schema
           </button>
         </div>
@@ -52,7 +51,8 @@ import {Topics} from '@app/common-model';
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                         [tableData]="filtered" [columns]="columns" matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
-                        (cdkDropListDropped)="drop($event)" [actionColumns]="actionColumns">
+                        (cdkDropListDropped)="drop($event)" [actionColumns]="actionColumns"
+                        (rowClickedAction)="navigateToDetails($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
@@ -65,10 +65,13 @@ import {Topics} from '@app/common-model';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column" style="z-index: 1000">
-                <button class="action-button" [routerLink]="['/schemas/edit/' + element.subjectName]">
+                <button class="action-button"
+                        *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                        [routerLink]="['/schemas/edit/' + element.subjectName + '/' + element.version]">
                   Edit
                 </button>
                 <button class="action-button"
+                        *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
                         (click)="deleteSchema(element.subjectName, element.version)">
                   Delete
                 </button>
@@ -148,7 +151,8 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
               protected authService: AuthService,
-              private topicsService: TopicsService) {
+              private topicsService: TopicsService,
+              private router: Router) {
     super();
   }
 
@@ -219,5 +223,9 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
       });
       this.progressBarService.setProgress(false);
     });
+  }
+
+  navigateToDetails(schema: Schema): void {
+    this.router.navigate([`/schemas/${schema.subjectName}/${schema.version}`]);
   }
 }

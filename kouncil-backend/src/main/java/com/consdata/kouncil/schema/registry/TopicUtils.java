@@ -1,5 +1,6 @@
 package com.consdata.kouncil.schema.registry;
 
+import com.consdata.kouncil.serde.SubjectType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,10 +14,15 @@ public final class TopicUtils {
         return isKey ? KEY_SCHEMA_SUFFIX : VALUE_SCHEMA_SUFFIX;
     }
 
+    public static String getSubjectSuffix(SubjectType subjectType) {
+        return SubjectType.KEY.equals(subjectType) ? KEY_SCHEMA_SUFFIX : VALUE_SCHEMA_SUFFIX;
+    }
+
     public static String getTopicName(String subject) {
         return subject.replace(KEY_SCHEMA_SUFFIX, "").replace(VALUE_SCHEMA_SUFFIX, "");
     }
-    public static boolean isKey(String subject) {
-        return subject.contains(KEY_SCHEMA_SUFFIX);
+
+    public static SubjectType subjectType(String subject) {
+        return subject.contains(KEY_SCHEMA_SUFFIX) ? SubjectType.KEY : SubjectType.VALUE;
     }
 }

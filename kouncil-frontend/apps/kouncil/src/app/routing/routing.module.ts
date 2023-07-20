@@ -23,8 +23,9 @@ import {KouncilRole} from '../login/kouncil-role';
 import {AccessDeniedComponent} from '../access-denied/access-denied.component';
 import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
 import {SchemasComponent} from '../schemas/list/schemas.component';
-import {SchemaEditComponent} from '../schemas/edit/schema-edit.component';
-import {SchemaCreateComponent} from '../schemas/create/schema-create.component';
+import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
+import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -124,7 +125,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'schemas/edit/:subjectName',
+        path: 'schemas/edit/:subjectName/:version',
         component: SchemaEditComponent,
         canActivate: [AuthGuard],
         data: {
@@ -137,6 +138,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           roles: [KouncilRole.KOUNCIL_EDITOR]
+        }
+      },
+      {
+        path: 'schemas/:subjectName/:version',
+        component: SchemaDetailsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
         }
       }
     ]

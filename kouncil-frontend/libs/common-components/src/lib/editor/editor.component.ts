@@ -18,7 +18,7 @@ declare var monaco: any;
 @Component({
   selector: 'app-common-editor',
   template: `
-    <div class="editor-container" #editor></div>
+    <div #editor [style.height.px]="editorHeight"></div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./editor.component.scss'],
@@ -31,7 +31,10 @@ declare var monaco: any;
 export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @Input() schemaName: any;
-  @Input() schemaType: MessageFormat;
+  @Input() editorHeight: number = 200;
+  @Input() disabled: boolean = false;
+
+  _schemaType: MessageFormat;
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
   editor: any;
@@ -53,6 +56,28 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     monaco.editor.getModels().forEach(model => model.dispose());
   }
 
+  @Input()
+  set schemaType(schemaType: MessageFormat) {
+    this._schemaType = schemaType;
+    if (this.editor) {
+      let language;
+      switch (this._schemaType) {
+        case MessageFormat.JSON:
+        case MessageFormat.AVRO:
+          language = "json";
+          break;
+        case MessageFormat.PROTOBUF:
+          language = "proto";
+          break;
+        case MessageFormat.STRING:
+          language = "plaintext";
+          break;
+      }
+      monaco.editor.setModelLanguage(this.editor.getModel(), language)
+      this.format();
+    }
+  }
+
   private initMonaco(): void {
     if (!this.monacoEditorService.loaded) {
       this.monacoEditorService.loadingFinished.pipe(first()).subscribe(() => {
@@ -61,7 +86,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
     let model: any
-    switch (this.schemaType) {
+    switch (this._schemaType) {
       case MessageFormat.JSON:
       case MessageFormat.AVRO:
         let modelUri = monaco.Uri.parse(`a://b/${this.schemaName}.json`);
@@ -81,6 +106,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       }
     );
 
+    this.format();
+
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue();
       this.propagateChange(value);
@@ -89,6 +116,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     this.editor.onDidBlurEditorWidget(() => {
       this.onTouched();
+      this.format();
     });
   }
 
@@ -108,5 +136,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  private format(): void {
+    setTimeout(() => {
+      this.editor.getAction('editor.action.formatDocument').run().then(() => {
+        this.markEditorReadonly();
+      });
+    }, 100);
+  }
+
+  private markEditorReadonly(): void {
+    this.editor.updateOptions({readOnly: this.disabled});
   }
 }

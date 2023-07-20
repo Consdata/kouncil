@@ -4,6 +4,11 @@ import {environment} from '../environments/environment';
 import {TopicsBackendService, TopicsDemoService, TopicsService} from '@app/feat-topics';
 import {SendBackendService, SendDemoService, SendService} from '@app/feat-send';
 import {ResendBackendService, ResendDemoService, ResendService} from '@app/resend-events';
+import {
+  SchemaRegistryBackendService,
+  SchemaRegistryDemoService,
+  SchemaRegistryService
+} from '@app/schema-registry';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -35,5 +40,16 @@ export function resendServiceFactory(http: HttpClient): ResendService {
     case Backend.DEMO:
     default:
       return new ResendDemoService();
+  }
+}
+
+export function schemaRegistryServiceFactory(http: HttpClient): SchemaRegistryService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new SchemaRegistryBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new SchemaRegistryDemoService();
   }
 }

@@ -1,4 +1,6 @@
 import {MessageFormat} from './message-format';
+import {SubjectType} from "./subject-type";
+import {Compatibility} from "./compatibility";
 
 export interface Schema {
   messageFormat: MessageFormat;
@@ -6,5 +8,7 @@ export interface Schema {
   topicName: string;
   subjectName: string;
   version: number;
-  isKey: boolean;
+  subjectType: SubjectType;
+  versionsNo: Array<number>;
+  compatibility: Compatibility;
 }

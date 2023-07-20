@@ -10,6 +10,7 @@ import com.consdata.kouncil.schema.SchemasConfigurationDTO;
 import com.consdata.kouncil.schema.SchemasDTO;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
+import com.consdata.kouncil.serde.Compatibility;
 import com.consdata.kouncil.serde.MessageFormat;
 import com.consdata.kouncil.topic.TopicsController;
 import com.consdata.kouncil.topic.TopicsDto;
@@ -130,9 +131,13 @@ public class SchemaRegistryController {
         schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().deleteSchema(subject, version);
     }
 
-    @GetMapping("/api/schemas/{serverId}/{subject}")
-    public SchemaDTO getSchema(@PathVariable String serverId, @PathVariable String subject) throws RestClientException, IOException {
-        SchemaMetadata schema = schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().getLatestSchema(subject);
+    @GetMapping("/api/schemas/{serverId}/{subject}/{version}")
+    public SchemaDTO getSchemaVersion(@PathVariable String serverId, @PathVariable String subject, @PathVariable Integer version)
+            throws RestClientException, IOException {
+        SchemaMetadata schema = schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().getSchemaVersion(subject, version);
+        List<Integer> allVersions = schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().getAllVersions(subject);
+
+        String compatibility = schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().getCompatibility(subject);
 
         return SchemaDTO.builder()
                 .subjectName(subject)
@@ -140,7 +145,9 @@ public class SchemaRegistryController {
                 .plainTextSchema(schema.getSchema())
                 .version(schema.getVersion())
                 .topicName(TopicUtils.getTopicName(subject))
-                .isKey(TopicUtils.isKey(subject))
+                .subjectType(TopicUtils.subjectType(subject))
+                .versionsNo(allVersions)
+                .compatibility(compatibility != null ? Compatibility.valueOf(compatibility) : null)
                 .build();
     }
 
