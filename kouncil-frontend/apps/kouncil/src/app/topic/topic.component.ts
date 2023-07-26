@@ -29,6 +29,12 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
                              (openSendPopupEvent)="openSendPopup()"
                              (openResendPopupEvent)="openResendPopup()"
                              (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
+                             (toggleJsonEvent)="toggleJsonEventHandler($event)">
+          <app-kafka-toolbar [name]="topicName"
+                             (toggleLiveEvent)="toggleLiveEventHandler($event)"
+                             (openSendPopupEvent)="openSendPopup()"
+                             (openResendPopupEvent)="openResendPopup()"
+                             (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
                              (toggleJsonEvent)="toggleJsonEventHandler($event)"
           >
           </app-kafka-toolbar>
@@ -42,7 +48,7 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
                  *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder">
 
           <app-common-table [tableData]="filteredRows" [columns]="columns"
-                            (rowClickedAction)="showMessage($event)" matSort
+                            (rowClickedAction)="showMessage($event)" matSort [sort]="sort"
                             cdkDropList cdkDropListOrientation="horizontal"
                             (cdkDropListDropped)="drop($event)">
             <ng-container *ngFor="let column of columns; let index = index">

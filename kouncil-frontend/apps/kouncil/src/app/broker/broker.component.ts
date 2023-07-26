@@ -17,7 +17,7 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
       <div class="broker-details-table">
 
         <section *ngIf="isAnimationDone">
-          <app-common-table [tableData]="data.config" [columns]="columns" matSort
+          <app-common-table [tableData]="data.config" [columns]="columns" matSort [sort]="sort"
                             cdkDropList cdkDropListOrientation="horizontal"
                             (cdkDropListDropped)="drop($event)"
                             [headerClass]="'white-table-header'">

@@ -25,8 +25,8 @@ import {DecimalPipe} from '@angular/common';
       ></app-breadcrumb>
       <section
         *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder">
-        <app-common-table [tableData]="filteredAssignments" matSort [columns]="columns"
-                          [additionalColumns]="additionalColumns"
+        <app-common-table [tableData]="filteredAssignments" matSort [sort]="sort"
+                          [columns]="columns" [additionalColumns]="additionalColumns"
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)">
 
