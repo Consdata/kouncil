@@ -29,3 +29,7 @@ kouncil:
         providers: github
   topics:
     exclude-regex-patterns: __.*
+  authorization:
+    role-admin: admin_group
+    role-editor: editor_group
+    role-viewer: viewer_group
