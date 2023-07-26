@@ -15,6 +15,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {TableColumn} from "../table-column/table-column";
 import {TableColumnComponent} from "../table-column/table-column.component";
 import {TableGroup} from "./table-group";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-common-table',
@@ -58,6 +59,7 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   _actionColumns: TableColumn[] = [];
   _tableData: unknown[];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  _sort: MatSort;
 
   @Input() headerClass: string = 'default-table-header';
   @Input() groupHeaderName: (group: TableGroup) => string;
@@ -67,6 +69,7 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   @Input() groupedTable: boolean = false;
   @Input() groupByColumns: string[];
   @Output() rowClickedAction: EventEmitter<any> = new EventEmitter<any>();
+  @Output() sortEvent: EventEmitter<MatSort> = new EventEmitter<MatSort>();
   @ContentChildren(TableColumnComponent) tableColumnComponents: QueryList<TableColumnComponent>;
   @ViewChild(MatTable, {static: true}) table: MatTable<any>;
 
@@ -77,6 +80,7 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   set tableData(tableData: unknown[]) {
     this._tableData = tableData;
     if (this.groupedTable && this._tableData) {
+      this.dataSource = new MatTableDataSource<any>();
       this.dataSource.data = this.addGroups(this._tableData, this.groupByColumns);
     } else {
       this.dataSource.data = this._tableData;
@@ -99,6 +103,15 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   set actionColumns(actionColumns: TableColumn[]) {
     this._actionColumns = actionColumns;
     this.updateAllColumns();
+  }
+
+  @Input()
+  set sort(sort: MatSort) {
+    if (sort) {
+      this._sort = sort;
+      this.dataSource.sort = sort;
+      this.dataSource.sort.sortChange.subscribe((sort: MatSort) => this.sortEvent.emit(sort));
+    }
   }
 
   ngAfterContentInit() {

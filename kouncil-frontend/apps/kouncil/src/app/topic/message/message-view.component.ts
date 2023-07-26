@@ -22,7 +22,8 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
       </div>
       <div class="headers" *ngIf="vm.messageData.headers.length > 0 && vm.isAnimationDone">
         <div class="label">Headers</div>
-        <app-common-table [tableData]="vm.messageData.headers" [columns]="columns" matSort
+        <app-common-table [tableData]="vm.messageData.headers" [columns]="columns"
+                          matSort [sort]="sort"
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)"
                           (rowClickedAction)="navigateToTrack($event, vm.messageData)"

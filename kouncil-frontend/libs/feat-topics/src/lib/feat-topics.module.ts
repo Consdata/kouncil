@@ -13,6 +13,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from "@angular/material/table";
 import {CommonComponentsModule} from "@app/common-components";
 import {MatSortModule} from "@angular/material/sort";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
   imports: [CommonModule,
@@ -24,7 +25,11 @@ import {MatSortModule} from "@angular/material/sort";
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,
-    MatDialogModule, MatTableModule, CommonComponentsModule, MatSortModule],
+    MatDialogModule,
+    MatTableModule,
+    CommonComponentsModule,
+    MatSortModule,
+    DragDropModule],
   declarations: [
     TopicsComponent
   ],

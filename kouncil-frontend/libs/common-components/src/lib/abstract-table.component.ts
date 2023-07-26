@@ -13,7 +13,7 @@ export abstract class AbstractTableComponent {
 
   @ViewChild(MatSort, {static: false}) set content(sort: MatSort) {
     if (this.table) {
-      this.table.dataSource.sort = sort;
+      this.sort = sort;
     }
   }
 

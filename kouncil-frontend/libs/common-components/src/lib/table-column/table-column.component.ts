@@ -17,7 +17,8 @@ import {MatColumnDef} from "@angular/material/table";
       <td mat-cell *matCellDef="let element" [style.min-width.px]="column.width"
           class="cell">
 
-        <span *ngIf="!template" [matTooltip]="getColumnValue(element, column)">
+        <span *ngIf="!template" [title]="getColumnValue(element, column)"
+              [ngClass]="column.columnClass ? column.columnClass(getColumnValue(element, column)): ''">
           {{getColumnValue(element, column)}}
         </span>
 
