@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,6 +32,8 @@ class FirstTimeLoginControllerInMemoryTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private UserRolesMapping userRolesMapping;
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -40,20 +43,21 @@ class FirstTimeLoginControllerInMemoryTest {
             Files.delete(path);
         }
 
-        mockMvc.perform(get("/api/firstTimeLogin"))
+        mockMvc.perform(get("/api/firstTimeLogin/admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("true")));
 
         mockMvc.perform(get("/api/skipChangeDefaultPassword"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/firstTimeLogin"))
+        mockMvc.perform(get("/api/firstTimeLogin/admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("false")));
 
         assertAll(
                 () -> assertThat(Files.exists(path)).isTrue(),
-                () -> assertThat(Files.readString(path)).isEqualTo("admin")
+                () -> assertThat(Files.readString(path).split(";")[0]).isEqualTo("admin"),
+                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_group")
         );
     }
 
@@ -70,7 +74,8 @@ class FirstTimeLoginControllerInMemoryTest {
 
         assertAll(
                 () -> assertThat(Files.exists(path)).isTrue(),
-                () -> assertThat(Files.readString(path)).isEqualTo("newpassword")
+                () -> assertThat(Files.readString(path).split(";")[0]).isEqualTo("newpassword"),
+                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_group")
         );
     }
 }

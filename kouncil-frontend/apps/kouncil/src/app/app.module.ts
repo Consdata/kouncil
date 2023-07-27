@@ -80,6 +80,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CommonComponentsModule} from '@app/common-components';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
+import {AccessDeniedComponent} from './access-denied/access-denied.component';
+import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -134,7 +136,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MainComponent,
     ChangePasswordComponent,
     MainLoginComponent,
-    OAuthRedirectComponent
+    OAuthRedirectComponent,
+    AccessDeniedComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
