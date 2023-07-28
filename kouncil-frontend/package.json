@@ -32,7 +32,7 @@
     "monaco-editor": "^0.38.0",
     "ngx-json-viewer": "3.2.1",
     "ngx-mat-select-search": "6.0.0",
-    "protobufjs": "7.1.2",
+    "protobufjs": "7.2.4",
     "rxjs": "7.5.7",
     "tslib": "2.4.1",
     "zone.js": "0.12.0"

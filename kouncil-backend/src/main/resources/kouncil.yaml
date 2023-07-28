@@ -22,6 +22,21 @@ kouncil:
         - host: localhost
           port: 9092
   auth:
-    active-provider: inmemory
-
-
+    active-provider: inmemory # inmemory, ldap, ad, sso
+    ldap:
+      provider-url: "ldaps://kouncil.io"
+      search-base: "OU=Users,DC=kouncil,DC=io"
+      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+    ad:
+      domain: "acme.com"
+      url: "ldap://acme.com:389"
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+    sso:
+      supported:
+        providers: github
+  topics:
+    exclude-regex-patterns: __.*
+  authorization:
+    role-admin: admin_group
+    role-editor: editor_group
+    role-viewer: viewer_group

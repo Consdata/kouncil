@@ -2,15 +2,15 @@ package com.consdata.kouncil.config.security.inmemory;
 
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_ROLE;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_USERNAME;
 
 import com.consdata.kouncil.KouncilRuntimeException;
@@ -47,7 +47,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
-@EnableGlobalMethodSecurity(jsr250Enabled=true, securedEnabled=true, prePostEnabled=true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true)
 public class InMemoryWebSecurityConfig {
 
     private final UserRolesMapping userRolesMapping;
@@ -84,13 +84,14 @@ public class InMemoryWebSecurityConfig {
     public UserDetailsManager userDetailsService() {
         log.info("Initializing inmemory authentication");
         return new InMemoryUserDetailsManager(
-                createUser(ADMIN_CONFIG, ADMIN_USERNAME, ADMIN_DEFAULT_PASSWORD, ADMIN_DEFAULT_ROLE),
-                createUser(EDITOR_CONFIG, EDITOR_USERNAME, EDITOR_DEFAULT_PASSWORD, EDITOR_DEFAULT_ROLE),
-                createUser(VIEWER_CONFIG, VIEWER_USERNAME, VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_ROLE)
+                createUser(ADMIN_CONFIG, ADMIN_USERNAME, ADMIN_DEFAULT_PASSWORD, ADMIN_DEFAULT_GROUP),
+                createUser(EDITOR_CONFIG, EDITOR_USERNAME, EDITOR_DEFAULT_PASSWORD, EDITOR_DEFAULT_GROUP),
+                createUser(VIEWER_CONFIG, VIEWER_USERNAME, VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_GROUP)
         );
     }
 
-    private UserDetails createUser(String configFile, String username, String defaultPassword, String defaultRole){
+    private UserDetails createUser(String configFile, String username, String defaultPassword, String defaultRole) {
+        log.info("Create user {} with default role {}", username, defaultRole);
         Path path = Paths.get(configFile);
         String password = defaultPassword;
         String role = defaultRole;
@@ -99,11 +100,16 @@ public class InMemoryWebSecurityConfig {
             try {
                 String fileConfigData = Files.readString(path);
                 String[] config = fileConfigData.split(";");
-                if(StringUtils.isNotEmpty(config[0])){
-                    password = config[0];
-                }
-                if(StringUtils.isNotEmpty(config[1])){
-                    role = config[1];
+                if (config.length < 2) {
+                    log.warn("Old configuration file found for user: {}. Removing old configuration.", username);
+                    Files.delete(path);
+                } else {
+                    if (StringUtils.isNotEmpty(config[0])) {
+                        password = config[0];
+                    }
+                    if (StringUtils.isNotEmpty(config[1])) {
+                        role = config[1];
+                    }
                 }
             } catch (IOException e) {
                 throw new KouncilRuntimeException(e);

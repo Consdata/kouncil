@@ -57,7 +57,7 @@ class FirstTimeLoginControllerInMemoryTest {
         assertAll(
                 () -> assertThat(Files.exists(path)).isTrue(),
                 () -> assertThat(Files.readString(path).split(";")[0]).isEqualTo("admin"),
-                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_role")
+                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_group")
         );
     }
 
@@ -75,7 +75,7 @@ class FirstTimeLoginControllerInMemoryTest {
         assertAll(
                 () -> assertThat(Files.exists(path)).isTrue(),
                 () -> assertThat(Files.readString(path).split(";")[0]).isEqualTo("newpassword"),
-                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_role")
+                () -> assertThat(Files.readString(path).split(";")[1]).isEqualTo("admin_group")
         );
     }
 }

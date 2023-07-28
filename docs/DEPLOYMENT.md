@@ -280,28 +280,23 @@ spring:
 ```
 
 ## Authorization
-Kouncil allows to restrict access to pages and functions for users. To achieve that you should define properties file.
-In this file as a key you should use defined Kouncil roles. There are three of them, `ROLE_KOUNCIL_ADMIN`, `ROLE_KOUNCIL_EDITOR`, `ROLE_KOUNCIL_VIEWER`.
-Each of this roles will allow user to do specific actions in Kouncil. Users with:
-* `ROLE_KOUNCIL_ADMIN` role can view brokers and consumer groups pages.
-* `ROLE_KOUNCIL_EDITOR` role can view topics, event tracker pages and sent messages to topics.
-* `ROLE_KOUNCIL_VIEWER` role can only view topics and event tracker pages.
+Kouncil allows to restrict access to pages and functions for users. To achieve that you should add to you configuration file appropriate properties.
+There are three of them, `kouncil.authorization.role-admin`, `kouncil.authorization.role-editor`, `kouncil.authorization.role-viewer`.
+Each one of this will allow user to do specific actions in Kouncil. Users with roles assigned to:
+* `kouncil.authorization.role-admin` can view brokers and consumer groups pages.
+* `kouncil.authorization.role-editor` can view topics, event tracker pages and sent messages to topics.
+* `kouncil.authorization.role-viewer` can only view topics and event tracker pages.
 
-As a values in properties file you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`). 
-For in inmemory authentication we defined user groups, `admin_role`, `editor_role` and `viewer_role`, which you can use as values in properties file.
+As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`). 
+For in inmemory authentication we defined user groups, `admin_group`, `editor_group` and `viewer_group`, which you can use as values in Kouncil configuration file.
 
-Properties file example:
-```properties
-ROLE_KOUNCIL_ADMIN=KOUNCIL_ADMIN;ROLE_USER;admin_role
-ROLE_KOUNCIL_EDITOR=KOUNCIL_EDITOR;editor_role
-ROLE_KOUNCIL_VIEWER=KOUNCIL_VIEWER;viewer_role
-```
-
-Path to properties file should be provided in `kouncil.role-mapping` parameter in Kouncil configuration file. If you don't provide this parameter default mapping will be used, and it looks like this:
-```properties
-ROLE_KOUNCIL_ADMIN=admin_role
-ROLE_KOUNCIL_EDITOR=editor_role
-ROLE_KOUNCIL_VIEWER=viewer_role
+Example roles configuration:
+```yaml
+kouncil:
+  authorization:
+    role-admin: KOUNCIL_ADMIN;ROLE_USER;admin_group
+    role-editor: KOUNCIL_EDITOR;editor_group
+    role-viewer: KOUNCIL_VIEWER;viewer_group
 ```
 
 ## Logging
