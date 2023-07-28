@@ -1,15 +1,24 @@
 package com.consdata.kouncil.security;
 
+import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
+import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
 
     @Resource(name = "authenticationManager")
@@ -25,6 +35,8 @@ public class AuthController {
 
     @Value("${kouncil.auth.active-provider}")
     private String activeProvider;
+
+    private final UserRolesMapping userRolesMapping;
 
     @GetMapping("/api/activeProvider")
     public String activeProvider() {
@@ -49,5 +61,12 @@ public class AuthController {
     @GetMapping("/api/logout")
     public void logout(HttpServletRequest req) throws ServletException {
         req.logout();
+    }
+
+    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
+    @GetMapping("/api/userRoles")
+    public Set<String> getUserRoles() {
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
     }
 }

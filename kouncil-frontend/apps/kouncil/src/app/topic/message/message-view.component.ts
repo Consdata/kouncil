@@ -10,6 +10,8 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {DrawerService, ObjectUtils, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {AuthService} from '../../login/auth.service';
+import {KouncilRole} from '../../login/kouncil-role';
 
 @Component({
   selector: 'app-message-view',
@@ -22,7 +24,8 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
       </div>
       <div class="headers" *ngIf="vm.messageData.headers.length > 0 && vm.isAnimationDone">
         <div class="label">Headers</div>
-        <app-common-table [tableData]="vm.messageData.headers" [columns]="columns" matSort
+        <app-common-table [tableData]="vm.messageData.headers" [columns]="columns"
+                          matSort [sort]="sort"
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)"
                           (rowClickedAction)="navigateToTrack($event, vm.messageData)"
@@ -58,8 +61,9 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
                 (click)="copyToClipboard(vm.messageData.value)">Copy to
           clipboard
         </button>
-        <button mat-button disableRipple class="action-button-black"
-                (click)="resend(vm.messageData)">Resend event
+        <button mat-button disableRipple *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                class="action-button-black" (click)="resend(vm.messageData)">
+          Resend event
         </button>
       </div>
 
@@ -71,6 +75,8 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
 export class MessageViewComponent extends AbstractTableComponent implements OnInit {
 
   private isAnimationDone$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  KouncilRole: typeof KouncilRole  = KouncilRole;
 
   columns: TableColumn[] = [
     {
@@ -110,7 +116,9 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
     public snackBar: MatSnackBar,
     private clipboard: Clipboard,
     private dialogRef: MatDialogRef<MessageViewComponent>,
-    private messageDataService: MessageDataService) {
+    private messageDataService: MessageDataService,
+    protected authService: AuthService
+  ) {
     super();
   }
 

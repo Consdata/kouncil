@@ -1,0 +1,18 @@
+@import '../../styles/palette';
+
+.page-not-found-icon {
+  font-size: 40px;
+  width: 45px;
+  height: 45px;
+}
+
+.page-not-found-main {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  width: 400px;
+  top: 100px;
+  position: relative;
+  margin: 0 auto;
+  row-gap: 15px;
+}

@@ -3,6 +3,7 @@ import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {KouncilRole} from './kouncil-role';
 
 @Component({
   selector: 'app-change-password',
@@ -27,13 +28,21 @@ export class ChangePasswordComponent {
 
   changePassword($event: string): void {
     this.service.changeDefaultPassword$($event).subscribe(() => {
-      this.router.navigate(['/topics']);
+      if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+        this.router.navigate(['/topics']);
+      } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+        this.router.navigate(['/brokers']);
+      }
     });
   }
 
   skipChange(): void {
     this.service.skipChange$().subscribe(() => {
-      this.router.navigate(['/topics']);
+      if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+        this.router.navigate(['/topics']);
+      } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+        this.router.navigate(['/brokers']);
+      }
     });
   }
 

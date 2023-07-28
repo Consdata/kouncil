@@ -34,7 +34,7 @@ import {JsonGrid} from '../../topic/json-grid';
 
     <section *ngIf="filteredRows && filteredRows.length > 0; else noDataPlaceholder"
              class="track-table">
-      <app-common-table [tableData]="filteredRows" [columns]="allColumns" matSort
+      <app-common-table [tableData]="filteredRows" [columns]="allColumns" matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
                         (cdkDropListDropped)="drop($event)"
                         (rowClickedAction)="showMessage($event)">
@@ -174,8 +174,8 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
         this.trackService.trackFinished.emit();
         this.topicSubscription?.unsubscribe();
       }
-      this.allRows = [...this.allRows, ...items];
-      this.filterRows(this.searchService.currentPhrase);
+
+      this.generateTableData(items);
     });
   }
 
@@ -232,36 +232,7 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
         this.asyncHandle
       )
       .subscribe((events: MessageData[]) => {
-        if (events && events.length > 0) {
-          const columnNames: Array<string> = this.generateGridColumnNames(events);
-
-          const gridColumns: TableColumn[] = [];
-          if (columnNames.length > 0) {
-
-            columnNames.forEach((column) => {
-              gridColumns.push({
-                name: column,
-                prop: column,
-                sticky: false,
-                resizeable: true,
-                sortable: true,
-                draggable: false,
-                width: 200
-              });
-            });
-
-            this.parseObjectValues(events);
-          }
-
-          let columns: TableColumn[] = [...this.commonColumns];
-          if (gridColumns) {
-            columns = columns.concat(gridColumns);
-          }
-          this.allColumns = columns;
-
-          this.allRows = [...this.allRows, ...this.jsonGrid.getRows()];
-          this.filterRows(this.searchService.currentPhrase);
-        }
+        this.generateTableData(events);
         if (!this.trackService.isAsyncEnable()) {
           this.trackService.trackFinished.emit();
         }
@@ -308,5 +279,38 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
       } as JsonGridData);
     });
     this.jsonGrid.replaceObjects(values, false, false);
+  }
+
+  private generateTableData(items: Array<MessageData>) {
+    if (items && items.length > 0) {
+      const columnNames: Array<string> = this.generateGridColumnNames(items);
+
+      const gridColumns: TableColumn[] = [];
+      if (columnNames.length > 0) {
+
+        columnNames.forEach((column) => {
+          gridColumns.push({
+            name: column,
+            prop: column,
+            sticky: false,
+            resizeable: true,
+            sortable: true,
+            draggable: false,
+            width: 200
+          });
+        });
+
+        this.parseObjectValues(items);
+      }
+
+      let columns: TableColumn[] = [...this.commonColumns];
+      if (gridColumns) {
+        columns = columns.concat(gridColumns);
+      }
+      this.allColumns = columns;
+
+      this.allRows = [...this.allRows, ...this.jsonGrid.getRows()];
+      this.filterRows(this.searchService.currentPhrase);
+    }
   }
 }

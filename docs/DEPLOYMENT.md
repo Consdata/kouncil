@@ -222,7 +222,7 @@ docker run -d -p 80:8080 -e bootstrapServers="kafka1:9092" -e allowedOrigins="ht
 ## Authentication
 Kouncil supports multiple authentication methods along with LDAP, Active Directory and SSO. There are a lot of different configuration scenarios. Here are examples of most common ones:
 
-* Simplest in-memory provider. Do not require any configuration. Only for the test purposes!
+* Simplest in-memory provider. Do not require any configuration. Only for the test purposes! Default uses are admin, editor and viewer. Default password for each of these users is equal to username.
 ```yaml
 kouncil:
   auth:
@@ -277,6 +277,26 @@ spring:
             client-id: your-client-id
             client-secret: your-client-secret
             redirect-uri: http://your-application-url/oauth
+```
+
+## Authorization
+Kouncil allows to restrict access to pages and functions for users. To achieve that you should add to you configuration file appropriate properties.
+There are three of them, `kouncil.authorization.role-admin`, `kouncil.authorization.role-editor`, `kouncil.authorization.role-viewer`.
+Each one of this will allow user to do specific actions in Kouncil. Users with roles assigned to:
+* `kouncil.authorization.role-admin` can view brokers and consumer groups pages.
+* `kouncil.authorization.role-editor` can view topics, event tracker pages and sent messages to topics.
+* `kouncil.authorization.role-viewer` can only view topics and event tracker pages.
+
+As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`). 
+For in inmemory authentication we defined user groups, `admin_group`, `editor_group` and `viewer_group`, which you can use as values in Kouncil configuration file.
+
+Example roles configuration:
+```yaml
+kouncil:
+  authorization:
+    role-admin: KOUNCIL_ADMIN;ROLE_USER;admin_group
+    role-editor: KOUNCIL_EDITOR;editor_group
+    role-viewer: KOUNCIL_VIEWER;viewer_group
 ```
 
 ## Logging

@@ -1,7 +1,15 @@
 package com.consdata.kouncil.consumergroup;
 
+import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
+
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.config.KouncilConfiguration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
@@ -13,11 +21,11 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -28,6 +36,7 @@ public class ConsumerGroupController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
+    @RolesAllowed(ADMIN_ROLE)
     @GetMapping("/api/consumer-groups")
     public ConsumerGroupsResponse getConsumerGroups(@RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
         ConsumerGroupsResponse result = ConsumerGroupsResponse
@@ -35,7 +44,7 @@ public class ConsumerGroupController {
                 .consumerGroups(new ArrayList<>())
                 .build();
         ListConsumerGroupsResult groups = kafkaConnectionService.getAdminClient(serverId).listConsumerGroups();
-        List<String> groupIds = groups.all().get().stream().map(ConsumerGroupListing::groupId).collect(Collectors.toList());
+        List<String> groupIds = groups.all().get().stream().map(ConsumerGroupListing::groupId).toList();
         Map<String, KafkaFuture<ConsumerGroupDescription>> consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(groupIds).describedGroups();
         for (Map.Entry<String, KafkaFuture<ConsumerGroupDescription>> entry : consumerGroupSummary.entrySet()) {
             result.getConsumerGroups().add(ConsumerGroup.builder().groupId(entry.getKey()).status(entry.getValue().get().state().toString()).build());
@@ -43,6 +52,7 @@ public class ConsumerGroupController {
         return result;
     }
 
+    @RolesAllowed(ADMIN_ROLE)
     @GetMapping("/api/consumer-group/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(
             @PathVariable("groupId") String groupId,
@@ -71,7 +81,7 @@ public class ConsumerGroupController {
                 }))));
 
         try (KafkaConsumer<String, String> kafkaConsumer = createConsumer(serverId)) {
-            List<TopicPartition> partitions = result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).collect(Collectors.toList());
+            List<TopicPartition> partitions = result.getConsumerGroupOffset().stream().map(ConsumerGroupOffset::getKey).toList();
             Map<TopicPartition, Long> endOffsets = kafkaConsumer.endOffsets(partitions);
             result.getConsumerGroupOffset().forEach(consumerGroupOffset -> {
                 String topic = consumerGroupOffset.getTopic();
@@ -84,6 +94,7 @@ public class ConsumerGroupController {
         return result;
     }
 
+    @RolesAllowed(ADMIN_ROLE)
     @DeleteMapping("/api/consumer-group/{groupId}")
     public void deleteConsumerGroup(
             @PathVariable("groupId") String groupId,

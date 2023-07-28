@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {User} from '@app/common-login';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {KouncilRole} from './kouncil-role';
 
 @Component({
   selector: 'app-login',
@@ -15,10 +16,8 @@ import {environment} from '../../environments/environment';
 
     <app-common-login (loginUser)="login($event)">
 
-      <div info *ngIf="firstTimeLogin" class="first-time-login">
-        <span>Default user credentials:</span>
-        <span>username: admin</span>
-        <span>password: admin</span>
+      <div info *ngIf="inmemory" class="first-time-login">
+        <span>Default users: admin, editor, viewer</span>
       </div>
 
     </app-common-login>
@@ -33,6 +32,7 @@ import {environment} from '../../environments/environment';
 export class LoginComponent implements OnInit {
 
   firstTimeLogin: boolean = false;
+  inmemory: boolean = false;
   providers: Array<string> = [];
   public backend: Backend = environment.backend;
 
@@ -43,9 +43,9 @@ export class LoginComponent implements OnInit {
     this.service.clearLoggedIn();
     this.service.activeProvider$().subscribe(activeProvider => {
       if (activeProvider === 'inmemory') {
-        this.fetchFirstTimeLoginInfo();
+        this.inmemory = true;
       } else if (activeProvider === 'sso') {
-        this.techSsoProviders();
+        this.fetchSsoProviders();
       }
     });
   }
@@ -53,10 +53,10 @@ export class LoginComponent implements OnInit {
   login($event: User): void {
     this.service.login$($event).subscribe(isValid => {
       if (isValid) {
-        if (this.firstTimeLogin) {
-          this.router.navigate(['/changePassword']);
+        if (this.inmemory) {
+          this.checkFirstTimeLogin($event.username);
         } else {
-          this.router.navigate(['/topics']);
+          this.fetchUserRoles();
         }
       }
     });
@@ -70,13 +70,28 @@ export class LoginComponent implements OnInit {
     return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
   }
 
-  private techSsoProviders() {
+  private fetchSsoProviders() {
     this.service.ssoProviders$().subscribe(providers => this.providers = providers);
   }
 
-  private fetchFirstTimeLoginInfo() {
-    this.service.firstTimeLogin$().subscribe(firstTime => {
+  private fetchUserRoles() {
+    this.service.getUserRoles$().subscribe(() => {
+      if (this.firstTimeLogin) {
+        this.router.navigate(['/changePassword']);
+      } else {
+        if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+          this.router.navigate(['/topics']);
+        } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+          this.router.navigate(['/brokers']);
+        }
+      }
+    });
+  }
+
+  private checkFirstTimeLogin(username: string) {
+    this.service.firstTimeLogin$(username).subscribe(firstTime => {
       this.firstTimeLogin = firstTime;
+      this.fetchUserRoles();
     });
   }
 }

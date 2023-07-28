@@ -15,7 +15,8 @@ import {
   SnackBarData
 } from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
-import {TableColumn} from '@app/common-components';
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {MatSort} from '@angular/material/sort';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -29,12 +30,15 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                         [tableData]="filtered" [columns]="columns"
-                        [additionalColumns]="additionalColumns" matSort
+                        [additionalColumns]="additionalColumns"
+                        matSort [sort]="sort" (sortEvent)="customSort($event)"
                         [actionColumns]="actionColumns"
                         (rowClickedAction)="navigateToConsumerGroup($event)"
                         [groupHeaderName]="groupHeaderName"
                         [groupedTable]="true"
-                        [groupByColumns]="['group']">
+                        [groupByColumns]="['group']"
+                        cdkDropList cdkDropListOrientation="horizontal"
+                        (cdkDropListDropped)="drop($event)">
 
         <ng-container *ngFor="let column of additionalColumns; let index = index">
           <app-common-table-column [column]="column" [index]="index"
@@ -76,7 +80,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
   `,
   styleUrls: ['./consumer-groups.component.scss']
 })
-export class ConsumerGroupsComponent implements OnInit, OnDestroy {
+export class ConsumerGroupsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
@@ -102,7 +106,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
         resizeable: true,
         sortable: true,
         draggable: true,
-        width: 190
+        width: 190,
+        columnClass: this.getStatusClass
       }
     ];
 
@@ -129,6 +134,7 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
               private router: Router,
               private servers: ServersService,
               private favouritesService: FavouritesService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -215,8 +221,8 @@ export class ConsumerGroupsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/consumer-groups/', event.groupId]);
   }
 
-  customSort(event: { column: { prop: string }, newValue: string }): void {
-    this.filtered = this.arraySortService.transform(this.filtered, event.column.prop, event.newValue);
+  customSort(sort: MatSort): void {
+    this.filtered = this.arraySortService.transform(this.filtered, sort.active, sort.direction);
   }
 
   getStatusClass(status: string): string {

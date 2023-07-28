@@ -1,5 +1,7 @@
 package com.consdata.kouncil.config.security.ldap;
 
+import com.consdata.kouncil.config.security.KouncilUserDetailsMapper;
+import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "ldap")
 public class LdapWebSecurityConfig {
+
+    private final UserRolesMapping userRolesMapping;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -88,6 +92,8 @@ public class LdapWebSecurityConfig {
         var bindAuthenticator = new BindAuthenticator(ldapContextSource);
         bindAuthenticator.setUserSearch(userSearch);
         bindAuthenticator.afterPropertiesSet();
-        return new LdapAuthenticationProvider(bindAuthenticator);
+        LdapAuthenticationProvider ldapAuthenticationProvider = new LdapAuthenticationProvider(bindAuthenticator);
+        ldapAuthenticationProvider.setUserDetailsContextMapper(new KouncilUserDetailsMapper(userRolesMapping));
+        return ldapAuthenticationProvider;
     }
 }
