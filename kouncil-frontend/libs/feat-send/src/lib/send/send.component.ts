@@ -31,9 +31,9 @@ declare var monaco: any;
         </div>
 
         <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!---->}, {{count}<!---->}, {{timestamp}<!---->}
+          Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}<!----> }
           <br>
-          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!---->}).
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!----> }).
           Format should be given after <strong>colon (:)</strong> which precedes placeholder.
           Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>
@@ -157,7 +157,20 @@ export class SendComponent implements OnDestroy {
     private schemaRegistry: SchemaRegistryService,
     private monacoEditorService: MonacoEditorService
   ) {
-    schemaRegistry.getLatestSchemas$(this.servers.getSelectedServerId(), "TestTopic").subscribe(result => {
+    schemaRegistry.getSchemasConfiguration$().pipe(map(configurations => {
+      let schemasConfiguration = configurations.find(config => config.serverId === this.servers.getSelectedServerId());
+      if (schemasConfiguration.hasSchemaRegistry) {
+        this.fetchSchemas();
+      }
+    }))
+  }
+
+  ngOnDestroy() {
+    this.monacoEditorService.clearSchemas();
+  }
+
+  private fetchSchemas(): void {
+    this.schemaRegistry.getLatestSchemas$(this.servers.getSelectedServerId(), "TestTopic").pipe(map(result => {
       this.keySchemaType = result.keyMessageFormat;
       this.valueSchemaType = result.valueMessageFormat;
 
@@ -167,13 +180,8 @@ export class SendComponent implements OnDestroy {
       if (this.valueSchemaType !== MessageFormat.STRING) {
         this.monacoEditorService.addSchema('value', JSON.parse(result.valuePlainTextSchema));
       }
-
       this.monacoEditorService.registerSchemas();
-    })
-  }
-
-  ngOnDestroy() {
-    this.monacoEditorService.clearSchemas();
+    }))
   }
 
   onSubmit(messageData: MessageData): void {
