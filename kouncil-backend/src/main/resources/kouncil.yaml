@@ -14,13 +14,6 @@ logging:
     org.apache.kafka.clients.NetworkClient: INFO
     org.apache.kafka.common.utils.AppInfoParser: WARN
 kouncil:
-  clusters:
-    - name: local_kafka
-      schemaRegistry:
-        url: "http://localhost:8085"
-      brokers:
-        - host: localhost
-          port: 9092
   auth:
     active-provider: inmemory # inmemory, ldap, ad, sso
     ldap:
