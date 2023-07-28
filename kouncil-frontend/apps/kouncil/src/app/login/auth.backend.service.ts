@@ -6,6 +6,7 @@ import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
 import {KouncilRole} from './kouncil-role';
+import {v4 as uuidv4} from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,7 @@ export class AuthBackendService implements AuthService {
     return this.http.post<boolean>('/api/login', user).pipe(map(data => {
       this.setAuthenticated(data);
       localStorage.setItem(this.IS_LOGGED_IN, data.toString());
+      this.generateUserIdTimestampValues();
       return data;
     }));
   }
@@ -104,5 +106,14 @@ export class AuthBackendService implements AuthService {
       this.userRoles = localStorageUserRoles;
     }
     return this.userRoles.some(userRole => roles.includes(userRole));
+  }
+
+  private generateUserIdTimestampValues() {
+    if (!localStorage.getItem('userId')) {
+      localStorage.setItem('userId', uuidv4());
+    }
+    if (!localStorage.getItem('timestamp')) {
+      localStorage.setItem('timestamp', new Date().toString());
+    }
   }
 }
