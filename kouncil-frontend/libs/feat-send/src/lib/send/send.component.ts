@@ -117,6 +117,7 @@ export class SendComponent implements OnDestroy {
     Validators.required,
   ]);
   isSendButtonDisabled: boolean = false;
+  topicName: string;
 
   keySchemaType: MessageFormat;
   valueSchemaType: MessageFormat;
@@ -127,21 +128,23 @@ export class SendComponent implements OnDestroy {
     this.messageDataService.messageData$,
     this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId())
   ]).pipe(
-    switchMap(([messageData, isSchemaConfigured]) =>
-      iif(() => isSchemaConfigured,
-        this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
-          map(exampleData => ({
+    switchMap(([messageData, isSchemaConfigured]) => {
+        this.topicName = messageData.topicName;
+        return iif(() => isSchemaConfigured,
+          this.schemaFacade.getExampleSchemaData$(this.servers.getSelectedServerId(), messageData.topicName).pipe(
+            map(exampleData => ({
+                ...messageData,
+                key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
+                value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
+                  JSON.stringify(exampleData.exampleValue, null, 2)
+              })
+            )),
+          of({
               ...messageData,
-              key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
-              value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
-                JSON.stringify(exampleData.exampleValue, null, 2)
-            })
-          )),
-        of({
-            ...messageData,
-            value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
-          }
-        ))
+              value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
+            }
+          ))
+      }
     )
   );
 
@@ -157,12 +160,14 @@ export class SendComponent implements OnDestroy {
     private schemaRegistry: SchemaRegistryService,
     private monacoEditorService: MonacoEditorService
   ) {
-    schemaRegistry.getSchemasConfiguration$().pipe(map(configurations => {
+    schemaRegistry.getSchemasConfiguration$()
+    .pipe()
+    .subscribe(configurations => {
       let schemasConfiguration = configurations.find(config => config.serverId === this.servers.getSelectedServerId());
       if (schemasConfiguration.hasSchemaRegistry) {
         this.fetchSchemas();
       }
-    }))
+    })
   }
 
   ngOnDestroy() {
@@ -170,7 +175,9 @@ export class SendComponent implements OnDestroy {
   }
 
   private fetchSchemas(): void {
-    this.schemaRegistry.getLatestSchemas$(this.servers.getSelectedServerId(), "TestTopic").pipe(map(result => {
+    this.schemaRegistry.getLatestSchemas$(this.servers.getSelectedServerId(), this.topicName)
+    .pipe()
+    .subscribe(result => {
       this.keySchemaType = result.keyMessageFormat;
       this.valueSchemaType = result.valueMessageFormat;
 
@@ -181,7 +188,7 @@ export class SendComponent implements OnDestroy {
         this.monacoEditorService.addSchema('value', JSON.parse(result.valuePlainTextSchema));
       }
       this.monacoEditorService.registerSchemas();
-    }))
+    })
   }
 
   onSubmit(messageData: MessageData): void {
