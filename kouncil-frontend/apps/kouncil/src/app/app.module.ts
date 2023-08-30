@@ -82,6 +82,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
 import {AccessDeniedComponent} from './access-denied/access-denied.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {SurveyComponent} from './survey/survey.component';
+import {
+  SurveyScaleQuestionComponent
+} from './survey/survey-scale-question/survey-scale-question.component';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -138,7 +142,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     MainLoginComponent,
     OAuthRedirectComponent,
     AccessDeniedComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    SurveyComponent,
+    SurveyScaleQuestionComponent
   ],
   imports: [
     BrowserModule,

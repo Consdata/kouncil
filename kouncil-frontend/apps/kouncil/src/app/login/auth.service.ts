@@ -36,6 +36,7 @@ export abstract class AuthService {
   abstract getUserRoles$(): Observable<void>;
 
   abstract canAccess(roles: KouncilRole[]): boolean;
+  abstract getInstallationId$(): void;
 }
 
 export function authServiceFactory(http: HttpClient): AuthService {

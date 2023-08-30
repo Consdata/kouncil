@@ -36,7 +36,7 @@ export class AuthBackendService implements AuthService {
     return this.http.post<boolean>('/api/login', user).pipe(map(data => {
       this.setAuthenticated(data);
       localStorage.setItem(this.IS_LOGGED_IN, data.toString());
-      this.generateUserIdTimestampValues();
+      this.generateUserId();
       return data;
     }));
   }
@@ -108,12 +108,15 @@ export class AuthBackendService implements AuthService {
     return this.userRoles.some(userRole => roles.includes(userRole));
   }
 
-  private generateUserIdTimestampValues() {
+  private generateUserId() {
     if (!localStorage.getItem('userId')) {
       localStorage.setItem('userId', uuidv4());
     }
-    if (!localStorage.getItem('timestamp')) {
-      localStorage.setItem('timestamp', new Date().toString());
-    }
+  }
+
+  getInstallationId$(): void {
+    this.http.get('/api/installationId', {responseType: 'text'}).subscribe((installationId) => {
+      localStorage.setItem('installationId', installationId);
+    });
   }
 }

@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
 public class KouncilConfiguration {
 
     protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
-    private static final String INSTALLATION_ID_FILE = "kouncil_installation_id.txt";
+    public static final String INSTALLATION_ID_FILE = "kouncil_installation_id.txt";
 
     private static final String HOST_PORT_SEPARATOR = ":";
 
