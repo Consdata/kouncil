@@ -33,3 +33,5 @@ kouncil:
     role-admin: admin_group
     role-editor: editor_group
     role-viewer: viewer_group
+  survey:
+    base-path: "http://base-path/kouncil"

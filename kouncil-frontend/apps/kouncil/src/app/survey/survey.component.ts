@@ -57,7 +57,7 @@ export class SurveyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchSurvey();
+    this.fetchSurveyBasePath();
   }
 
   rejectSurvey(): void {
@@ -121,5 +121,11 @@ export class SurveyComponent implements OnInit {
 
   closeSurvey(): void {
     this.hidePanel = true;
+  }
+
+  private fetchSurveyBasePath() {
+    this.surveyService.fetchSurveyBasePath$().subscribe(()=>{
+      this.fetchSurvey();
+    });
   }
 }

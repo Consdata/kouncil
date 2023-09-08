@@ -10,11 +10,13 @@ import {SurveyAnswer} from './model/survey-answer';
 })
 export class SurveyService {
 
+  surveyBasePath: string;
+
   constructor(protected http: HttpClient) {
   }
 
   fetchSurvey$(): Observable<Array<SurveyPending>> {
-    return this.http.post<Array<SurveyPending>>(`http://localhost:8082/kouncil/result/pending-with-definition/${localStorage.getItem('userId')}`, {
+    return this.http.post<Array<SurveyPending>>(`${this.surveyBasePath}/result/pending-with-definition/${localStorage.getItem('userId')}/${localStorage.getItem('installationId')}`, {
       receiverAttributes: [
         {
           name: 'kouncil-user-id',
@@ -31,13 +33,19 @@ export class SurveyService {
   }
 
   answerSurvey$(answer: SurveyAnswer): Observable<void> {
-    return this.http.patch<void>(`http://localhost:8082/kouncil/result/answer/${localStorage.getItem('userId')}`, answer);
+    return this.http.patch<void>(`${this.surveyBasePath}/result/answer/${localStorage.getItem('userId')}/${localStorage.getItem('installationId')}`, answer);
   }
 
   markSurveyAsOpened(sentId: string): void {
     const params = {'sentId': sentId};
-    this.http.post<void>(`http://localhost:8082/kouncil/activity/SURVEY_OPENED/${localStorage.getItem('userId')}`, {}, {
+    this.http.post<void>(`${this.surveyBasePath}/activity/SURVEY_OPENED/${localStorage.getItem('userId')}/${localStorage.getItem('installationId')}`, {}, {
       params
     }).pipe().subscribe();
+  }
+
+  fetchSurveyBasePath$(): Observable<void> {
+    return this.http.get('/api/survey/config', {responseType: 'text'}).pipe(map((basePath) => {
+      this.surveyBasePath = basePath;
+    }));
   }
 }
