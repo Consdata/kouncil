@@ -1,4 +1,11 @@
-import {Component, OnInit, QueryList, ViewChildren, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  ViewEncapsulation
+} from '@angular/core';
 import {SurveyService} from './survey.service';
 import {SurveyPending, SurveyQuestion} from './model/survey.model';
 import {Router} from '@angular/router';
@@ -53,7 +60,7 @@ export class SurveyComponent implements OnInit {
 
   @ViewChildren(SurveyScaleQuestionComponent) questionComponents: QueryList<SurveyScaleQuestionComponent>;
 
-  constructor(private surveyService: SurveyService, private router: Router) {
+  constructor(private surveyService: SurveyService, private router: Router, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -115,6 +122,7 @@ export class SurveyComponent implements OnInit {
         const surveyDesign = JSON.parse(this.survey.surveyDefinition.design);
         this.questions = surveyDesign['questions'];
         this.surveyService.markSurveyAsOpened(this.survey.sentId);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -124,8 +132,10 @@ export class SurveyComponent implements OnInit {
   }
 
   private fetchSurveyBasePath() {
-    this.surveyService.fetchSurveyBasePath$().subscribe(()=>{
-      this.fetchSurvey();
+    this.surveyService.fetchSurveyBasePath$().subscribe((urlExist) => {
+      if (urlExist) {
+        this.fetchSurvey();
+      }
     });
   }
 }
