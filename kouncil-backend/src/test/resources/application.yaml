@@ -1,4 +1,11 @@
-bootstrapServers: "localhost:9092"
+bootstrapServers: "localhost:59092"
+spring:
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: test-kouncil-group-id
+test:
+  topic: embedded-test-topic
 kouncil:
   topics:
     resend-headers-to-keep: requestId, version

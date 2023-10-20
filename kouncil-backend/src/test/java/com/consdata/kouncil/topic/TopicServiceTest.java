@@ -13,7 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest
 @DirtiesContext
-@EmbeddedKafka(partitions = 4, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
+@EmbeddedKafka(partitions = 4, bootstrapServersProperty =
+        "spring.kafka.bootstrap-servers", brokerProperties = {"listeners=PLAINTEXT://localhost:59092", "port=59092"}, ports = 59092)
 class TopicServiceTest {
 
     @Autowired
@@ -25,7 +26,7 @@ class TopicServiceTest {
     @Autowired
     protected KafkaConnectionService kafkaConnectionService;
 
-    private static final String BOOSTRAP_SERVER = "localhost_9092";
+    private static final String BOOSTRAP_SERVER = "localhost_59092";
 
     @Test
     void should_fetch_all_generated_messages() {
