@@ -34,4 +34,4 @@ kouncil:
     role-editor: editor_group
     role-viewer: viewer_group
   survey:
-    base-path: "http://base-path/kouncil"
+    base-path: "https://kouncil-eximee-survey-n22nwdfueq-lm.a.run.app/kouncil"
