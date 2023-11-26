@@ -14,14 +14,6 @@ logging:
     org.apache.kafka.clients.NetworkClient: INFO
     org.apache.kafka.common.utils.AppInfoParser: WARN
 kouncil:
-  clusters:
-    - name: aws-cluster
-      brokers:
-        - host: localhost
-          port: 9092
-          saslMechanism: PLAIN
-          saslProtocol: SASL_PLAINTEXT
-          saslJassConfig: org.apache.kafka.common.security.plain.PlainLoginModule required username="kouncil" password="q1w2e3r4";
   auth:
     active-provider: inmemory # inmemory, ldap, ad, sso
     ldap:
