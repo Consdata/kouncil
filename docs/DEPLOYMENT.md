@@ -213,9 +213,9 @@ kouncil:
           port: 9094
 ```
 
-## Advanced config - AWS MSK Kafka cluster
+## Advanced config - Amazon MSK Kafka cluster
 
-If one of your brokers in cluster environment is located in AWS MSK cluster you should specify `saslMechanism`, `saslProtocol`, `saslJassConfig` and `saslCallbackHandler` for this broker, like this:
+If one of your brokers in cluster environment is located in Amazon MSK cluster you should specify `saslMechanism`, `saslProtocol`, `saslJassConfig` and `saslCallbackHandler` for this broker, like this:
 
 ```yaml
 kouncil:
@@ -234,8 +234,8 @@ kouncil:
           port: 9094
 ```
 
-Above configuration is using IAM access to AWS MSK cluster and you should provide `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` as environment variables to Kouncil. 
-And this two values should be generated to the user which has access to AWS MSK cluster and his username should be provided in `awsProfileName` in Kouncil configuration.
+Above configuration is using IAM access to Amazon MSK cluster and you should provide `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` as environment variables to Kouncil. 
+And this two values should be generated to the user which has access to Amazon MSK cluster and his username should be provided in `awsProfileName` in Kouncil configuration.
 
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
