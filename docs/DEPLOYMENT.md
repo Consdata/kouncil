@@ -287,8 +287,17 @@ Each one of this will allow user to do specific actions in Kouncil. Users with r
 * `kouncil.authorization.role-editor` can view topics, event tracker pages and sent messages to topics.
 * `kouncil.authorization.role-viewer` can only view topics and event tracker pages.
 
-As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`). 
-For in inmemory authentication we defined user groups, `admin_group`, `editor_group` and `viewer_group`, which you can use as values in Kouncil configuration file.
+As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`).
+
+For the default configuration, we have defined user groups: 
+```yaml
+kouncil:
+  authorization:
+    role-admin: admin_group
+    role-editor: editor_group
+    role-viewer: viewer_group
+```
+These will be used in any authentication method unless you override them in any of your configuration files, which are used by Kouncil.
 
 Example roles configuration:
 ```yaml
