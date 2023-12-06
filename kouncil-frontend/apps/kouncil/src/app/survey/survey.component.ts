@@ -1,6 +1,7 @@
 import {
-  ChangeDetectorRef,
+  ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
   QueryList,
   ViewChildren,
@@ -10,19 +11,19 @@ import {SurveyService} from './survey.service';
 import {SurveyPending, SurveyQuestion} from './model/survey.model';
 import {Router} from '@angular/router';
 import {
-  SurveyAnswer,
-  SurveyQuestionResult,
-  SurveyResultStatus,
-  SurveyResultValue
-} from './model/survey-answer';
-import {
   SurveyScaleQuestionComponent
 } from './survey-scale-question/survey-scale-question.component';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, SurveyScaleQuestionComponent, MatIconModule, MatButtonModule],
   selector: 'app-survey',
   template: `
-    <div *ngIf="showPanel" class="container" [ngClass]="{'hide': hidePanel}">
+    <div *ngIf="showPanel$ | async" class="container" [ngClass]="{'hide': hidePanel}">
       <div id="inner" class="inner">
         <div class="survey-description" style="padding-top: 10px;"
              [innerHTML]="survey.surveyDefinition.message">
@@ -48,94 +49,43 @@ import {
     </div>
   `,
   styleUrls: ['./survey.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class SurveyComponent implements OnInit {
+export class SurveyComponent implements OnInit, OnDestroy {
 
-  showPanel: boolean = false;
+  showPanel$: Observable<boolean> = this.surveyService.showPanelObservable$;
   hidePanel: boolean = false;
   survey: SurveyPending;
   questions: SurveyQuestion[];
-  position: string;
+  subscriptions: Subscription = new Subscription();
 
   @ViewChildren(SurveyScaleQuestionComponent) questionComponents: QueryList<SurveyScaleQuestionComponent>;
 
-  constructor(private surveyService: SurveyService, private router: Router, private cdr: ChangeDetectorRef) {
+  constructor(private surveyService: SurveyService, private router: Router) {
+    this.subscriptions.add(this.surveyService.getSurveyObservable$().subscribe(value => {
+      this.survey = value;
+    }));
+
+    this.subscriptions.add(this.surveyService.getQuestionsChanged$().subscribe(value => {
+      this.questions = value;
+    }));
   }
 
   ngOnInit(): void {
-    this.fetchSurveyBasePath();
+    this.surveyService.fetchSurvey$(this.router.url);
   }
 
-  rejectSurvey(): void {
-    this.hidePanel = true;
-    this.surveyService.answerSurvey$({
-      status: SurveyResultStatus.DISCARDED,
-      sentId: this.survey.sentId,
-      position: ''
-    } as SurveyAnswer).pipe().subscribe(() => {
-      setTimeout(() => {
-        this.fetchSurvey();
-      }, 2000);
-
-    });
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   confirmSurvey(): void {
     this.closeSurvey();
-
-    const answers = [];
-    this.questionComponents.forEach(component => {
-      answers.push({
-        questionId: component.question.id,
-        value: String(component.selectedValue),
-        answer: component.reason
-      } as SurveyQuestionResult);
-    });
-
-    this.surveyService.answerSurvey$({
-      status: SurveyResultStatus.FILLED,
-      sentId: this.survey.sentId,
-      position: this.position,
-      result: {
-        questions: answers
-      } as SurveyResultValue
-    } as SurveyAnswer).pipe().subscribe(() => {
-      setTimeout(() => {
-        this.fetchSurvey();
-      }, 2000);
-
-    });
-  }
-
-  private fetchSurvey(): void {
-    this.surveyService.fetchSurvey$().pipe().subscribe(result => {
-      if (result.length > 0) {
-        this.survey = result[0];
-        this.showPanel = this.survey.triggers.some(trigger => {
-          if (this.router.url.endsWith(trigger.elementId)) {
-            this.position = trigger.elementId;
-            return true;
-          }
-          return false;
-        });
-        const surveyDesign = JSON.parse(this.survey.surveyDefinition.design);
-        this.questions = surveyDesign['questions'];
-        this.surveyService.markSurveyAsOpened(this.survey.sentId);
-        this.cdr.detectChanges();
-      }
-    });
+    this.surveyService.answerSurvey$(this.questionComponents, this.router.url);
   }
 
   closeSurvey(): void {
     this.hidePanel = true;
-  }
-
-  private fetchSurveyBasePath() {
-    this.surveyService.fetchSurveyBasePath$().subscribe((urlExist) => {
-      if (urlExist) {
-        this.fetchSurvey();
-      }
-    });
   }
 }

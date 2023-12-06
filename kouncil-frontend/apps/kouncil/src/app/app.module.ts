@@ -141,10 +141,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ChangePasswordComponent,
     MainLoginComponent,
     OAuthRedirectComponent,
-    AccessDeniedComponent,
-    PageNotFoundComponent,
-    SurveyComponent,
-    SurveyScaleQuestionComponent
+    AccessDeniedComponent
   ],
   imports: [
     BrowserModule,
@@ -179,6 +176,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     CommonComponentsModule,
     MatSortModule,
     DragDropModule,
+    PageNotFoundComponent,
+    SurveyComponent,
+    SurveyScaleQuestionComponent
   ],
   providers: [
     {

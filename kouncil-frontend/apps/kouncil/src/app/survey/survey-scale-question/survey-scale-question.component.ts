@@ -1,8 +1,12 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {SurveyQuestion} from '../model/survey.model';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-survey-scale-question',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   template: `
 
     <div class="survey-frame">
@@ -28,16 +32,15 @@ import {SurveyQuestion} from '../model/survey.model';
           </div>
         </div>
         <div class="survey-form" *ngIf="isInRange()">
-          <span
-            style="font-size: 12px;">{{question.questionWhenSelected}}</span>
-          <textarea style="outline: none" rows="5" [(ngModel)]="reason"
-                    name="value"></textarea>
+          <span style="font-size: 12px;">{{question.questionWhenSelected}}</span>
+          <textarea style="outline: none" rows="5" [(ngModel)]="reason" name="value"></textarea>
         </div>
       </div>
     </div>
 
   `,
   styleUrls: ['./survey-scale-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class SurveyScaleQuestionComponent implements OnInit {

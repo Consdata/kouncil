@@ -1,6 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
+  standalone: true,
+  imports: [MatIconModule],
   selector: 'app-access-denied',
   template: `
     <div class="page-not-found-main">
