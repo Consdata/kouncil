@@ -8,6 +8,8 @@ import {environment} from '../../environments/environment';
     <app-demo *ngIf="backend === 'DEMO'"></app-demo>
     <app-kafka-navbar></app-kafka-navbar>
 
+    <app-survey></app-survey>
+
     <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
       <app-progress-bar></app-progress-bar>
       <router-outlet></router-outlet>

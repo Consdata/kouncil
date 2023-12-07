@@ -1,6 +1,26 @@
 package com.consdata.kouncil.config;
 
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
+
 import com.consdata.kouncil.KouncilRuntimeException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,17 +31,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toMap;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
-
 @Component
 @Slf4j
 @Data
@@ -29,6 +38,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KouncilConfiguration {
 
     protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
+    public static final String INSTALLATION_ID_FILE = "kouncil_installation_id.txt";
 
     private static final String HOST_PORT_SEPARATOR = ":";
 
@@ -41,6 +51,8 @@ public class KouncilConfiguration {
     private List<ClusterConfig> clusters;
 
     private Map<String, ClusterConfig> clusterConfig;
+
+    private String installationId;
 
     /**
      * @return first known broker from given cluster
@@ -72,6 +84,10 @@ public class KouncilConfiguration {
                 .findFirst();
     }
 
+    public String getInstallationId() {
+        return installationId;
+    }
+
     /**
      * hosts may be specified either in IP or hostname form, this method allows us to compare them regardless of their form
      */
@@ -93,8 +109,24 @@ public class KouncilConfiguration {
         } else {
             initializeSimpleConfig();
         }
+        generateInstallationId();
         log.info(toString());
     }
+
+    private void generateInstallationId() {
+        Path path = Paths.get(INSTALLATION_ID_FILE);
+        try {
+            if (!Files.exists(path)) {
+                installationId = UUID.randomUUID().toString();
+                Files.write(path, installationId.getBytes());
+            } else {
+                installationId = Files.readString(path);
+            }
+        } catch (IOException e) {
+            throw new KouncilRuntimeException("Failed to read installation id file", e);
+        }
+    }
+
 
     private void initializeSimpleConfig() {
         log.info("Using simple Kouncil configuration: bootstrapServers={}, schemaRegistryUrl={}", initialBootstrapServers, schemaRegistryUrl);
