@@ -8,4 +8,5 @@ local
 /node_modules/
 docker-compose.yml
 .firebase
+kouncil_installation_id.txt
 default_*_password.txt

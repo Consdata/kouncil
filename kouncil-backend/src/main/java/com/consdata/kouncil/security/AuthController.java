@@ -1,10 +1,14 @@
 package com.consdata.kouncil.security;
 
+import static com.consdata.kouncil.config.KouncilConfiguration.INSTALLATION_ID_FILE;
 import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
 import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
 import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,8 +40,6 @@ public class AuthController {
     @Value("${kouncil.auth.active-provider}")
     private String activeProvider;
 
-    private final UserRolesMapping userRolesMapping;
-
     @GetMapping("/api/activeProvider")
     public String activeProvider() {
         return activeProvider;
@@ -68,5 +70,11 @@ public class AuthController {
     public Set<String> getUserRoles() {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+    }
+
+    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
+    @GetMapping("/api/installationId")
+    public String getInstallationId() throws IOException {
+        return Files.readString(Path.of(INSTALLATION_ID_FILE));
     }
 }
