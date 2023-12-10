@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
           this.checkFirstTimeLogin($event.username);
         } else {
           this.fetchUserRoles();
+          this.fetchInstallationId();
         }
       }
     });
@@ -92,6 +93,11 @@ export class LoginComponent implements OnInit {
     this.service.firstTimeLogin$(username).subscribe(firstTime => {
       this.firstTimeLogin = firstTime;
       this.fetchUserRoles();
+      this.fetchInstallationId();
     });
+  }
+
+  private fetchInstallationId() {
+    this.service.getInstallationId$();
   }
 }

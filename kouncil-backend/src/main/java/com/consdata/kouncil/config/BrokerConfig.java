@@ -14,18 +14,14 @@ import static java.lang.String.format;
 public class BrokerConfig {
 
     private String host;
-
     private Integer port;
-
     private Integer jmxPort;
-
     private String jmxUser;
-
     private String jmxPassword;
-
-    private String saslUsername;
-
-    private String saslPassword;
+    private String saslMechanism;
+    private String saslProtocol;
+    private String saslJassConfig;
+    private String saslCallbackHandler;
 
     public String getAddress() {
         return format("%s:%s", host, port);
