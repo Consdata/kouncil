@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -28,10 +27,10 @@ declare var monaco: any;
     multi: true
   }]
 })
-export class EditorComponent implements AfterViewInit, OnDestroy {
+export class EditorComponent implements OnDestroy {
 
   @Input() schemaName: any;
-  @Input() schemaType: MessageFormat;
+  _schemaType: MessageFormat;
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
   editor: any;
@@ -45,8 +44,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   constructor(private monacoEditorService: MonacoEditorService) {
   }
 
-  ngAfterViewInit(): void {
-    this.initMonaco()
+  @Input()
+  set schemaType(schemaType: MessageFormat) {
+    if (schemaType) {
+      this._schemaType = schemaType;
+      this.initMonaco();
+    }
   }
 
   ngOnDestroy() {
@@ -61,7 +64,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
     let model: any
-    switch (this.schemaType) {
+    switch (this._schemaType) {
       case MessageFormat.JSON:
       case MessageFormat.AVRO:
         let modelUri = monaco.Uri.parse(`a://b/${this.schemaName}.json`);
