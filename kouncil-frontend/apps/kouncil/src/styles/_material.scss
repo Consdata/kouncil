@@ -7,7 +7,6 @@
   color: pallete.$main-50;
   width: 15px;
   height: 15px;
-  font-size: 20px;
   margin: 0 8px;
 }
 
@@ -444,11 +443,11 @@ mat-option > span {
 }
 
 .status-stable {
-  color: #109810;
+  color: pallete.$green;
 }
 
 .status-dead {
-  color: #b10101;
+  color: pallete.$red;
 }
 
 .status-empty {

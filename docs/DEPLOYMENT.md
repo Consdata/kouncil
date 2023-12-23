@@ -193,9 +193,9 @@ kouncil:
            port: 9092
 ```
 
-## Advanced config - SASL Authentication
+## Advanced config - SASL Plain Authentication
 
-If one of your brokers in cluster type environment needs SASL authentication You could specify `saslUsername` and `saslPassword` for each broker, like so: 
+If one of your brokers in cluster environment needs SASL authentication you should specify `saslMechanism`, `saslProtocol` and `saslJassConfig` for this broker, like this: 
 
 ```yaml
 kouncil:
@@ -204,13 +204,94 @@ kouncil:
       brokers:
         - host: 192.10.0.1
           port: 9092
-          saslUsername: username
-          saslPassword: password
+          saslMechanism: PLAIN
+          saslProtocol: SASL_PLAINTEXT
+          saslJassConfig: org.apache.kafka.common.security.plain.PlainLoginModule required username="user" password="secret";
         - host: 192.10.0.2
           port: 9093
         - host: 192.10.0.3
           port: 9094
 ```
+
+## Advanced config - SSL Schema registry
+
+Let's assume that your SchemaRegistry is secured and you need SSL to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate.
+
+```yaml
+kouncil:
+  clusters:
+    - name: transaction-cluster
+      schemaRegistry:
+        url: "https://schema.registry:8081"
+        security:
+          protocol: SSL
+        ssl:
+          truststore-location: file:///config/truststore/client.truststore.jks
+          truststore-password: password
+          trustStoreType: JKS
+          keystore-location: file:///config/keystore/client.keystore.jks
+          keystore-password: password
+          key-password: password
+          keyStoreType: JKS
+      brokers:
+        - host: 192.10.0.1
+          port: 9092
+
+```
+
+## Advanced config - Schema registry SSL and BASIC Authentication
+
+Let's assume that your SchemaRegistry is secured and you need SSL and BASIC authentication to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate. 
+And fot the BASIC authentication you need to provide user-info which will be use to authenticate when Kouncil will connect to Schema Registry.
+
+```yaml
+kouncil:
+  clusters:
+    - name: local-cluster
+      schemaRegistry:
+        url: "https://schema.registry:8081"
+        auth:
+          source: USER_INFO
+          user-info: username:password
+        security:
+          protocol: SSL
+        ssl:
+          truststore-location: file:///config/truststore/client.truststore.jks
+          truststore-password: password
+          trustStoreType: JKS
+          keystore-location: file:///config/keystore/client.keystore.jks
+          keystore-password: password
+          key-password: password
+          keyStoreType: JKS
+      brokers:
+        - host: 192.10.0.1
+          port: 9092
+
+```
+
+## Advanced config - Amazon MSK Kafka cluster
+
+If one of your brokers in cluster environment is located in Amazon MSK cluster you should specify `saslMechanism`, `saslProtocol`, `saslJassConfig` and `saslCallbackHandler` for this broker, like this:
+
+```yaml
+kouncil:
+  clusters:
+    - name: transaction-cluster
+      brokers:
+        - host: 192.10.0.1
+          port: 9092
+          saslMechanism: AWS_MSK_IAM
+          saslProtocol: SASL_SSL
+          saslJassConfig: software.amazon.msk.auth.iam.IAMLoginModule required awsProfileName="username";
+          saslCallbackHandler: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+        - host: 192.10.0.2
+          port: 9093
+        - host: 192.10.0.3
+          port: 9094
+```
+
+Above configuration is using IAM access to Amazon MSK cluster and you should provide `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` as environment variables to Kouncil. 
+And this two values should be generated to the user which has access to Amazon MSK cluster and his username should be provided in `awsProfileName` in Kouncil configuration.
 
 ## WebSocket allowed origins configuration
 By default, WebSocket allowed origins are set to *, which can be inefficient from the security point of view. You can easily narrow it down, setting `allowedOrigins` environment variable like that:
@@ -287,8 +368,17 @@ Each one of this will allow user to do specific actions in Kouncil. Users with r
 * `kouncil.authorization.role-editor` can view topics, event tracker pages and sent messages to topics.
 * `kouncil.authorization.role-viewer` can only view topics and event tracker pages.
 
-As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`). 
-For in inmemory authentication we defined user groups, `admin_group`, `editor_group` and `viewer_group`, which you can use as values in Kouncil configuration file.
+As a values in these parameters you should provide semicolon (`;`) separated list of groups defined in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`).
+
+For the default configuration, we have defined user groups: 
+```yaml
+kouncil:
+  authorization:
+    role-admin: admin_group
+    role-editor: editor_group
+    role-viewer: viewer_group
+```
+These will be used in any authentication method unless you override them in any of your configuration files, which are used by Kouncil.
 
 Example roles configuration:
 ```yaml

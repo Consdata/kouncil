@@ -93,6 +93,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {SchemaCreateComponent} from './schemas/form/create/schema-create.component';
 import {SchemaDetailsComponent} from './schemas/form/details/schema-details.component';
 import {SchemaFormComponent} from './schemas/form/form/schema-form.component';
+import {SurveyComponent} from './survey/survey.component';
+import {
+  SurveyScaleQuestionComponent
+} from './survey/survey-scale-question/survey-scale-question.component';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -155,6 +159,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     SchemaCreateComponent,
     SchemaDetailsComponent,
     SchemaFormComponent
+    AccessDeniedComponent
   ],
   imports: [
     BrowserModule,
@@ -189,6 +194,9 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     CommonComponentsModule,
     MatSortModule,
     DragDropModule,
+    PageNotFoundComponent,
+    SurveyComponent,
+    SurveyScaleQuestionComponent
     MatCheckboxModule
   ],
   providers: [

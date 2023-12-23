@@ -3,6 +3,7 @@ import {Observable, of} from 'rxjs';
 import {AuthService} from './auth.service';
 import {User} from '@app/common-login';
 import {KouncilRole} from './kouncil-role';
+import {v4 as uuidv4} from 'uuid';
 
 @Injectable()
 export class AuthDemoService implements AuthService {
@@ -70,5 +71,9 @@ export class AuthDemoService implements AuthService {
 
   canAccess(roles: KouncilRole[]): boolean {
     return this.userRoles.some(userRole => roles.includes(userRole));
+  }
+
+  getInstallationId$(): void {
+    localStorage.setItem('installationId',uuidv4());
   }
 }

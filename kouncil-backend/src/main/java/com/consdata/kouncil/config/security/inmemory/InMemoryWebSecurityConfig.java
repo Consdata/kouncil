@@ -1,16 +1,16 @@
 package com.consdata.kouncil.config.security.inmemory;
 
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_USERNAME;
 
 import com.consdata.kouncil.KouncilRuntimeException;

@@ -26,7 +26,7 @@ import {Backend} from '@app/common-model';
                                 [label]="'Password'"
                                 [icon]="'lock'"></app-common-login-field>
         <button mat-button disableRipple class="action-button-white" type="submit">
-          Login
+          Log in
         </button>
       </form>
     </div>
