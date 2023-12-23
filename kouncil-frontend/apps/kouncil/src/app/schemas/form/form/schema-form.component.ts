@@ -52,7 +52,8 @@ import {MatSelectChange} from '@angular/material/select';
         <div *ngIf="isVisible([ViewMode.VIEW])">
           <div class="label">Versions</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="version" [(ngModel)]="model.version" (selectionChange)="changeSchemaVersion($event)">
+            <mat-select name="version" [(ngModel)]="model.version"
+                        (selectionChange)="changeSchemaVersion($event)">
               <mat-option *ngFor="let version of model.versionsNo" [value]="version">
                 {{ version }}
               </mat-option>
@@ -116,7 +117,7 @@ export class SchemaFormComponent implements OnInit {
 
   model: Schema;
   subjectTypes: string[] = Object.keys(SubjectType).map(format => format);
-  messageFormats: string[] = Object.keys(MessageFormat).map(format => format);
+  messageFormats: string[] = [MessageFormat.JSON, MessageFormat.AVRO, MessageFormat.PROTOBUF];
   compatibilities: string[] = Object.keys(Compatibility).map(format => format);
   topics: SelectableItem[] = [];
   ViewMode: typeof ViewMode = ViewMode;

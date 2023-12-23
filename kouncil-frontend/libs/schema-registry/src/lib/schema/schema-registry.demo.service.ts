@@ -13,24 +13,24 @@ export class SchemaRegistryDemoService implements SchemaRegistryService {
     {
       subjectName: 'user-reports-key',
       messageFormat: MessageFormat.JSON,
-      plainTextSchema: '{\n' +
-        '  "type": "object",\n' +
-        '  "properties": {\n' +
-        '    "firstName": {\n' +
-        '      "type": "string",\n' +
-        '      "description": "The person\'s first name."\n' +
-        '    },\n' +
-        '    "lastName": {\n' +
-        '      "type": "string",\n' +
-        '      "description": "The person\'s last name."\n' +
-        '    },\n' +
-        '    "age": {\n' +
-        '      "description": "Age in years which must be equal to or greater than zero.",\n' +
-        '      "type": "integer",\n' +
-        '      "minimum": 0\n' +
-        '    }\n' +
-        '  }\n' +
-        '}',
+      plainTextSchema: `{
+          "type": "object",
+          "properties": {
+            "firstName": {
+              "type": "string",
+              "description": "The person\'s first name."
+            },
+            "lastName": {
+              "type": "string",
+              "description": "The person\'s last name."
+            },
+            "age": {
+              "description": "Age in years which must be equal to or greater than zero.",
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }`,
       topicName: 'user-reports',
       version: 1,
       subjectType: SubjectType.KEY,

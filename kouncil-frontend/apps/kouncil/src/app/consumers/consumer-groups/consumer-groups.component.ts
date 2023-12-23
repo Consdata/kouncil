@@ -67,7 +67,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
                                    [template]="cellTemplate">
 
             <ng-template #cellTemplate let-element>
-              <div class="actions-column" style="z-index: 1000">
+              <div class="actions-column">
                 <button class="action-button" (click)="deleteConsumerGroup(element.groupId)">
                   Delete
                 </button>

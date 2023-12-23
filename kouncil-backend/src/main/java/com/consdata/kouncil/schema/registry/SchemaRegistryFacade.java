@@ -59,7 +59,6 @@ public class SchemaRegistryFacade {
         return schemaRegistryClient.getSchemaBySubjectAndId(subject, metadata.getSchemaId());
     }
 
-
     public void deleteSchema(String subject, String version) throws RestClientException, IOException {
         log.info("Delete schema [subject={}, version={}]", subject, version);
         schemaRegistryClient.deleteSchemaVersion(subject, version);
@@ -67,6 +66,7 @@ public class SchemaRegistryFacade {
     }
 
     public void createSchema(SchemaDTO schema) throws RestClientException, IOException {
+        log.info("Creating schema [{}]", schema.toString());
         String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getSubjectType()));
         schema.setSubjectName(subject);
 
@@ -79,6 +79,7 @@ public class SchemaRegistryFacade {
     }
 
     public void updateSchema(SchemaDTO schema) throws RestClientException, IOException {
+        log.info("Updating schema [{}]", schema.toString());
         changeSubjectCompatibility(schema);
         schemaRegistryClient.register(schema.getSubjectName(), parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
     }
@@ -97,16 +98,18 @@ public class SchemaRegistryFacade {
             case JSON -> parsedSchema = new JsonSchema(schema);
             case AVRO -> parsedSchema = new AvroSchema(schema);
             case PROTOBUF -> parsedSchema = new ProtobufSchema(schema);
-            default -> throw new IllegalStateException("Unexpected value: " + messageFormat);
+             default -> throw new IllegalStateException("Unexpected value: " + messageFormat);
         }
         return parsedSchema;
     }
 
     public List<Integer> getAllVersions(String subject) throws RestClientException, IOException {
+        log.info("Fetching all schema versions [subject={}]", subject);
         return schemaRegistryClient.getAllVersions(subject);
     }
 
     public SchemaMetadata getSchemaVersion(String subject, Integer version) throws RestClientException, IOException {
+        log.info("Fetching schema [subject={}, version={}]", subject, version);
         return schemaRegistryClient.getSchemaMetadata(subject, version);
     }
 

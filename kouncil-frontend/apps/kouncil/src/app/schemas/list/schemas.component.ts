@@ -18,7 +18,7 @@ import {Router} from '@angular/router';
   template: `
     <div class="main-container">
       <div class="toolbar-container">
-        <div class="toolbar" style="margin-right: 16px">
+        <div class="toolbar">
           <app-common-autocomplete [control]="topicFilterControl"
                                    [data]="topicList"
                                    [placeholder]="'Topics'"
@@ -64,7 +64,7 @@ import {Router} from '@angular/router';
                                    [template]="cellTemplate">
 
             <ng-template #cellTemplate let-element>
-              <div class="actions-column" style="z-index: 1000">
+              <div class="actions-column">
                 <button class="action-button"
                         *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
                         [routerLink]="['/schemas/edit/' + element.subjectName + '/' + element.version]">

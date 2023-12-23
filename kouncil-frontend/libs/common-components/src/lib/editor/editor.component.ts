@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -17,7 +18,7 @@ declare var monaco: any;
 @Component({
   selector: 'app-common-editor',
   template: `
-    <div #editor [style.height.px]="editorHeight"></div>
+    <div #editor class="editor-container" [style.height.px]="editorHeight"></div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./editor.component.scss'],
@@ -27,14 +28,13 @@ declare var monaco: any;
     multi: true
   }]
 })
-export class EditorComponent implements OnDestroy {
+export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @Input() schemaName: any;
   _schemaType: MessageFormat;
   @Input() editorHeight: number = 200;
   @Input() disabled: boolean = false;
 
-  _schemaType: MessageFormat;
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
   editor: any;
@@ -48,18 +48,8 @@ export class EditorComponent implements OnDestroy {
   constructor(private monacoEditorService: MonacoEditorService) {
   }
 
-  @Input()
-  set schemaType(schemaType: MessageFormat) {
-    if (schemaType) {
-      this._schemaType = schemaType;
-      this.initMonaco();
-    }
   ngAfterViewInit(): void {
     this.initMonaco();
-  }
-
-  ngOnDestroy() {
-    monaco.editor.getModels().forEach(model => model.dispose());
   }
 
   @Input()
@@ -82,6 +72,10 @@ export class EditorComponent implements OnDestroy {
       monaco.editor.setModelLanguage(this.editor.getModel(), language)
       this.format();
     }
+  }
+
+  ngOnDestroy() {
+    monaco.editor.getModels().forEach(model => model.dispose());
   }
 
   private initMonaco(): void {
