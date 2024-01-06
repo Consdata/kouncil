@@ -1,5 +1,8 @@
 package com.consdata.kouncil.topic;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.MessagesHelper;
@@ -9,10 +12,29 @@ import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.topic.util.FieldType;
 import com.consdata.kouncil.topic.util.PlaceholderFormatUtil;
 import com.consdata.kouncil.track.TopicMetadata;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.kafka.clients.admin.CreateTopicsResult;
+import org.apache.kafka.clients.admin.DeleteTopicsResult;
+import org.apache.kafka.clients.admin.DescribeTopicsResult;
+import org.apache.kafka.clients.admin.NewPartitions;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicDescription;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -27,22 +49,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 @Slf4j
 @Service
@@ -59,13 +65,13 @@ public class TopicService {
     private String[] resendHeadersToKeep;
 
     TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
-                                      @PathVariable("partition") String partitions,
-                                      @RequestParam("page") String pageParam,
-                                      @RequestParam("limit") String limitParam,
-                                      @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
-                                      @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
-                                      @RequestParam(value = "offset", required = false) Long offset,
-                                      @RequestParam("serverId") String serverId) {
+            @PathVariable("partition") String partitions,
+            @RequestParam("page") String pageParam,
+            @RequestParam("limit") String limitParam,
+            @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
+            @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
+            @RequestParam(value = "offset", required = false) Long offset,
+            @RequestParam("serverId") String serverId) {
         messagesHelper.validateTopics(serverId, singletonList(topicName));
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
@@ -82,7 +88,8 @@ public class TopicService {
 
                 Long startOffsetForPartition = metadata.getBeginningOffsets().get(partitionIndex);
                 Long endOffsetForPartition = metadata.getEndOffsets().get(partitionIndex);
-                log.debug("TCM50 partition={}, startOffsetForPartition={}, endOffsetForPartition={}", partitionIndex, startOffsetForPartition, endOffsetForPartition);
+                log.debug("TCM50 partition={}, startOffsetForPartition={}, endOffsetForPartition={}", partitionIndex, startOffsetForPartition,
+                        endOffsetForPartition);
                 if (startOffsetForPartition < 0) {
                     log.debug("TCM51 startOffsetForPartition is -1, seekToEnd");
                     consumer.seekToEnd(singletonList(partition));
@@ -110,14 +117,16 @@ public class TopicService {
             log.debug("TCM90 poll completed records.size={}", messages.size());
             messages.sort(Comparator.comparing(TopicMessage::getTimestamp));
 
-            long totalResult = metadata.getEndOffsets().keySet().stream().map(index -> metadata.getEndOffsets().get(index) - metadata.getBeginningOffsets().get(index)).reduce(0L, Long::max);
+            long totalResult = metadata.getEndOffsets().keySet().stream()
+                    .map(index -> metadata.getEndOffsets().get(index) - metadata.getBeginningOffsets().get(index)).reduce(0L, Long::max);
             TopicMessagesDto topicMessagesDto = TopicMessagesDto.builder()
                     .messages(messages)
                     .partitionOffsets(metadata.getBeginningOffsets())
                     .partitionEndOffsets(metadata.getEndOffsets())
                     .totalResults(totalResult)
                     .build();
-            log.debug("TCM99 topicName={}, partition={}, page={} topicMessages.size={}, totalResult={}", topicName, partitions, page, topicMessagesDto.getMessages().size(), totalResult);
+            log.debug("TCM99 topicName={}, partition={}, page={} topicMessages.size={}, totalResult={}", topicName, partitions, page,
+                    topicMessagesDto.getMessages().size(), totalResult);
             return topicMessagesDto;
         }
     }
@@ -156,10 +165,11 @@ public class TopicService {
     }
 
     /**
-     * Sometimes poll after seek returns no results.
-     * So we try to call it until we receive 5 consecutive empty polls or have enough messages or received last message
+     * Sometimes poll after seek returns no results. So we try to call it until we receive 5 consecutive empty polls or have enough messages or received last
+     * message
      */
-    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Long endOffset, TopicPartition partition, List<TopicMessage> messages) {
+    private void pollMessages(String clusterId, int limit, KafkaConsumer<Bytes, Bytes> consumer, Long endOffset, TopicPartition partition,
+            List<TopicMessage> messages) {
         int emptyPolls = 0;
         int messagesCount = 0;
         long lastOffset = 0;
@@ -172,7 +182,8 @@ public class TopicService {
             }
             for (ConsumerRecord<Bytes, Bytes> consumerRecord : records) {
                 if (consumerRecord.offset() >= endOffset) {
-                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(), consumerRecord.offset(), endOffset);
+                    log.debug("TCM70 record offset greater than endOffset! partition={}, offset={}, endOffset={}", consumerRecord.partition(),
+                            consumerRecord.offset(), endOffset);
                     messagesCount = limit;
                     continue;
                 }
@@ -235,7 +246,8 @@ public class TopicService {
                         break;
                     }
                     resentMessagesCount++;
-                    resendOneRecord(consumerRecord, kafkaTemplate, resendParams.getDestinationTopicName(), resendParams.getDestinationTopicPartition(), resendParams.isShouldFilterOutHeaders());
+                    resendOneRecord(consumerRecord, kafkaTemplate, resendParams.getDestinationTopicName(), resendParams.getDestinationTopicPartition(),
+                            resendParams.isShouldFilterOutHeaders());
                 }
                 log.info("Resent {}% completed", resentMessagesCount * 100 / (resendParams.getOffsetEnd() - resendParams.getOffsetBeginning() + 1));
             }
@@ -259,8 +271,10 @@ public class TopicService {
         }
     }
 
-    private void resendOneRecord(ConsumerRecord<Bytes, Bytes> consumerRecord, KafkaTemplate<Bytes, Bytes> kafkaTemplate, String destinationTopic, Integer destinationTopicPartition, boolean shouldFilterOutHeaders) {
-        ProducerRecord<Bytes, Bytes> producerRecord = new ProducerRecord<>(destinationTopic, destinationTopicPartition, consumerRecord.key(), consumerRecord.value(),
+    private void resendOneRecord(ConsumerRecord<Bytes, Bytes> consumerRecord, KafkaTemplate<Bytes, Bytes> kafkaTemplate, String destinationTopic,
+            Integer destinationTopicPartition, boolean shouldFilterOutHeaders) {
+        ProducerRecord<Bytes, Bytes> producerRecord = new ProducerRecord<>(destinationTopic, destinationTopicPartition, consumerRecord.key(),
+                consumerRecord.value(),
                 shouldFilterOutHeaders ? getFilteredOutHeaders(consumerRecord.headers()) : consumerRecord.headers());
         kafkaTemplate.send(producerRecord);
     }
@@ -268,7 +282,7 @@ public class TopicService {
     private List<Header> getFilteredOutHeaders(Headers headers) {
         return Arrays.stream(headers.toArray())
                 .filter(header -> ArrayUtils.contains(resendHeadersToKeep, header.key()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String replaceTokens(String data, int i) {
@@ -288,10 +302,62 @@ public class TopicService {
             for (TopicMessageHeader header : message.getHeaders()) {
                 producerRecord
                         .headers()
-                        .add(replaceTokens(header.getKey(), i), header.getValue() != null ? replaceTokens(header.getValue(), i).getBytes(StandardCharsets.UTF_8) : null);
+                        .add(replaceTokens(header.getKey(), i),
+                                header.getValue() != null ? replaceTokens(header.getValue(), i).getBytes(StandardCharsets.UTF_8) : null);
             }
             kafkaTemplate.send(producerRecord);
         }
         kafkaTemplate.flush();
+    }
+
+    public void create(TopicData newTopic, String serverId) throws KouncilRuntimeException {
+        log.info("Create new topic with name: {}", newTopic.getName());
+        try {
+            CreateTopicsResult topics = kafkaConnectionService.getAdminClient(serverId).createTopics(List.of(
+                    new NewTopic(newTopic.getName(), newTopic.getPartitions(), newTopic.getReplicationFactor())
+            ));
+
+            topics.all().get();
+        } catch (ExecutionException e) {
+            throw new KouncilRuntimeException(e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new KouncilRuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateTopicPartitions(TopicData newTopic, String serverId) {
+        log.info("Updating topic {} partitions", newTopic.getName());
+        kafkaConnectionService.getAdminClient(serverId).createPartitions(Map.of(newTopic.getName(), NewPartitions.increaseTo(newTopic.getPartitions())));
+    }
+
+    public TopicData getTopicData(String topicName, String serverId) {
+        log.info("Get topic {} from server {}", topicName, serverId);
+        DescribeTopicsResult describeTopicsResult = kafkaConnectionService.getAdminClient(serverId).describeTopics(List.of(topicName));
+        TopicData topicData;
+        try {
+            TopicDescription topicDescription = describeTopicsResult.allTopicNames().get().get(topicName);
+            topicData = new TopicData(topicDescription.name(), topicDescription.partitions().size(),
+                    (short) topicDescription.partitions().get(0).replicas().size());
+        } catch (ExecutionException e) {
+            throw new KouncilRuntimeException(e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new KouncilRuntimeException(e.getMessage());
+        }
+        return topicData;
+    }
+
+    public void removeTopic(String topicName, String serverId) {
+        log.info("Delete topic {}", topicName);
+        DeleteTopicsResult deleteTopicsResult = kafkaConnectionService.getAdminClient(serverId).deleteTopics(List.of(topicName));
+        try {
+            deleteTopicsResult.all().get();
+        } catch (ExecutionException e) {
+            throw new KouncilRuntimeException(e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new KouncilRuntimeException(e.getMessage());
+        }
     }
 }

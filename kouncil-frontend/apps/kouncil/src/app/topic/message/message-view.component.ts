@@ -10,8 +10,7 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {DrawerService} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
-import {AuthService} from '../../login/auth.service';
-import {KouncilRole} from '../../login/kouncil-role';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 @Component({
   selector: 'app-message-view',

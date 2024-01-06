@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {TopicsService} from './topics.service';
+import {TopicsService} from '../topics.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {FavouritesService} from '@app/feat-favourites';
@@ -8,18 +8,38 @@ import {
   ArraySortService,
   DrawerService,
   ProgressBarService,
-  SearchService
+  SearchService,
+  SnackBarComponent,
+  SnackBarData
 } from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from "@app/common-components";
 import {MatSort} from "@angular/material/sort";
+import {MatDialog} from "@angular/material/dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {ConfirmService} from "@app/feat-confirm";
+import {TopicService} from "../../topic/topic.service";
+import {TopicFormComponent} from "../../topic/topic-form.component";
+import {AuthService, KouncilRole} from "@app/common-auth";
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
 @Component({
   selector: 'app-topics',
   template: `
+
+    <div class="main-container">
+      <div class="toolbar-container">
+        <div class="toolbar">
+          <button mat-button class="action-button-black" (click)="createTopic(undefined)"
+                  *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])">
+            Create topic
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="kafka-topics" *ngIf="filtered">
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
@@ -28,13 +48,14 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
                         [tableData]="filtered" [columns]="columns"
                         [additionalColumns]="additionalColumns"
+                        [actionColumns]="actionColumns"
                         matSort [sort]="sort" (sortEvent)="customSort($event)"
                         (rowClickedAction)="navigateToTopic($event)"
                         [groupHeaderName]="groupHeaderName"
                         [groupedTable]="true" [rowClass]="getRowClass"
                         cdkDropList cdkDropListOrientation="horizontal"
                         (cdkDropListDropped)="drop($event)"
-                        [groupByColumns]="['group']" >
+                        [groupByColumns]="['group']">
 
         <ng-container *ngFor="let column of additionalColumns; let index = index">
 
@@ -57,6 +78,24 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [index]="index + additionalColumns.length"></app-common-table-column>
         </ng-container>
 
+        <ng-container *ngFor="let column of actionColumns; let index = index">
+          <app-common-table-column [column]="column"
+                                   [index]="index + columns.length"
+                                   [template]="cellTemplate">
+            <ng-template #cellTemplate let-element>
+              <div class="actions-column">
+                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                        class="action-button" (click)="createTopic(element.name)">
+                  Update
+                </button>
+                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                        class="action-button" (click)="removeTopic(element.name)">
+                  Delete
+                </button>
+              </div>
+            </ng-template>
+          </app-common-table-column>
+        </ng-container>
       </app-common-table>
     </div>
   `,
@@ -64,6 +103,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 })
 export class TopicsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
+  KouncilRole: typeof KouncilRole = KouncilRole;
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
 
@@ -92,6 +132,18 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
       }
     ];
 
+  actionColumns: TableColumn[] = [
+    {
+      name: ' ',
+      prop: 'actions',
+      sticky: false,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      width: 150
+    }
+  ];
+
   groupHeaderName = (group) => {
     return group.group === 'FAVOURITES' ? 'Favourites' : 'All topics'
   }
@@ -105,7 +157,13 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
               private router: Router,
               private drawerService: DrawerService,
               private servers: ServersService,
-              private favouritesService: FavouritesService) {
+              private favouritesService: FavouritesService,
+              private dialog: MatDialog,
+              private confirmService: ConfirmService,
+              private snackbar: MatSnackBar,
+              private topicService: TopicService,
+              protected authService: AuthService
+  ) {
     super();
   }
 
@@ -171,4 +229,54 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
       })()
     };
   };
+
+  createTopic(topicName: string) {
+    let matDialogRef = this.dialog.open(TopicFormComponent, {
+      data: topicName,
+      width: '500px',
+      autoFocus: 'dialog',
+      panelClass: ['app-drawer']
+    });
+
+    matDialogRef.afterClosed().subscribe(() => {
+      this.loadTopics();
+    })
+  }
+
+  removeTopic(topicName: string): void {
+    this.confirmService.openConfirmDialog$({
+      title: 'Delete topic',
+      subtitle: 'Are you sure you want to delete:',
+      sectionLine1: `Topic ${topicName}`
+    })
+    .pipe(first())
+    .subscribe((confirmed) => {
+      if (confirmed) {
+        this.progressBarService.setProgress(true);
+        this.deleteTopic(topicName);
+      }
+    });
+  }
+
+  private deleteTopic(topicName: string) {
+    this.topicService.deleteSchema(topicName, this.servers.getSelectedServerId())
+    .pipe(first())
+    .subscribe(() => {
+      this.loadTopics();
+
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(`Topic ${topicName} deleted`, 'snackbar-success', ''),
+        panelClass: ['snackbar'],
+        duration: 3000
+      });
+    }, error => {
+      console.error(error);
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(`Topic ${topicName} couldn't be deleted`, 'snackbar-error', ''),
+        panelClass: ['snackbar'],
+        duration: 3000
+      });
+      this.progressBarService.setProgress(false);
+    });
+  }
 }

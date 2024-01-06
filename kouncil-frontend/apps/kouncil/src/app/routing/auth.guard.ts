@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
-import {AuthService} from '../login/auth.service';
+import {AuthService, KouncilRole} from '@app/common-auth';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {KouncilRole} from '../login/kouncil-role';
 
 @Injectable({
   providedIn: 'root'

@@ -19,7 +19,7 @@ import {ConfigResolver} from './config-resolver';
 import {ChangePasswordComponent} from '../login/change-password.component';
 import {MainLoginComponent} from '../login/main-login.component';
 import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
-import {KouncilRole} from '../login/kouncil-role';
+import {KouncilRole} from '@app/common-auth';
 import {AccessDeniedComponent} from '../access-denied/access-denied.component';
 import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
 

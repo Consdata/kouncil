@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {InjectionToken, NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {
@@ -61,8 +61,13 @@ import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
-import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
-import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './app-factories';
+import {FeatTopicsModule, TopicService, TopicsService} from '@app/feat-topics';
+import {
+  resendServiceFactory,
+  sendServiceFactory,
+  topicServiceFactory,
+  topicsServiceFactory
+} from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
@@ -72,7 +77,6 @@ import {rxStompServiceFactory} from './rx-stomp-service-factory';
 import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
 import {CommonLoginModule} from '@app/common-login';
-import {AuthService, authServiceFactory} from './login/auth.service';
 import {OAuthRedirectComponent} from './oauth/o-auth-redirect.component';
 import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
@@ -86,7 +90,9 @@ import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
 } from './survey/survey-scale-question/survey-scale-question.component';
+import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
 
+export const BASE_URL = new InjectionToken('BASE_URL');
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
   return provider.load();
@@ -113,6 +119,17 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     case Backend.DEMO:
     default:
       return new TrackDemoService(rxStompService);
+  }
+}
+
+export function authServiceFactory(http: HttpClient, baseUrl: string): AuthService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new AuthBackendService(http, baseUrl);
+    }
+    case Backend.DEMO:
+    default:
+      return new AuthDemoService();
   }
 }
 
@@ -178,7 +195,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     DragDropModule,
     PageNotFoundComponent,
     SurveyComponent,
-    SurveyScaleQuestionComponent
+    SurveyScaleQuestionComponent,
+    CommonAuthModule
   ],
   providers: [
     {
@@ -206,6 +224,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: TopicsService,
       useFactory: topicsServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: TopicService,
+      useFactory: topicServiceFactory,
       deps: [HttpClient]
     },
     {
@@ -240,8 +263,12 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: AuthService,
       useFactory: authServiceFactory,
-      deps: [HttpClient]
+      deps: [HttpClient, BASE_URL]
     },
+    {
+      provide: BASE_URL,
+      useValue: environment.baseUrl
+    }
   ],
   bootstrap: [AppComponent]
 })

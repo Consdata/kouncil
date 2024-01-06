@@ -24,6 +24,7 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"],
     "paths": {
+      "@app/common-auth": ["libs/common-auth/src/index.ts"],
       "@app/common-components": ["libs/common-components/src/index.ts"],
       "@app/common-login": ["libs/common-login/src/index.ts"],
       "@app/common-model": ["libs/common-model/src/index.ts"],
