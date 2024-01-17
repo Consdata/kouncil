@@ -37,7 +37,6 @@ export class SchemaFacadeService {
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
-        example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       default:

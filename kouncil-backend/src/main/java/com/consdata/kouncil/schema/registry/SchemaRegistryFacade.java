@@ -80,8 +80,11 @@ public class SchemaRegistryFacade {
 
     public void updateSchema(SchemaDTO schema) throws RestClientException, IOException {
         log.info("Updating schema [{}]", schema.toString());
+        String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getSubjectType()));
+        schema.setSubjectName(subject);
+
         changeSubjectCompatibility(schema);
-        schemaRegistryClient.register(schema.getSubjectName(), parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
+        schemaRegistryClient.register(subject, parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema()), true);
     }
 
     private void changeSubjectCompatibility(SchemaDTO schema) throws RestClientException, IOException {

@@ -15,21 +15,19 @@ import {Topics} from '@app/common-model';
 import {first} from 'rxjs/operators';
 import {ViewMode} from '../view-mode';
 import {MatSelectChange} from '@angular/material/select';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-schema-form',
   template: `
-    <form *ngIf="model" (ngSubmit)="saveSchema()" class="form schema-form"
-          #schemaForm="ngForm">
+    <form [formGroup]="schemaForm" (ngSubmit)="saveSchema()" class="form schema-form">
 
       <div class="schema-base-info">
+
         <div>
           <div class="label">Topic</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="topicName" [(ngModel)]="model.topicName"
-                        [disabled]="isDisabled([ViewMode.VIEW, ViewMode.EDIT])"
-                        [required]="isRequired([ViewMode.CREATE])"
-                        #topicName="ngModel">
+            <mat-select [formControl]="getControl('topicName')">
               <mat-option *ngFor="let topic of topics" [value]="topic.value">
                 {{ topic.label }}
               </mat-option>
@@ -40,19 +38,18 @@ import {MatSelectChange} from '@angular/material/select';
         <div>
           <div class="label">Subject type</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="subjectType" [(ngModel)]="model.subjectType"
-                        [disabled]="isDisabled([ViewMode.VIEW, ViewMode.EDIT])"
-                        [required]="isRequired([ViewMode.CREATE])">
+            <mat-select [formControl]="getControl('subjectType')">
               <mat-option *ngFor="let subjectType of subjectTypes" [value]="subjectType">
                 {{ subjectType }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div *ngIf="isVisible([ViewMode.VIEW])">
+
+        <div *ngIf="isVisible([ViewMode.VIEW]) && model">
           <div class="label">Versions</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="version" [(ngModel)]="model.version"
+            <mat-select [formControl]="getControl('version')"
                         (selectionChange)="changeSchemaVersion($event)">
               <mat-option *ngFor="let version of model.versionsNo" [value]="version">
                 {{ version }}
@@ -60,30 +57,29 @@ import {MatSelectChange} from '@angular/material/select';
             </mat-select>
           </mat-form-field>
         </div>
+
         <div>
           <div class="label">Message format</div>
           <mat-form-field [appearance]="'outline'">
-            <mat-select name="messageFormat" [(ngModel)]="model.messageFormat"
-                        [disabled]="isDisabled([ViewMode.VIEW, ViewMode.EDIT])"
-                        [required]="isRequired([ViewMode.CREATE])">
+            <mat-select [formControl]="getControl('messageFormat')">
               <mat-option *ngFor="let messageFormat of messageFormats" [value]="messageFormat">
                 {{ messageFormat }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
+
         <div>
           <div class="label">Compatibility</div>
-          <mat-form-field [appearance]="'outline'" style="width: 250px">
-            <mat-select name="compatibility" [(ngModel)]="model.compatibility"
-                        [disabled]="isDisabled([ViewMode.VIEW])">
+          <mat-form-field [appearance]="'outline'" class="compatibilityInput">
+            <mat-select [formControl]="getControl('compatibility')">
               <mat-option *ngFor="let compatibility of compatibilities" [value]="compatibility">
                 {{ compatibility }}
               </mat-option>
             </mat-select>
-            <button *ngIf="model.compatibility && !isDisabled([ViewMode.VIEW])"
+            <button *ngIf="getControl('compatibility').value && !isDisabled([ViewMode.VIEW])"
                     mat-icon-button matSuffix type="button" class="clear-btn"
-                    (click)="$event.stopPropagation(); model.compatibility=null">
+                    (click)="$event.stopPropagation(); getControl('compatibility').patchValue(null)">
               <mat-icon class="clear-icon">close</mat-icon>
             </button>
 
@@ -93,11 +89,11 @@ import {MatSelectChange} from '@angular/material/select';
 
       <div>
         <div class="label">Schema</div>
-        <app-common-editor [schemaType]="model.messageFormat" name="schema" [editorHeight]="400"
-                           [(ngModel)]="model.plainTextSchema"
-                           [disabled]="isDisabled([ViewMode.VIEW])"
-                           [required]="isRequired([ViewMode.CREATE, ViewMode.EDIT])"></app-common-editor>
+        <app-common-editor [schemaType]="getControl('messageFormat').value"
+                           [editorHeight]="400"
+                           [formControl]="getControl('plainTextSchema')"></app-common-editor>
       </div>
+
       <div class="actions">
         <button mat-button disableRipple class="action-button-white"
                 [routerLink]="['/schemas']">
@@ -105,7 +101,7 @@ import {MatSelectChange} from '@angular/material/select';
         </button>
         <button mat-button disableRipple *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
                 class="action-button-black" type="submit"
-                [disabled]="!schemaForm.form.valid">
+                [disabled]="!schemaForm.valid">
           Save
         </button>
       </div>
@@ -125,6 +121,15 @@ export class SchemaFormComponent implements OnInit {
   @Input() viewMode: ViewMode;
   @Output() saveEvent: EventEmitter<Schema> = new EventEmitter<Schema>();
 
+  schemaForm: FormGroup = new FormGroup({
+    topicName: new FormControl(''),
+    subjectType: new FormControl(''),
+    version: new FormControl(''),
+    messageFormat: new FormControl(''),
+    compatibility: new FormControl(),
+    plainTextSchema: new FormControl('')
+  });
+
   constructor(private schemaRegistry: SchemaRegistryService,
               private servers: ServersService,
               private progressBarService: ProgressBarService,
@@ -139,9 +144,10 @@ export class SchemaFormComponent implements OnInit {
       const version = params['version'];
       if (subjectName && version) {
         this.loadSchema(subjectName, version);
-      } else {
-        this.model = {} as Schema;
       }
+
+      this.defineRequired();
+      this.defineDisabled();
     });
 
     this.topicsService
@@ -152,7 +158,34 @@ export class SchemaFormComponent implements OnInit {
     });
   }
 
+  private defineDisabled() {
+    Object.keys(this.schemaForm.controls).forEach(key => {
+      if (
+        (ViewMode.VIEW === this.viewMode && key !== 'version')
+        || (ViewMode.EDIT === this.viewMode && ['topicName', 'subjectType', 'messageFormat'].includes(key))
+      ) {
+        this.schemaForm.controls[key].disable();
+      }
+    });
+  }
+
+  private defineRequired() {
+    Object.keys(this.schemaForm.controls).forEach(key => {
+      if (
+        (ViewMode.CREATE === this.viewMode && ['topicName', 'subjectType', 'messageFormat', 'plainTextSchema'].includes(key))
+        || ViewMode.EDIT === this.viewMode && key === 'plainTextSchema'
+      ) {
+        this.schemaForm.controls[key].addValidators(Validators.required);
+      }
+    });
+  }
+
   saveSchema(): void {
+    this.model = {} as Schema;
+    Object.keys(this.schemaForm.controls).forEach(controlName => {
+      this.model[controlName] = this.schemaForm.controls[controlName].value;
+    });
+
     this.saveEvent.emit(this.model);
   }
 
@@ -161,15 +194,14 @@ export class SchemaFormComponent implements OnInit {
     .pipe(first())
     .subscribe((result: Schema) => {
       this.model = result;
+      Object.keys(this.schemaForm.controls).forEach(controlName => {
+        this.schemaForm.controls[controlName].patchValue(this.model[controlName]);
+      });
       this.progressBarService.setProgress(false);
     });
   }
 
   isDisabled(viewModes: ViewMode[]): boolean {
-    return viewModes.includes(this.viewMode);
-  }
-
-  isRequired(viewModes: ViewMode[]): boolean {
     return viewModes.includes(this.viewMode);
   }
 
@@ -179,5 +211,9 @@ export class SchemaFormComponent implements OnInit {
 
   changeSchemaVersion($event: MatSelectChange): void {
     this.loadSchema(this.model.subjectName, $event.value);
+  }
+
+  getControl(controlName: string): FormControl {
+    return this.schemaForm.controls[controlName] as FormControl;
   }
 }

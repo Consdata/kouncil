@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  forwardRef,
   Input,
   OnDestroy,
   ViewChild
@@ -11,7 +10,7 @@ import {
 import {MessageFormat} from "@app/schema-registry";
 import {first} from "rxjs";
 import {MonacoEditorService} from "./monaco-editor.service";
-import {NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 declare var monaco: any;
 
@@ -22,18 +21,25 @@ declare var monaco: any;
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./editor.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => EditorComponent),
-    multi: true
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: EditorComponent
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: EditorComponent
+    }
+  ]
 })
-export class EditorComponent implements AfterViewInit, OnDestroy {
+export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   @Input() schemaName: any;
   _schemaType: MessageFormat;
   @Input() editorHeight: number = 200;
-  @Input() disabled: boolean = false;
+  disabled: boolean = false;
 
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
@@ -126,6 +132,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       if (this.editor) {
         this.editor.setValue(this.value);
+        this.format();
       }
     });
   }
@@ -140,6 +147,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   private format(): void {
     setTimeout(() => {
+      this.editor.updateOptions({readOnly: false});
       this.editor.getAction('editor.action.formatDocument').run().then(() => {
         this.markEditorReadonly();
       });
@@ -148,5 +156,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   private markEditorReadonly(): void {
     this.editor.updateOptions({readOnly: this.disabled});
+  }
+
+  setDisabledState(disabled: boolean) {
+    this.disabled = disabled;
   }
 }
