@@ -16,7 +16,7 @@ import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from "@app/common-components";
 import {MatSort} from "@angular/material/sort";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ConfirmService} from "@app/feat-confirm";
 import {TopicService} from "../../topic/topic.service";
@@ -32,7 +32,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
     <div class="main-container">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-black" (click)="createTopic(undefined)"
+          <button mat-button class="action-button-black" (click)="createTopic()"
                   *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])">
             Create topic
           </button>
@@ -230,13 +230,15 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
     };
   };
 
-  createTopic(topicName: string) {
-    let matDialogRef = this.dialog.open(TopicFormComponent, {
+  createTopic(topicName?: string) {
+    let config = {
       data: topicName,
       width: '500px',
       autoFocus: 'dialog',
       panelClass: ['app-drawer']
-    });
+    };
+
+    let matDialogRef = this.dialog.open(TopicFormComponent, config);
 
     matDialogRef.afterClosed().subscribe(() => {
       this.loadTopics();

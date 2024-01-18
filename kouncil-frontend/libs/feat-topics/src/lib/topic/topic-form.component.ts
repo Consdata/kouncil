@@ -4,7 +4,7 @@ import {ServersService} from "@app/common-servers";
 import {first} from "rxjs/operators";
 import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {TopicService} from "./topic.service";
 
@@ -15,17 +15,17 @@ import {TopicService} from "./topic.service";
       <form [formGroup]="topicForm" (ngSubmit)="save()" class="form topic-form">
         <div class="drawer-header">
           <div class="drawer-title">
-              {{model && model.name ? 'Update' : 'Create new'}} topic
+            {{model && model.name ? 'Update' : 'Create new'}} topic
           </div>
           <div class="spacer"></div>
           <mat-icon mat-dialog-close class="close">close</mat-icon>
         </div>
 
         <div class="topic-info">
-          <div style="width: 100%; padding-bottom: 10px">
+          <div class="topic-form-field">
             <div class="label">Name</div>
             <mat-form-field [appearance]="'outline'">
-              <input matInput [formControl]="getControl('name')" [required]="true">
+              <input matInput [formControl]="getControl('name')">
             </mat-form-field>
 
             <mat-error class="error" *ngIf="isFieldInvalid(getControl('name'))">
@@ -33,12 +33,10 @@ import {TopicService} from "./topic.service";
             </mat-error>
           </div>
 
-          <div style="width: 100%; padding-bottom: 10px">
+          <div class="topic-form-field">
             <div class="label">Partitions</div>
             <mat-form-field [appearance]="'outline'">
-              <input matInput type="number" [formControl]="getControl('partitions')"
-                     [required]="true"
-              >
+              <input matInput type="number" [formControl]="getControl('partitions')">
             </mat-form-field>
 
             <mat-error class="error" *ngIf="isFieldInvalid(getControl('partitions'))">
@@ -46,11 +44,10 @@ import {TopicService} from "./topic.service";
             </mat-error>
           </div>
 
-          <div style="width: 100%; padding-bottom: 10px">
+          <div class="topic-form-field">
             <div class="label">Replication Factor</div>
             <mat-form-field [appearance]="'outline'">
-              <input matInput type="number" [formControl]="getControl('replicationFactor')"
-                     [required]="true">
+              <input matInput type="number" [formControl]="getControl('replicationFactor')">
             </mat-form-field>
 
             <mat-error class="error" *ngIf="isFieldInvalid(getControl('replicationFactor'))">
@@ -78,19 +75,18 @@ export class TopicFormComponent implements OnInit {
 
   model: TopicData;
 
-  topicForm: FormGroup;
+  topicForm: FormGroup = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    partitions: new FormControl('', [Validators.required]),
+    replicationFactor: new FormControl('', [Validators.required])
+  });
 
   constructor(private topicService: TopicService,
               private servers: ServersService,
               private dialog: MatDialog,
               private snackbar: MatSnackBar,
-              private fb: FormBuilder,
               @Inject(MAT_DIALOG_DATA) public data: string
   ) {
-    this.topicForm = this.fb.group({});
-    this.topicForm.addControl('name', new FormControl('', [Validators.required]))
-    this.topicForm.addControl('partitions', new FormControl('', [Validators.required]))
-    this.topicForm.addControl('replicationFactor', new FormControl('', [Validators.required]))
   }
 
   ngOnInit(): void {

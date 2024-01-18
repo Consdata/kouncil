@@ -10,7 +10,7 @@
   border-radius: $default-border-radius;
 }
 
-mat-error{
+mat-error {
   font-size: 12px;
 }
 
@@ -26,6 +26,11 @@ mat-error{
   justify-content: space-between;
   margin-bottom: 20px;
   width: 100%;
+
+  .topic-form-field {
+    width: 100%;
+    padding-bottom: 10px;
+  }
 
   div {
     mat-form-field {

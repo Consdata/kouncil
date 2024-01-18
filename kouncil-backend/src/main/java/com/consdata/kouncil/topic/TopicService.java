@@ -311,7 +311,7 @@ public class TopicService {
     }
 
     public void create(TopicData newTopic, String serverId) throws KouncilRuntimeException {
-        log.info("Create new topic with name: {}", newTopic.getName());
+        log.info("Create new topic with name={}", newTopic.getName());
         try {
             CreateTopicsResult topics = kafkaConnectionService.getAdminClient(serverId).createTopics(List.of(
                     new NewTopic(newTopic.getName(), newTopic.getPartitions(), newTopic.getReplicationFactor())
@@ -327,12 +327,12 @@ public class TopicService {
     }
 
     public void updateTopicPartitions(TopicData newTopic, String serverId) {
-        log.info("Updating topic {} partitions", newTopic.getName());
+        log.info("Updating topi={} partitions", newTopic.getName());
         kafkaConnectionService.getAdminClient(serverId).createPartitions(Map.of(newTopic.getName(), NewPartitions.increaseTo(newTopic.getPartitions())));
     }
 
     public TopicData getTopicData(String topicName, String serverId) {
-        log.info("Get topic {} from server {}", topicName, serverId);
+        log.info("Get topic={} from server={}", topicName, serverId);
         DescribeTopicsResult describeTopicsResult = kafkaConnectionService.getAdminClient(serverId).describeTopics(List.of(topicName));
         TopicData topicData;
         try {
@@ -349,7 +349,7 @@ public class TopicService {
     }
 
     public void removeTopic(String topicName, String serverId) {
-        log.info("Delete topic {}", topicName);
+        log.info("Delete topic={}", topicName);
         DeleteTopicsResult deleteTopicsResult = kafkaConnectionService.getAdminClient(serverId).deleteTopics(List.of(topicName));
         try {
             deleteTopicsResult.all().get();
