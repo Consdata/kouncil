@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ProgressBarService} from '@app/common-utils';
 import {
   Compatibility,
@@ -134,7 +134,8 @@ export class SchemaFormComponent implements OnInit {
               private servers: ServersService,
               private progressBarService: ProgressBarService,
               private route: ActivatedRoute,
-              private topicsService: TopicsService) {
+              private topicsService: TopicsService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -148,6 +149,11 @@ export class SchemaFormComponent implements OnInit {
 
       this.defineRequired();
       this.defineDisabled();
+    });
+
+    this.schemaForm.controls['plainTextSchema'].valueChanges.subscribe(() => {
+      this.schemaForm.updateValueAndValidity();
+      this.cdr.detectChanges();
     });
 
     this.topicsService

@@ -10,7 +10,14 @@ import {
 import {MessageFormat} from "@app/schema-registry";
 import {first} from "rxjs";
 import {MonacoEditorService} from "./monaco-editor.service";
-import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator
+} from "@angular/forms";
 
 declare var monaco: any;
 
@@ -34,7 +41,7 @@ declare var monaco: any;
     }
   ]
 })
-export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
+export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, Validator {
 
   @Input() schemaName: any;
   _schemaType: MessageFormat;
@@ -46,7 +53,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
   editor: any;
   value: any;
 
-  propagateChange = (_: any) => {
+  onChange = (_: any) => {
   };
   onTouched = () => {
   };
@@ -116,7 +123,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
 
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue();
-      this.propagateChange(value);
+      this.onChange(value);
       this.value = value;
     });
 
@@ -138,7 +145,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
   }
 
   registerOnChange(fn: any): void {
-    this.propagateChange = fn;
+    this.onChange = fn;
   }
 
   registerOnTouched(fn: any): void {
@@ -160,5 +167,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
 
   setDisabledState(disabled: boolean) {
     this.disabled = disabled;
+  }
+
+  validate(control: AbstractControl): ValidationErrors | null {
+    if (!control.value || control.value === '') {
+      return {required: true};
+    }
+    return null;
   }
 }
