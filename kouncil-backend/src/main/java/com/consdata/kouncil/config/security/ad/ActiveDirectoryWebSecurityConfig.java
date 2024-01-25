@@ -1,6 +1,5 @@
 package com.consdata.kouncil.config.security.ad;
 
-import com.consdata.kouncil.config.security.KouncilUserDetailsMapper;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,7 @@ public class ActiveDirectoryWebSecurityConfig {
         provider.setConvertSubErrorCodesToExceptions(true);
         provider.setUseAuthenticationRequestCredentials(true);
         provider.setSearchFilter(searchFilter);
-        provider.setUserDetailsContextMapper(new KouncilUserDetailsMapper(userRolesMapping));
+        provider.setUserDetailsContextMapper(new ActiveDirectoryUserDetailsMapper(userRolesMapping));
         return provider;
     }
 
