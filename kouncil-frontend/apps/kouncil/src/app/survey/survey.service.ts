@@ -116,6 +116,8 @@ export class SurveyService {
       this.questions = surveyDesign['questions'];
       this.questionsChanged$.next(this.questions);
       this.markSurveyAsOpened(this.survey.sentId);
+    } else {
+      this.showPanelChanged$.next(false);
     }
   }
 
