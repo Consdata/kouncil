@@ -15,6 +15,7 @@ import {FormsModule} from '@angular/forms';
         <div class="survey-container">
           <div class=survey-title *ngIf="question">
             {{question.title}}
+            <span *ngIf="question.required" class="required-mark">*</span>
           </div>
           <div class="survey-scale"
                [ngClass]="{'full-width': questionValues.length > 6, 'fixed-width': questionValues.length < 7}">

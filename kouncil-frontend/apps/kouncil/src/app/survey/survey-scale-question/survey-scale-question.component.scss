@@ -1,4 +1,5 @@
 @use '../../../styles/inputs';
+@import '../../../styles/palette';
 
 .survey-base {
   display: flex;
@@ -25,6 +26,11 @@
   .survey-title {
     display: flex;
     padding-bottom: 5px;
+
+    .required-mark {
+      margin-left: 3px;
+      color: $red !important;
+    }
   }
 
   .survey-scale {
