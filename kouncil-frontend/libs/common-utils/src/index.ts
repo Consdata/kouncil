@@ -6,3 +6,5 @@ export {DrawerService} from './lib/util/drawer.service';
 export {HttpClientInterceptor} from './lib/util/http-client.interceptor';
 export {RandomUtils} from './lib/util/random-utils';
 export {ProgressBarService} from './lib/util/progress-bar.service';
+export {SnackBarComponent} from './lib/util/snack-bar.component';
+export {SnackBarData} from './lib/util/snack-bar-data';

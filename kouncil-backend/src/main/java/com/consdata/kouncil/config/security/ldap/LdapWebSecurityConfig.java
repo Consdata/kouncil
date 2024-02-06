@@ -1,6 +1,5 @@
 package com.consdata.kouncil.config.security.ldap;
 
-import com.consdata.kouncil.config.security.KouncilUserDetailsMapper;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +74,15 @@ public class LdapWebSecurityConfig {
     @Value("${kouncil.auth.ldap.search-filter:}")
     private String searchFilter;
 
+    @Value("${kouncil.auth.ldap.group-search-base:}")
+    private String groupSearchBase;
+
+    @Value("${kouncil.auth.ldap.group-search-filter:}")
+    private String groupSearchFilter;
+
+    @Value("${kouncil.auth.ldap.group-role-attribute:}")
+    private String groupRoleAttribute;
+
     @Bean
     @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "ldap")
     public AuthenticationProvider ldapAuthenticationProvider() {
@@ -92,8 +100,14 @@ public class LdapWebSecurityConfig {
         var bindAuthenticator = new BindAuthenticator(ldapContextSource);
         bindAuthenticator.setUserSearch(userSearch);
         bindAuthenticator.afterPropertiesSet();
-        LdapAuthenticationProvider ldapAuthenticationProvider = new LdapAuthenticationProvider(bindAuthenticator);
-        ldapAuthenticationProvider.setUserDetailsContextMapper(new KouncilUserDetailsMapper(userRolesMapping));
+
+        CustomLdapAuthoritiesPopulator ldapAuthoritiesPopulator = new CustomLdapAuthoritiesPopulator(ldapContextSource);
+        ldapAuthoritiesPopulator.setSearchBase(groupSearchBase);
+        ldapAuthoritiesPopulator.setSearchFilter(groupSearchFilter);
+        ldapAuthoritiesPopulator.setRoleAttribute(groupRoleAttribute);
+
+        LdapAuthenticationProvider ldapAuthenticationProvider = new LdapAuthenticationProvider(bindAuthenticator, ldapAuthoritiesPopulator);
+        ldapAuthenticationProvider.setUserDetailsContextMapper(new KouncilLdapUserDetailsMapper(userRolesMapping));
         return ldapAuthenticationProvider;
     }
 }

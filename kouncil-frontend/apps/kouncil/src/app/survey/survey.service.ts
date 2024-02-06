@@ -1,5 +1,14 @@
 import {Injectable, QueryList} from '@angular/core';
-import {Observable} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable, Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {SurveyPending, SurveyQuestion} from './model/survey.model';
+import {
+  SurveyAnswer,
+  SurveyQuestionResult,
+  SurveyResultStatus,
+  SurveyResultValue
+} from './model/survey-answer';
 import {
   SurveyScaleQuestionComponent
 } from './survey-scale-question/survey-scale-question.component';
