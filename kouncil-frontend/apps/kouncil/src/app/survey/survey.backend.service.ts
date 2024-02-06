@@ -15,7 +15,7 @@ import {
 import {SurveyService} from './survey.service';
 
 @Injectable()
-export class SurveyBackendService implements SurveyService{
+export class SurveyBackendService implements SurveyService {
 
   surveyBasePath: string;
   private header: string = 'x-api-key';
@@ -115,6 +115,8 @@ export class SurveyBackendService implements SurveyService{
       this.questions = surveyDesign['questions'];
       this.questionsChanged$.next(this.questions);
       this.markSurveyAsOpened(this.survey.sentId);
+    } else {
+      this.showPanelChanged$.next(false);
     }
   }
 
