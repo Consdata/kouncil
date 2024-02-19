@@ -62,7 +62,12 @@ import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
-import {resendServiceFactory, sendServiceFactory, topicsServiceFactory} from './app-factories';
+import {
+  resendServiceFactory,
+  sendServiceFactory,
+  surveyServiceFactory,
+  topicsServiceFactory
+} from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
@@ -86,6 +91,7 @@ import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
 } from './survey/survey-scale-question/survey-scale-question.component';
+import {SurveyService} from './survey/survey.service';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -240,6 +246,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: AuthService,
       useFactory: authServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: SurveyService,
+      useFactory: surveyServiceFactory,
       deps: [HttpClient]
     },
   ],
