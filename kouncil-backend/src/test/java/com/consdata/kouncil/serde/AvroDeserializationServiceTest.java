@@ -61,7 +61,7 @@ class AvroDeserializationServiceTest {
 
         SIMPLE_MESSAGE_JSON = Files.readString(
                 Paths.get(Objects.requireNonNull(
-                        AvroDeserializationServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                        AvroDeserializationServiceTest.class.getClassLoader().getResource("SimpleMessageAvro.json")).toURI()
                 )).trim();
     }
 
