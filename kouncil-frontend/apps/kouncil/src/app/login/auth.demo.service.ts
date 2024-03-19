@@ -70,6 +70,10 @@ export class AuthDemoService implements AuthService {
   }
 
   canAccess(roles: KouncilRole[]): boolean {
+    const localStorageUserRoles = JSON.parse(localStorage.getItem(this.USER_ROLES));
+    if (this.userRoles.length === 0 && localStorageUserRoles.length > 0) {
+      this.userRoles = localStorageUserRoles;
+    }
     return this.userRoles.some(userRole => roles.includes(userRole));
   }
 

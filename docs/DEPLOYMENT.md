@@ -389,6 +389,22 @@ kouncil:
     role-viewer: KOUNCIL_VIEWER;viewer_group
 ```
 
+To get LDAP user groups in LDAP configuration we have to add few additional parameters (`group-search-base`, `group-search-filter`, `group-role-attribute`)
+```yaml
+kouncil:
+  auth:
+    active-provider: ldap
+    ldap:
+      provider-url: "ldaps://kouncil.io"
+      technical-user-name: "admin@kouncil.io"
+      technical-user-password: "q1w2e3r4"
+      search-base: "ou=Users,dc=kouncil,dc=io"
+      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+      group-search-base: "ou=Groups,dc=kouncil,dc=io"
+      group-search-filter: "(memberuid={0})"
+      group-role-attribute: "cn"
+```
+
 ## Logging
 Kouncil supports logging to external log file. We suggest to use logback. If you want you can use our provided `logback.xml` file as it is or use it as a reference to create your custom one.
 If you use provided `logback.xml` logs will be placed under logs/kouncil.log

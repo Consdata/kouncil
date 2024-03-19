@@ -64,8 +64,9 @@ import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/comm
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
-  schemaRegistryServiceFactory,
   sendServiceFactory,
+  schemaRegistryServiceFactory,
+  surveyServiceFactory,
   topicsServiceFactory
 } from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
@@ -97,6 +98,7 @@ import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
 } from './survey/survey-scale-question/survey-scale-question.component';
+import {SurveyService} from './survey/survey.service';
 
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
@@ -262,6 +264,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: AuthService,
       useFactory: authServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: SurveyService,
+      useFactory: surveyServiceFactory,
       deps: [HttpClient]
     }
   ],
