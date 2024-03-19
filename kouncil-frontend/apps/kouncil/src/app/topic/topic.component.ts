@@ -127,7 +127,7 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
 
     this.route.queryParams.subscribe(params => {
       if (params['page'] !== undefined) {
-        this.topicService.paginateMessages(this.servers.getSelectedServerId(), {page: params['page']}, this.topicName);
+        this.topicService.paginateMessages(this.servers.getSelectedServerId(), {page: +params['page']}, this.topicName);
       }
     });
 
