@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {MonacoEditorService} from '@app/common-components';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,7 @@ import {Component} from '@angular/core';
 })
 export class AppComponent {
 
+  constructor(private monacoEditorService: MonacoEditorService) {
+    monacoEditorService.load();
+  }
 }

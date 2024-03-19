@@ -61,6 +61,13 @@ import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
+import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
+import {
+  resendServiceFactory,
+  sendServiceFactory,
+  surveyServiceFactory,
+  topicsServiceFactory
+} from './app-factories';
 import {FeatTopicsModule, TopicService, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
@@ -77,6 +84,7 @@ import {rxStompServiceFactory} from './rx-stomp-service-factory';
 import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
 import {CommonLoginModule} from '@app/common-login';
+import {AuthService, authServiceFactory} from './login/auth.service';
 import {OAuthRedirectComponent} from './oauth/o-auth-redirect.component';
 import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
@@ -90,6 +98,7 @@ import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
 } from './survey/survey-scale-question/survey-scale-question.component';
+import {SurveyService} from './survey/survey.service';
 import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
@@ -264,6 +273,12 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
       provide: AuthService,
       useFactory: authServiceFactory,
       deps: [HttpClient, BASE_URL]
+      deps: [HttpClient]
+    },
+    {
+      provide: SurveyService,
+      useFactory: surveyServiceFactory,
+      deps: [HttpClient]
     },
     {
       provide: BASE_URL,
