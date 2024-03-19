@@ -14,6 +14,7 @@ import {TableColumnComponent} from "./table-column/table-column.component";
 import {ResizeColumnDirective} from "./table-column/resize-column.directive";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {EditorComponent} from "./editor/editor.component";
 
 @NgModule({
   imports: [
@@ -34,12 +35,14 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     AutocompleteComponent,
     TableComponent,
     ResizeColumnDirective,
-    TableColumnComponent
+    TableColumnComponent,
+    EditorComponent
   ],
   exports: [
     AutocompleteComponent,
     TableComponent,
     TableColumnComponent,
+    EditorComponent
   ]
 })
 export class CommonComponentsModule {

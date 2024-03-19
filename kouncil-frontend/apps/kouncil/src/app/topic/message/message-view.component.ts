@@ -7,7 +7,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {DrawerService} from '@app/common-utils';
+import {DrawerService, ObjectUtils, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {AuthService} from '../../login/auth.service';
@@ -42,11 +42,13 @@ import {KouncilRole} from '../../login/kouncil-role';
       <div class="payload">
         <div class="key-section">
           <div class="label">Key (deserialized from {{ vm.messageData.keyFormat }} format)</div>
-          <ngx-json-viewer class="message-payload" [json]="vm.messageData.key"></ngx-json-viewer>
+          <ngx-json-viewer class="message-payload"
+                           [json]="removeNull(vm.messageData.key)"></ngx-json-viewer>
         </div>
         <div class="value-section">
           <div class="label">Value (deserialized from {{ vm.messageData.valueFormat }} format)</div>
-          <ngx-json-viewer class="message-payload" [json]="vm.messageData.value"></ngx-json-viewer>
+          <ngx-json-viewer class="message-payload"
+                           [json]="removeNull(vm.messageData.value)"></ngx-json-viewer>
         </div>
       </div>
 
@@ -122,9 +124,10 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
 
   copyToClipboard(object: string): void {
     this.clipboard.copy(JSON.stringify(object, null, 2));
-    this.snackBar.open('Copied successfully', '', {
-      duration: 1000,
-      panelClass: ['snackbar-info', 'snackbar']
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      data: new SnackBarData(`Copied successfully`, 'snackbar-info', ''),
+      panelClass: ['snackbar'],
+      duration: 1000
     });
   }
 
@@ -146,5 +149,9 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
     this.dialogRef.close();
     this.trackService.storeTrackFilter(event.key, event.value, messageData.timestamp, messageData.topicName);
     this.router.navigate(['/track']);
+  }
+
+  removeNull(value: string): string {
+    return ObjectUtils.removeNull(value);
   }
 }
