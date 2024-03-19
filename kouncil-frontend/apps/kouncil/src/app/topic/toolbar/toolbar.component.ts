@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from '../topic.service';
 import {ServersService} from '@app/common-servers';
-import {AuthService} from '../../login/auth.service';
-import {KouncilRole} from '../../login/kouncil-role';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 export enum LiveUpdateState {
   PLAY = 'play',

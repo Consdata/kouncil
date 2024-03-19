@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from './auth.service';
+import {AuthService, KouncilRole} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {KouncilRole} from './kouncil-role';
 
 @Component({
   selector: 'app-login',

@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TopicsComponent} from './topics/topics.component';
+import {TopicsComponent} from './topics/list/topics.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
@@ -14,9 +14,13 @@ import {MatTableModule} from "@angular/material/table";
 import {CommonComponentsModule} from "@app/common-components";
 import {MatSortModule} from "@angular/material/sort";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {TopicFormComponent} from "./topic/topic-form.component";
+import {CommonAuthModule} from "@app/common-auth";
 
 @NgModule({
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     FeatNoDataModule,
     RouterModule,
     MatFormFieldModule,
@@ -29,9 +33,14 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     MatTableModule,
     CommonComponentsModule,
     MatSortModule,
-    DragDropModule],
+    DragDropModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonAuthModule
+  ],
   declarations: [
-    TopicsComponent
+    TopicsComponent,
+    TopicFormComponent
   ],
   exports: [
     TopicsComponent

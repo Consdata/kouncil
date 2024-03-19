@@ -3,13 +3,16 @@ package com.consdata.kouncil.topic;
 import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
 import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +60,33 @@ public class TopicController {
                        @RequestParam("serverId") String serverId) {
         log.debug("TCS01 topicName={},  serverId={}, message={}", resendData.getSourceTopicName(), serverId, resendData);
         topicService.resend(resendData, serverId);
+    }
+
+    @RolesAllowed({EDITOR_ROLE})
+    @PostMapping("/api/topic/create")
+    @EntryExitLogger
+    public void create(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
+        topicService.create(newTopic, serverId);
+    }
+
+    @RolesAllowed({EDITOR_ROLE})
+    @PutMapping("/api/topic/partitions/update")
+    @EntryExitLogger
+    public void updateTopicPartitions(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
+        topicService.updateTopicPartitions(newTopic, serverId);
+    }
+
+    @RolesAllowed({EDITOR_ROLE})
+    @GetMapping("/api/topic/{topicName}")
+    @EntryExitLogger
+    public TopicData getTopicData(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
+        return topicService.getTopicData(topicName, serverId);
+    }
+
+    @RolesAllowed({EDITOR_ROLE})
+    @DeleteMapping("/api/topic/{topicName}")
+    @EntryExitLogger
+    public void removeTopic(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
+        topicService.removeTopic(topicName, serverId);
     }
 }

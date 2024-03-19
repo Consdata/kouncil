@@ -42,7 +42,6 @@
 }
 
 .action-button {
-  opacity: 0;
   background: pallete.$main-100;
   color: pallete.$main-text-light-color;
   font-size: 14px;
@@ -51,10 +50,7 @@
   border: none;
   padding: 4px 10px;
   cursor: pointer;
-}
-
-.action-button:hover {
-  opacity: 1;
+  margin: 8px;
 }
 
 .actions-column {

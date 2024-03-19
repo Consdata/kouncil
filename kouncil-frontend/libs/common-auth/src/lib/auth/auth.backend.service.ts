@@ -1,10 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
-import {environment} from '../../environments/environment';
 import {KouncilRole} from './kouncil-role';
 import {v4 as uuidv4} from 'uuid';
 
@@ -17,11 +16,12 @@ export class AuthBackendService implements AuthService {
   private USER_ROLES: string = 'userRoles';
   private userRoles: Array<KouncilRole> = [];
 
-  private baseUrl: string = environment.baseUrl;
+  private readonly baseUrl: string;
 
   private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.IS_LOGGED_IN) === 'true');
 
-  constructor(protected http: HttpClient) {
+  constructor(protected http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    this.baseUrl = baseUrl;
   }
 
   get isAuthenticated$(): Observable<boolean> {
