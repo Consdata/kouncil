@@ -187,6 +187,14 @@ export class SendComponent implements OnDestroy {
       if (this.valueSchemaType !== MessageFormat.STRING) {
         this.monacoEditorService.addSchema('value', JSON.parse(result.valuePlainTextSchema));
       }
+
+      if (!this.keySchemaType) {
+        this.keySchemaType = MessageFormat.STRING;
+      }
+      if (!this.valueSchemaType) {
+        this.valueSchemaType = MessageFormat.STRING;
+      }
+
       this.monacoEditorService.registerSchemas();
     })
   }
