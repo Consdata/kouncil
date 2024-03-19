@@ -7,6 +7,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {TopicService} from "./topic.service";
+import {SnackBarComponent, SnackBarData} from "@app/common-utils";
 
 @Component({
   selector: 'app-topic-form',
@@ -15,7 +16,7 @@ import {TopicService} from "./topic.service";
       <form [formGroup]="topicForm" (ngSubmit)="save()" class="form topic-form">
         <div class="drawer-header">
           <div class="drawer-title">
-            {{model && model.name ? 'Update' : 'Create new'}} topic
+            {{header}}
           </div>
           <div class="spacer"></div>
           <mat-icon mat-dialog-close class="close">close</mat-icon>
@@ -74,6 +75,7 @@ import {TopicService} from "./topic.service";
 export class TopicFormComponent implements OnInit {
 
   model: TopicData;
+  header: string = 'Create new topic';
 
   topicForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -99,6 +101,7 @@ export class TopicFormComponent implements OnInit {
     this.topicService.getTopic$(this.servers.getSelectedServerId(), topicName)
     .pipe(first())
     .subscribe((result: TopicData) => {
+      this.header = 'Update topic';
       this.model = result;
 
       Object.keys(this.topicForm.controls).forEach(controlName => {
@@ -139,15 +142,17 @@ export class TopicFormComponent implements OnInit {
     observable.pipe(first())
     .subscribe(() => {
       this.dialog.closeAll();
-      this.snackbar.open(successMsg, '', {
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(successMsg, 'snackbar-success', ''),
+        panelClass: ['snackbar'],
         duration: 3000,
-        panelClass: ['snackbar-success', 'snackbar'],
       });
     }, error => {
       console.error(error);
-      this.snackbar.open(errorMsg, '', {
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(errorMsg, 'snackbar-error', ''),
+        panelClass: ['snackbar'],
         duration: 3000,
-        panelClass: ['snackbar-error', 'snackbar']
       });
     });
   }

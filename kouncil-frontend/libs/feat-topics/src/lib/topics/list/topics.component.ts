@@ -16,7 +16,7 @@ import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from "@app/common-components";
 import {MatSort} from "@angular/material/sort";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ConfirmService} from "@app/feat-confirm";
 import {TopicService} from "../../topic/topic.service";
