@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Server } from './server';
-import { ServersService } from './servers.service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Server} from './server';
+import {ServersService} from './servers.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class ServersBackendService extends ServersService {
 
   load(): Promise<boolean> {
     return new Promise((resolve) => {
-      this.http.get(`/api/connection`).subscribe((value) => {
+      this.http.get(`./api/connection`).subscribe((value) => {
         if (value != null) {
           const lastSelectedServer = localStorage.getItem('lastSelectedServer');
           for (const key in value) {

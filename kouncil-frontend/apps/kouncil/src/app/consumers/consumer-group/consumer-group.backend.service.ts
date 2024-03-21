@@ -14,6 +14,6 @@ export class ConsumerGroupBackendService implements ConsumerGroupService {
 
   getConsumerGroup$(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<ConsumerGroupResponse>(`/api/consumer-group/${groupId}`, {params});
+    return this.http.get<ConsumerGroupResponse>(`./api/consumer-group/${groupId}`, {params});
   }
 }

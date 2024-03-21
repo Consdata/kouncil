@@ -80,4 +80,7 @@ export class AuthDemoService implements AuthService {
   getInstallationId$(): void {
     localStorage.setItem('installationId',uuidv4());
   }
+
+  fetchContextPath$(): void {
+  }
 }

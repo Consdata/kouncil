@@ -27,7 +27,7 @@ export class CommonLoginSsoComponent {
   @Input() availableProviders: Array<string>;
 
   private supportedProviders: Map<string, SSOProvider> = new Map<string, SSOProvider>([
-    ['github', {name: 'github', icon: '/assets/github-mark.svg', title: 'GitHub'}],
+    ['github', {name: 'github', icon: './assets/github-mark.svg', title: 'GitHub'}],
   ]);
 
   constructor() {
