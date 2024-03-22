@@ -18,4 +18,8 @@ public final class InMemoryConst {
     public static final String VIEWER_DEFAULT_PASSWORD = "viewer";
     public static final String VIEWER_DEFAULT_GROUP = "viewer_group";
     public static final String VIEWER_CONFIG = "default_viewer_password.txt";
+    public static final String SUPERUSER_USERNAME = "superuser";
+    public static final String SUPERUSER_DEFAULT_PASSWORD = "superuser";
+    public static final String SUPERUSER_DEFAULT_GROUP = "admin_group,editor_group";
+    public static final String SUPERUSER_CONFIG = "default_superuser_password.txt";
 }

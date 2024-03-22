@@ -8,6 +8,10 @@ import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_CONFIG;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_PASSWORD;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_GROUP;
@@ -37,6 +41,7 @@ public class InMemoryUserManager implements UserManager {
             case ADMIN_USERNAME -> path = Paths.get(ADMIN_CONFIG);
             case EDITOR_USERNAME -> path = Paths.get(EDITOR_CONFIG);
             case VIEWER_USERNAME -> path = Paths.get(VIEWER_CONFIG);
+            case SUPERUSER_USERNAME -> path = Paths.get(SUPERUSER_CONFIG);
             default -> throw new IllegalStateException(String.format("Can't find user: %s", SecurityContextHolder.getContext().getAuthentication().getName()));
         }
 
@@ -59,6 +64,10 @@ public class InMemoryUserManager implements UserManager {
             case VIEWER_USERNAME -> {
                 path = Paths.get(VIEWER_CONFIG);
                 strToBytes = generateFileData(VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_GROUP);
+            }
+            case SUPERUSER_USERNAME -> {
+                path = Paths.get(SUPERUSER_CONFIG);
+                strToBytes = generateFileData(SUPERUSER_DEFAULT_PASSWORD, SUPERUSER_DEFAULT_GROUP);
             }
             default -> throw new IllegalStateException(
                     String.format("Can't skip change password for %s", SecurityContextHolder.getContext().getAuthentication().getName()));
