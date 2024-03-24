@@ -29,7 +29,7 @@ Monitoring your consumer groups is one of the most important things when dealing
 
 ## Cluster monitoring
 
-Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](DEPLOYMENT.md#docker---advanced-configuration))
+Monitoring your cluster's health can be as important as monitoring your consumer groups. Kouncil shows not only which brokers are currently connected to the cluster, but also their current resource consumption (using Kouncil's [advanced config](installation/DEPLOYMENT.md#docker---advanced-configuration))
 
 <p align="left">
   <img src=".github/img/kouncil_brokers.png" width="820">

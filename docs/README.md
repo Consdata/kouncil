@@ -28,7 +28,7 @@ After the `docker run` command head to [http://localhost](http://localhost).
 
 Images for Kouncil are hosted here: https://hub.docker.com/r/consdata/kouncil.
 
-For more advanced configuration consult the [Deployment](DEPLOYMENT.md#deployment) section.
+For more advanced configuration consult the [Deployment](installation/DEPLOYMENT.md#deployment) section.
 
 ## Authentication
-Default credentials to log in to Kouncil are admin/admin. For more authentication option head out to [Authentication](DEPLOYMENT.md#authentication)
+Default credentials to log in to Kouncil are admin/admin. For more authentication option head out to [Authentication](configuration/security/AUTHENTICATION.md)
