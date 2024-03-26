@@ -3,16 +3,7 @@ package com.consdata.kouncil;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.serialization.SerializationService;
 import com.consdata.kouncil.topic.TopicMessageHeader;
-import lombok.AllArgsConstructor;
-import org.apache.kafka.clients.admin.ListTopicsOptions;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.utils.Bytes;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.stereotype.Component;
-
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,6 +13,16 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.utils.Bytes;
+import org.springframework.kafka.retrytopic.RetryTopicHeaders;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @SuppressWarnings("java:S6212") //val
@@ -86,10 +87,15 @@ public class MessagesHelper {
         String headerValue = null;
         if (header.value() != null) {
             ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
-            if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP) || header.key().equals(KafkaHeaders.DLT_ORIGINAL_OFFSET)) {
+            if (List.of(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP, KafkaHeaders.DLT_ORIGINAL_OFFSET, KafkaHeaders.ORIGINAL_TIMESTAMP, KafkaHeaders.ORIGINAL_OFFSET)
+                    .contains(header.key())) {
                 headerValue = Long.toString(byteBuffer.getLong());
-            } else if (header.key().equals(KafkaHeaders.DLT_ORIGINAL_PARTITION)) {
+            } else if (List.of(KafkaHeaders.DLT_ORIGINAL_PARTITION, KafkaHeaders.ORIGINAL_PARTITION, RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS)
+                    .contains(header.key())) {
                 headerValue = Integer.toString(byteBuffer.getInt());
+            } else if (List.of(RetryTopicHeaders.DEFAULT_HEADER_ORIGINAL_TIMESTAMP, RetryTopicHeaders.DEFAULT_HEADER_BACKOFF_TIMESTAMP)
+                    .contains(header.key())) {
+                headerValue = BigInteger.valueOf(byteBuffer.getInt()).toString();
             } else {
                 headerValue = new String(byteBuffer.array(), StandardCharsets.UTF_8);
             }
