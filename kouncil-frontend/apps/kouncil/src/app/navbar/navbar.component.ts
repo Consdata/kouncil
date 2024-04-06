@@ -24,8 +24,7 @@ import {KouncilRole} from '../login/kouncil-role';
            matTooltip="{{backendVersion$ | async}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/topics']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
-         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
         Topics
       </a>
 
@@ -43,9 +42,13 @@ import {KouncilRole} from '../login/kouncil-role';
 
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/track']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
-         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
         Track
+      </a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/schemas']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+        Schemas
       </a>
 
       <mat-divider [vertical]="true"></mat-divider>

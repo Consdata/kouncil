@@ -7,6 +7,11 @@ import {ResendBackendService, ResendDemoService, ResendService} from '@app/resen
 import {SurveyBackendService} from './survey/survey.backend.service';
 import {SurveyService} from './survey/survey.service';
 import {SurveyDemoService} from './survey/survey.demo.service';
+import {
+  SchemaRegistryBackendService,
+  SchemaRegistryDemoService,
+  SchemaRegistryService
+} from '@app/schema-registry';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -49,5 +54,16 @@ export function surveyServiceFactory(http: HttpClient): SurveyService {
     case Backend.DEMO:
     default:
       return new SurveyDemoService();
+  }
+}
+
+export function schemaRegistryServiceFactory(http: HttpClient): SchemaRegistryService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new SchemaRegistryBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new SchemaRegistryDemoService();
   }
 }

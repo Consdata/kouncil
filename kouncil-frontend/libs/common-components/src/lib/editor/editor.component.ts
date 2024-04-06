@@ -1,8 +1,8 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  forwardRef,
   Input,
   OnDestroy,
   ViewChild
@@ -10,33 +10,50 @@ import {
 import {MessageFormat} from "@app/schema-registry";
 import {first} from "rxjs";
 import {MonacoEditorService} from "./monaco-editor.service";
-import {NG_VALUE_ACCESSOR} from "@angular/forms";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator
+} from "@angular/forms";
 
 declare var monaco: any;
 
 @Component({
   selector: 'app-common-editor',
   template: `
-    <div class="editor-container" #editor></div>
+    <div #editor class="editor-container" [style.height.px]="editorHeight"></div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./editor.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => EditorComponent),
-    multi: true
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: EditorComponent
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: EditorComponent
+    }
+  ]
 })
-export class EditorComponent implements OnDestroy {
+export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, Validator {
 
   @Input() schemaName: any;
   _schemaType: MessageFormat;
+  @Input() editorHeight: number = 200;
+  disabled: boolean = false;
+
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
   editor: any;
   value: any;
 
-  propagateChange = (_: any) => {
+  onChange = (_: any) => {
   };
   onTouched = () => {
   };
@@ -44,11 +61,29 @@ export class EditorComponent implements OnDestroy {
   constructor(private monacoEditorService: MonacoEditorService) {
   }
 
+  ngAfterViewInit(): void {
+    this.initMonaco();
+  }
+
   @Input()
   set schemaType(schemaType: MessageFormat) {
-    if (schemaType) {
-      this._schemaType = schemaType;
-      this.initMonaco();
+    this._schemaType = schemaType;
+    if (this.editor) {
+      let language;
+      switch (this._schemaType) {
+        case MessageFormat.JSON:
+        case MessageFormat.AVRO:
+          language = "json";
+          break;
+        case MessageFormat.PROTOBUF:
+          language = "proto";
+          break;
+        case MessageFormat.STRING:
+          language = "plaintext";
+          break;
+      }
+      monaco.editor.setModelLanguage(this.editor.getModel(), language)
+      this.format();
     }
   }
 
@@ -84,14 +119,17 @@ export class EditorComponent implements OnDestroy {
       }
     );
 
+    this.format();
+
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue();
-      this.propagateChange(value);
+      this.onChange(value);
       this.value = value;
     });
 
     this.editor.onDidBlurEditorWidget(() => {
       this.onTouched();
+      this.format();
     });
   }
 
@@ -101,15 +139,40 @@ export class EditorComponent implements OnDestroy {
     setTimeout(() => {
       if (this.editor) {
         this.editor.setValue(this.value);
+        this.format();
       }
     });
   }
 
   registerOnChange(fn: any): void {
-    this.propagateChange = fn;
+    this.onChange = fn;
   }
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  private format(): void {
+    setTimeout(() => {
+      this.editor.updateOptions({readOnly: false});
+      this.editor.getAction('editor.action.formatDocument').run().then(() => {
+        this.markEditorReadonly();
+      });
+    }, 100);
+  }
+
+  private markEditorReadonly(): void {
+    this.editor.updateOptions({readOnly: this.disabled});
+  }
+
+  setDisabledState(disabled: boolean) {
+    this.disabled = disabled;
+  }
+
+  validate(control: AbstractControl): ValidationErrors | null {
+    if (!control.value || control.value === '') {
+      return {required: true};
+    }
+    return null;
   }
 }

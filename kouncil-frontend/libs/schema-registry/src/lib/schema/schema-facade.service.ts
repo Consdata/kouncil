@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {ExampleSchemaData} from './schemas.model';
-import {SchemaRegistryService} from './schema-registry.service';
 import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
 import {map} from 'rxjs/operators';
 import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
 import {JSONSchemaFaker} from "json-schema-faker";
+import {SchemaRegistryService} from "./schema-registry.service";
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,6 @@ export class SchemaFacadeService {
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
-        example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       default:

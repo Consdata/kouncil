@@ -65,6 +65,7 @@ import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
   sendServiceFactory,
+  schemaRegistryServiceFactory,
   surveyServiceFactory,
   topicsServiceFactory
 } from './app-factories';
@@ -87,6 +88,12 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
 import {AccessDeniedComponent} from './access-denied/access-denied.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {SchemasComponent} from './schemas/list/schemas.component';
+import {SchemaEditComponent} from './schemas/form/edit/schema-edit.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SchemaCreateComponent} from './schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from './schemas/form/details/schema-details.component';
+import {SchemaFormComponent} from './schemas/form/form/schema-form.component';
 import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
@@ -147,7 +154,12 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ChangePasswordComponent,
     MainLoginComponent,
     OAuthRedirectComponent,
-    AccessDeniedComponent
+    AccessDeniedComponent,
+    SchemasComponent,
+    SchemaEditComponent,
+    SchemaCreateComponent,
+    SchemaDetailsComponent,
+    SchemaFormComponent
   ],
   imports: [
     BrowserModule,
@@ -184,7 +196,8 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     DragDropModule,
     PageNotFoundComponent,
     SurveyComponent,
-    SurveyScaleQuestionComponent
+    SurveyScaleQuestionComponent,
+    MatCheckboxModule
   ],
   providers: [
     {
@@ -194,6 +207,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     },
     SearchService,
     topicServiceProvider,
+    {
+      provide: SchemaRegistryService,
+      useFactory: schemaRegistryServiceFactory,
+      deps: [HttpClient]
+    },
     {
       provide: BrokerService,
       useFactory: brokerServiceFactory,
@@ -252,7 +270,7 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
       provide: SurveyService,
       useFactory: surveyServiceFactory,
       deps: [HttpClient]
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })
