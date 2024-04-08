@@ -45,7 +45,7 @@
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <arguments>lint:affected</arguments>
+              <arguments>lint</arguments>
             </configuration>
           </execution>
 
