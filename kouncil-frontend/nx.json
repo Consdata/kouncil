@@ -1,7 +1,7 @@
 {
   "npmScope": "app",
   "affected": {
-    "defaultBase": "remotes/origin/master"
+    "defaultBase": "origin/master"
   },
   "cli": {
     "packageManager": "yarn"
