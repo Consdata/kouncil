@@ -8,6 +8,10 @@ import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_CONFIG;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_PASSWORD;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
@@ -86,7 +90,8 @@ public class InMemoryWebSecurityConfig {
         return new InMemoryUserDetailsManager(
                 createUser(ADMIN_CONFIG, ADMIN_USERNAME, ADMIN_DEFAULT_PASSWORD, ADMIN_DEFAULT_GROUP),
                 createUser(EDITOR_CONFIG, EDITOR_USERNAME, EDITOR_DEFAULT_PASSWORD, EDITOR_DEFAULT_GROUP),
-                createUser(VIEWER_CONFIG, VIEWER_USERNAME, VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_GROUP)
+                createUser(VIEWER_CONFIG, VIEWER_USERNAME, VIEWER_DEFAULT_PASSWORD, VIEWER_DEFAULT_GROUP),
+                createUser(SUPERUSER_CONFIG, SUPERUSER_USERNAME, SUPERUSER_DEFAULT_PASSWORD, SUPERUSER_DEFAULT_GROUP)
         );
     }
 
@@ -94,7 +99,7 @@ public class InMemoryWebSecurityConfig {
         log.info("Create user {} with default role {}", username, defaultRole);
         Path path = Paths.get(configFile);
         String password = defaultPassword;
-        String role = defaultRole;
+        String[] role = defaultRole.split(",");
 
         if (Files.exists(path)) {
             try {
@@ -108,7 +113,7 @@ public class InMemoryWebSecurityConfig {
                         password = config[0];
                     }
                     if (StringUtils.isNotEmpty(config[1])) {
-                        role = config[1];
+                        role = config[1].split(",");
                     }
                 }
             } catch (IOException e) {

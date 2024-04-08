@@ -17,6 +17,8 @@ import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {Observable, Subscription} from 'rxjs';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {SnackBarComponent, SnackBarData} from '@app/common-utils';
 
 @Component({
   standalone: true,
@@ -62,7 +64,8 @@ export class SurveyComponent implements OnInit, OnDestroy {
 
   @ViewChildren(SurveyScaleQuestionComponent) questionComponents: QueryList<SurveyScaleQuestionComponent>;
 
-  constructor(private surveyService: SurveyService, private router: Router) {
+  constructor(private surveyService: SurveyService, private router: Router,
+              private snackbar: MatSnackBar) {
     this.subscriptions.add(this.surveyService.getSurveyObservable$().subscribe(value => {
       this.survey = value;
     }));
@@ -81,8 +84,23 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   confirmSurvey(): void {
-    this.closeSurvey();
-    this.surveyService.answerSurvey$(this.questionComponents, this.router.url);
+    let valid = true;
+    this.questionComponents.forEach(component => {
+      if (component.question.required && component.selectedValue === undefined) {
+        valid = false;
+      }
+    });
+
+    if (valid) {
+      this.closeSurvey();
+      this.surveyService.answerSurvey$(this.questionComponents, this.router.url);
+    } else {
+      this.snackbar.openFromComponent(SnackBarComponent, {
+        data: new SnackBarData(`Answer required questions`, 'snackbar-error', 'Close'),
+        panelClass: ['snackbar'],
+        duration: 5000
+      });
+    }
   }
 
   closeSurvey(): void {
