@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Schemas, SchemasConfiguration} from './schemas.model';
 import {Observable, of} from 'rxjs';
-import {Schema} from "./schema.model";
-import {MessageFormat} from "./message-format";
-import {SubjectType} from "./subject-type";
-import {SchemaRegistryService} from "./schema-registry.service";
+import {Schema} from './schema.model';
+import {MessageFormat} from './message-format';
+import {SubjectType} from './subject-type';
+import {SchemaRegistryService} from './schema-registry.service';
 
 @Injectable()
 export class SchemaRegistryDemoService implements SchemaRegistryService {
@@ -18,11 +18,11 @@ export class SchemaRegistryDemoService implements SchemaRegistryService {
           "properties": {
             "firstName": {
               "type": "string",
-              "description": "The person\'s first name."
+              "description": "The person's first name."
             },
             "lastName": {
               "type": "string",
-              "description": "The person\'s last name."
+              "description": "The person's last name."
             },
             "age": {
               "description": "Age in years which must be equal to or greater than zero.",
@@ -50,7 +50,7 @@ export class SchemaRegistryDemoService implements SchemaRegistryService {
     return of(this.allDemoSchemas);
   }
 
-  deleteSchema(_selectedServerId: string, _subject: string, _version: string): Observable<void> {
+  deleteSchema$(_selectedServerId: string, _subject: string, _version: string): Observable<void> {
     return of(undefined);
   }
 

@@ -7,13 +7,14 @@ import {
   Validators
 } from '@angular/forms';
 import {Injectable} from '@angular/core';
-import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {filter, first} from 'rxjs/operators';
 import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {ResendDataModel} from './resend.data.model';
+import {ResendService} from './resend.service';
 
 @Injectable()
 export class ResendFormService {
@@ -71,7 +72,7 @@ export class ResendFormService {
       filter((confirmed) => !!confirmed),
     )
     .subscribe(() => {
-      this.resendMessages(resendData)
+      this.resendMessages(resendData);
     });
   }
 

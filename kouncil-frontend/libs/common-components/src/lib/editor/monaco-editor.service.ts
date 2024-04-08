@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
-import {Schema} from "./schema";
+import {Observable, Subject} from 'rxjs';
+import {Schema} from './schema';
 
-declare var monaco: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let monaco: any;
 
 @Injectable({
   providedIn: 'root',
@@ -10,34 +11,43 @@ declare var monaco: any;
 export class MonacoEditorService {
   loaded: boolean = false;
 
-  public loadingFinished: Subject<void> = new Subject<void>();
+  private _loadingFinished$: Subject<void> = new Subject<void>();
   public schemas: Array<Schema> = [];
 
   constructor() {
   }
 
-  private finishLoading() {
-    this.loaded = true;
-    this.loadingFinished.next();
+  get loadingFinished$(): Observable<void> {
+    return this._loadingFinished$.asObservable();
   }
 
-  public load() {
+  private finishLoading(): void {
+    this.loaded = true;
+    this._loadingFinished$.next();
+  }
+
+  public load(): void {
     // load the assets
-    const baseUrl = './assets' + '/monaco-editor/min/vs';
+    const baseUrl: string = './assets' + '/monaco-editor/min/vs';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof (<any>window).monaco === 'object') {
       this.finishLoading();
       return;
     }
 
-    const onGotAmdLoader: any = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const onGotAmdLoader: any = (): void => {
       // load Monaco
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (<any>window).require.config({paths: {vs: `${baseUrl}`}});
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (<any>window).require([`vs/editor/editor.main`], () => {
         this.finishLoading();
       });
     };
 
     // load AMD loader, if necessary
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!(<any>window).require) {
       const loaderScript: HTMLScriptElement = document.createElement('script');
       loaderScript.type = 'text/javascript';
@@ -49,27 +59,27 @@ export class MonacoEditorService {
     }
   }
 
-  public addSchema(name: string, schema: object) {
+  public addSchema(name: string, schema: object): void {
     this.schemas.push({
       name, schema
     });
   }
 
-  public clearSchemas() {
+  public clearSchemas(): void {
     this.schemas = [];
   }
 
-  public registerSchemas() {
-    let schemas = [];
+  public registerSchemas(): void {
+    const schemas = [];
     this.schemas.forEach(schema => {
-      var modelUri = monaco.Uri.parse(`a://b/${schema.name}.json`);
-      var schemaObj = {
+      const modelUri = monaco.Uri.parse(`a://b/${schema.name}.json`);
+      const schemaObj = {
         uri: `http://myserver/${schema.name}-schema.json`,
         fileMatch: [modelUri.toString()],
         schema: schema.schema
-      }
+      };
       schemas.push(schemaObj);
-    })
+    });
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: schemas

@@ -10,10 +10,10 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {RouterModule} from '@angular/router';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from "@angular/material/table";
-import {CommonComponentsModule} from "@app/common-components";
-import {MatSortModule} from "@angular/material/sort";
-import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatTableModule} from '@angular/material/table';
+import {CommonComponentsModule} from '@app/common-components';
+import {MatSortModule} from '@angular/material/sort';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [CommonModule,

@@ -14,7 +14,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "kouncil",
+            "prefix": "app",
             "style": "camelCase"
           }
         ],
@@ -22,10 +22,11 @@
           "error",
           {
             "type": "element",
-            "prefix": "kouncil",
+            "prefix": "app",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "no-console": "warn"
       }
     },
     {

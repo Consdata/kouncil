@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Schemas, SchemasConfiguration} from './schemas.model';
 import {Observable} from 'rxjs';
-import {Schema} from "./schema.model";
-import {SchemaRegistryService} from "./schema-registry.service";
+import {Schema} from './schema.model';
+import {SchemaRegistryService} from './schema-registry.service';
 
 @Injectable()
 export class SchemaRegistryBackendService implements SchemaRegistryService {
@@ -21,12 +21,12 @@ export class SchemaRegistryBackendService implements SchemaRegistryService {
 
   loadAllSchemasForServer$(selectedServerId: string, topics: string[]): Observable<Schema[]> {
     const params = new HttpParams()
-    .set('topicNames', topics.join(','))
+    .set('topicNames', topics.join(','));
 
     return this.httpClient.get<Schema[]>(`/api/schemas/${selectedServerId}`, {params});
   }
 
-  deleteSchema(selectedServerId: string, subject: string, version: string): Observable<void> {
+  deleteSchema$(selectedServerId: string, subject: string, version: string): Observable<void> {
     return this.httpClient.delete<void>(`/api/schemas/${selectedServerId}/${subject}/${version}`);
   }
 

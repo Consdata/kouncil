@@ -10,12 +10,12 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import {MatColumnDef, MatTable, MatTableDataSource} from "@angular/material/table";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {TableColumn} from "../table-column/table-column";
-import {TableColumnComponent} from "../table-column/table-column.component";
-import {TableGroup} from "./table-group";
-import {MatSort} from "@angular/material/sort";
+import {MatColumnDef, MatTable, MatTableDataSource} from '@angular/material/table';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {TableColumn} from '../table-column/table-column';
+import {TableColumnComponent} from '../table-column/table-column.component';
+import {TableGroup} from './table-group';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
   selector: 'app-common-table',
@@ -34,7 +34,7 @@ import {MatSort} from "@angular/material/sort";
         <ng-container matColumnDef="groupHeader">
           <td mat-cell colspan="999" *matCellDef="let group">
             <div class="datatable-group-header">
-              <div class="group-header">{{groupHeaderName(group)}}</div>
+              <div class="group-header">{{ groupHeaderName(group) }}</div>
               <span class="datatable-header-divider"></span>
               <span class="datatable-header-hide" (click)="toggleExpandGroup(group)">
               <span *ngIf="group.expanded">HIDE</span>
@@ -58,28 +58,33 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   _additionalColumns: TableColumn[] = [];
   _actionColumns: TableColumn[] = [];
   _tableData: unknown[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   _sort: MatSort;
 
-  @Input() headerClass: string = 'default-table-header';
   @Input() groupHeaderName: (group: TableGroup) => string;
-  @Input() rowClass: (row) => {} = () => {
-    return {}
-  };
+  @Input() headerClass: string = 'default-table-header';
   @Input() groupedTable: boolean = false;
   @Input() groupByColumns: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() rowClickedAction: EventEmitter<any> = new EventEmitter<any>();
   @Output() sortEvent: EventEmitter<MatSort> = new EventEmitter<MatSort>();
   @ContentChildren(TableColumnComponent) tableColumnComponents: QueryList<TableColumnComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ViewChild(MatTable, {static: true}) table: MatTable<any>;
 
   constructor() {
   }
 
+  @Input() rowClass: (row) => object = (): object => {
+    return {};
+  };
+
   @Input()
   set tableData(tableData: unknown[]) {
     this._tableData = tableData;
     if (this.groupedTable && this._tableData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.dataSource = new MatTableDataSource<any>();
       this.dataSource.data = this.addGroups(this._tableData, this.groupByColumns);
     } else {
@@ -110,20 +115,20 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     if (sort) {
       this._sort = sort;
       this.dataSource.sort = sort;
-      this.dataSource.sort.sortChange.subscribe((sort: MatSort) => this.sortEvent.emit(sort));
+      this.dataSource.sort.sortChange.subscribe((matSort: MatSort) => this.sortEvent.emit(matSort));
     }
   }
 
-  ngAfterContentInit() {
+  ngAfterContentInit(): void {
     this.tableColumnComponents.forEach(columnDef => this.table.addColumnDef(columnDef.columnDef));
     this.updateAllColumns();
   }
 
-  private updateAllColumns() {
+  private updateAllColumns(): void {
     this.allColumns = this._additionalColumns.concat(this._columns.concat(this._actionColumns));
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.groupedTable && this._tableData) {
       this.dataSource.data = this.addGroups(this._tableData, this.groupByColumns);
       this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
@@ -134,7 +139,7 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
 
     this.tableColumnComponents.changes.subscribe(() => {
       // remove all the columns
-      let from: Array<MatColumnDef> = Array.from(this.table["_customColumnDefs"].values());
+      const from: Array<MatColumnDef> = Array.from(this.table['_customColumnDefs'].values());
       from.forEach((column: MatColumnDef) => this.table.removeColumnDef(column));
       this.tableColumnComponents.forEach(columnDef => {
         this.table.addColumnDef(columnDef.columnDef);
@@ -142,12 +147,12 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     });
   }
 
-  getColumnNames() {
+  getColumnNames(): Array<string> {
     return this.allColumns.map(column => column.name);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    let previousIndex = event.previousIndex;
+  drop(event: CdkDragDrop<string[]>): void {
+    const previousIndex = event.previousIndex;
     let currentIndex = event.currentIndex;
     const lastStickyIndex = this.allColumns.map(column => column.sticky).lastIndexOf(true);
 
@@ -164,16 +169,18 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     moveItemInArray(this.allColumns, previousIndex, currentIndex);
   }
 
-  isGroup(index, item): boolean {
-    return item.level;
+  isGroup(index: number, item: TableGroup): boolean {
+    return !item.level;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addGroups(data: any[], groupByColumns: string[]): any[] {
     const rootGroup: TableGroup = new TableGroup();
     rootGroup.expanded = true;
     return this.getSublevel(data, 0, groupByColumns, rootGroup);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSublevel(data: any[], level: number, groupByColumns: string[], parent: TableGroup): any[] {
     if (level >= groupByColumns.length) {
       return data;
@@ -204,23 +211,26 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     return subGroups;
   }
 
-  uniqueBy(a, key) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  uniqueBy(data: any[], key: (value: any) => string): Array<any> {
     const seen = {};
-    return a.filter((item) => {
+    return data.filter((item) => {
       const k = key(item);
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
   }
 
-  toggleExpandGroup(group: TableGroup) {
+  toggleExpandGroup(group: TableGroup): void {
     group.expanded = !group.expanded;
     this.dataSource.filter = performance.now().toString();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   customFilterPredicate(data: any | TableGroup): boolean {
     return data instanceof TableGroup ? data.visible : this.getDataRowVisible(data);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   getDataRowVisible(data: any): boolean {
     const groupRows = this.dataSource.data.filter((row) => {
       if (!(row instanceof TableGroup)) {
@@ -243,7 +253,8 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
     return parent.visible && parent.expanded;
   }
 
-  rowClicked($event: MouseEvent, row) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+  rowClicked($event: MouseEvent, row: any): void {
     const element = $event.target as HTMLElement;
     if ($event.type === 'click' && element.nodeName !== 'MAT-ICON' && element.nodeName !== 'BUTTON') {
       this.rowClickedAction.emit(row);

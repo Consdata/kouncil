@@ -4,9 +4,9 @@ import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
 import {map} from 'rxjs/operators';
 import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
-import {JSONSchemaFaker} from "json-schema-faker";
-import {SchemaRegistryService} from "./schema-registry.service";
-import {AvroUtilsService} from "../avro/avro-utils.service";
+import {JSONSchemaFaker} from 'json-schema-faker';
+import {SchemaRegistryService} from './schema-registry.service';
+import {AvroUtilsService} from '../avro/avro-utils.service';
 
 @Injectable({
   providedIn: 'root'

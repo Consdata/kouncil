@@ -1,4 +1,4 @@
-import {AvroUtilsService} from "./avro-utils.service";
+import {AvroUtilsService} from './avro-utils.service';
 
 const testAvroSchema = `
 {
@@ -91,12 +91,12 @@ describe('AvroUtilsService', () => {
     expect(actualAvroWithData['testLong']).toEqual(123);
     expect(actualAvroWithData['testSubType']).not.toBeNull();
     expect(['VALUE_1', 'VALUE_2', 'VALUE_3', 'VALUE_4']).toContain(actualAvroWithData['testSubType']['testEnum']);
-    expect(actualAvroWithData['testSubType']['testUnion'] === null || actualAvroWithData['testSubType']['testUnion'] === 'abc').toBeTruthy()
-    expect(actualAvroWithData['testSubType']['testBoolean'] || !actualAvroWithData['testSubType']['testBoolean']).toBeTruthy()
+    expect(actualAvroWithData['testSubType']['testUnion'] === null || actualAvroWithData['testSubType']['testUnion'] === 'abc').toBeTruthy();
+    expect(actualAvroWithData['testSubType']['testBoolean'] || !actualAvroWithData['testSubType']['testBoolean']).toBeTruthy();
     if (actualAvroWithData['testSubType']['testArray'].length > 0) {
       actualAvroWithData['testSubType']['testArray'].forEach(element => {
         expect(element).toEqual('abc');
-      })
+      });
     } else {
       expect(actualAvroWithData['testSubType']['testArray']).toEqual([]);
     }
@@ -105,7 +105,7 @@ describe('AvroUtilsService', () => {
       actualAvroWithData['testSubType']['testMap'].entries((key, value) => {
         expect(key).toEqual('abc');
         expect(value).toEqual('abc');
-      })
+      });
     } else {
       expect(actualAvroWithData['testSubType']['testMap']).toEqual([]);
     }

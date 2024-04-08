@@ -11,7 +11,7 @@ import {ResendFormService} from './resend-form.service';
   template: `
     <mat-dialog-content *ngIf="messageData$ | async as messageData">
       <div class="drawer-header">
-        <div class="drawer-title">Resend events from {{messageData.topicName}}</div>
+        <div class="drawer-title">Resend events from {{ messageData.topicName }}</div>
         <div class="spacer"></div>
         <mat-icon mat-dialog-close class="close">close</mat-icon>
       </div>
@@ -41,7 +41,7 @@ import {ResendFormService} from './resend-form.service';
               </mat-option>
               <mat-option *ngFor="let topic of resendFilterService.sourceFilteredTopicsObs$ | async"
                           [value]="topic.caption()">
-                {{topic.caption()}}
+                {{ topic.caption() }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -54,7 +54,7 @@ import {ResendFormService} from './resend-form.service';
                         formControlName="sourceTopicPartition">
               <mat-option *ngFor="let partition of resendFilterService.srcPartitionsObs$ | async"
                           [value]="partition">
-                {{partition}}
+                {{ partition }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -96,7 +96,7 @@ import {ResendFormService} from './resend-form.service';
               <mat-option
                 *ngFor="let topic of resendFilterService.destinationFilteredTopicsObs$ | async"
                 [value]="topic.caption()">
-                {{topic.caption()}}
+                {{ topic.caption() }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -110,7 +110,7 @@ import {ResendFormService} from './resend-form.service';
               <mat-option [value]="-1">None</mat-option>
               <mat-option *ngFor="let partition of resendFilterService.destPartitionsObs$ | async"
                           [value]="partition">
-                {{partition}}
+                {{ partition }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -195,11 +195,11 @@ export class ResendComponent implements OnInit, OnDestroy {
     this.resendFormService.submit();
   }
 
-  clearValue(control: FormControl) {
+  clearValue(control: FormControl): void {
     control.setValue('');
   }
 
-  handleClose(control: FormControl, name: string) {
+  handleClose(control: FormControl, name: string): void {
     if (control.value.length === 0) {
       control.setValue(this.resendFormService.resendForm.get(name).getRawValue());
     }

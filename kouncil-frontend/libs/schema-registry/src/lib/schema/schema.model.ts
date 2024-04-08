@@ -1,6 +1,6 @@
 import {MessageFormat} from './message-format';
-import {SubjectType} from "./subject-type";
-import {Compatibility} from "./compatibility";
+import {SubjectType} from './subject-type';
+import {Compatibility} from './compatibility';
 
 export interface Schema {
   messageFormat: MessageFormat;

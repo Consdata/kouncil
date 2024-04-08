@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {User} from "./user";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {User} from './user';
 import {Backend} from '@app/common-model';
 
 @Component({

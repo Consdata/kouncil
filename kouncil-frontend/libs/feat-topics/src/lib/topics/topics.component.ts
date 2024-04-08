@@ -12,8 +12,9 @@ import {
 } from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
-import {AbstractTableComponent, TableColumn} from "@app/common-components";
-import {MatSort} from "@angular/material/sort";
+import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {MatSort} from '@angular/material/sort';
+import {TableGroup} from '@app/common-components';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -34,7 +35,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                         [groupedTable]="true" [rowClass]="getRowClass"
                         cdkDropList cdkDropListOrientation="horizontal"
                         (cdkDropListDropped)="drop($event)"
-                        [groupByColumns]="['group']" >
+                        [groupByColumns]="['group']">
 
         <ng-container *ngFor="let column of additionalColumns; let index = index">
 
@@ -46,7 +47,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                 <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
                           (click)="onFavouriteClick($event, element)">star
                 </mat-icon>
-                {{element.name}}
+                {{ element.name }}
               </a>
             </ng-template>
           </app-common-table-column>
@@ -92,10 +93,6 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
       }
     ];
 
-  groupHeaderName = (group) => {
-    return group.group === 'FAVOURITES' ? 'Favourites' : 'All topics'
-  }
-
   private searchSubscription?: Subscription;
 
   constructor(private searchService: SearchService,
@@ -117,6 +114,10 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
         this.filter(phrase);
       });
   }
+
+  groupHeaderName: (group: TableGroup) => string = (group: TableGroup): string => {
+    return group.group === 'FAVOURITES' ? 'Favourites' : 'All topics';
+  };
 
   private loadTopics(): void {
     this.topicsService.getTopics$(this.servers.getSelectedServerId())
@@ -156,16 +157,17 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
   }
 
   customSort(sort: MatSort): void {
-    console.log('custom sort')
     this.filtered = this.arraySortService.transform(this.filtered, sort.active, sort.direction);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
   getRowClass: (row) => { 'row-retry': any, 'row-dlq': any } = (row) => {
     return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'row-retry': (() => {
         return row.name.includes('retry');
       })(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'row-dlq': (() => {
         return row.name.includes('dlq');
       })()
