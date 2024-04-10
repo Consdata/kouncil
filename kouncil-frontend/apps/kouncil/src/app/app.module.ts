@@ -210,8 +210,7 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     PageNotFoundComponent,
     SurveyComponent,
     SurveyScaleQuestionComponent,
-    MatCheckboxModule
-    SurveyScaleQuestionComponent,
+    MatCheckboxModule,
     CommonAuthModule
   ],
   providers: [
@@ -294,7 +293,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     {
       provide: BASE_URL,
       useValue: environment.baseUrl
-    }
     }
   ],
   bootstrap: [AppComponent]

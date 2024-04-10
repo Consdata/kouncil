@@ -14,17 +14,14 @@ import {
 } from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
-import {AbstractTableComponent, TableColumn} from "@app/common-components";
-import {MatSort} from "@angular/material/sort";
-import {MatDialog} from "@angular/material/dialog";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {ConfirmService} from "@app/feat-confirm";
-import {TopicService} from "../../topic/topic.service";
-import {TopicFormComponent} from "../../topic/topic-form.component";
-import {AuthService, KouncilRole} from "@app/common-auth";
-import {AbstractTableComponent, TableColumn} from '@app/common-components';
+import {AbstractTableComponent, TableColumn, TableGroup} from '@app/common-components';
 import {MatSort} from '@angular/material/sort';
-import {TableGroup} from '@app/common-components';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ConfirmService} from '@app/feat-confirm';
+import {TopicService} from '../../topic/topic.service';
+import {TopicFormComponent} from '../../topic/topic-form.component';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -147,11 +144,7 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
     }
   ];
 
-  groupHeaderName = (group) => {
-    return group.group === 'FAVOURITES' ? 'Favourites' : 'All topics'
-  }
-
-  private searchSubscription?: Subscription;
+  private subscription: Subscription = new Subscription();
 
   constructor(private searchService: SearchService,
               private progressBarService: ProgressBarService,
@@ -173,10 +166,14 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadTopics();
-    this.searchSubscription = this.searchService.getPhraseState$('topics').subscribe(
-      phrase => {
-        this.filter(phrase);
-      });
+    this.subscription.add(this.searchService.getPhraseState$('topics')
+    .subscribe(phrase => {
+      this.filter(phrase);
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   groupHeaderName: (group: TableGroup) => string = (group: TableGroup): string => {
@@ -184,19 +181,16 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
   };
 
   private loadTopics(): void {
-    this.topicsService.getTopics$(this.servers.getSelectedServerId())
+    this.subscription.add(this.topicsService.getTopics$(this.servers.getSelectedServerId())
     .pipe(first())
     .subscribe((data: Topics) => {
       this.topics = data.topics.map(t => new TopicMetadata(t.partitions, null, t.name));
       this.favouritesService.applyFavourites(this.topics, TOPICS_FAVOURITE_KEY, this.servers.getSelectedServerId());
       this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
-    });
+    }));
   }
 
-  ngOnDestroy(): void {
-    this.searchSubscription?.unsubscribe();
-  }
 
   private filter(phrase?: string): void {
     this.filtered = this.topics.filter((topicsMetadata) => {
@@ -238,23 +232,23 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
     };
   };
 
-  createTopic(topicName?: string) {
-    let config = {
+  createTopic(topicName?: string): void {
+    const config = {
       data: topicName,
       width: '500px',
       autoFocus: 'dialog',
       panelClass: ['app-drawer']
     };
 
-    let matDialogRef = this.dialog.open(TopicFormComponent, config);
+    const matDialogRef = this.dialog.open(TopicFormComponent, config);
 
-    matDialogRef.afterClosed().subscribe(() => {
+    this.subscription.add(matDialogRef.afterClosed().subscribe(() => {
       this.loadTopics();
-    })
+    }));
   }
 
   removeTopic(topicName: string): void {
-    this.confirmService.openConfirmDialog$({
+    this.subscription.add(this.confirmService.openConfirmDialog$({
       title: 'Delete topic',
       subtitle: 'Are you sure you want to delete:',
       sectionLine1: `Topic ${topicName}`
@@ -265,28 +259,30 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
         this.progressBarService.setProgress(true);
         this.deleteTopic(topicName);
       }
-    });
+    }));
   }
 
   private deleteTopic(topicName: string) {
-    this.topicService.deleteSchema(topicName, this.servers.getSelectedServerId())
+    this.subscription.add(this.topicService.deleteSchema$(topicName, this.servers.getSelectedServerId())
     .pipe(first())
-    .subscribe(() => {
-      this.loadTopics();
+    .subscribe({
+      next: () => {
+        this.loadTopics();
 
-      this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Topic ${topicName} deleted`, 'snackbar-success', ''),
-        panelClass: ['snackbar'],
-        duration: 3000
-      });
-    }, error => {
-      console.error(error);
-      this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Topic ${topicName} couldn't be deleted`, 'snackbar-error', ''),
-        panelClass: ['snackbar'],
-        duration: 3000
-      });
-      this.progressBarService.setProgress(false);
-    });
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Topic ${topicName} deleted`, 'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+      },
+      error: () => {
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Topic ${topicName} couldn't be deleted`, 'snackbar-error', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+        this.progressBarService.setProgress(false);
+      }
+    }));
   }
 }

@@ -6,12 +6,11 @@ import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-u
 import {first} from 'rxjs/operators';
 import {ConfirmService} from '@app/feat-confirm';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {KouncilRole} from '../../login/kouncil-role';
-import {AuthService} from '../../login/auth.service';
 import {FormControl} from '@angular/forms';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {Router} from '@angular/router';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 @Component({
   selector: 'app-schemas',

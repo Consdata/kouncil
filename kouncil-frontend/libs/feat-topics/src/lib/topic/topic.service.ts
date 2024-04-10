@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {TopicData} from "@app/feat-topics";
+import {TopicData} from './topic-data';
 
 @Injectable()
 export abstract class TopicService {
@@ -11,5 +11,5 @@ export abstract class TopicService {
 
   abstract getTopic$(selectedServerId: string, topicName: string): Observable<TopicData>;
 
-  abstract deleteSchema(topicName: string, selectedServerId: string): Observable<void>;
+  abstract deleteSchema$(topicName: string, selectedServerId: string): Observable<void>;
 }

@@ -12,8 +12,8 @@ import {v4 as uuidv4} from 'uuid';
 })
 export class AuthBackendService implements AuthService {
 
-  private IS_LOGGED_IN: string = 'isLoggedIn';
-  private USER_ROLES: string = 'userRoles';
+  private readonly IS_LOGGED_IN: string = 'isLoggedIn';
+  private readonly USER_ROLES: string = 'userRoles';
   private userRoles: Array<KouncilRole> = [];
 
   private readonly baseUrl: string;

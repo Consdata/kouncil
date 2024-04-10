@@ -170,7 +170,9 @@ export class TableComponent implements AfterContentInit, AfterViewInit {
   }
 
   isGroup(index: number, item: TableGroup): boolean {
-    return !item.level;
+    // Intentional !=
+    // eslint-disable-next-line eqeqeq
+    return item.level != undefined;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

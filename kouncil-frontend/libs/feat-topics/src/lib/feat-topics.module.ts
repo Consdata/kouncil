@@ -10,17 +10,13 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {RouterModule} from '@angular/router';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from "@angular/material/table";
-import {CommonComponentsModule} from "@app/common-components";
-import {MatSortModule} from "@angular/material/sort";
-import {DragDropModule} from "@angular/cdk/drag-drop";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {TopicFormComponent} from "./topic/topic-form.component";
-import {CommonAuthModule} from "@app/common-auth";
 import {MatTableModule} from '@angular/material/table';
 import {CommonComponentsModule} from '@app/common-components';
 import {MatSortModule} from '@angular/material/sort';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {TopicFormComponent} from './topic/topic-form.component';
+import {CommonAuthModule} from '@app/common-auth';
 
 @NgModule({
   imports: [

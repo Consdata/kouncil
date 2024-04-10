@@ -1,25 +1,25 @@
 import {Injectable} from '@angular/core';
-import {TopicService} from "./topic.service";
-import {TopicData} from "./topic-data";
-import {Observable, of} from "rxjs";
+import {TopicService} from './topic.service';
+import {TopicData} from './topic-data';
+import {Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TopicDemoService implements TopicService {
-  createTopic$(topicData: TopicData, serverId: string): Observable<void> {
+  createTopic$(_topicData: TopicData, _serverId: string): Observable<void> {
     return of();
   }
 
-  deleteSchema(topicName: string, selectedServerId: string): Observable<void> {
+  deleteSchema$(_topicName: string, _selectedServerId: string): Observable<void> {
     return of();
   }
 
-  getTopic$(selectedServerId: string, topicName: string): Observable<TopicData> {
+  getTopic$(_selectedServerId: string, _topicName: string): Observable<TopicData> {
     return of(new TopicData());
   }
 
-  updateTopic$(topic: TopicData, selectedServerId: string): Observable<void> {
+  updateTopic$(_topic: TopicData, _selectedServerId: string): Observable<void> {
     return of();
   }
 }

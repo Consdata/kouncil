@@ -6,7 +6,8 @@
       "files": ["*.ts"],
       "extends": [
         "plugin:@nrwl/nx/angular",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "@consdata/eslint-config"
       ],
       "rules": {
         "@angular-eslint/directive-selector": [

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Topics} from '@app/common-model';
-import {TopicsService} from "../topics.service";
+import {TopicsService} from '../topics.service';
 
 @Injectable({
   providedIn: 'root'

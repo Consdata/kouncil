@@ -65,13 +65,13 @@ public class TopicService {
     private String[] resendHeadersToKeep;
 
     TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
-            @PathVariable("partition") String partitions,
-            @RequestParam("page") String pageParam,
-            @RequestParam("limit") String limitParam,
-            @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
-            @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
-            @RequestParam(value = "offset", required = false) Long offset,
-            @RequestParam("serverId") String serverId) {
+                                      @PathVariable("partition") String partitions,
+                                      @RequestParam("page") String pageParam,
+                                      @RequestParam("limit") String limitParam,
+                                      @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
+                                      @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
+                                      @RequestParam(value = "offset", required = false) Long offset,
+                                      @RequestParam("serverId") String serverId) {
         messagesHelper.validateTopics(serverId, singletonList(topicName));
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
@@ -327,7 +327,7 @@ public class TopicService {
     }
 
     public void updateTopicPartitions(TopicData newTopic, String serverId) {
-        log.info("Updating topi={} partitions", newTopic.getName());
+        log.info("Updating topic={} partitions", newTopic.getName());
         kafkaConnectionService.getAdminClient(serverId).createPartitions(Map.of(newTopic.getName(), NewPartitions.increaseTo(newTopic.getPartitions())));
     }
 

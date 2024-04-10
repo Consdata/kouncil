@@ -14,20 +14,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@SuppressWarnings("java:S6212") //val
+@RequestMapping("/api/topic")
 public class TopicController {
 
     private final TopicService topicService;
 
 
     @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
-    @GetMapping("/api/topic/messages/{topicName}/{partition}")
+    @GetMapping("/messages/{topicName}/{partition}")
     public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
                                              @PathVariable("partition") String partitions,
                                              @RequestParam("page") String pageParam,
@@ -42,7 +43,7 @@ public class TopicController {
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @PostMapping("/api/topic/send/{topicName}/{count}")
+    @PostMapping("/send/{topicName}/{count}")
     @EntryExitLogger
     public void send(@PathVariable("topicName") String topicName,
                      @PathVariable("count") int count,
@@ -54,7 +55,7 @@ public class TopicController {
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @PostMapping("/api/topic/resend")
+    @PostMapping("/resend")
     @EntryExitLogger
     public void resend(@RequestBody TopicResendEventsModel resendData,
                        @RequestParam("serverId") String serverId) {
@@ -63,28 +64,28 @@ public class TopicController {
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @PostMapping("/api/topic/create")
+    @PostMapping("/create")
     @EntryExitLogger
     public void create(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.create(newTopic, serverId);
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @PutMapping("/api/topic/partitions/update")
+    @PutMapping("/partitions/update")
     @EntryExitLogger
     public void updateTopicPartitions(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.updateTopicPartitions(newTopic, serverId);
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @GetMapping("/api/topic/{topicName}")
+    @GetMapping("/{topicName}")
     @EntryExitLogger
     public TopicData getTopicData(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         return topicService.getTopicData(topicName, serverId);
     }
 
     @RolesAllowed({EDITOR_ROLE})
-    @DeleteMapping("/api/topic/{topicName}")
+    @DeleteMapping("/{topicName}")
     @EntryExitLogger
     public void removeTopic(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.removeTopic(topicName, serverId);

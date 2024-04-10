@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {TopicData} from "./topic-data";
-import {TopicService} from "./topic.service";
+import {TopicData} from './topic-data';
+import {TopicService} from './topic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class TopicBackendService implements TopicService {
     return this.http.get<TopicData>(`/api/topic/${topicName}`, {params});
   }
 
-  deleteSchema(topicName: string, serverId: string): Observable<void> {
+  deleteSchema$(topicName: string, serverId: string): Observable<void> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.delete<void>(`/api/topic/${topicName}`, {params});
   }
