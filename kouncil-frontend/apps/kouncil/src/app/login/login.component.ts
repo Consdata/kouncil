@@ -16,7 +16,7 @@ import {environment} from '../../environments/environment';
     <app-common-login (loginUser)="login($event)">
 
       <div info *ngIf="inmemory" class="first-time-login">
-        <span>Default users: admin, editor, viewer</span>
+        <span>Default users: superuser, admin, editor, viewer</span>
       </div>
 
     </app-common-login>

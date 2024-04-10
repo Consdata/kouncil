@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Server } from './server';
-import { ServersService } from './servers.service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Server} from './server';
+import {ServersService} from './servers.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 
 @Injectable()

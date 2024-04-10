@@ -26,6 +26,7 @@
     "@nrwl/angular": "15.2.1",
     "@stomp/rx-stomp": "1.1.4",
     "@swimlane/ngx-datatable": "20.1.0",
+    "avro-typescript": "^1.1.0",
     "core-js": "3.25.5",
     "date-fns": "2.29.3",
     "json-schema-faker": "^0.5.3",

@@ -22,6 +22,10 @@ import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
 import {KouncilRole} from '@app/common-auth';
 import {AccessDeniedComponent} from '../access-denied/access-denied.component';
 import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
+import {SchemasComponent} from '../schemas/list/schemas.component';
+import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
+import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -109,7 +113,40 @@ const routes: Routes = [
       },
       {
         path: 'access-denied',
-        component: AccessDeniedComponent
+        component: AccessDeniedComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'schemas',
+        component: SchemasComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+        }
+      },
+      {
+        path: 'schemas/edit/:subjectName/:version',
+        component: SchemaEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR]
+        }
+      },
+      {
+        path: 'schemas/create',
+        component: SchemaCreateComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR]
+        }
+      },
+      {
+        path: 'schemas/:subjectName/:version',
+        component: SchemaDetailsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+        }
       }
     ]
   },
