@@ -59,11 +59,11 @@ import {SnackBarComponent, SnackBarData} from '@app/common-utils';
         </div>
 
         <div class="actions">
-          <button type="button" mat-dialog-close mat-button disableRipple
+          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
                   class="action-button-white">
             Cancel
           </button>
-          <button mat-button disableRipple
+          <button mat-button [disableRipple]="true"
                   class="action-button-black" type="submit" [disabled]="!topicForm.valid">
             Save
           </button>
