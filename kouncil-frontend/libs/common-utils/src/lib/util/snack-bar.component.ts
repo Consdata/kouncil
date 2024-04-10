@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_SNACK_BAR_DATA, MatSnackBar} from "@angular/material/snack-bar";
-import {SnackBarData} from "./snack-bar-data";
+import {MAT_SNACK_BAR_DATA, MatSnackBar} from '@angular/material/snack-bar';
+import {SnackBarData} from './snack-bar-data';
 
 @Component({
   selector: 'app-custom-snack-bar',
@@ -20,7 +20,7 @@ export class SnackBarComponent {
   constructor(public snackBar: MatSnackBar, @Inject(MAT_SNACK_BAR_DATA) public data: SnackBarData) {
   }
 
-  dismiss() {
+  dismiss(): void {
     this.snackBar.dismiss();
   }
 }

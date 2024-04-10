@@ -17,12 +17,17 @@ import {
   MapType,
   NamedType
 } from "avro-typescript/lib/model";
+} from 'avro-typescript';
+import {ArrayType, BaseType, isUnion, MapType, NamedType} from 'avro-typescript/lib/model';
+import {AvroRandomValueGeneratorService} from './avro-random-value-generator.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AvroUtilsService {
 
+  constructor(private randomValueGeneratorService: AvroRandomValueGeneratorService) {
+  }
   private readonly MIN_RANDOM_NUMBER: number = 1;
   private readonly MAX_RANDOM_NUMBER: number = 1000;
 
@@ -42,7 +47,7 @@ export class AvroUtilsService {
 
   public fillAvroSchemaWithData(avroSchema: string): object {
     const schema = JSON.parse(avroSchema) as RecordType;
-    let example = {};
+    const example = {};
     schema.fields.forEach(field => {
       this.processField(field, example);
     });
@@ -134,26 +139,26 @@ export class AvroUtilsService {
   private processField(field: Field, example: object) {
     if (isRecordType(field.type as BaseType)) {
       // record type
-      let subExample = {};
-      (field.type as RecordType).fields.forEach(field => {
-        this.processField(field, subExample);
+      const subExample = {};
+      (field.type as RecordType).fields.forEach(subField => {
+        this.processField(subField, subExample);
       });
       example[field.name] = subExample;
     } else if (isArrayType(field.type as BaseType)) {
       // array type
       example[field.name] = Array.from({length: Math.floor(Math.random() * 10)},
-        () => this.getRandomValueBasedOnType((field.type as ArrayType).items.toString()));
+        () => this.randomValueGeneratorService.getRandomValueBasedOnType((field.type as ArrayType).items.toString()));
     } else if (isMapType(field.type as BaseType)) {
       // map type
       example[field.name] = Array.from({length: Math.floor(Math.random() * 10)},
         () => [
-          this.getRandomString(),
-          this.getRandomValueBasedOnType((field.type as MapType).values.toString())
+          this.randomValueGeneratorService.getRandomValueBasedOnType('string'),
+          this.randomValueGeneratorService.getRandomValueBasedOnType((field.type as MapType).values.toString())
         ]);
     } else if (isEnumType(field.type as BaseType)) {
       // enum type
-      let symbols = (field.type as EnumType).symbols;
-      let number = Math.floor(Math.random() * symbols.length);
+      const symbols = (field.type as EnumType).symbols;
+      const number = Math.floor(Math.random() * symbols.length);
       example[field.name] = symbols[number];
     } else if (isUnion(field.type as BaseType)) {
       // union type
@@ -176,9 +181,12 @@ export class AvroUtilsService {
       }
 
       example[field.name] = randomValueBasedOnType;
+      const type = field.type as NamedType[];
+      const number = Math.floor(Math.random() * type.length);
+      example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(type[number].toString());
     } else {
       // basic type
-      example[field.name] = this.getRandomValueBasedOnType(field.type.toString());
+      example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(field.type.toString());
     }
   }
 }

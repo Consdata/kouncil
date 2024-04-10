@@ -4,6 +4,9 @@ import {environment} from '../environments/environment';
 import {TopicsBackendService, TopicsDemoService, TopicsService} from '@app/feat-topics';
 import {SendBackendService, SendDemoService, SendService} from '@app/feat-send';
 import {ResendBackendService, ResendDemoService, ResendService} from '@app/resend-events';
+import {SurveyBackendService} from './survey/survey.backend.service';
+import {SurveyService} from './survey/survey.service';
+import {SurveyDemoService} from './survey/survey.demo.service';
 import {
   SchemaRegistryBackendService,
   SchemaRegistryDemoService,
@@ -40,6 +43,17 @@ export function resendServiceFactory(http: HttpClient): ResendService {
     case Backend.DEMO:
     default:
       return new ResendDemoService();
+  }
+}
+
+export function surveyServiceFactory(http: HttpClient): SurveyService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new SurveyBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new SurveyDemoService();
   }
 }
 

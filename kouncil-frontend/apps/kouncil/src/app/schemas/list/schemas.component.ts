@@ -204,7 +204,7 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
   }
 
   private removeSchema(subject: string, version: string) {
-    this.schemaRegistry.deleteSchema(this.servers.getSelectedServerId(), subject, version)
+    this.schemaRegistry.deleteSchema$(this.servers.getSelectedServerId(), subject, version)
     .pipe(first())
     .subscribe(() => {
       this.loadSchemas();

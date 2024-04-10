@@ -7,9 +7,9 @@ import {
   OnDestroy,
   ViewChild
 } from '@angular/core';
-import {MessageFormat} from "@app/schema-registry";
-import {first} from "rxjs";
-import {MonacoEditorService} from "./monaco-editor.service";
+import {MessageFormat} from '@app/schema-registry';
+import {first} from 'rxjs';
+import {MonacoEditorService} from './monaco-editor.service';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -17,9 +17,10 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator
-} from "@angular/forms";
+} from '@angular/forms';
 
-declare var monaco: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let monaco: any;
 
 @Component({
   selector: 'app-common-editor',
@@ -43,23 +44,28 @@ declare var monaco: any;
 })
 export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, Validator {
 
-  @Input() schemaName: any;
+  @Input() schemaName: string;
   _schemaType: MessageFormat;
   @Input() editorHeight: number = 200;
   disabled: boolean = false;
 
   @ViewChild('editor', {static: false}) _editorContainer: ElementRef;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editor: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
-
-  onChange = (_: any) => {
-  };
-  onTouched = () => {
-  };
 
   constructor(private monacoEditorService: MonacoEditorService) {
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChange: (_: any) => void = (_: any) => {
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onTouched: () => void = () => {
+  };
 
   ngAfterViewInit(): void {
     this.initMonaco();
@@ -73,44 +79,48 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
       switch (this._schemaType) {
         case MessageFormat.JSON:
         case MessageFormat.AVRO:
-          language = "json";
+          language = 'json';
           break;
         case MessageFormat.PROTOBUF:
-          language = "proto";
+          language = 'proto';
           break;
         case MessageFormat.STRING:
-          language = "plaintext";
+          language = 'plaintext';
           break;
       }
-      monaco.editor.setModelLanguage(this.editor.getModel(), language)
+      monaco.editor.setModelLanguage(this.editor.getModel(), language);
       this.format();
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     monaco.editor.getModels().forEach(model => model.dispose());
   }
 
   private initMonaco(): void {
     if (!this.monacoEditorService.loaded) {
-      this.monacoEditorService.loadingFinished.pipe(first()).subscribe(() => {
+      this.monacoEditorService.loadingFinished$.pipe(first()).subscribe(() => {
         this.initMonaco();
       });
       return;
     }
-    let model: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let model: any;
     switch (this._schemaType) {
       case MessageFormat.JSON:
-      case MessageFormat.AVRO:
-        let modelUri = monaco.Uri.parse(`a://b/${this.schemaName}.json`);
-        model = monaco.editor.createModel(this.value, "json", modelUri);
+      case MessageFormat.AVRO: {
+        const modelUri = monaco.Uri.parse(`a://b/${this.schemaName}.json`);
+        model = monaco.editor.createModel(this.value, 'json', modelUri);
         break;
-      case MessageFormat.PROTOBUF:
-        model = monaco.editor.createModel(this.value, "proto");
+      }
+      case MessageFormat.PROTOBUF: {
+        model = monaco.editor.createModel(this.value, 'proto');
         break;
-      case MessageFormat.STRING:
-        model = monaco.editor.createModel(this.value, "plaintext");
+      }
+      case MessageFormat.STRING: {
+        model = monaco.editor.createModel(this.value, 'plaintext');
         break;
+      }
     }
 
     this.editor = monaco.editor.create(this._editorContainer.nativeElement,
@@ -133,6 +143,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   writeValue(value: any): void {
     this.value = value || '';
 
@@ -144,10 +155,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
@@ -165,7 +178,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, ControlValueAc
     this.editor.updateOptions({readOnly: this.disabled});
   }
 
-  setDisabledState(disabled: boolean) {
+  setDisabledState(disabled: boolean): void {
     this.disabled = disabled;
   }
 

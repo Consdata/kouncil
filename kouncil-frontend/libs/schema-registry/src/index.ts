@@ -1,4 +1,4 @@
-export {SchemaRegistryModule} from "./lib/schema-registry.module";
+export {SchemaRegistryModule} from './lib/schema-registry.module';
 export {ExampleSchemaData} from './lib/schema/schemas.model';
 export {SchemaFacadeService} from './lib/schema/schema-facade.service';
 export {SchemaRegistryService} from './lib/schema/schema-registry.service';
