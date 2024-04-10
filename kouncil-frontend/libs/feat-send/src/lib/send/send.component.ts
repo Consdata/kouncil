@@ -14,10 +14,11 @@ import {
   SchemaStateService
 } from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
-import {EditorComponent, MonacoEditorService} from "@app/common-components";
-import {SnackBarComponent, SnackBarData} from "@app/common-utils";
+import {EditorComponent, MonacoEditorService} from '@app/common-components';
+import {SnackBarComponent, SnackBarData} from '@app/common-utils';
 
-declare var monaco: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let monaco: any;
 
 @Component({
   selector: 'app-send',
@@ -143,7 +144,7 @@ export class SendComponent implements OnDestroy {
               ...messageData,
               value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
             }
-          ))
+          ));
       }
     )
   );
@@ -163,17 +164,17 @@ export class SendComponent implements OnDestroy {
     schemaRegistry.getSchemasConfiguration$()
     .pipe()
     .subscribe(configurations => {
-      let schemasConfiguration = configurations.find(config => config.serverId === this.servers.getSelectedServerId());
+      const schemasConfiguration = configurations.find(config => config.serverId === this.servers.getSelectedServerId());
       if (schemasConfiguration.hasSchemaRegistry) {
         this.fetchSchemas();
       } else {
         this.keySchemaType = MessageFormat.STRING;
         this.valueSchemaType = MessageFormat.STRING;
       }
-    })
+    });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.monacoEditorService.clearSchemas();
   }
 
@@ -199,11 +200,11 @@ export class SendComponent implements OnDestroy {
       }
 
       this.monacoEditorService.registerSchemas();
-    })
+    });
   }
 
   onSubmit(messageData: MessageData): void {
-    let modelMarkers = monaco.editor.getModelMarkers({});
+    const modelMarkers = monaco.editor.getModelMarkers({});
     if (modelMarkers.length === 0) {
       this.isSendButtonDisabled = true;
       this.messageDataService.setMessageData(messageData);

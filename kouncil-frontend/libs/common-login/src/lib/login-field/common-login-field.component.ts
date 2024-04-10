@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-common-login-field',
@@ -7,7 +7,7 @@ import {FormControl} from "@angular/forms";
     <div #loginField class="login-field-container"
          [ngClass]="{'login-field-container-error': isFieldInvalid()}">
       <div class="login-field-icon-container">
-        <mat-icon class="login-field-icon">{{icon}}</mat-icon>
+        <mat-icon class="login-field-icon">{{ icon }}</mat-icon>
       </div>
       <div class="login-field-input-container">
         <input [placeholder]="label" class="input" matInput [type]="fieldType" required
@@ -34,13 +34,15 @@ export class CommonLoginFieldComponent {
   constructor() {
   }
 
-  updateFocus(htmlElement: HTMLElement) {
-    htmlElement.classList.contains('input-focus')
-      ? htmlElement.classList.remove('input-focus')
-      : htmlElement.classList.add('input-focus');
+  updateFocus(htmlElement: HTMLElement): void {
+    if (htmlElement.classList.contains('input-focus')) {
+      htmlElement.classList.remove('input-focus');
+    } else {
+      htmlElement.classList.add('input-focus');
+    }
   }
 
-  isFieldInvalid() {
+  isFieldInvalid(): boolean {
     return this.control.touched && this.control.invalid;
   }
 }

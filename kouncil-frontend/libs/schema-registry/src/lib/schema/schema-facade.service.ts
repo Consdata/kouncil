@@ -4,8 +4,9 @@ import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
 import {map} from 'rxjs/operators';
 import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
-import {JSONSchemaFaker} from "json-schema-faker";
-import {SchemaRegistryService} from "./schema-registry.service";
+import {JSONSchemaFaker} from 'json-schema-faker';
+import {SchemaRegistryService} from './schema-registry.service';
+import {AvroUtilsService} from '../avro/avro-utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import {SchemaRegistryService} from "./schema-registry.service";
 export class SchemaFacadeService {
 
   constructor(private schemaRegistryService: SchemaRegistryService,
-              private protobufUtilsService: ProtobufUtilsService) {
+              private protobufUtilsService: ProtobufUtilsService,
+              private avroUtilsService: AvroUtilsService) {
   }
 
   getExampleSchemaData$(serverId: string, topic: string): Observable<ExampleSchemaData> {
@@ -37,6 +39,7 @@ export class SchemaFacadeService {
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
+        example = this.avroUtilsService.fillAvroSchemaWithData(plainTextSchema);
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
       default:

@@ -4070,6 +4070,11 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
+avro-typescript@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/avro-typescript/-/avro-typescript-1.1.0.tgz#fb6b6f1ca1261f2553cb9205738d75d1eecd3ff5"
+  integrity sha512-U99M2xcaJIMAh6r2x2x1/qqw3oe4pig2iscDaCwWt/iv3uQN0TFWlJ3LqBfCstS/Zs4GDEsRBfG7qbH9I1l7eg==
+
 axios@^1.0.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.1.tgz#76550d644bf0a2d469a01f9244db6753208397d7"

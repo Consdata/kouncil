@@ -25,7 +25,8 @@
             "prefix": "kouncil",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "no-console": "warn"
       }
     },
     {
