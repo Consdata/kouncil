@@ -1,4 +1,10 @@
 import {AvroUtilsService} from './avro-utils.service';
+import {createServiceFactory, mockProvider, SpectatorService} from '@ngneat/spectator/jest';
+import {RandomIntGeneratorService} from '../generators/random-int-generator.service';
+import {RandomFloatGeneratorService} from '../generators/random-float-generator.service';
+import {RandomStringGeneratorService} from '../generators/random-string-generator.service';
+import {RandomDateGeneratorService} from '../generators/random-date-generator.service';
+import {RandomUuidGeneratorService} from '../generators/random-uuid-generator.service';
 
 const testAvroSchema = `
 {
@@ -143,18 +149,52 @@ const testAvroSchema = `
 `;
 
 describe('AvroUtilsService', () => {
-  const service: AvroUtilsService = new AvroUtilsService();
+  let spectator: SpectatorService<AvroUtilsService>;
+  const now = new Date();
+
+  const createService = createServiceFactory({
+    service: AvroUtilsService,
+    providers: [
+      mockProvider(RandomIntGeneratorService, {
+        getRandomInt(): number {
+          return 123;
+        }
+      }),
+      mockProvider(RandomFloatGeneratorService, {
+        getRandomFloat(): number {
+          return 123.123;
+        }
+      }),
+      mockProvider(RandomStringGeneratorService, {
+        getRandomString(): string {
+          return 'abc';
+        }
+      }),
+      mockProvider(RandomDateGeneratorService, {
+        getRandomDate(): number {
+          return now.getTime();
+        },
+
+        getTimeSinceMidnight(): number {
+          const date = this.getRandomDate();
+          const midnight = new Date(date).setHours(0, 0, 0, 0);
+          return date - midnight;
+        }
+      }),
+      mockProvider(RandomUuidGeneratorService, {
+        getRandomUUID(): string {
+          return '14999e3d-f8e8-4eb0-8a10-5021d8edf44c';
+        }
+      })
+    ]
+  });
+
+  beforeEach(() => spectator = createService());
 
   it('should fill protobuf schema with proper data', () => {
-    const now = new Date();
     const midnight = new Date(now).setHours(0, 0, 0, 0);
-    service['getRandomInt'] = () => 123;
-    service['getRandomFloat'] = () => 123.123;
-    service['getRandomString'] = () => 'abc';
-    service['getRandomDate'] = () => now.getTime();
-    service['getRandomUUID'] = () => '14999e3d-f8e8-4eb0-8a10-5021d8edf44c';
 
-    const actualAvroWithData = service.fillAvroSchemaWithData(testAvroSchema);
+    const actualAvroWithData = spectator.service.fillAvroSchemaWithData(testAvroSchema);
     expect(actualAvroWithData['testString']).toEqual('abc');
     expect(actualAvroWithData['testInt']).toEqual(123);
     expect(actualAvroWithData['testLong']).toEqual(123);

@@ -12,19 +12,28 @@ import {RandomUuidGeneratorService} from '../generators/random-uuid-generator.se
 })
 export class AvroRandomValueGeneratorService {
 
-  private readonly INTEGER_TYPES: string[] = ['int', 'long'];
-  private readonly NUMBER_TYPES: string[] = ['double', 'float'];
-  private readonly DECIMAL_TYPE: string = 'decimal';
-  private readonly STRING_TYPES: string[] = ['string', 'fixed'];
-  private readonly DATE_TYPE: string = 'date';
-  private readonly TIME_TYPES: string[] = ['time', 'time-millis'];
-  private readonly TIMEMICROS_TYPES: string = 'time-micros';
-  private readonly TIMESTAMP_MICROS_TYPES: string[] = ['timestamp-micros', 'local-timestamp-micros'];
-  private readonly TIMESTAMP_TYPES: string[] = ['timestamp-millis', 'local-timestamp-millis'];
-  private readonly BYTE_TYPE: string = 'bytes';
-  private readonly NULL_TYPE: string = 'null';
-  private readonly BOOLEAN_TYPE: string = 'boolean';
-  private readonly UUID_TYPE: string = 'uuid';
+  public readonly typeFunctionMap: Map<string, string | number | boolean | null> =
+    new Map<string, string | number | boolean | null>([
+      ['int', this.intGeneratorService.getRandomInt()],
+      ['long', this.intGeneratorService.getRandomInt()],
+      ['double', this.floatGeneratorService.getRandomFloat()],
+      ['float', this.floatGeneratorService.getRandomFloat()],
+      ['decimal', this.floatGeneratorService.getRandomFloat()],
+      ['string', this.stringGeneratorService.getRandomString()],
+      ['fixed', this.stringGeneratorService.getRandomString()],
+      ['date', Math.floor(this.dateGeneratorService.getRandomDate() / 8.64e7)],
+      ['time', this.dateGeneratorService.getTimeSinceMidnight()],
+      ['time-millis', this.dateGeneratorService.getTimeSinceMidnight()],
+      ['time-micros', this.dateGeneratorService.getTimeSinceMidnight() * 1000],
+      ['timestamp-micros', this.dateGeneratorService.getRandomDate() * 1000],
+      ['local-timestamp-micros', this.dateGeneratorService.getRandomDate() * 1000],
+      ['timestamp-millis', this.dateGeneratorService.getRandomDate()],
+      ['local-timestamp-millis', this.dateGeneratorService.getRandomDate()],
+      ['bytes', this.bytesGeneratorService.getRandomBytes()],
+      ['null', null],
+      ['boolean', this.booleanGeneratorService.getRandomBoolean()],
+      ['uuid', this.uuidGeneratorService.getRandomUUID()]
+    ]);
 
   constructor(
     private intGeneratorService: RandomIntGeneratorService,
@@ -35,49 +44,5 @@ export class AvroRandomValueGeneratorService {
     private dateGeneratorService: RandomDateGeneratorService,
     private uuidGeneratorService: RandomUuidGeneratorService,
   ) {
-  }
-
-  public getRandomValueBasedOnType(type: string): number | string | boolean | null {
-    if (this.INTEGER_TYPES.includes(type)) {
-      return this.intGeneratorService.getRandomInt();
-    }
-    if (this.NUMBER_TYPES.includes(type)) {
-      return this.floatGeneratorService.getRandomFloat();
-    }
-    if (this.DECIMAL_TYPE === type) {
-      return this.floatGeneratorService.getRandomFloat();
-    }
-    if (this.STRING_TYPES.includes(type)) {
-      return this.stringGeneratorService.getRandomString();
-    }
-    if (this.BYTE_TYPE === type) {
-      return this.bytesGeneratorService.getRandomBytes();
-    }
-    if (this.BOOLEAN_TYPE === type) {
-      return this.booleanGeneratorService.getRandomBoolean();
-    }
-    if (this.NULL_TYPE === type) {
-      return null;
-    }
-    if (this.DATE_TYPE === type) {
-      return Math.floor(this.dateGeneratorService.getRandomDate() / 8.64e7);
-    }
-    if (this.TIME_TYPES.includes(type)) {
-      return this.dateGeneratorService.getTimeSinceMidnight();
-    }
-    if (this.TIMEMICROS_TYPES === type) {
-      return this.dateGeneratorService.getTimeSinceMidnight() * 1000;
-    }
-    if (this.TIMESTAMP_MICROS_TYPES.includes(type)) {
-      return this.dateGeneratorService.getRandomDate() * 1000;
-    }
-    if (this.TIMESTAMP_TYPES.includes(type)) {
-      return this.dateGeneratorService.getRandomDate();
-    }
-    if (this.UUID_TYPE === type) {
-      return this.uuidGeneratorService.getRandomUUID();
-    }
-
-    return type;
   }
 }
