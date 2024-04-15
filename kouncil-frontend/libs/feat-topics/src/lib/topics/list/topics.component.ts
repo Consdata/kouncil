@@ -16,12 +16,11 @@ import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn, TableGroup} from '@app/common-components';
 import {MatSort} from '@angular/material/sort';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
-import {TopicService} from '../../topic/topic.service';
-import {TopicFormComponent} from '../../topic/topic-form.component';
 import {AuthService, KouncilRole} from '@app/common-auth';
+import {TopicService, TopicFormComponent} from '@app/feat-topic-form';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -233,7 +232,7 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
   };
 
   createTopic(topicName?: string): void {
-    const config = {
+    const config: MatDialogConfig = {
       data: topicName,
       width: '500px',
       autoFocus: 'dialog',

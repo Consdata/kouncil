@@ -61,7 +61,7 @@ import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
 import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
-import {FeatTopicsModule, TopicService, TopicsService} from '@app/feat-topics';
+import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
   sendServiceFactory,
@@ -100,6 +100,7 @@ import {
 } from './survey/survey-scale-question/survey-scale-question.component';
 import {SurveyService} from './survey/survey.service';
 import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
+import {FeatTopicFormModule, TopicService} from '@app/feat-topic-form';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -211,7 +212,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SurveyComponent,
     SurveyScaleQuestionComponent,
     MatCheckboxModule,
-    CommonAuthModule
+    CommonAuthModule,
+    FeatTopicFormModule
   ],
   providers: [
     {
