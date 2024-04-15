@@ -47,13 +47,13 @@ export class AvroUtilsService {
     } else if (isArrayType(field.type as BaseType)) {
       // array type
       example[field.name] = Array.from({length: Math.floor(Math.random() * 10)},
-        () => this.randomValueGeneratorService.typeFunctionMap.get((field.type as ArrayType).items.toString()));
+        () => this.randomValueGeneratorService.getRandomValueBasedOnType((field.type as ArrayType).items.toString()));
     } else if (isMapType(field.type as BaseType)) {
       // map type
       example[field.name] = Array.from({length: Math.floor(Math.random() * 10)},
         () => [
-          this.randomValueGeneratorService.typeFunctionMap.get('string'),
-          this.randomValueGeneratorService.typeFunctionMap.get((field.type as MapType).values.toString())
+          this.randomValueGeneratorService.getRandomValueBasedOnType('string'),
+          this.randomValueGeneratorService.getRandomValueBasedOnType((field.type as MapType).values.toString())
         ]);
     } else if (isEnumType(field.type as BaseType)) {
       // enum type
@@ -64,11 +64,11 @@ export class AvroUtilsService {
       // union type
       const type = field.type as NamedType[];
       const number = Math.floor(Math.random() * type.length);
-      example[field.name] = this.randomValueGeneratorService.typeFunctionMap.get(type[number].toString());
+      example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(type[number].toString());
     } else if (isLogicalType(field.type as BaseType)) {
       // logical type
       const logicalType = field.type as LogicalType;
-      let randomValueBasedOnType = this.randomValueGeneratorService.typeFunctionMap.get(logicalType.logicalType);
+      let randomValueBasedOnType = this.randomValueGeneratorService.getRandomValueBasedOnType(logicalType.logicalType);
 
       if ('decimal' === logicalType.logicalType) {
         randomValueBasedOnType = (+(randomValueBasedOnType as number)
@@ -83,7 +83,7 @@ export class AvroUtilsService {
       example[field.name] = randomValueBasedOnType;
     } else {
       // basic type
-      example[field.name] = this.randomValueGeneratorService.typeFunctionMap.get(field.type.toString());
+      example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(field.type.toString());
     }
   }
 }
