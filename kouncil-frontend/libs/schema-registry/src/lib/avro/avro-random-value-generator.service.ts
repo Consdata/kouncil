@@ -4,18 +4,36 @@ import {RandomFloatGeneratorService} from '../generators/random-float-generator.
 import {RandomStringGeneratorService} from '../generators/random-string-generator.service';
 import {RandomBytesGeneratorService} from '../generators/random-bytes-generator.service';
 import {RandomBooleanGeneratorService} from '../generators/random-boolean-generator.service';
+import {RandomDateGeneratorService} from '../generators/random-date-generator.service';
+import {RandomUuidGeneratorService} from '../generators/random-uuid-generator.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AvroRandomValueGeneratorService {
 
-  private readonly INTEGER_TYPES: string[] = ['int', 'long'];
-  private readonly NUMBER_TYPES: string[] = ['double', 'float'];
-  private readonly STRING_TYPES: string[] = ['string', 'fixed'];
-  private readonly BYTE_TYPE: string = 'bytes';
-  private readonly NULL_TYPE: string = 'null';
-  private readonly BOOLEAN_TYPE: string = 'boolean';
+  private readonly typeFunctionMap: Map<string, () => string | number | boolean | null> =
+    new Map<string, () => string | number | boolean | null>([
+      ['int', () => this.intGeneratorService.getRandomInt()],
+      ['long', () => this.intGeneratorService.getRandomInt()],
+      ['double', () => this.floatGeneratorService.getRandomFloat()],
+      ['float', () => this.floatGeneratorService.getRandomFloat()],
+      ['decimal', () => this.floatGeneratorService.getRandomFloat()],
+      ['string', () => this.stringGeneratorService.getRandomString()],
+      ['fixed', () => this.stringGeneratorService.getRandomString()],
+      ['date', () => Math.floor(this.dateGeneratorService.getRandomDate() / 8.64e7)],
+      ['time', () => this.dateGeneratorService.getTimeSinceMidnight()],
+      ['time-millis', () => this.dateGeneratorService.getTimeSinceMidnight()],
+      ['time-micros', () => this.dateGeneratorService.getTimeSinceMidnight() * 1000],
+      ['timestamp-micros', () => this.dateGeneratorService.getRandomDate() * 1000],
+      ['local-timestamp-micros', () => this.dateGeneratorService.getRandomDate() * 1000],
+      ['timestamp-millis', () => this.dateGeneratorService.getRandomDate()],
+      ['local-timestamp-millis', () => this.dateGeneratorService.getRandomDate()],
+      ['bytes', () => this.bytesGeneratorService.getRandomBytes()],
+      ['null', () => null],
+      ['boolean', () => this.booleanGeneratorService.getRandomBoolean()],
+      ['uuid', () => this.uuidGeneratorService.getRandomUUID()]
+    ]);
 
   constructor(
     private intGeneratorService: RandomIntGeneratorService,
@@ -23,29 +41,13 @@ export class AvroRandomValueGeneratorService {
     private stringGeneratorService: RandomStringGeneratorService,
     private bytesGeneratorService: RandomBytesGeneratorService,
     private booleanGeneratorService: RandomBooleanGeneratorService,
+    private dateGeneratorService: RandomDateGeneratorService,
+    private uuidGeneratorService: RandomUuidGeneratorService,
   ) {
   }
 
-  public getRandomValueBasedOnType(type: string): number | string | boolean | null {
-    if (this.INTEGER_TYPES.includes(type)) {
-      return this.intGeneratorService.getRandomInt();
-    }
-    if (this.NUMBER_TYPES.includes(type)) {
-      return this.floatGeneratorService.getRandomFloat();
-    }
-    if (this.STRING_TYPES.includes(type)) {
-      return this.stringGeneratorService.getRandomString();
-    }
-    if (this.BYTE_TYPE === type) {
-      return this.bytesGeneratorService.getRandomBytes();
-    }
-    if (this.BOOLEAN_TYPE === type) {
-      return this.booleanGeneratorService.getRandomBoolean();
-    }
-    if (this.NULL_TYPE === type) {
-      return null;
-    }
-
-    return type;
+  public getRandomValueBasedOnType(type: string): string | number | boolean | null {
+    const callable = this.typeFunctionMap.get(type);
+    return callable ? callable() : null;
   }
 }

@@ -4,11 +4,19 @@ import {
   Field,
   isArrayType,
   isEnumType,
+  isLogicalType,
   isMapType,
   isRecordType,
   RecordType
 } from 'avro-typescript';
-import {ArrayType, BaseType, isUnion, MapType, NamedType} from 'avro-typescript/lib/model';
+import {
+  ArrayType,
+  BaseType,
+  isUnion,
+  LogicalType,
+  MapType,
+  NamedType
+} from 'avro-typescript/lib/model';
 import {AvroRandomValueGeneratorService} from './avro-random-value-generator.service';
 
 @Injectable({
@@ -57,6 +65,22 @@ export class AvroUtilsService {
       const type = field.type as NamedType[];
       const number = Math.floor(Math.random() * type.length);
       example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(type[number].toString());
+    } else if (isLogicalType(field.type as BaseType)) {
+      // logical type
+      const logicalType = field.type as LogicalType;
+      let randomValueBasedOnType = this.randomValueGeneratorService.getRandomValueBasedOnType(logicalType.logicalType);
+
+      if ('decimal' === logicalType.logicalType) {
+        randomValueBasedOnType = (+(randomValueBasedOnType as number)
+        .toFixed(logicalType['scale']))
+        .toPrecision(logicalType['precision'])
+        .padEnd(logicalType['precision'], '0').replace('.', '');
+        const hex = (+randomValueBasedOnType).toString(16);
+        let hexValue = '';
+        hex.match(/..?/g).forEach(value => hexValue += '\\u00' + value.padStart(2, '0'));
+        randomValueBasedOnType = hexValue;
+      }
+      example[field.name] = randomValueBasedOnType;
     } else {
       // basic type
       example[field.name] = this.randomValueGeneratorService.getRandomValueBasedOnType(field.type.toString());

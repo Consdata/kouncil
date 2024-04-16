@@ -8,6 +8,7 @@
     "start:demo": "nx serve --proxy-config proxy.conf.json  --configuration demo",
     "build": "nx build --configuration production",
     "test": "nx test",
+    "test:affected": "nx affected:test",
     "lint": "nx lint",
     "lint:affected": "nx affected:lint"
   },
