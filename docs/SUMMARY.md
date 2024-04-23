@@ -22,5 +22,10 @@
   * [Custom base path](configuration/CUSTOM_BASE_PATH.md)
 
 
-## [Features](FEATURES.md)
-## [Roadmap](ROADMAP.md)
+* [Features](FEATURES.md)
+
+
+* [FAQ](FAQ.md)
+
+
+* [Roadmap](ROADMAP.md)
