@@ -1,0 +1,27 @@
+{
+  "name": "feat-topic-form",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-topic-form/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-topic-form"],
+      "options": {
+        "jestConfig": "libs/feat-topic-form/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/feat-topic-form/**/*.ts",
+          "libs/feat-topic-form/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
