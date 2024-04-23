@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
         this.inmemory = true;
       } else if (activeProvider === 'sso') {
         this.fetchSsoProviders();
+        this.fetchContextPath();
       }
     });
   }
@@ -98,5 +99,9 @@ export class LoginComponent implements OnInit {
 
   private fetchInstallationId() {
     this.service.getInstallationId$();
+  }
+
+  private fetchContextPath() {
+    this.service.fetchContextPath$();
   }
 }

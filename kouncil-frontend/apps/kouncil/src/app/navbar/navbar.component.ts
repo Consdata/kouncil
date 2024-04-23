@@ -128,7 +128,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     switch (environment.backend) {
       case Backend.SERVER: {
-        this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
+        this.backendVersion$ = this.http.get(`./api/info/version`, {responseType: 'text'});
         break;
       }
       case Backend.DEMO: {

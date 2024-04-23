@@ -32,4 +32,5 @@ export abstract class AuthService {
 
   abstract canAccess(roles: KouncilRole[]): boolean;
   abstract getInstallationId$(): void;
+  abstract fetchContextPath$(): void;
 }
