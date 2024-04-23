@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class AvroDeserializationServiceTest {
-    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 32, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
+    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 20, 50, 48, 50, 52, 45, 48, 49, 45, 48, 49};
     private static final String LOREM = "lorem";
     private static final String CLUSTER_ID = "clusterId";
     private static AvroSchema AVRO_SCHEMA;
@@ -61,7 +61,7 @@ class AvroDeserializationServiceTest {
 
         SIMPLE_MESSAGE_JSON = Files.readString(
                 Paths.get(Objects.requireNonNull(
-                        AvroDeserializationServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                        AvroDeserializationServiceTest.class.getClassLoader().getResource("SimpleMessageAvro.json")).toURI()
                 )).trim();
     }
 

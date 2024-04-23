@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "common-auth": "libs/common-auth",
     "common-components": "libs/common-components",
     "common-login": "libs/common-login",
     "common-model": "libs/common-model",
@@ -10,6 +11,7 @@
     "feat-favourites": "libs/feat-favourites",
     "feat-no-data": "libs/feat-no-data",
     "feat-send": "libs/feat-send",
+    "feat-topic-form": "libs/feat-topic-form",
     "feat-topics": "libs/feat-topics",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",

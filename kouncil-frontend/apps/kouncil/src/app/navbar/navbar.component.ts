@@ -2,7 +2,8 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef, Input,
+  ElementRef,
+  Input,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -13,8 +14,7 @@ import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
 import {SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
-import {AuthService} from '../login/auth.service';
-import {KouncilRole} from '../login/kouncil-role';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -24,8 +24,7 @@ import {KouncilRole} from '../login/kouncil-role';
            matTooltip="{{backendVersion$ | async}}"/>
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/topics']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
-         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
         Topics
       </a>
 
@@ -43,9 +42,13 @@ import {KouncilRole} from '../login/kouncil-role';
 
       <a class="menu-button" mat-button disableRipple routerLinkActive="active"
          [routerLink]="['/track']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated
-         && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
         Track
+      </a>
+      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
+         [routerLink]="['/schemas']"
+         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+        Schemas
       </a>
 
       <mat-divider [vertical]="true"></mat-divider>
@@ -125,7 +128,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     switch (environment.backend) {
       case Backend.SERVER: {
-        this.backendVersion$ = this.http.get(`/api/info/version`, {responseType: 'text'});
+        this.backendVersion$ = this.http.get(`./api/info/version`, {responseType: 'text'});
         break;
       }
       case Backend.DEMO: {

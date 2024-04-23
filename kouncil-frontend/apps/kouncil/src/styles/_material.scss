@@ -36,7 +36,7 @@ app-message-view {
   --mdc-dialog-supporting-text-size: 12px;
 }
 
-.app-drawer, .confirm {
+.app-drawer, .confirm, .schema-form {
 
   .mat-mdc-dialog-container {
     border-radius: 0;
@@ -126,8 +126,7 @@ app-message-view {
     }
 
     .action-button-black {
-      color: pallete.$main-0;
-      background: pallete.$main-100;
+      @include buttons.button-black;
     }
 
     .action-button-black:disabled {
@@ -184,7 +183,8 @@ snack-bar-container.snackbar {
 
 app-custom-snack-bar {
   display: flex;
-  height: 20px;
+  height: auto;
+  min-height: 20px;
 }
 
 .mat-select-search-inner {
@@ -290,6 +290,12 @@ app-custom-snack-bar {
   border-right: 1px solid;
   border-top: 1px solid;
   border-bottom: 1px solid;
+}
+
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: #F1405DDD !important;
 }
 
 .mat-mdc-form-field-subscript-wrapper {

@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {InjectionToken, NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {
@@ -64,8 +64,10 @@ import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/comm
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
+  schemaRegistryServiceFactory,
   sendServiceFactory,
   surveyServiceFactory,
+  topicServiceFactory,
   topicsServiceFactory
 } from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
@@ -77,7 +79,6 @@ import {rxStompServiceFactory} from './rx-stomp-service-factory';
 import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
 import {CommonLoginModule} from '@app/common-login';
-import {AuthService, authServiceFactory} from './login/auth.service';
 import {OAuthRedirectComponent} from './oauth/o-auth-redirect.component';
 import {ChangePasswordComponent} from './login/change-password.component';
 import {MainLoginComponent} from './login/main-login.component';
@@ -87,12 +88,21 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSortModule} from '@angular/material/sort';
 import {AccessDeniedComponent} from './access-denied/access-denied.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {SchemasComponent} from './schemas/list/schemas.component';
+import {SchemaEditComponent} from './schemas/form/edit/schema-edit.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SchemaCreateComponent} from './schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from './schemas/form/details/schema-details.component';
+import {SchemaFormComponent} from './schemas/form/form/schema-form.component';
 import {SurveyComponent} from './survey/survey.component';
 import {
   SurveyScaleQuestionComponent
 } from './survey/survey-scale-question/survey-scale-question.component';
 import {SurveyService} from './survey/survey.service';
+import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
+import {FeatTopicFormModule, TopicService} from '@app/feat-topic-form';
 
+export const BASE_URL = new InjectionToken('BASE_URL');
 
 export function configProviderFactory(provider: ServersService): Promise<boolean> {
   return provider.load();
@@ -122,6 +132,17 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
   }
 }
 
+export function authServiceFactory(http: HttpClient, baseUrl: string): AuthService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new AuthBackendService(http, baseUrl);
+    }
+    case Backend.DEMO:
+    default:
+      return new AuthDemoService();
+  }
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -147,7 +168,12 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     ChangePasswordComponent,
     MainLoginComponent,
     OAuthRedirectComponent,
-    AccessDeniedComponent
+    AccessDeniedComponent,
+    SchemasComponent,
+    SchemaEditComponent,
+    SchemaCreateComponent,
+    SchemaDetailsComponent,
+    SchemaFormComponent
   ],
   imports: [
     BrowserModule,
@@ -184,7 +210,10 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     DragDropModule,
     PageNotFoundComponent,
     SurveyComponent,
-    SurveyScaleQuestionComponent
+    SurveyScaleQuestionComponent,
+    MatCheckboxModule,
+    CommonAuthModule,
+    FeatTopicFormModule
   ],
   providers: [
     {
@@ -194,6 +223,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     },
     SearchService,
     topicServiceProvider,
+    {
+      provide: SchemaRegistryService,
+      useFactory: schemaRegistryServiceFactory,
+      deps: [HttpClient]
+    },
     {
       provide: BrokerService,
       useFactory: brokerServiceFactory,
@@ -212,6 +246,11 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: TopicsService,
       useFactory: topicsServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: TopicService,
+      useFactory: topicServiceFactory,
       deps: [HttpClient]
     },
     {
@@ -246,13 +285,17 @@ export function trackServiceFactory(http: HttpClient, rxStompService: RxStompSer
     {
       provide: AuthService,
       useFactory: authServiceFactory,
-      deps: [HttpClient]
+      deps: [HttpClient, BASE_URL]
     },
     {
       provide: SurveyService,
       useFactory: surveyServiceFactory,
       deps: [HttpClient]
     },
+    {
+      provide: BASE_URL,
+      useValue: environment.baseUrl
+    }
   ],
   bootstrap: [AppComponent]
 })

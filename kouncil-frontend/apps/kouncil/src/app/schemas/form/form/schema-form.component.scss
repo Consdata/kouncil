@@ -1,0 +1,41 @@
+.schema-form {
+  margin: 50px 100px 0 100px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.schema-base-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.actions {
+  float: right;
+  margin-top: 20px;
+
+  .action-button-white {
+    margin-right: 10px;
+  }
+}
+
+.clear-icon {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 25px !important;
+}
+
+.clear-btn {
+  z-index: 100;
+  height: 40px;
+  width: 40px;
+  padding: 8px 0;
+}
+
+.compatibilityInput {
+  width: 250px;
+}
