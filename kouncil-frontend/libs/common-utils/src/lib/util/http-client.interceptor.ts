@@ -11,8 +11,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Injectable} from '@angular/core';
 import {ProgressBarService} from './progress-bar.service';
 import {Router} from '@angular/router';
-import {SnackBarComponent} from "./snack-bar.component";
-import {SnackBarData} from "./snack-bar-data";
+import {SnackBarComponent} from './snack-bar.component';
+import {SnackBarData} from './snack-bar-data';
 
 @Injectable({
   providedIn: 'root'

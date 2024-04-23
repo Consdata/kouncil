@@ -1,11 +1,20 @@
-import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import {Injectable} from '@angular/core';
-import {ResendDataModel, ResendService} from '@app/resend-events';
 import {ServersService} from '@app/common-servers';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {filter, first} from 'rxjs/operators';
+import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {ResendDataModel} from './resend.data.model';
+import {ResendService} from './resend.service';
 
 @Injectable()
 export class ResendFormService {
@@ -21,7 +30,10 @@ export class ResendFormService {
     private confirmService: ConfirmService) {
     this.resendForm = this.formBuilder.group({
       'sourceTopicName': new FormControl<string>('', {nonNullable: true}),
-      'sourceTopicPartition': new FormControl<number>(0, {nonNullable: true, validators: Validators.required}),
+      'sourceTopicPartition': new FormControl<number>(0, {
+        nonNullable: true,
+        validators: Validators.required
+      }),
       'offsetBeginning': new FormControl<number>(0, {
         nonNullable: true,
         validators: [Validators.min(0), Validators.required]
@@ -30,7 +42,10 @@ export class ResendFormService {
         nonNullable: true,
         validators: [Validators.min(0), Validators.required]
       }),
-      'destinationTopicName': new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
+      'destinationTopicName': new FormControl<string>('', {
+        nonNullable: true,
+        validators: Validators.required
+      }),
       'destinationTopicPartition': new FormControl<number>(-1, {nonNullable: true}),
       'shouldFilterOutHeaders': new FormControl<boolean>(true)
     }, {
@@ -38,8 +53,7 @@ export class ResendFormService {
         const offsetBeginning = control.get('offsetBeginning')?.value;
         const offsetEnd = control.get('offsetEnd')?.value;
 
-        const result = offsetBeginning > offsetEnd ? {offsetBeginningBiggerThanEnd: true} : null;
-        return result;
+        return offsetBeginning > offsetEnd ? {offsetBeginningBiggerThanEnd: true} : null;
       }
     });
   }
@@ -53,35 +67,36 @@ export class ResendFormService {
       sectionLine1: `from: ${resendData.sourceTopicName}`,
       sectionLine2: `to: ${resendData.destinationTopicName}`
     })
-      .pipe(
-        first(),
-        filter((confirmed) => !!confirmed),
-      )
-      .subscribe(() => {
-        this.resendMessages(resendData)
-      });
+    .pipe(
+      first(),
+      filter((confirmed) => !!confirmed),
+    )
+    .subscribe(() => {
+      this.resendMessages(resendData);
+    });
   }
 
   private resendMessages(resendData: ResendDataModel): void {
     this.resendService.resend$(this.servers.getSelectedServerId(), resendData)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.dialog.closeAll();
-          this.resendForm.reset();
-          this.snackbar.open(
-            `Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
-            '', {
-              duration: 5000,
-              panelClass: ['snackbar-success', 'snackbar'],
-            });
-        }, error: (e) => () => {
-          this.snackbar.open(`Error occurred while resending events`, '', {
-            duration: 5000,
-            panelClass: ['snackbar-error', 'snackbar']
-          });
-        }
-      });
+    .pipe(first())
+    .subscribe({
+      next: () => {
+        this.dialog.closeAll();
+        this.resendForm.reset();
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
+            'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 5000
+        });
+      }, error: () => () => {
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Error occurred while resending events`, 'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 5000
+        });
+      }
+    });
   }
 
 }

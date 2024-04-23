@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-common-change-password',
@@ -54,7 +54,7 @@ export class CommonChangePasswordComponent {
     return this.form.controls[controlName] as FormControl;
   }
 
-  changePassword() {
+  changePassword(): void {
     if (this.getControl('new-password').getRawValue() !== this.getControl('confirm-password').getRawValue()) {
       this.passwordNotMatch = true;
     } else {
@@ -64,7 +64,7 @@ export class CommonChangePasswordComponent {
     }
   }
 
-  skipChange() {
+  skipChange(): void {
     this.skipChangeEvent.emit();
   }
 }

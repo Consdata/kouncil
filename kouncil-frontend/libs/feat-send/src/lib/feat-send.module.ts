@@ -9,9 +9,11 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatDialogModule} from '@angular/material/dialog';
 import {SendComponent} from './send/send.component';
 import {MatButtonModule} from '@angular/material/button';
+import {CommonComponentsModule} from '@app/common-components';
 
 @NgModule({
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -20,7 +22,8 @@ import {MatButtonModule} from '@angular/material/button';
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,
-    MatDialogModule
+    MatDialogModule,
+    CommonComponentsModule
   ],
   declarations: [
     SendComponent

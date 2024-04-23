@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ExampleSchemaData} from './schemas.model';
-import {SchemaRegistryService} from './schema-registry.service';
 import {Observable} from 'rxjs';
 import {MessageFormat} from './message-format';
 import {map} from 'rxjs/operators';
 import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
+import {JSONSchemaFaker} from 'json-schema-faker';
+import {SchemaRegistryService} from './schema-registry.service';
+import {AvroUtilsService} from '../avro/avro-utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
 export class SchemaFacadeService {
 
   constructor(private schemaRegistryService: SchemaRegistryService,
-              private protobufUtilsService: ProtobufUtilsService) {
+              private protobufUtilsService: ProtobufUtilsService,
+              private avroUtilsService: AvroUtilsService) {
   }
 
   getExampleSchemaData$(serverId: string, topic: string): Observable<ExampleSchemaData> {
@@ -31,11 +34,13 @@ export class SchemaFacadeService {
         example = this.protobufUtilsService.fillProtobufSchemaWithData(plainTextSchema);
         console.log(`Found schema, isKey=[${isKey}]`);
         break;
-      case MessageFormat.JSON_SCHEMA:
-        console.log('JSON_SCHEMA IS NOT IMPLEMENTED');
+      case MessageFormat.JSON:
+        example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
+        console.log(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
-        console.log('AVRO IS NOT IMPLEMENTED');
+        example = this.avroUtilsService.fillAvroSchemaWithData(plainTextSchema);
+        console.log(`Found schema, isKey=[${isKey}]`);
         break;
       default:
         console.log(`No schema, isKey=[${isKey}]`);
