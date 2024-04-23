@@ -17,7 +17,6 @@ export class AuthBackendService implements AuthService {
   private userRoles: Array<KouncilRole> = [];
 
   private readonly baseUrl: string;
-  private baseUrl: string = environment.baseUrl;
   private contextPath: string;
 
   private authenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.IS_LOGGED_IN) === 'true');
@@ -124,7 +123,6 @@ export class AuthBackendService implements AuthService {
 
   fetchContextPath$(): void {
     this.http.get('./api/context-path', {responseType: 'text'}).subscribe((contextPath) => {
-      console.log(contextPath);
       this.contextPath = contextPath;
     });
   }

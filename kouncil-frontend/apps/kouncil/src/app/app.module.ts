@@ -64,8 +64,8 @@ import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/comm
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   resendServiceFactory,
-  sendServiceFactory,
   schemaRegistryServiceFactory,
+  sendServiceFactory,
   surveyServiceFactory,
   topicServiceFactory,
   topicsServiceFactory
