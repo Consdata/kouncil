@@ -6,9 +6,10 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import {SelectableItem} from "./selectable-item";
-import {map, Observable, startWith} from "rxjs";
-import {MatCheckboxChange} from "@angular/material/checkbox";
+import {SelectableItem} from './selectable-item';
+import {map, Observable, startWith} from 'rxjs';
+import {MatCheckboxChange} from '@angular/material/checkbox';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-common-autocomplete',
@@ -27,15 +28,15 @@ import {MatCheckboxChange} from "@angular/material/checkbox";
     <mat-autocomplete #autocomplete="matAutocomplete"
                       [displayWith]="displayFn" [panelWidth]="panelWidth" (opened)="panelOpened()"
                       (closed)="panelClosed()">
-      <mat-option disabled *ngIf="(filteredData | async)?.length === 0">
-        {{emptyFilteredMsg}}
+      <mat-option disabled *ngIf="(filteredData$ | async)?.length === 0">
+        {{ emptyFilteredMsg }}
       </mat-option>
-      <mat-option *ngFor="let item of filteredData | async" class="no-padding">
+      <mat-option *ngFor="let item of filteredData$ | async" class="no-padding">
         <div (click)="optionClicked($event, item)">
           <mat-checkbox [checked]="item.selected" (change)="toggleSelection(item)"
                         (click)="$event.stopPropagation()">
           </mat-checkbox>
-          {{item.label}}
+          {{ item.label }}
         </div>
       </mat-option>
     </mat-autocomplete>
@@ -46,31 +47,31 @@ import {MatCheckboxChange} from "@angular/material/checkbox";
 export class AutocompleteComponent implements OnInit {
 
   @Input() data: Array<SelectableItem> = [];
-  @Input() control;
-  @Input() placeholder: string
-  @Input() emptyFilteredMsg: string
-  @Input() panelWidth: string | number
+  @Input() control: FormControl;
+  @Input() placeholder: string;
+  @Input() emptyFilteredMsg: string;
+  @Input() panelWidth: string | number;
   @Output() selectedValueEvent: EventEmitter<Array<string>> = new EventEmitter();
 
-  filteredData: Observable<Array<SelectableItem>>;
+  filteredData$: Observable<Array<SelectableItem>>;
   filterString: string = '';
 
   constructor() {
   }
 
-  ngOnInit() {
-    this.filteredData = this.control.valueChanges.pipe(
+  ngOnInit(): void {
+    this.filteredData$ = this.control.valueChanges.pipe(
       startWith<string>(''),
       map(value => typeof value === 'string' ? value : this.filterString),
       map((filter: string) => this.filter(filter))
     );
   }
 
-  displayFn = (): string => this.control.getRawValue() != null
+  displayFn: () => string = (): string => this.control.getRawValue() != null
     ? this.control.getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')
     : '';
 
-  filter = (filter: string): Array<SelectableItem> => {
+  filter: (filter: string) => Array<SelectableItem> = (filter: string): Array<SelectableItem> => {
     if (!this.data) {
       return [];
     }
@@ -85,12 +86,13 @@ export class AutocompleteComponent implements OnInit {
     });
   };
 
-  optionClicked = (event: Event, data: SelectableItem): void => {
-    event.stopPropagation();
-    this.toggleSelection(data);
-  };
+  optionClicked: (event: Event, data: SelectableItem) => void =
+    (event: Event, data: SelectableItem): void => {
+      event.stopPropagation();
+      this.toggleSelection(data);
+    };
 
-  toggleSelection = (data: SelectableItem): void => {
+  toggleSelection: (data: SelectableItem) => void = (data: SelectableItem): void => {
     data.selected = !data.selected;
     if (!data.selected) {
       const i = this.data.findIndex(value => value.value === data.value);
@@ -98,17 +100,17 @@ export class AutocompleteComponent implements OnInit {
     }
   };
 
-  panelOpened() {
+  panelOpened(): void {
     this.filterString = '';
     this.control.setValue([]);
   }
 
-  panelClosed() {
+  panelClosed(): void {
     this.control.setValue(this.data);
     this.selectedValueEvent.emit(this.data.filter(item => item.selected).map(item => item.value));
   }
 
-  selectAll($event: MatCheckboxChange) {
+  selectAll($event: MatCheckboxChange): void {
     this.data.forEach(
       item => {
         item.selected = $event.checked;

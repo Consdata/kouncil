@@ -42,7 +42,8 @@ public class SSOWebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .cors().configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("*"));
@@ -55,7 +56,9 @@ public class SSOWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/*", "/assets/**").permitAll()
+                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path", "/*",
+                        "/assets/**")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()

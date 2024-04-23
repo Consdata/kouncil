@@ -16,14 +16,14 @@ export class ConsumerGroupsBackendService implements ConsumerGroupsService {
   ): Observable<Record<string, unknown>> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.delete<Record<string, unknown>>(
-      `/api/consumer-group/${value}`,
+      `./api/consumer-group/${value}`,
       { params }
     );
   }
 
   getConsumerGroups$(serverId: string): Observable<ConsumerGroupsResponse> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<ConsumerGroupsResponse>(`/api/consumer-groups`, {
+    return this.http.get<ConsumerGroupsResponse>(`./api/consumer-groups`, {
       params,
     });
   }

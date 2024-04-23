@@ -29,7 +29,7 @@ export class ResendFilterService {
   }
 
   public init(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.topicsService.getTopics$(this.servers.getSelectedServerId())
         .pipe(first())
         .subscribe((data: Topics) => {

@@ -2,8 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {AuthService} from '../login/auth.service';
-import {KouncilRole} from '../login/kouncil-role';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 @Component({
   selector: 'app-oauth-redirect',

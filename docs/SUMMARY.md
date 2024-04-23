@@ -19,6 +19,7 @@
   * [JMX](configuration/JMX.md)
   * [Logging](configuration/LOGGING.md)
   * [Websocket](configuration/WEBSOCKET.md)
+  * [Custom base path](configuration/CUSTOM_BASE_PATH.md)
 
 
 ## [Features](FEATURES.md)

@@ -7,3 +7,4 @@ export {TableColumnComponent} from './lib/table-column/table-column.component';
 export {AbstractTableComponent} from './lib/abstract-table.component';
 export {EditorComponent} from './lib/editor/editor.component';
 export {MonacoEditorService} from './lib/editor/monaco-editor.service';
+export {TableGroup} from './lib/table/table-group';

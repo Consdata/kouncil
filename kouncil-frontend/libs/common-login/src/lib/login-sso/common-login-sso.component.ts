@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {SSOProvider} from "../login/sso-provider";
+import {SSOProvider} from '../login/sso-provider';
 
 @Component({
   selector: 'app-common-login-sso',
@@ -27,17 +27,17 @@ export class CommonLoginSsoComponent {
   @Input() availableProviders: Array<string>;
 
   private supportedProviders: Map<string, SSOProvider> = new Map<string, SSOProvider>([
-    ['github', {name: 'github', icon: '/assets/github-mark.svg', title: 'GitHub'}],
+    ['github', {name: 'github', icon: './assets/github-mark.svg', title: 'GitHub'}],
   ]);
 
   constructor() {
   }
 
-  sso(provider: string) {
+  sso(provider: string): void {
     this.ssoEvent.emit(provider);
   }
 
-  getProviderData(provider: string) {
+  getProviderData(provider: string): SSOProvider {
     return this.supportedProviders.get(provider);
   }
 }

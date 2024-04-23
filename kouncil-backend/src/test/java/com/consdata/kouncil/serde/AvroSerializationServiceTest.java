@@ -1,5 +1,12 @@
 package com.consdata.kouncil.serde;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
@@ -9,6 +16,13 @@ import com.consdata.kouncil.serde.serialization.SerializationService;
 import io.confluent.kafka.schemaregistry.avro.AvroSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.EnumMap;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
@@ -20,22 +34,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class AvroSerializationServiceTest {
-    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 32, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101};
+    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 20, 50, 48, 50, 52, 45, 48, 49, 45, 48, 49};
     private static final String LOREM = "lorem";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "SimpleMessageAvro");
     private static final String CLUSTER_ID = "clusterId";
@@ -61,7 +63,7 @@ class AvroSerializationServiceTest {
 
         SIMPLE_MESSAGE_JSON = Files.readString(
                 Paths.get(Objects.requireNonNull(
-                        AvroSerializationServiceTest.class.getClassLoader().getResource("SimpleMessage.json")).toURI()
+                        AvroSerializationServiceTest.class.getClassLoader().getResource("SimpleMessageAvro.json")).toURI()
                 )).trim();
     }
 

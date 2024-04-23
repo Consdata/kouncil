@@ -14,7 +14,7 @@ export class SendBackendService implements SendService {
   send$(serverId: string, count: number, messageData: MessageData): Observable<Record<string, unknown>> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.post<Record<string, unknown>>(
-      `/api/topic/send/${messageData.topicName}/${count}`,
+      `./api/topic/send/${messageData.topicName}/${count}`,
       messageData,
       {params}
     );

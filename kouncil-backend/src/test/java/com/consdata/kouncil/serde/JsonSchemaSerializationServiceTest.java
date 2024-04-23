@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class JsonSchemaSerializationServiceTest {
-    private static final byte[] JSON_SCHEMA_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 34, 44, 34, 115, 111, 109, 101, 78, 117, 109, 98, 101, 114, 34, 58, 53, 53, 57, 57, 51, 51, 44, 34, 114, 101, 99, 101, 105, 118, 101, 100, 68, 97, 116, 101, 34, 58, 34, 118, 101, 110, 105, 97, 109, 32, 118, 111, 108, 117, 112, 116, 97, 116, 101, 34, 125};
+    private static final byte[] JSON_SCHEMA_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, 34, 44, 34, 115, 111, 109, 101, 78, 117, 109, 98, 101, 114, 34, 58, 53, 53, 57, 57, 51, 51, 44, 34, 114, 101, 99, 101, 105, 118, 101, 100, 68, 97, 116, 101, 34, 58, 34, 50, 48, 50, 52, 45, 48, 49, 45, 48, 49, 34, 125};
     private static final String LOREM = "lorem";
     private static final SchemaMetadata SCHEMA_METADATA_MOCK = new SchemaMetadata(10, 100, "unused");
     private static final String CLUSTER_ID = "clusterId";

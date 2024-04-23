@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
-import {MatSort} from "@angular/material/sort";
-import {TableComponent} from "@app/common-components";
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {MatSort} from '@angular/material/sort';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {TableComponent} from './table/table.component';
 
 @Component({
   template: ''
@@ -17,7 +17,7 @@ export abstract class AbstractTableComponent {
     }
   }
 
-  drop($event: CdkDragDrop<string[]>) {
+  drop($event: CdkDragDrop<string[]>): void {
     this.table.drop($event);
   }
 }

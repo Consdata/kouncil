@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {TopicsService} from './topics.service';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Topics} from '@app/common-model';
+import {TopicsService} from '../topics.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class TopicsBackendService implements TopicsService {
 
   getTopics$(serverId: string): Observable<Topics> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<Topics>(`/api/topics`, {params});
+    return this.http.get<Topics>(`./api/topics`, {params});
   }
 
 }

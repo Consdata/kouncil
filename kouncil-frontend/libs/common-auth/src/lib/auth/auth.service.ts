@@ -1,11 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User} from '@app/common-login';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
-import {Backend} from '@app/common-model';
-import {AuthBackendService} from './auth.backend.service';
-import {AuthDemoService} from './auth.demo.service';
 import {KouncilRole} from './kouncil-role';
 
 @Injectable()
@@ -37,15 +32,5 @@ export abstract class AuthService {
 
   abstract canAccess(roles: KouncilRole[]): boolean;
   abstract getInstallationId$(): void;
-}
-
-export function authServiceFactory(http: HttpClient): AuthService {
-  switch (environment.backend) {
-    case Backend.SERVER: {
-      return new AuthBackendService(http);
-    }
-    case Backend.DEMO:
-    default:
-      return new AuthDemoService();
-  }
+  abstract fetchContextPath$(): void;
 }
