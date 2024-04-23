@@ -1,6 +1,5 @@
-
-
 ## Custom base path
+
 If you want to expose Kouncil in custom base path you need to set Spring's `server.servlet.context-path` parameter.
 In docker run command it will look like this
 ```bash
