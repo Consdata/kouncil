@@ -24,6 +24,7 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"],
     "paths": {
+      "@app/common-auth": ["libs/common-auth/src/index.ts"],
       "@app/common-components": ["libs/common-components/src/index.ts"],
       "@app/common-login": ["libs/common-login/src/index.ts"],
       "@app/common-model": ["libs/common-model/src/index.ts"],
@@ -33,6 +34,7 @@
       "@app/feat-favourites": ["libs/feat-favourites/src/index.ts"],
       "@app/feat-no-data": ["libs/feat-no-data/src/index.ts"],
       "@app/feat-send": ["libs/feat-send/src/index.ts"],
+      "@app/feat-topic-form": ["libs/feat-topic-form/src/index.ts"],
       "@app/feat-topics": ["libs/feat-topics/src/index.ts"],
       "@app/message-data": ["libs/message-data/src/index.ts"],
       "@app/resend-events": ["libs/resend-events/src/index.ts"],

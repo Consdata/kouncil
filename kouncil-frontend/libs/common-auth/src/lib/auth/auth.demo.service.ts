@@ -8,8 +8,8 @@ import {v4 as uuidv4} from 'uuid';
 @Injectable()
 export class AuthDemoService implements AuthService {
 
-  private IS_LOGGED_IN: string = 'isLoggedIn';
-  private USER_ROLES: string = 'userRoles';
+  private readonly IS_LOGGED_IN: string = 'isLoggedIn';
+  private readonly USER_ROLES: string = 'userRoles';
   private userRoles: Array<KouncilRole> = JSON.parse(localStorage.getItem(this.USER_ROLES));
 
   private authenticated: boolean = localStorage.getItem(this.IS_LOGGED_IN) === 'true';
@@ -79,5 +79,8 @@ export class AuthDemoService implements AuthService {
 
   getInstallationId$(): void {
     localStorage.setItem('installationId',uuidv4());
+  }
+
+  fetchContextPath$(): void {
   }
 }

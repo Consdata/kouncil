@@ -31,7 +31,7 @@ run ```docker-compose up -d```
 
 more info: https://hub.docker.com/r/bitnami/kafka/
 
-By default, authentication is set to inmemory. Default users role configuration is described here [Authorization](/docs/DEPLOYMENT.md#Authorization). 
+By default, authentication is set to inmemory. Default users role configuration is described here [Authorization](../configuration/security/AUTHORIZATION.md). 
 You can modify this to match your needs, for example if you want to have editor role on an admin user you have to add `admin-group` to the `role-editor`. 
 
 ## Release

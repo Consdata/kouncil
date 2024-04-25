@@ -1,0 +1,63 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import '../../../../../apps/kouncil/src/styles/palette';
+
+:host {
+  .topic-form {
+    width: 100%;
+  }
+
+  .field-container-error {
+    border: 1px solid $red-50;
+    border-radius: $default-border-radius;
+  }
+
+  mat-error {
+    font-size: 12px;
+  }
+
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .topic-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 100%;
+
+    .topic-form-field {
+      width: 100%;
+      padding-bottom: 10px;
+    }
+
+    div {
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+
+  .actions {
+    float: right;
+    margin-top: 20px;
+
+    .action-button-black {
+      @include buttons.button-black;
+    }
+
+    .action-button-black:disabled {
+      border: 1px solid $main-50;
+      background-color: $main-30;
+      cursor: not-allowed;
+      color: $main-60;
+    }
+
+    .action-button-white {
+      @include buttons.button-white;
+      margin-right: 10px;
+    }
+  }
+}
