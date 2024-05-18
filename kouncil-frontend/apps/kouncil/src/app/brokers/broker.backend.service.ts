@@ -14,11 +14,11 @@ export class BrokerBackendService implements BrokerService {
 
   getBrokerConfig$(serverId: string, id: string): Observable<BrokerConfig[]> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<BrokerConfig[]>(`./api/configs/${id}`, {params});
+    return this.http.get<BrokerConfig[]>(`/api/configs/${id}`, {params});
   }
 
   getBrokers$(serverId: string): Observable<Brokers> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<Brokers>(`./api/brokers`, {params});
+    return this.http.get<Brokers>(`/api/brokers`, {params});
   }
 }

@@ -82,7 +82,7 @@ export class SurveyBackendService implements SurveyService {
   }
 
   fetchSurveyBasePath$(): Observable<boolean> {
-    return this.http.get('./api/survey/config', {responseType: 'text'}).pipe(map((basePath) => {
+    return this.http.get('/api/survey/config', {responseType: 'text'}).pipe(map((basePath) => {
       this.surveyBasePath = basePath;
       return this.surveyBasePath.length > 0;
     }));
