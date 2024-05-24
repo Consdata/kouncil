@@ -14,7 +14,7 @@ export class TopicsBackendService implements TopicsService {
 
   getTopics$(serverId: string): Observable<Topics> {
     const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<Topics>(`./api/topics`, {params});
+    return this.http.get<Topics>(`/api/topics`, {params});
   }
 
 }

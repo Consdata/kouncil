@@ -12,7 +12,7 @@ export class ResendBackendService {
   resend$(serverId: string, resendDataModel: ResendDataModel): Observable<Record<string, unknown>> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.post<Record<string, unknown>>(
-      `./api/topic/resend`,
+      `/api/topic/resend`,
       resendDataModel,
       { params }
     );

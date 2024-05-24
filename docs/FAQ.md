@@ -41,12 +41,15 @@ If you run Kafka in terminal (not using docker) you can:
       Kouncil will be available via: http://localhost:8080/login
    
 
-If you run Kafka using docker container you have to put both containers in the same network so they can reach out to each other. Firstly create new network using docker network create --driver bridge <network_name>. And than use this network name in run command/docker compose files:
-For example for Kouncil docker run command will look like this
-```bash
-docker run -p 80:8080 -e bootstrapServers="<container_name>:9092" --network="kouncil" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+If you run Kafka using docker container you have to put both containers in the same network, so they can reach out to each other. Firstly create new network using 
+```bash 
+docker network create --driver bridge <network_name>
 ```
-Also you should use Kafka docker container name as IP address (see <container_name>)
+Then use this network name in run command/docker compose files, for example Kouncil docker run command will look like this:
+```bash
+docker run -p 80:8080 -e bootstrapServers="<container_name>:9092" --network="<network_name>" -e kouncil.auth.active-provider="inmemory" consdata/kouncil:latest
+```
+Also, you should use Kafka docker container name as IP address (see <container_name>)
 
 ## I logged in and I see only brokers and consumer groups.
 
