@@ -22,4 +22,12 @@ describe('ObjectUtils', () => {
       }
     });
   });
+
+  it('should return value when it is null', () => {
+    expect(ObjectUtils.removeNull(null)).toBeNull();
+  });
+
+  it('should return value when it is undefined', () => {
+    expect(ObjectUtils.removeNull(undefined)).toBeUndefined();
+  });
 });
