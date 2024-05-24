@@ -56,7 +56,7 @@ export class AuthBackendService implements AuthService {
   }
 
   fetchToken$(code: string, state: string, provider: string): Observable<void> {
-    return this.http.get<void>(`./login/oauth2/code/${provider}?code=${code}&state=${state}`).pipe(map(() => {
+    return this.http.get<void>(`/login/oauth2/code/${provider}?code=${code}&state=${state}`).pipe(map(() => {
       this.setAuthenticated(true);
       localStorage.setItem(this.IS_LOGGED_IN, 'true');
       localStorage.removeItem('selectedProvider');
