@@ -20,7 +20,6 @@
   * [Logging](configuration/LOGGING.md)
   * [Websocket](configuration/WEBSOCKET.md)
   * [Custom context path](configuration/CUSTOM_CONTEXT_PATH.md)
-  * [Custom base path](configuration/CUSTOM_BASE_PATH.md)
   * [Database](configuration/DATABASE.md)
 
 
