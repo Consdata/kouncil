@@ -80,7 +80,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
             <button *ngIf="getControl('compatibility').value && !isDisabled([ViewMode.VIEW])"
                     mat-icon-button matSuffix type="button" class="clear-btn"
                     (click)="$event.stopPropagation(); getControl('compatibility').patchValue(null)">
-              <mat-icon class="clear-icon">close</mat-icon>
+              <mat-icon class="material-symbols-outlined clear-icon">close</mat-icon>
             </button>
 
           </mat-form-field>
@@ -95,11 +95,11 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
       </div>
 
       <div class="actions">
-        <button mat-button disableRipple class="action-button-white"
+        <button mat-button [disableRipple]="true" class="action-button-white"
                 [routerLink]="['/schemas']">
           Cancel
         </button>
-        <button mat-button disableRipple *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
+        <button mat-button [disableRipple]="true" *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
                 class="action-button-black" type="submit"
                 [disabled]="!schemaForm.valid">
           Save

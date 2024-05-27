@@ -28,7 +28,7 @@ declare let monaco: any;
         <div class="drawer-header">
           <div class="drawer-title">Send event to {{ messageData.topicName }}</div>
           <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="close">close</mat-icon>
+          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
         </div>
 
         <div class="drawer-section-subtitle">
@@ -45,7 +45,7 @@ declare let monaco: any;
 
         <div class="drawer-section-title">
           Headers
-          <button type="button" class="small-button" mat-button disableRipple
+          <button type="button" class="small-button" mat-button [disableRipple]="true"
                   (click)="addHeader(messageData.headers)">
             +
           </button>
@@ -59,7 +59,7 @@ declare let monaco: any;
             <input class="header" [(ngModel)]="header.value" placeholder="Header value" matInput
                    type="text" name="header-value-{{ i }}"/>
           </mat-form-field>
-          <button type="button" class="small-button" mat-button disableRipple
+          <button type="button" class="small-button" mat-button [disableRipple]="true"
                   (click)="removeHeader(i, messageData.headers)">
             -
           </button>
@@ -79,11 +79,11 @@ declare let monaco: any;
         <mat-form-field [appearance]="'outline'" class="count">
           <input matInput type="number" min="1" [formControl]="countControl" name="count"/>
           <div matSuffix>
-            <button type="button" class="small-button" mat-button disableRipple
+            <button type="button" class="small-button" mat-button [disableRipple]="true"
                     (click)="decreaseCount()">
               -
             </button>
-            <button type="button" class="small-button" mat-button disableRipple
+            <button type="button" class="small-button" mat-button [disableRipple]="true"
                     (click)="increaseCount()">
               +
             </button>
@@ -93,11 +93,11 @@ declare let monaco: any;
         <span class="spacer"></span>
 
         <div class="actions">
-          <button type="button" mat-dialog-close mat-button disableRipple
+          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
                   class="action-button-white">
             Cancel
           </button>
-          <button mat-button disableRipple
+          <button mat-button [disableRipple]="true"
                   class="action-button-black"
                   type="submit"
                   [disabled]="isSendButtonDisabled">

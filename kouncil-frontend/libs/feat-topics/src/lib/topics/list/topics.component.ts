@@ -63,7 +63,8 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
             <ng-template #cellTemplate let-element>
               <a class="datatable-cell-anchor" [routerLink]="['/topics/messages', element.name]">
-                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+                <mat-icon class="material-symbols-outlined star-favourite"
+                          [class.gray]="element.group !== 'FAVOURITES'"
                           (click)="onFavouriteClick($event, element)">star
                 </mat-icon>
                 {{ element.name }}

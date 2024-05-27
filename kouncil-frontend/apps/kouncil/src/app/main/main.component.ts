@@ -6,13 +6,18 @@ import {environment} from '../../environments/environment';
   selector: 'app-main',
   template: `
     <app-demo *ngIf="backend === 'DEMO'"></app-demo>
+
     <app-kafka-navbar></app-kafka-navbar>
+    <div style="display: flex">
 
-    <app-survey></app-survey>
+      <app-kafka-sidebar></app-kafka-sidebar>
 
-    <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
-      <app-progress-bar></app-progress-bar>
-      <router-outlet></router-outlet>
+      <div style="width: 100%; height: 100%">
+        <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
+          <app-progress-bar></app-progress-bar>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

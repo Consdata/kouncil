@@ -40,11 +40,11 @@ import {SnackBarComponent, SnackBarData} from '@app/common-utils';
         <div class="survey-buttons-container">
           <button mat-button (click)="confirmSurvey()" class="survey-accept-button">
             <span class="survey-button-label">Accept</span>
-            <mat-icon class="survey-accept-button-icon">done</mat-icon>
+            <mat-icon class="material-symbols-outlined survey-accept-button-icon">done</mat-icon>
           </button>
           <button mat-button (click)="closeSurvey()" class="survey-close-button">
             <span class="survey-button-label">Close</span>
-            <mat-icon class="survey-close-button-icon">close</mat-icon>
+            <mat-icon class="material-symbols-outlined survey-close-button-icon">close</mat-icon>
           </button>
         </div>
       </div>

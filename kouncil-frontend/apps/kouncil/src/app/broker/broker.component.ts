@@ -11,7 +11,7 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
       <div class="drawer-header">
         <div class="drawer-title">Broker details</div>
         <div class="spacer"></div>
-        <mat-icon mat-dialog-close class="close">close</mat-icon>
+        <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
       </div>
 
       <div class="broker-details-table">

@@ -15,15 +15,15 @@ export enum LiveUpdateState {
       <app-breadcrumb [parentName]="'Topics'" [parentLink]="'/topics'"
                       [name]="name"></app-breadcrumb>
       <div class="spacer"></div>
-      <mat-slide-toggle [class.active]="showJsonColumns === true" disableRipple class="switch"
+      <mat-slide-toggle [class.active]="showJsonColumns" [disableRipple]="true" class="switch"
                         (change)="toggleJson()" [(ngModel)]="showJsonColumns">
         JSON
       </mat-slide-toggle>
-      <mat-slide-toggle [class.active]="showHeaderColumns === true" disableRipple class="switch"
+      <mat-slide-toggle [class.active]="showHeaderColumns" [disableRipple]="true" class="switch"
                         (change)="toggleHeaders()" [(ngModel)]="showHeaderColumns">
         Headers
       </mat-slide-toggle>
-      <mat-slide-toggle [class.active]="liveState === true" disableRipple class="switch"
+      <mat-slide-toggle [class.active]="liveState" [disableRipple]="true" class="switch"
                         (change)="toggleLive()" [(ngModel)]="liveState">
         Live update
         <div class="circle"></div>
@@ -36,7 +36,7 @@ export enum LiveUpdateState {
                [(ngModel)]="offset"/>
         <button mat-icon-button matSuffix class="action-button-black offset-search-button"
                 (click)="goToOffset()">
-          <mat-icon class="search-icon">search</mat-icon>
+          <mat-icon class="material-symbols-outlined search-icon">search</mat-icon>
         </button>
       </mat-form-field>
 
@@ -51,9 +51,9 @@ export enum LiveUpdateState {
       </button>
     </div>
   `,
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./topic-toolbar.component.scss']
 })
-export class ToolbarComponent {
+export class TopicToolbarComponent {
 
   @Input() name?: string;
   @Output() toggleLiveEvent: EventEmitter<LiveUpdateState> = new EventEmitter<LiveUpdateState>();

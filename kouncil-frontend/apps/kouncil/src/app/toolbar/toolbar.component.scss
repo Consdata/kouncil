@@ -26,25 +26,10 @@
     align-items: center;
     height: 100%;
     border-radius: 0;
-    margin: 0 16px;
+    margin: 0 10px;
     min-width: 32px;
     color: $main-60;
     padding: 10px;
-
-    @media screen and (max-width: 1750px) {
-      margin: 0 10px;
-      padding: 7px;
-    }
-
-    @media screen and (max-width: 1600px) {
-      margin: 0 8px;
-      padding: 5px;
-    }
-
-    @media screen and (max-width: 1500px) {
-      margin: 0 4px;
-      padding: 2px;
-    }
 
     &:focus {
       background: transparent;
@@ -59,18 +44,6 @@
   .search-input {
     @include inputs.input;
     width: 400px;
-
-    @media screen and (max-width: 1800px) {
-      width: 350px;
-    }
-
-    @media screen and (max-width: 1625px) {
-      width: 325px;
-    }
-
-    @media screen and (max-width: 1550px) {
-      width: 275px;
-    }
   }
 
   .search-input:hover {
@@ -127,7 +100,7 @@
     padding: 0 6px;
     font-size: 24px;
     line-height: $default-line-height;
-    font-family: 'Material Icons';
+    font-family: 'Material Symbols Outlined';
   }
 
   .consdata-logo {

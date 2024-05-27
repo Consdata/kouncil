@@ -5,13 +5,15 @@ import {SnackBarData} from './snack-bar-data';
 @Component({
   selector: 'app-custom-snack-bar',
   template: `
-    <div class="mat-mdc-snack-bar-label" style="display: flex; place-items: center"
+    <div class="mat-mdc-snack-bar-label"
+         style="display: flex; place-items: center"
          [ngClass]="data.iconClass">
-      {{data.message}}
+      {{ data.message }}
     </div>
     <div class="mat-mdc-snack-bar-actions" style="display: flex; place-items: center">
       <button mat-button class="mat-mdc-snack-bar-action"
-              (click)="dismiss()">{{data.action}}</button>
+              (click)="dismiss()">{{ data.action }}
+      </button>
     </div>
   `
 })
