@@ -24,7 +24,7 @@ export class TrackBackendService extends TrackService {
   }
 
   getEvents$(serverId: string, trackFilter: TrackFilter, asyncHandle?: string): Observable<MessageData[]> {
-    const url = this.asyncEnabled ? './api/track/async' : './api/track/sync';
+    const url = this.asyncEnabled ? '/api/track/async' : '/api/track/sync';
     const params = new HttpParams()
       .set('serverId', serverId)
       .set('topicNames', trackFilter.topics.join(','))

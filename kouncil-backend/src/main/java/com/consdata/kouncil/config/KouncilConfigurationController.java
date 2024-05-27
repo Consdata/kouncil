@@ -22,7 +22,7 @@ public class KouncilConfigurationController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
-    @Value("${server.servlet.context-path:}")
+    @Value("${kouncil.context-path:}")
     private String contextPath;
 
     @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})

@@ -14,7 +14,7 @@ export class ServersBackendService extends ServersService {
 
   load(): Promise<boolean> {
     return new Promise((resolve) => {
-      this.http.get(`./api/connection`).subscribe((value) => {
+      this.http.get(`/api/connection`).subscribe((value) => {
         if (value != null) {
           const lastSelectedServer = localStorage.getItem('lastSelectedServer');
           for (const key in value) {
