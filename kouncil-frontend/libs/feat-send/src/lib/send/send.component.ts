@@ -45,7 +45,7 @@ declare let monaco: any;
 
         <div class="drawer-section-title">
           Headers
-          <button type="button" class="small-button" mat-button disableRipple
+          <button type="button" class="small-button" mat-button [disableRipple]="true"
                   (click)="addHeader(messageData.headers)">
             +
           </button>
@@ -59,7 +59,7 @@ declare let monaco: any;
             <input class="header" [(ngModel)]="header.value" placeholder="Header value" matInput
                    type="text" name="header-value-{{ i }}"/>
           </mat-form-field>
-          <button type="button" class="small-button" mat-button disableRipple
+          <button type="button" class="small-button" mat-button [disableRipple]="true"
                   (click)="removeHeader(i, messageData.headers)">
             -
           </button>
@@ -79,11 +79,11 @@ declare let monaco: any;
         <mat-form-field [appearance]="'outline'" class="count">
           <input matInput type="number" min="1" [formControl]="countControl" name="count"/>
           <div matSuffix>
-            <button type="button" class="small-button" mat-button disableRipple
+            <button type="button" class="small-button" mat-button [disableRipple]="true"
                     (click)="decreaseCount()">
               -
             </button>
-            <button type="button" class="small-button" mat-button disableRipple
+            <button type="button" class="small-button" mat-button [disableRipple]="true"
                     (click)="increaseCount()">
               +
             </button>
@@ -93,11 +93,11 @@ declare let monaco: any;
         <span class="spacer"></span>
 
         <div class="actions">
-          <button type="button" mat-dialog-close mat-button disableRipple
+          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
                   class="action-button-white">
             Cancel
           </button>
-          <button mat-button disableRipple
+          <button mat-button [disableRipple]="true"
                   class="action-button-black"
                   type="submit"
                   [disabled]="isSendButtonDisabled">
@@ -136,13 +136,16 @@ export class SendComponent implements OnDestroy {
             map(exampleData => ({
                 ...messageData,
                 key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
-                value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
-                  JSON.stringify(exampleData.exampleValue, null, 2)
+                value: messageData.originalValue
+                  ? messageData.originalValue
+                  : (messageData.value
+                    ? messageData.value
+                    : JSON.stringify(exampleData.exampleValue, null, 2))
               })
             )),
           of({
               ...messageData,
-              value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
+              value: messageData.originalValue ? JSON.stringify(messageData.originalValue, null, 2) : messageData.value
             }
           ));
       }
@@ -252,11 +255,15 @@ export class SendComponent implements OnDestroy {
     this.countControl.reset(1);
   }
 
-  addHeader(headers: MessageDataHeader[]): void {
-    headers.push({key: '', value: ''} as MessageDataHeader);
+  addHeader(headers: MessageDataHeader[] | undefined): void {
+    if (headers) {
+      headers.push({key: '', value: ''} as MessageDataHeader);
+    }
   }
 
-  removeHeader(i: number, headers: MessageDataHeader[]): void {
-    headers.splice(i, 1);
+  removeHeader(i: number, headers: MessageDataHeader[] | undefined): void {
+    if (headers) {
+      headers.splice(i, 1);
+    }
   }
 }

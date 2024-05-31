@@ -8,4 +8,5 @@ import lombok.Value;
 public class DeserializationData {
     String topicName;
     byte[] value;
+    boolean useLogicalTypesConversions;
 }

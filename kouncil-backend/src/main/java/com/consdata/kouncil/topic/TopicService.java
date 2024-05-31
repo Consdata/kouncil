@@ -196,6 +196,7 @@ public class TopicService {
                             .key(deserializedMessage.getKeyData().getDeserialized())
                             .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
                             .value(deserializedMessage.getValueData().getDeserialized())
+                            .originalValue(deserializedMessage.getValueData().getOriginalValue())
                             .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())
