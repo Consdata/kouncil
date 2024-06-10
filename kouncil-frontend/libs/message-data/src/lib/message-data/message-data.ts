@@ -5,6 +5,7 @@ export interface MessageData {
   key: string;
   keyFormat: MessageFormat;
   value: string;
+  originalValue: string;
   valueFormat: MessageFormat;
   offset: number | null;
   partition: number | null;
