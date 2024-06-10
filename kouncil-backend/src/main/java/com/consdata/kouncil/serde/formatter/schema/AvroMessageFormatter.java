@@ -21,6 +21,7 @@ public class AvroMessageFormatter implements MessageFormatter {
 
     private final KafkaAvroSerializer avroSerializer;
     private final SchemaRegistryClient client;
+
     public AvroMessageFormatter(SchemaRegistryClient client) {
         this.avroSerializer = new KafkaAvroSerializer(client);
         this.client = client;
@@ -28,13 +29,9 @@ public class AvroMessageFormatter implements MessageFormatter {
 
     @Override
     public String deserialize(DeserializationData deserializationData) {
-        Object deserialized;
-        try (KafkaAvroDeserializer avroDeserializer = new KafkaAvroDeserializer(client)) {
-            this.configureDeserializer(avroDeserializer, deserializationData.isUseLogicalTypesConversions());
-            deserialized = avroDeserializer.deserialize(deserializationData.getTopicName(), deserializationData.getValue());
-        }
-
-        return deserialized.toString();
+        KafkaAvroDeserializer avroDeserializer = new KafkaAvroDeserializer(client);
+        this.configureDeserializer(avroDeserializer, deserializationData.isUseLogicalTypesConversions());
+        return avroDeserializer.deserialize(deserializationData.getTopicName(), deserializationData.getValue()).toString();
     }
 
     @Override
