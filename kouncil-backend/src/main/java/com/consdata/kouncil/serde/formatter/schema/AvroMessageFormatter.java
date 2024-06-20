@@ -19,19 +19,19 @@ import org.apache.kafka.common.utils.Bytes;
 @Slf4j
 public class AvroMessageFormatter implements MessageFormatter {
 
-    private final KafkaAvroDeserializer avroDeserializer;
     private final KafkaAvroSerializer avroSerializer;
+    private final SchemaRegistryClient client;
 
     public AvroMessageFormatter(SchemaRegistryClient client) {
-        this.avroDeserializer = new KafkaAvroDeserializer(client);
         this.avroSerializer = new KafkaAvroSerializer(client);
-        this.configureDeserializer();
+        this.client = client;
     }
 
     @Override
     public String deserialize(DeserializationData deserializationData) {
-        Object deserialized = avroDeserializer.deserialize(deserializationData.getTopicName(), deserializationData.getValue());
-        return deserialized.toString();
+        KafkaAvroDeserializer avroDeserializer = new KafkaAvroDeserializer(client);
+        this.configureDeserializer(avroDeserializer, deserializationData.isUseLogicalTypesConversions());
+        return avroDeserializer.deserialize(deserializationData.getTopicName(), deserializationData.getValue()).toString();
     }
 
     @Override
@@ -64,12 +64,12 @@ public class AvroMessageFormatter implements MessageFormatter {
         );
     }
 
-    private void configureDeserializer() {
+    private void configureDeserializer(KafkaAvroDeserializer avroDeserializer, boolean useLogicalTypes) {
         avroDeserializer.configure(
                 Map.of(
                         AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "needed_in_runtime_but_not_used",
                         AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true,
-                        KafkaAvroDeserializerConfig.AVRO_USE_LOGICAL_TYPE_CONVERTERS_CONFIG, true
+                        KafkaAvroDeserializerConfig.AVRO_USE_LOGICAL_TYPE_CONVERTERS_CONFIG, useLogicalTypes
                 ),
                 false
         );
