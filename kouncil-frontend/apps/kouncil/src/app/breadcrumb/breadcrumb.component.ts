@@ -6,7 +6,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
     <div class="wrapper">
       <div routerLink="{{parentLink}}" class="parent">{{parentName}}</div>
       <div class="divider">
-        <mat-icon class="arrow">arrow_forward_ios</mat-icon>
+        <mat-icon class="material-symbols-outlined arrow">arrow_forward_ios</mat-icon>
       </div>
       <div class="name"><span [matTooltip]="name">{{name}}</span></div>
     </div>

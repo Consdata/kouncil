@@ -27,7 +27,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
 
           <button mat-button class="action-button-black" (click)="search()">
             Search
-            <mat-icon class="search-icon">search</mat-icon>
+            <mat-icon class="material-symbols-outlined search-icon">search</mat-icon>
           </button>
 
           <button mat-button class="action-button-white" (click)="clearFilters()">

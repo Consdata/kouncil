@@ -22,40 +22,12 @@ import {AuthService, KouncilRole} from '@app/common-auth';
     <mat-toolbar>
       <img src="assets/kouncil-logo.png" alt="logo" class="kouncil-logo"
            matTooltip="{{backendVersion$ | async}}"/>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/topics']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
-        Topics
-      </a>
-
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/brokers']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
-        Brokers
-      </a>
-
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/consumer-groups']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
-        Consumer Groups
-      </a>
-
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/track']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
-        Track
-      </a>
-      <a class="menu-button" mat-button disableRipple routerLinkActive="active"
-         [routerLink]="['/schemas']"
-         *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
-        Schemas
-      </a>
 
       <mat-divider [vertical]="true"></mat-divider>
 
-      <button class="menu-button" mat-button disableRipple (click)=goToGithub()>
+      <button class="menu-button" mat-button [disableRipple]="true" (click)=goToGithub()>
         Documentation
-        <mat-icon aria-hidden="false">open_in_new</mat-icon>
+        <mat-icon class="material-symbols-outlined" aria-hidden="false">open_in_new</mat-icon>
       </button>
 
       <span class="spacer"></span>
@@ -75,27 +47,28 @@ import {AuthService, KouncilRole} from '@app/common-auth';
                     class="select servers"
                     [(value)]="servers.selectedServerId"
                     (selectionChange)="serverSelectionChanged()">
-          <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{s.serverId}}
-            - {{s.label}}</mat-option>
+          <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{ s.serverId }}
+            - {{ s.label }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
       <button *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated" class="menu-button"
-              mat-button disableRipple
+              mat-button [disableRipple]="true"
               (click)="logout()">
         Logout
-        <mat-icon aria-hidden="false">logout</mat-icon>
+        <mat-icon class="material-symbols-outlined" aria-hidden="false">logout</mat-icon>
       </button>
 
-      <img *ngIf="((isAuthenticated$ | async) && !hideForAuthenticated) === false"
+      <img *ngIf="!((isAuthenticated$ | async) && !hideForAuthenticated)"
            src="assets/consdata-logo-color.png" alt="logo"
            class="consdata-logo"/>
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./toolbar.component.scss']
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class ToolbarComponent implements OnInit, AfterViewInit {
 
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 

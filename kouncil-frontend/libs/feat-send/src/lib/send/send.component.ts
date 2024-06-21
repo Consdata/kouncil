@@ -28,7 +28,7 @@ declare let monaco: any;
         <div class="drawer-header">
           <div class="drawer-title">Send event to {{ messageData.topicName }}</div>
           <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="close">close</mat-icon>
+          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
         </div>
 
         <div class="drawer-section-subtitle">

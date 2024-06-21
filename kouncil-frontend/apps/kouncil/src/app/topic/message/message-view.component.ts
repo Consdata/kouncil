@@ -19,7 +19,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
       <div class="drawer-header">
         <div class="drawer-title">Event preview</div>
         <div class="spacer"></div>
-        <mat-icon mat-dialog-close class="close">close</mat-icon>
+        <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
       </div>
       <div class="headers" *ngIf="vm.messageData.headers.length > 0 && vm.isAnimationDone">
         <div class="label">Headers</div>
@@ -52,15 +52,17 @@ import {AuthService, KouncilRole} from '@app/common-auth';
       </div>
 
       <div class="actions">
-        <button type="button" mat-dialog-close mat-button disableRipple class="action-button-white">
+        <button type="button" mat-dialog-close mat-button [disableRipple]="true"
+                class="action-button-white">
           Cancel
         </button>
         <span class="spacer"></span>
-        <button mat-button disableRipple class="action-button-white"
+        <button mat-button [disableRipple]="true" class="action-button-white"
                 (click)="copyToClipboard(vm.messageData.value)">Copy to
           clipboard
         </button>
-        <button mat-button disableRipple *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+        <button mat-button [disableRipple]="true"
+                *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
                 class="action-button-black" (click)="resend(vm.messageData)">
           Resend event
         </button>
@@ -75,7 +77,7 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
 
   private isAnimationDone$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  KouncilRole: typeof KouncilRole  = KouncilRole;
+  KouncilRole: typeof KouncilRole = KouncilRole;
 
   columns: TableColumn[] = [
     {
