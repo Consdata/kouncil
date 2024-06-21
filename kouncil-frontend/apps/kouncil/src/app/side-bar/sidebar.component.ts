@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthService, KouncilRole} from '@app/common-auth';
-import {SidebarService} from "./sidebar.service";
+import {SidebarService} from './sidebar.service';
 
 @Component({
   selector: 'app-kafka-sidebar',
@@ -68,18 +68,18 @@ export class SidebarComponent {
   KouncilRole: typeof KouncilRole = KouncilRole;
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
-  currentState$: Observable<boolean> = this.sidebarService.isOpened;
+  currentState$: Observable<boolean> = this.sidebarService.isOpened$;
   @HostBinding('class') hostClass: string = 'opened';
 
   constructor(public authService: AuthService,
               private sidebarService: SidebarService) {
-    this.sidebarService.isOpened.subscribe(isOpened=>{
+    this.sidebarService.isOpened$.subscribe(isOpened=>{
       if(isOpened){
           this.hostClass = 'opened';
       } else {
           this.hostClass = 'closed';
       }
-    })
+    });
   }
 
   changeState(): void {
