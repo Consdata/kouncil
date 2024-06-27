@@ -40,10 +40,5 @@ kouncil:
     base-path: "https://kouncil-eximee-survey-n22nwdfueq-lm.a.run.app/kouncil"
 
 spring:
-  datasource:
-  jpa:
-    show-sql: true
-    hibernate:
-      default_schema: KOUNCIL
   flyway:
     enabled: true
