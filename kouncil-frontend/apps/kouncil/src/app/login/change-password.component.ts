@@ -27,25 +27,21 @@ export class ChangePasswordComponent {
 
   changePassword($event: string): void {
     this.service.changeDefaultPassword$($event).subscribe(() => {
-      if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
-        this.router.navigate(['/topics']);
-      } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
-        this.router.navigate(['/brokers']);
-      }
+      this.navigateToDefaultPage();
     });
   }
 
   skipChange(): void {
     this.service.skipChange$().subscribe(() => {
-      if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
-        this.router.navigate(['/topics']);
-      } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
-        this.router.navigate(['/brokers']);
-      }
+      this.navigateToDefaultPage();
     });
   }
 
-  getIconContainerClass(): string {
-    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
+  private navigateToDefaultPage() {
+    if (this.service.canAccess([KouncilRole.TOPIC_LIST])) {
+      this.router.navigate(['/topics']);
+    } else if (this.service.canAccess([KouncilRole.BROKERS_LIST])) {
+      this.router.navigate(['/brokers']);
+    }
   }
 }

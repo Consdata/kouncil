@@ -2,15 +2,18 @@ import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthService, KouncilRole} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
+import {Backend} from "@app/common-model";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-kafka-sidebar',
   template: `
-    <div class="sidenav" [ngClass]="(currentState$ | async) ? 'opened' : 'closed'">
+    <div class="sidenav"
+         [ngClass]="{'opened': (currentState$ | async), 'closed': !(currentState$| async), 'sidenav-demo': backend === 'DEMO'}">
       <a class="menu-button" mat-button [disableRipple]="true" routerLinkActive="active"
          [routerLink]="['/topics']" matTooltip="{{(currentState$ | async) ? '' : 'Topics'}}"
          matTooltipPosition="after"
-         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TOPIC_LIST])">
         <mat-icon class="material-symbols-outlined">topic</mat-icon>
         <span *ngIf="(currentState$ | async)">Topics</span>
       </a>
@@ -19,7 +22,7 @@ import {SidebarService} from './sidebar.service';
          [routerLink]="['/brokers']"
          matTooltip="{{(currentState$ | async) ? '' : 'Brokers'}}"
          matTooltipPosition="after"
-         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.BROKERS_LIST])">
         <mat-icon class="material-symbols-outlined">hub</mat-icon>
         <span *ngIf="(currentState$ | async)">Brokers</span>
       </a>
@@ -28,7 +31,7 @@ import {SidebarService} from './sidebar.service';
          [routerLink]="['/consumer-groups']"
          matTooltip="{{(currentState$ | async) ? '' : 'Consumer Groups'}}"
          matTooltipPosition="after"
-         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CONSUMER_GROUP_LIST])">
         <mat-icon class="material-symbols-outlined">device_hub</mat-icon>
         <span *ngIf="(currentState$ | async)">Consumer Groups</span>
       </a>
@@ -36,7 +39,7 @@ import {SidebarService} from './sidebar.service';
       <a class="menu-button" mat-button [disableRipple]="true" routerLinkActive="active"
          [routerLink]="['/track']"
          matTooltip="{{(currentState$ | async) ? '' : 'Track'}}" matTooltipPosition="after"
-         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TRACK_LIST])">
         <mat-icon class="material-symbols-outlined">manage_search</mat-icon>
         <span *ngIf="(currentState$ | async)">Track</span>
       </a>
@@ -44,7 +47,7 @@ import {SidebarService} from './sidebar.service';
          [routerLink]="['/schemas']"
          matTooltip="{{(currentState$ | async) ? '' : 'Schema Registry'}}"
          matTooltipPosition="after"
-         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.SCHEMA_LIST])">
         <mat-icon class="material-symbols-outlined">code</mat-icon>
         <span *ngIf="(currentState$ | async)">Schema Registry</span>
       </a>
@@ -65,6 +68,7 @@ import {SidebarService} from './sidebar.service';
 })
 export class SidebarComponent {
 
+  public backend: Backend = environment.backend;
   KouncilRole: typeof KouncilRole = KouncilRole;
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;

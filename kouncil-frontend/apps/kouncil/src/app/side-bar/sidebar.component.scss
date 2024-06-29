@@ -65,4 +65,9 @@
       }
     }
   }
+
+  .sidenav-demo {
+    height: calc(100% - 114px);
+    top: 114px;
+  }
 }

@@ -34,7 +34,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
             Clear filters
           </button>
 
-          <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+          <button mat-button *ngIf="authService.canAccess([KouncilRole.SCHEMA_CREATE])"
                   class="action-button-black" [routerLink]="['/schemas/create']">
             Add new schema
           </button>
@@ -65,12 +65,12 @@ import {AuthService, KouncilRole} from '@app/common-auth';
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
                 <button class="action-button"
-                        *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                        *ngIf="authService.canAccess([KouncilRole.SCHEMA_UPDATE])"
                         [routerLink]="['/schemas/edit/' + element.subjectName + '/' + element.version]">
                   Edit
                 </button>
                 <button class="action-button"
-                        *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                        *ngIf="authService.canAccess([KouncilRole.SCHEMA_DELETE])"
                         (click)="deleteSchema(element.subjectName, element.version)">
                   Delete
                 </button>

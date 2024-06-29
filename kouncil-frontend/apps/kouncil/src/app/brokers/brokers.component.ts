@@ -9,6 +9,7 @@ import {DrawerService, ProgressBarService, SearchService} from '@app/common-util
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {FileSizePipe} from './filze-size.pipe';
+import {AuthService, KouncilRole} from '@app/common-auth';
 
 @Component({
   selector: 'app-kafka-brokers',
@@ -124,7 +125,8 @@ export class BrokersComponent extends AbstractTableComponent implements OnInit {
               private progressBarService: ProgressBarService,
               private brokerService: BrokerService,
               private drawerService: DrawerService,
-              private servers: ServersService) {
+              private servers: ServersService,
+              private authService: AuthService) {
     super();
   }
 
@@ -163,12 +165,14 @@ export class BrokersComponent extends AbstractTableComponent implements OnInit {
   }
 
   showBrokerDetails(event: Broker): void {
-    this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.id)
-    .pipe(first())
-    .subscribe(data => {
-      this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
-        config: data
-      }, '987px');
-    });
+    if (this.authService.canAccess([KouncilRole.BROKER_DETAILS])) {
+      this.brokerService.getBrokerConfig$(this.servers.getSelectedServerId(), event.id)
+      .pipe(first())
+      .subscribe(data => {
+        this.drawerService.openDrawerWithoutPadding(BrokerComponent, {
+          config: data
+        }, '987px');
+      });
+    }
   }
 }

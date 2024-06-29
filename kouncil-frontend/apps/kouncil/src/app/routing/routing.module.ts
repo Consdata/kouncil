@@ -68,7 +68,7 @@ const routes: Routes = [
         component: BrokersComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_ADMIN]
+          roles: [KouncilRole.BROKERS_LIST]
         }
       },
       {
@@ -76,7 +76,7 @@ const routes: Routes = [
         component: TopicsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+          roles: [KouncilRole.TOPIC_LIST]
         }
       },
       {
@@ -84,7 +84,7 @@ const routes: Routes = [
         component: TopicComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+          roles: [KouncilRole.TOPIC_MESSAGES]
         }
       },
       {
@@ -92,7 +92,7 @@ const routes: Routes = [
         component: ConsumerGroupsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_ADMIN]
+          roles: [KouncilRole.CONSUMER_GROUP_LIST]
         }
       },
       {
@@ -100,7 +100,7 @@ const routes: Routes = [
         component: ConsumerGroupComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_ADMIN]
+          roles: [KouncilRole.CONSUMER_GROUP_DETAILS]
         }
       },
       {
@@ -108,7 +108,7 @@ const routes: Routes = [
         component: TrackComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+          roles: [KouncilRole.TRACK_LIST]
         }
       },
       {
@@ -121,7 +121,7 @@ const routes: Routes = [
         component: SchemasComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+          roles: [KouncilRole.SCHEMA_LIST]
         }
       },
       {
@@ -129,7 +129,7 @@ const routes: Routes = [
         component: SchemaEditComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR]
+          roles: [KouncilRole.SCHEMA_UPDATE]
         }
       },
       {
@@ -137,7 +137,7 @@ const routes: Routes = [
         component: SchemaCreateComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR]
+          roles: [KouncilRole.SCHEMA_CREATE]
         }
       },
       {
@@ -145,7 +145,7 @@ const routes: Routes = [
         component: SchemaDetailsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER]
+          roles: [KouncilRole.SCHEMA_DETAILS]
         }
       }
     ]

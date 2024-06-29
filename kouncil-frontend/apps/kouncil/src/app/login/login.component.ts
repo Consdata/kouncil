@@ -80,9 +80,9 @@ export class LoginComponent implements OnInit {
       if (this.firstTimeLogin) {
         this.router.navigate(['/changePassword']);
       } else {
-        if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+        if (this.service.canAccess([KouncilRole.TOPIC_LIST])) {
           this.router.navigate(['/topics']);
-        } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+        } else if (this.service.canAccess([KouncilRole.BROKERS_LIST])) {
           this.router.navigate(['/brokers']);
         }
       }
