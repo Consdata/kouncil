@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {SidebarService} from '../side-bar/sidebar.service';
 
 @Component({
   selector: 'app-main',
@@ -12,7 +13,7 @@ import {environment} from '../../environments/environment';
 
       <app-kafka-sidebar></app-kafka-sidebar>
 
-      <div style="width: 100%; height: 100%">
+      <div [ngClass]="(sidebarService.isOpened$ | async) ? 'sidebarOpened' : 'sidebarClosed'">
         <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
           <app-progress-bar></app-progress-bar>
           <router-outlet></router-outlet>
@@ -27,6 +28,6 @@ export class MainComponent {
 
   public backend: Backend = environment.backend;
 
-  constructor() {
+  constructor(public sidebarService: SidebarService) {
   }
 }

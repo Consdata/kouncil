@@ -136,13 +136,16 @@ export class SendComponent implements OnDestroy {
             map(exampleData => ({
                 ...messageData,
                 key: messageData.key ?? JSON.stringify(exampleData.exampleKey),
-                value: messageData.value ? JSON.stringify(messageData.value, null, 2) :
-                  JSON.stringify(exampleData.exampleValue, null, 2)
+                value: messageData.originalValue
+                  ? messageData.originalValue
+                  : (messageData.value
+                    ? messageData.value
+                    : JSON.stringify(exampleData.exampleValue, null, 2))
               })
             )),
           of({
               ...messageData,
-              value: messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value
+              value: messageData.originalValue ? JSON.stringify(messageData.originalValue, null, 2) : messageData.value
             }
           ));
       }
@@ -252,11 +255,15 @@ export class SendComponent implements OnDestroy {
     this.countControl.reset(1);
   }
 
-  addHeader(headers: MessageDataHeader[]): void {
-    headers.push({key: '', value: ''} as MessageDataHeader);
+  addHeader(headers: MessageDataHeader[] | undefined): void {
+    if (headers) {
+      headers.push({key: '', value: ''} as MessageDataHeader);
+    }
   }
 
-  removeHeader(i: number, headers: MessageDataHeader[]): void {
-    headers.splice(i, 1);
+  removeHeader(i: number, headers: MessageDataHeader[] | undefined): void {
+    if (headers) {
+      headers.splice(i, 1);
+    }
   }
 }

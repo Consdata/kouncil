@@ -99,7 +99,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
                 [routerLink]="['/schemas']">
           Cancel
         </button>
-        <button mat-button [disableRipple]="true" *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
+        <button mat-button [disableRipple]="true"
+                *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
                 class="action-button-black" type="submit"
                 [disabled]="!schemaForm.valid">
           Save
