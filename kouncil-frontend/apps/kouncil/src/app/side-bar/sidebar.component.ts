@@ -2,14 +2,14 @@ import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthService, KouncilRole} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
-import {Backend} from "@app/common-model";
-import {environment} from "../../environments/environment";
+import {Backend} from '@app/common-model';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-kafka-sidebar',
   template: `
     <div class="sidenav"
-         [ngClass]="{'opened': (currentState$ | async), 'closed': !(currentState$| async), 'sidenav-demo': backend === 'DEMO'}">
+         [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
       <a class="menu-button" mat-button [disableRipple]="true" routerLinkActive="active"
          [routerLink]="['/topics']" matTooltip="{{(currentState$ | async) ? '' : 'Topics'}}"
          matTooltipPosition="after"

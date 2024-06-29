@@ -4,7 +4,13 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {environment} from './environments/environment';
 import {AppModule} from './app/app.module';
 import {APP_BASE_HREF} from '@angular/common';
-import {Backend} from "@app/common-model";
+import {Backend} from '@app/common-model';
+
+function bootstrap(extraProviders?: StaticProvider[] | undefined) {
+  platformBrowserDynamic(extraProviders)
+  .bootstrapModule(AppModule)
+  .catch((err) => console.error(err));
+}
 
 if (environment.production) {
   enableProdMode();
@@ -19,10 +25,4 @@ if (Backend.SERVER === environment.backend) {
   );
 } else {
   bootstrap();
-}
-
-function bootstrap(extraProviders?: StaticProvider[] | undefined) {
-  platformBrowserDynamic(extraProviders)
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
 }
