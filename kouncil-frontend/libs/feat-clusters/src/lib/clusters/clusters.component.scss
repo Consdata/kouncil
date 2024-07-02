@@ -1,0 +1,45 @@
+@import '../../../../../apps/kouncil/src/styles/palette';
+
+:host {
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    color: $main-100;
+  }
+
+  .subtitle {
+    color: $main-60;
+    font-size: 14px;
+    line-height: 24px;
+  }
+
+  .actions > .action-button-black {
+    background: $red-60;
+  }
+
+  .section {
+    color: $main-100;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 20px 0;
+
+    div {
+      margin: 3px 0;
+    }
+  }
+
+  mat-dialog-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+}

@@ -1,5 +1,6 @@
-package com.consdata.kouncil.config.cluster;
+package com.consdata.kouncil.clusters;
 
+import com.consdata.kouncil.clusters.dto.ClustersDto;
 import com.consdata.kouncil.model.admin.FunctionName.Fields;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ public class ClustersController {
 
     private final ClustersService clustersService;
 
-    @RolesAllowed({Fields.TOPIC_LIST, Fields.BROKERS_LIST})
+    @RolesAllowed({Fields.TOPIC_LIST, Fields.BROKERS_LIST, Fields.CLUSTER_LIST})
     @GetMapping(path = "/api/clusters")
     public ClustersDto getClusters() {
         return clustersService.getClusters();

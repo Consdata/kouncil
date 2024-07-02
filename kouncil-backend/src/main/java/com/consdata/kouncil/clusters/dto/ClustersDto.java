@@ -1,6 +1,5 @@
-package com.consdata.kouncil.config.cluster;
+package com.consdata.kouncil.clusters.dto;
 
-import com.consdata.kouncil.config.cluster.dto.ClusterDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;

@@ -30,6 +30,7 @@
       "@app/common-model": ["libs/common-model/src/index.ts"],
       "@app/common-servers": ["libs/common-servers/src/index.ts"],
       "@app/common-utils": ["libs/common-utils/src/index.ts"],
+      "@app/feat-clusters": ["libs/feat-clusters/src/index.ts"],
       "@app/feat-confirm": ["libs/feat-confirm/src/index.ts"],
       "@app/feat-favourites": ["libs/feat-favourites/src/index.ts"],
       "@app/feat-no-data": ["libs/feat-no-data/src/index.ts"],

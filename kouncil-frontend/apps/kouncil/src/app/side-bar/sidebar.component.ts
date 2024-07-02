@@ -52,6 +52,19 @@ import {environment} from '../../environments/environment';
         <span *ngIf="(currentState$ | async)">Schema Registry</span>
       </a>
 
+      <a class="grouping-menu-item"
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
+        <span *ngIf="(currentState$ | async)">Configuration</span>
+      </a>
+      <a class="menu-button" mat-button [disableRipple]="true" routerLinkActive="active"
+         [routerLink]="['/clusters']"
+         matTooltip="{{(currentState$ | async) ? '' : 'Clusters'}}"
+         matTooltipPosition="after"
+         *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
+        <mat-icon class="material-symbols-outlined">storage</mat-icon>
+        <span *ngIf="(currentState$ | async)">Clusters</span>
+      </a>
+
       <div style="width: 100%; height: 32px">
         <button mat-icon-button
                 style="bottom: 20px; right: 0; position: absolute;"
