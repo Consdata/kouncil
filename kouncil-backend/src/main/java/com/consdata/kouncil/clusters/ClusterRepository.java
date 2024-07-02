@@ -1,4 +1,4 @@
-package com.consdata.kouncil.config.cluster;
+package com.consdata.kouncil.clusters;
 
 import com.consdata.kouncil.model.cluster.Cluster;
 import org.springframework.data.repository.CrudRepository;

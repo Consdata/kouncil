@@ -62,6 +62,7 @@ import {ConfirmModule} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
+  clustersServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
   sendServiceFactory,
@@ -102,6 +103,7 @@ import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from
 import {FeatTopicFormModule, TopicService} from '@app/feat-topic-form';
 import {SidebarComponent} from './side-bar/sidebar.component';
 import {ToolbarComponent} from './toolbar/toolbar.component';
+import {ClustersService, FeatClustersModule} from '@app/feat-clusters';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -215,7 +217,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SurveyScaleQuestionComponent,
     MatCheckboxModule,
     CommonAuthModule,
-    FeatTopicFormModule
+    FeatTopicFormModule,
+    FeatClustersModule
   ],
   providers: [
     {
@@ -297,6 +300,11 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     {
       provide: BASE_URL,
       useValue: environment.baseUrl
+    },
+    {
+      provide: ClustersService,
+      useFactory: clustersServiceFactory,
+      deps: [HttpClient]
     }
   ],
   bootstrap: [AppComponent]

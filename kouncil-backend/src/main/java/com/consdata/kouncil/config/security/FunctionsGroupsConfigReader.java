@@ -53,20 +53,23 @@ public final class FunctionsGroupsConfigReader {
 
         List<FunctionName> adminFunctions = List.of(FunctionName.BROKERS_LIST, FunctionName.BROKER_DETAILS,
                 FunctionName.CONSUMER_GROUP_LIST, FunctionName.CONSUMER_GROUP_DETAILS, FunctionName.CONSUMER_GROUP_DELETE,
-                FunctionName.LOGIN);
+                FunctionName.LOGIN,
+                FunctionName.CLUSTER_LIST);
 
         List<FunctionName> editorFunctions = List.of(
                 FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DELETE, FunctionName.TOPIC_MESSAGES,
                 FunctionName.TOPIC_RESEND_MESSAGE, FunctionName.TOPIC_SEND_MESSAGE,
                 FunctionName.TRACK_LIST,
                 FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_CREATE, FunctionName.SCHEMA_UPDATE, FunctionName.SCHEMA_DELETE, FunctionName.SCHEMA_DETAILS,
-                FunctionName.LOGIN);
+                FunctionName.LOGIN,
+                FunctionName.CLUSTER_LIST);
 
         List<FunctionName> viewerFunctions = List.of(
                 FunctionName.TOPIC_LIST, FunctionName.TOPIC_MESSAGES,
                 FunctionName.TRACK_LIST,
                 FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_DETAILS,
-                FunctionName.LOGIN);
+                FunctionName.LOGIN,
+                FunctionName.CLUSTER_LIST);
 
         List<UserGroup> groups = new ArrayList<>();
 
@@ -91,7 +94,6 @@ public final class FunctionsGroupsConfigReader {
         List<Function> functions = StreamSupport.stream(functionsRepository.findAll().spliterator(), false).toList();
 
         functions.forEach(function -> {
-
             if (function.getUserGroups() == null) {
                 function.setUserGroups(new HashSet<>());
             }

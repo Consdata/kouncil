@@ -1,14 +1,14 @@
-package com.consdata.kouncil.config.cluster.reader;
+package com.consdata.kouncil.config.cluster;
 
 import static java.lang.String.format;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import com.consdata.kouncil.KouncilRuntimeException;
+import com.consdata.kouncil.clusters.ClusterRepository;
 import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.ClusterConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySSL;
-import com.consdata.kouncil.config.cluster.ClusterRepository;
 import com.consdata.kouncil.model.Broker;
 import com.consdata.kouncil.model.cluster.Cluster;
 import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;

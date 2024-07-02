@@ -1,15 +1,15 @@
-package com.consdata.kouncil.config.cluster.converter;
+package com.consdata.kouncil.clusters.converter;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
+import com.consdata.kouncil.clusters.dto.ClusterDto;
+import com.consdata.kouncil.clusters.dto.SchemaRegistrySecurityConfigDto;
 import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.ClusterConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistryAuth;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySSL;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySecurity;
-import com.consdata.kouncil.config.cluster.dto.ClusterDto;
-import com.consdata.kouncil.config.cluster.dto.SchemaRegistrySecurityConfigDto;
 import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
