@@ -5,6 +5,15 @@ import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.logging.EntryExitLogger;
+import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.security.RolesAllowed;
+import javax.management.MalformedObjectNameException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Config;
@@ -19,11 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.MalformedObjectNameException;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -35,6 +39,7 @@ public class BrokersController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
+    @RolesAllowed(Fields.BROKERS_LIST)
     @GetMapping("/api/brokers")
     @EntryExitLogger
     public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
@@ -101,7 +106,7 @@ public class BrokersController {
                     .isReadOnly(e.isReadOnly())
                     .isSensitive(e.isSensitive())
                     .build()));
-            return configs.stream().sorted().collect(Collectors.toList());
+            return configs.stream().sorted().toList();
         } catch (Exception e) {
             Thread.currentThread().interrupt();
             throw new KouncilRuntimeException(e);

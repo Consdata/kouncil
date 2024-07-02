@@ -64,7 +64,9 @@ export class AuthDemoService implements AuthService {
   }
 
   getUserRoles$(): Observable<void> {
-    this.userRoles = new Array<KouncilRole>(KouncilRole.KOUNCIL_ADMIN, KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER);
+    Object.keys(KouncilRole).forEach(role=>{
+      this.userRoles.push(KouncilRole[role]);
+    });
     localStorage.setItem(this.USER_ROLES, JSON.stringify(this.userRoles));
     return of(undefined);
   }

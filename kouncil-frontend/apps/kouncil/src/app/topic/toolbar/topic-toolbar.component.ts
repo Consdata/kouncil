@@ -41,11 +41,11 @@ export enum LiveUpdateState {
       </mat-form-field>
 
 
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+      <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_RESEND_MESSAGE])"
               class="action-button-white" (click)="openResendPopup()">
         Resend events
       </button>
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+      <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_SEND_MESSAGE])"
               class="action-button-black" (click)="openSendPopup()">
         Send event
       </button>

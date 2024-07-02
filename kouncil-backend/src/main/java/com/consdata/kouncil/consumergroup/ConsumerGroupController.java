@@ -1,9 +1,8 @@
 package com.consdata.kouncil.consumergroup;
 
-import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
-
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.config.KouncilConfiguration;
+import com.consdata.kouncil.model.admin.FunctionName.Fields;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +35,7 @@ public class ConsumerGroupController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
-    @RolesAllowed(ADMIN_ROLE)
+    @RolesAllowed(Fields.CONSUMER_GROUP_LIST)
     @GetMapping("/api/consumer-groups")
     public ConsumerGroupsResponse getConsumerGroups(@RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
         ConsumerGroupsResponse result = ConsumerGroupsResponse
@@ -52,7 +51,7 @@ public class ConsumerGroupController {
         return result;
     }
 
-    @RolesAllowed(ADMIN_ROLE)
+    @RolesAllowed(Fields.CONSUMER_GROUP_DETAILS)
     @GetMapping("/api/consumer-group/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(
             @PathVariable("groupId") String groupId,
@@ -94,7 +93,7 @@ public class ConsumerGroupController {
         return result;
     }
 
-    @RolesAllowed(ADMIN_ROLE)
+    @RolesAllowed(Fields.CONSUMER_GROUP_DELETE)
     @DeleteMapping("/api/consumer-group/{groupId}")
     public void deleteConsumerGroup(
             @PathVariable("groupId") String groupId,

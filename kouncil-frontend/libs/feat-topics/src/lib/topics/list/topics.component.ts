@@ -20,7 +20,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {AuthService, KouncilRole} from '@app/common-auth';
-import {TopicService, TopicFormComponent} from '@app/feat-topic-form';
+import {TopicFormComponent, TopicService} from '@app/feat-topic-form';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 
@@ -32,7 +32,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
       <div class="toolbar-container">
         <div class="toolbar">
           <button mat-button class="action-button-black" (click)="createTopic()"
-                  *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])">
+                  *ngIf="authService.canAccess([KouncilRole.TOPIC_CREATE])">
             Create topic
           </button>
         </div>
@@ -84,11 +84,11 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                <button *ngIf="authService.canAccess([KouncilRole.TOPIC_UPDATE])"
                         class="action-button" (click)="createTopic(element.name)">
                   Update
                 </button>
-                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                <button *ngIf="authService.canAccess([KouncilRole.TOPIC_DELETE])"
                         class="action-button" (click)="removeTopic(element.name)">
                   Delete
                 </button>
