@@ -45,11 +45,13 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
                                    [template]="cellTemplate">
 
             <ng-template #cellTemplate let-element>
-              <a class="datatable-cell-anchor" [routerLink]="['/consumer-groups/', element.groupId]">
-                <mat-icon class="star-favourite" [class.gray]="element.group !== 'FAVOURITES'"
+              <a class="datatable-cell-anchor"
+                 [routerLink]="['/consumer-groups/', element.groupId]">
+                <mat-icon class="material-symbols-outlined star-favourite"
+                          [class.gray]="element.group !== 'FAVOURITES'"
                           (click)="onFavouriteClick($event, element)">star
                 </mat-icon>
-                {{element.groupId}}
+                {{ element.groupId }}
               </a>
             </ng-template>
           </app-common-table-column>

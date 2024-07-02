@@ -102,6 +102,7 @@ export class JsonGrid {
         row['kouncilTimestamp'] = this.formatTimestamp(object.timestamp);
         row['kouncilTimestampEpoch'] = object.timestamp;
         row['kouncilValue'] = object.value;
+        row['kouncilOriginalValue'] = object.originalValue;
         row['kouncilValueFormat'] = object.valueFormat;
         row['kouncilValueJson'] = object.valueJson;
         row['headers'] = object.headers;

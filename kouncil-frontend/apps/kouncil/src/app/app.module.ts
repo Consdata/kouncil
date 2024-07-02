@@ -11,11 +11,10 @@ import {
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NavbarComponent} from './navbar/navbar.component';
 import {BrokersComponent} from './brokers/brokers.component';
 import {ConsumerGroupsComponent} from './consumers/consumer-groups/consumer-groups.component';
 import {ConsumerGroupComponent} from './consumers/consumer-group/consumer-group.component';
-import {ToolbarComponent} from './topic/toolbar/toolbar.component';
+import {TopicToolbarComponent} from './topic/toolbar/topic-toolbar.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {TopicPartitionsComponent} from './topic/topic-partitions.component';
@@ -101,6 +100,8 @@ import {
 import {SurveyService} from './survey/survey.service';
 import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
 import {FeatTopicFormModule, TopicService} from '@app/feat-topic-form';
+import {SidebarComponent} from './side-bar/sidebar.component';
+import {ToolbarComponent} from './toolbar/toolbar.component';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -146,10 +147,11 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
+    ToolbarComponent,
+    SidebarComponent,
     TopicComponent,
     ConsumerGroupsComponent,
-    ToolbarComponent,
+    TopicToolbarComponent,
     BrokersComponent,
     ConsumerGroupComponent,
     TopicPartitionsComponent,

@@ -6,7 +6,7 @@ import {ProgressBarService, SearchService} from '@app/common-utils';
   selector: 'app-no-data-placeholder',
   template: `
     <div *ngIf="(loading$ | async) === false" class="no-data-wrapper">
-      <mat-icon>search_off</mat-icon>
+      <mat-icon class="material-symbols-outlined">search_off</mat-icon>
       <div class="no-data-label">No data to display</div>
       <div class="no-data-comment" *ngIf="currentPhrase">
         {{ objectTypeName }} "{{ currentPhrase }}" not found

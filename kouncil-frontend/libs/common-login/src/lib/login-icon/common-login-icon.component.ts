@@ -4,7 +4,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
   selector: 'app-common-login-icon',
   template: `
     <div class="icon-login-container" [ngClass]="iconContainerClass">
-      <mat-icon aria-hidden="false" class="icon-login">person</mat-icon>
+      <mat-icon aria-hidden="false" class="material-symbols-outlined icon-login">person</mat-icon>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,7 +4,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   selector: 'app-access-denied',
   template: `
     <div class="access-denied-main">
-      <mat-icon aria-hidden="false" class="lock-icon">lock</mat-icon>
+      <mat-icon class="material-symbols-outlined lock-icon" aria-hidden="false">lock</mat-icon>
       <span class="access-denied-title">Access denied.</span>
       <span class="access-denied-text">You currently do not have access to this page.</span>
     </div>

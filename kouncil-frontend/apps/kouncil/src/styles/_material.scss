@@ -166,7 +166,7 @@ snack-bar-container.snackbar {
 }
 
 .snackbar-success::before {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   content: '\ef76';
   margin-right: 16px;
   color: pallete.$blue-50;
@@ -174,7 +174,7 @@ snack-bar-container.snackbar {
 }
 
 .snackbar-error::before {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   content: '\e000';
   margin-right: 16px;
   color: pallete.$red-50;

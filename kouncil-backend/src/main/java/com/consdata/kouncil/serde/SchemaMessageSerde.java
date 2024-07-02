@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SchemaMessageSerde {
+
     public DeserializedData deserialize(SchemaAwareCluster schemaAwareCluster, Bytes payload, KouncilSchemaMetadata kouncilSchemaMetadata) {
         MessageFormat messageFormat = schemaAwareCluster.getSchemaRegistryFacade().getSchemaFormat(kouncilSchemaMetadata);
         MessageFormatter formatter = schemaAwareCluster.getFormatter(messageFormat);
@@ -19,6 +20,12 @@ public class SchemaMessageSerde {
                 .deserialized(formatter.deserialize(DeserializationData.builder()
                         .value(payload.get())
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
+                        .useLogicalTypesConversions(true)
+                        .build()))
+                .originalValue(formatter.deserialize(DeserializationData.builder()
+                        .value(payload.get())
+                        .topicName(kouncilSchemaMetadata.getSchemaTopic())
+                        .useLogicalTypesConversions(false)
                         .build()))
                 .messageFormat(formatter.getFormat())
                 .schemaId(kouncilSchemaMetadata.getSchemaId())
@@ -35,7 +42,7 @@ public class SchemaMessageSerde {
                         .topicName(kouncilSchemaMetadata.getSchemaTopic())
                         .schema(schema)
                         .isKey(kouncilSchemaMetadata.isKey())
-                .build()
+                        .build()
         );
     }
 }

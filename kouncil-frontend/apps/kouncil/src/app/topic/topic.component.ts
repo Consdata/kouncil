@@ -7,7 +7,7 @@ import {TopicService, topicServiceProvider} from './topic.service';
 import {Page} from './page';
 import {ResendComponent} from '@app/resend-events';
 import {MessageViewComponent} from './message/message-view.component';
-import {LiveUpdateState} from './toolbar/toolbar.component';
+import {LiveUpdateState} from './toolbar/topic-toolbar.component';
 import {JsonGridData} from './json-grid-data';
 import {Observable, Subscription} from 'rxjs';
 import {JsonGrid} from './json-grid';
@@ -177,6 +177,7 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
     const messageData = {
       value: event.kouncilValueJson && Object.keys(event.kouncilValueJson).length > 0 ?
         event.kouncilValueJson : event.kouncilValue,
+      originalValue: event.kouncilOriginalValue,
       valueFormat: event.kouncilValueFormat,
       headers: event.headers,
       key: event.kouncilKeyJson && Object.keys(event.kouncilKeyJson).length > 0 ?
@@ -212,6 +213,7 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
     topicMessages.messages.forEach((message: MessageData) =>
       values.push({
         value: message.value,
+        originalValue: message.originalValue,
         valueFormat: message.valueFormat,
         valueJson: TopicComponent.tryParseJson(message.value),
         partition: message.partition,

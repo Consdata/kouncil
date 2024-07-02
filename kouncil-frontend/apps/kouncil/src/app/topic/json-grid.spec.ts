@@ -73,6 +73,7 @@ describe('JsonGrid', () => {
       'kouncilTimestamp',
       'kouncilTimestampEpoch',
       'kouncilValue',
+      'kouncilOriginalValue',
       'kouncilValueFormat',
       'kouncilValueJson',
       'headers']);
@@ -124,6 +125,7 @@ describe('JsonGrid', () => {
       'kouncilTimestamp',
       'kouncilTimestampEpoch',
       'kouncilValue',
+      'kouncilOriginalValue',
       'kouncilValueFormat',
       'kouncilValueJson',
       'headers']);
@@ -174,6 +176,7 @@ describe('JsonGrid', () => {
       'kouncilTimestamp',
       'kouncilTimestampEpoch',
       'kouncilValue',
+      'kouncilOriginalValue',
       'kouncilValueFormat',
       'kouncilValueJson',
       'headers']);
