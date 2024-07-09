@@ -1,7 +1,5 @@
 package com.consdata.kouncil.clusters.converter;
 
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
-
 import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.clusters.dto.SchemaRegistrySecurityConfigDto;
 import com.consdata.kouncil.config.BrokerConfig;
@@ -10,8 +8,6 @@ import com.consdata.kouncil.config.SchemaRegistryConfig;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistryAuth;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySSL;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySecurity;
-import com.consdata.kouncil.config.cluster.dto.ClusterDto;
-import com.consdata.kouncil.config.cluster.dto.SchemaRegistrySecurityConfigDto;
 import com.consdata.kouncil.model.cluster.ClusterAuthenticationMethod;
 import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;
 import com.consdata.kouncil.model.cluster.ClusterSecurityProtocol;
