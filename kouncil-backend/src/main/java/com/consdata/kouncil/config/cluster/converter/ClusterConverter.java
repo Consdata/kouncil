@@ -19,7 +19,22 @@ public final class ClusterConverter {
         clusterDto.setId(cluster.getId());
         clusterDto.setName(cluster.getName());
 
+        clusterDto.setGlobalJmxUser(cluster.getGlobalJmxUser());
+        clusterDto.setGlobalJmxPassword(cluster.getGlobalJmxPassword());
+        clusterDto.setGlobalJmxPort(cluster.getGlobalJmxPort());
+
         //brokers
+        setClusterBrokers(cluster, clusterDto);
+        //cluster security
+        getClusterSecurityConfigDto(cluster, clusterDto);
+        //schema registry
+        setClusterSchemaRegistry(cluster, clusterDto);
+
+
+        return clusterDto;
+    }
+
+    private static void setClusterBrokers(Cluster cluster, ClusterDto clusterDto) {
         cluster.getBrokers().forEach(broker -> {
             BrokerDto brokerDto = new BrokerDto();
             brokerDto.setBootstrapServer(broker.getBootstrapServer());
@@ -28,11 +43,26 @@ public final class ClusterConverter {
             brokerDto.setJmxPort(broker.getJmxPort());
             clusterDto.getBrokers().add(brokerDto);
         });
+    }
 
-        if (cluster.getClusterSecurityConfig() != null) {
-            clusterDto.setClusterSecurityConfig(getClusterSecurityConfigDto(cluster));
-        }
+    private static void getClusterSecurityConfigDto(Cluster cluster, ClusterDto clusterDto) {
+        ClusterSecurityConfigDto clusterSecurityConfigDto = new ClusterSecurityConfigDto();
+        clusterSecurityConfigDto.setAuthenticationMethod(cluster.getClusterSecurityConfig().getAuthenticationMethod());
+        clusterSecurityConfigDto.setSecurityProtocol(cluster.getClusterSecurityConfig().getSecurityProtocol());
+        clusterSecurityConfigDto.setSaslMechanism(cluster.getClusterSecurityConfig().getSaslMechanism());
+        clusterSecurityConfigDto.setTruststoreLocation(cluster.getClusterSecurityConfig().getTruststoreLocation());
+        clusterSecurityConfigDto.setTruststorePassword(cluster.getClusterSecurityConfig().getTruststorePassword());
+        clusterSecurityConfigDto.setKeystoreLocation(cluster.getClusterSecurityConfig().getKeystoreLocation());
+        clusterSecurityConfigDto.setKeystorePassword(cluster.getClusterSecurityConfig().getKeystorePassword());
+        clusterSecurityConfigDto.setKeyPassword(cluster.getClusterSecurityConfig().getKeyPassword());
 
+        clusterSecurityConfigDto.setUsername(cluster.getClusterSecurityConfig().getUsername());
+        clusterSecurityConfigDto.setPassword(cluster.getClusterSecurityConfig().getPassword());
+        clusterSecurityConfigDto.setAwsProfileName(cluster.getClusterSecurityConfig().getAwsProfileName());
+        clusterDto.setClusterSecurityConfig(clusterSecurityConfigDto);
+    }
+
+    private static void setClusterSchemaRegistry(Cluster cluster, ClusterDto clusterDto) {
         SchemaRegistry schemaRegistry = cluster.getSchemaRegistry();
         if (schemaRegistry != null) {
             SchemaRegistryDto schemaRegistryDto = new SchemaRegistryDto();
@@ -45,8 +75,6 @@ public final class ClusterConverter {
 
             clusterDto.setSchemaRegistry(schemaRegistryDto);
         }
-
-        return clusterDto;
     }
 
     private static SchemaRegistrySecurityConfigDto getSchemaRegistrySecurityConfigDto(SchemaRegistry schemaRegistry) {
@@ -68,17 +96,4 @@ public final class ClusterConverter {
         return schemaRegistrySecurityConfigDto;
     }
 
-    private static ClusterSecurityConfigDto getClusterSecurityConfigDto(Cluster cluster) {
-        ClusterSecurityConfigDto clusterSecurityConfigDto = new ClusterSecurityConfigDto();
-        clusterSecurityConfigDto.setSecurityProtocol(cluster.getClusterSecurityConfig().getSecurityProtocol());
-        clusterSecurityConfigDto.setSaslMechanism(cluster.getClusterSecurityConfig().getSaslMechanism());
-        clusterSecurityConfigDto.setSaslJassConfig(cluster.getClusterSecurityConfig().getSaslJassConfig());
-        clusterSecurityConfigDto.setSaslCallbackHandler(cluster.getClusterSecurityConfig().getSaslCallbackHandler());
-        clusterSecurityConfigDto.setTruststoreLocation(cluster.getClusterSecurityConfig().getTruststoreLocation());
-        clusterSecurityConfigDto.setTruststorePassword(cluster.getClusterSecurityConfig().getTruststorePassword());
-        clusterSecurityConfigDto.setKeystoreLocation(cluster.getClusterSecurityConfig().getKeystoreLocation());
-        clusterSecurityConfigDto.setKeystorePassword(cluster.getClusterSecurityConfig().getKeystorePassword());
-        clusterSecurityConfigDto.setKeyPassword(cluster.getClusterSecurityConfig().getKeyPassword());
-        return clusterSecurityConfigDto;
-    }
 }

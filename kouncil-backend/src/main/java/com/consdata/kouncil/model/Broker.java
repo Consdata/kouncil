@@ -29,7 +29,7 @@ public class Broker {
     @Column(name = "BOOTSTRAP_SERVER", nullable = false)
     private String bootstrapServer;
 
-    @Column(name = "JMX_PORT")
+    @Column(name = "JMX_PORT", length = 5)
     private Integer jmxPort;
 
     @Column(name = "JMX_USER", length = 40)

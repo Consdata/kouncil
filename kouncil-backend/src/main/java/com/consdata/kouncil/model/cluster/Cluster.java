@@ -38,6 +38,15 @@ public class Cluster {
     @JoinColumn(name = "CLUSTER_ID")
     private Set<Broker> brokers;
 
+    @Column(name = "GLOBAL_JMX_PORT", length = 5)
+    private Integer globalJmxPort;
+
+    @Column(name = "GLOBAL_JMX_USER", length = 40)
+    private String globalJmxUser;
+
+    @Column(name = "GLOBAL_JMX_PASSWORD", length = 40)
+    private String globalJmxPassword;
+
     @Embedded
     private ClusterSecurityConfig clusterSecurityConfig;
 
