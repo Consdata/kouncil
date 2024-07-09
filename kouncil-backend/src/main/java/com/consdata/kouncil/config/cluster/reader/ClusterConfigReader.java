@@ -11,6 +11,7 @@ import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySSL;
 import com.consdata.kouncil.config.cluster.ClusterRepository;
 import com.consdata.kouncil.model.Broker;
 import com.consdata.kouncil.model.cluster.Cluster;
+import com.consdata.kouncil.model.cluster.ClusterAuthenticationMethod;
 import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;
 import com.consdata.kouncil.model.cluster.ClusterSecurityConfig;
 import com.consdata.kouncil.model.cluster.ClusterSecurityProtocol;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 import lombok.Data;
@@ -62,6 +65,7 @@ public class ClusterConfigReader {
     public void init() {
         List<Cluster> clustersToSave = new ArrayList<>();
         Iterable<Cluster> all = repository.findAll();
+        //get saved cluster names to check if some clusters are not saved already
         List<String> clusterNames = StreamSupport.stream(all.spliterator(), false).map(Cluster::getName).toList();
 
         if (clusters != null) {
@@ -78,7 +82,14 @@ public class ClusterConfigReader {
             if (!clusterNames.contains(clusterConfig.getName())) {
                 Cluster cluster = new Cluster();
                 cluster.setName(clusterConfig.getName());
+
+                //Global JMX properties
+                cluster.setGlobalJmxPort(clusterConfig.getJmxPort());
+                cluster.setGlobalJmxUser(clusterConfig.getJmxUser());
+                cluster.setGlobalJmxPassword(clusterConfig.getJmxPassword());
+
                 cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
+                cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
                 KafkaProperties kafkaProperties = clusterConfig.getKafka();
 
                 if (kafkaProperties.getSecurity().getProtocol() != null) {
@@ -102,6 +113,8 @@ public class ClusterConfigReader {
                 if (initialBootstrapServer.contains(HOST_PORT_SEPARATOR)) {
                     Cluster cluster = new Cluster();
                     cluster.setName(clusterId);
+                    cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
+                    cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
                     cluster.setBrokers(new HashSet<>());
 
                     Broker broker = new Broker();
@@ -129,10 +142,24 @@ public class ClusterConfigReader {
                 broker -> {
                     clusterSecurityConfig.setSecurityProtocol(ClusterSecurityProtocol.valueOf(broker.getSaslProtocol()));
                     clusterSecurityConfig.setSaslMechanism(ClusterSASLMechanism.valueOf(broker.getSaslMechanism()));
-                    clusterSecurityConfig.setSaslJassConfig(broker.getSaslJassConfig());
-                    clusterSecurityConfig.setSaslCallbackHandler(broker.getSaslCallbackHandler());
+
+                    String saslJassConfig = broker.getSaslJassConfig();
+
+                    if (ClusterSecurityProtocol.SASL_PLAINTEXT.equals(clusterSecurityConfig.getSecurityProtocol())) {
+                        clusterSecurityConfig.setUsername(getValueFromTextUsingRegex("username=\"(.*?)\"", saslJassConfig));
+                        clusterSecurityConfig.setPassword(getValueFromTextUsingRegex("password=\"(.*?)\"", saslJassConfig));
+                        clusterSecurityConfig.setAuthenticationMethod(ClusterAuthenticationMethod.SASL);
+                    } else if (ClusterSASLMechanism.AWS_MSK_IAM.equals(clusterSecurityConfig.getSaslMechanism())) {
+                        clusterSecurityConfig.setAwsProfileName(getValueFromTextUsingRegex("awsProfileName=\"(.*?)\"", saslJassConfig));
+                        clusterSecurityConfig.setAuthenticationMethod(ClusterAuthenticationMethod.AWS_MSK);
+                    }
                 }
         );
+    }
+
+    private String getValueFromTextUsingRegex(String regex, String text) {
+        Matcher matcher = Pattern.compile(regex).matcher(text);
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     private void setBrokers(Cluster cluster, ClusterConfig clusterConfig) {
@@ -146,21 +173,11 @@ public class ClusterConfigReader {
             brokers.add(broker);
         });
 
-        //Propagating JMX config from cluster to brokers
-        if (clusterConfig.getJmxPort() != null) {
-            cluster.getBrokers().forEach(broker -> broker.setJmxPort(clusterConfig.getJmxPort()));
-        }
-        if (clusterConfig.getJmxUser() != null) {
-            cluster.getBrokers().forEach(broker -> broker.setJmxUser(clusterConfig.getJmxUser()));
-        }
-        if (clusterConfig.getJmxPassword() != null) {
-            cluster.getBrokers().forEach(broker -> broker.setJmxPassword(clusterConfig.getJmxPassword()));
-        }
-
         cluster.setBrokers(brokers);
     }
 
     private void setClusterSSLConfig(ClusterSecurityConfig clusterSecurityConfig, Ssl ssl, String protocol) {
+        clusterSecurityConfig.setAuthenticationMethod(ClusterAuthenticationMethod.SSL);
         clusterSecurityConfig.setSecurityProtocol(ClusterSecurityProtocol.valueOf(protocol));
 
         if (ssl != null) {
