@@ -12,6 +12,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class ClusterSecurityConfig {
 
+    @Column(name = "AUTHENTICATION_METHOD", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ClusterAuthenticationMethod authenticationMethod;
+
     @Column(name = "SECURITY_PROTOCOL")
     @Enumerated(EnumType.STRING)
     private ClusterSecurityProtocol securityProtocol;
@@ -19,12 +23,6 @@ public class ClusterSecurityConfig {
     @Column(name = "SASL_MECHANISM")
     @Enumerated(EnumType.STRING)
     private ClusterSASLMechanism saslMechanism;
-
-    @Column(name = "SASL_JASS_CONFIG")
-    private String saslJassConfig;
-
-    @Column(name = "SASL_CALLBACK_HANDLER")
-    private String saslCallbackHandler;
 
     @Column(name = "TRUSTSTORE_LOCATION")
     private String truststoreLocation;
@@ -40,4 +38,13 @@ public class ClusterSecurityConfig {
 
     @Column(name = "KEY_PASSWORD")
     private String keyPassword;
+
+    @Column(name = "USERNAME")
+    private String username;
+
+    @Column(name = "PASSWORD")
+    private String password;
+
+    @Column(name = "AWS_PROFILE_NAME")
+    private String awsProfileName;
 }
