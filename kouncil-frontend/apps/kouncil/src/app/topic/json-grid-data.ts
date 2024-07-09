@@ -3,6 +3,7 @@ import {MessageFormat} from '@app/schema-registry';
 
 export interface JsonGridData {
   value: string;
+  originalValue: string;
   valueFormat: MessageFormat;
   valueJson: Record<string, unknown>;
   partition: number | null;
