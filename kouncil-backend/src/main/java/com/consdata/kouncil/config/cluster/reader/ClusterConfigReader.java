@@ -15,6 +15,7 @@ import com.consdata.kouncil.model.cluster.ClusterAuthenticationMethod;
 import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;
 import com.consdata.kouncil.model.cluster.ClusterSecurityConfig;
 import com.consdata.kouncil.model.cluster.ClusterSecurityProtocol;
+import com.consdata.kouncil.model.schemaregistry.SchemaAuthenticationMethod;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistry;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistrySecurityConfig;
 import com.consdata.kouncil.model.schemaregistry.SchemaSecurityProtocol;
@@ -200,6 +201,7 @@ public class ClusterConfigReader {
             SchemaRegistry schemaRegistry = new SchemaRegistry();
             schemaRegistry.setUrl(schemaRegistryConfig.getUrl());
             schemaRegistry.setSchemaRegistrySecurityConfig(new SchemaRegistrySecurityConfig());
+            schemaRegistry.getSchemaRegistrySecurityConfig().setAuthenticationMethod(SchemaAuthenticationMethod.NONE);
 
             setSchemaRegistrySSL(schemaRegistry.getSchemaRegistrySecurityConfig(), schemaRegistryConfig);
             cluster.setSchemaRegistry(schemaRegistry);
@@ -210,7 +212,9 @@ public class ClusterConfigReader {
         if (schemaRegistryConfig.getSecurity() != null && schemaRegistryConfig.getSecurity().getProtocol() != null) {
             schemaRegistrySecurityConfig.setSecurityProtocol(SchemaSecurityProtocol.valueOf(schemaRegistryConfig.getSecurity().getProtocol()));
 
+            schemaRegistrySecurityConfig.setAuthenticationMethod(SchemaAuthenticationMethod.SSL);
             if (schemaRegistryConfig.getAuth() != null && schemaRegistryConfig.getAuth().getUserInfo() != null) {
+                schemaRegistrySecurityConfig.setAuthenticationMethod(SchemaAuthenticationMethod.SSL_BASIC_AUTH);
                 String[] userInfoSplit = schemaRegistryConfig.getAuth().getUserInfo().split(":");
                 schemaRegistrySecurityConfig.setUsername(userInfoSplit[0]);
                 schemaRegistrySecurityConfig.setPassword(userInfoSplit[1]);

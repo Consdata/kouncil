@@ -12,6 +12,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class SchemaRegistrySecurityConfig {
 
+    @Column(name = "AUTHENTICATION_METHOD", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SchemaAuthenticationMethod authenticationMethod;
+
     @Column(name = "SECURITY_PROTOCOL")
     @Enumerated(EnumType.STRING)
     private SchemaSecurityProtocol securityProtocol;
