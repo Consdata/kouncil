@@ -29,6 +29,10 @@ export class ClusterBackendService implements ClusterService {
   }
 
   isClusterNameUnique$(clusterName: string): Observable<boolean> {
-    return this.http.get<boolean>(`/api/cluster/${clusterName}/isClusterNameUnique`, );
+    return this.http.get<boolean>(`/api/cluster/${clusterName}/isClusterNameUnique`);
+  }
+
+  deleteTopic$(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/cluster/${id}`, );
   }
 }

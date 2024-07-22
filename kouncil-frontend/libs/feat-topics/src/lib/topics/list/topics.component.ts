@@ -263,7 +263,7 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
   }
 
   private deleteTopic(topicName: string) {
-    this.subscription.add(this.topicService.deleteSchema$(topicName, this.servers.getSelectedServerId())
+    this.subscription.add(this.topicService.deleteTopic$(topicName, this.servers.getSelectedServerId())
     .pipe(first())
     .subscribe({
       next: () => {

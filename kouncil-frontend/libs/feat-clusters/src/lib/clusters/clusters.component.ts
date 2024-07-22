@@ -1,12 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ClustersService} from './clusters.service';
-import {KouncilRole} from '@app/common-auth';
+import {AuthService, KouncilRole} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../clusterModel';
-import {ProgressBarService} from '@app/common-utils';
+import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {Router} from '@angular/router';
+import {ConfirmService} from '@app/feat-confirm';
+import {ClusterService} from '../cluster-form/cluster.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ServersService} from '@app/common-servers';
 
 @Component({
   selector: 'app-clusters',
@@ -45,6 +49,11 @@ import {Router} from '@angular/router';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
+                <button *ngIf="authService.canAccess([KouncilRole.CLUSTER_DELETE])"
+                        class="action-button"
+                        (click)="confirmDeleteCluster(element.id, element.name)">
+                  Delete
+                </button>
               </div>
             </ng-template>
           </app-common-table-column>
@@ -98,7 +107,13 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
 
   constructor(private clustersService: ClustersService,
               private progressBarService: ProgressBarService,
-              private router: Router) {
+              private router: Router,
+              private confirmService: ConfirmService,
+              private clusterService: ClusterService,
+              private snackbar: MatSnackBar,
+              private serversService: ServersService,
+              private cdr: ChangeDetectorRef,
+              protected authService: AuthService) {
     super();
   }
 
@@ -127,5 +142,45 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
 
   createCluster(): void {
     this.router.navigate([`/clusters/cluster`]);
+  }
+
+  confirmDeleteCluster(id: number, name: string): void {
+    this.subscription.add(this.confirmService.openConfirmDialog$({
+      title: 'Delete cluster',
+      subtitle: 'Are you sure you want to delete:',
+      sectionLine1: `Cluster ${name}`
+    })
+    .pipe(first())
+    .subscribe((confirmed) => {
+      if (confirmed) {
+        this.progressBarService.setProgress(true);
+        this.deleteCluster(id, name);
+      }
+    }));
+  }
+
+  private deleteCluster(id: number, clusterName: string) {
+    this.subscription.add(this.clusterService.deleteTopic$(id)
+    .pipe(first())
+    .subscribe({
+      next: () => {
+        this.loadClusters();
+        this.serversService.load().then(() => this.cdr.detectChanges());
+
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Cluster ${clusterName} deleted`, 'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+      },
+      error: () => {
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Cluster ${clusterName} couldn't be deleted`, 'snackbar-error', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+        this.progressBarService.setProgress(false);
+      }
+    }));
   }
 }

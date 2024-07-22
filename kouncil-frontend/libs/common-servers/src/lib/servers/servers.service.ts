@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Server } from './server';
+import {Injectable} from '@angular/core';
+import {Server} from './server';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable()
 export abstract class ServersService {
   servers: Server[] = [];
   selectedServerId: string;
+  private serversSubject$: BehaviorSubject<Server[]> = new BehaviorSubject<Server[]>([]);
 
   getSelectedServerId(): string {
     return this.selectedServerId;
@@ -12,7 +14,11 @@ export abstract class ServersService {
 
   abstract load(): Promise<boolean>;
 
-  getServers(): Server[] {
-    return this.servers;
+  get servers$(): Observable<Server[]> {
+    return this.serversSubject$.asObservable();
+  }
+
+  updateServers(servers: Server[]): void {
+    this.serversSubject$.next(servers);
   }
 }

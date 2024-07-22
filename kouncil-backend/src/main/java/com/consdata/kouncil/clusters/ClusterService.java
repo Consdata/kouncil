@@ -62,4 +62,9 @@ public class ClusterService {
     public boolean isClusterNameUnique(String clusterName) {
         return clusterRepository.findByName(clusterName) == null;
     }
+
+    public void deleteCluster(Long id) {
+        clusterRepository.deleteById(id);
+        kouncilConfiguration.initializeClusters();
+    }
 }

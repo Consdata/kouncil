@@ -4,6 +4,7 @@ import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.model.admin.FunctionName.Fields;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,11 @@ public class ClusterController {
     @GetMapping(path = "/api/cluster/{clusterName}/isClusterNameUnique")
     public boolean isClusterNameUnique(@PathVariable("clusterName") String clusterName) {
         return clusterService.isClusterNameUnique(clusterName);
+    }
+
+    @RolesAllowed(Fields.CLUSTER_DELETE)
+    @DeleteMapping(path = "/api/cluster/{id}")
+    public void deleteCluster(@PathVariable("id") Long id) {
+        clusterService.deleteCluster(id);
     }
 }

@@ -47,8 +47,8 @@ import {AuthService, KouncilRole} from '@app/common-auth';
                     class="select servers"
                     [(value)]="servers.selectedServerId"
                     (selectionChange)="serverSelectionChanged()">
-          <mat-option *ngFor="let s of servers.getServers()" value="{{s.serverId}}">{{ s.serverId }}
-            - {{ s.label }}
+          <mat-option *ngFor="let s of servers.servers$ | async" value="{{s.serverId}}">
+            {{ s.serverId }} - {{ s.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>
