@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ProgressBarService} from '@app/common-utils';
+import {ProgressBarService, ViewMode} from '@app/common-utils';
 import {
   Compatibility,
   MessageFormat,
@@ -13,7 +13,6 @@ import {TopicsService} from '@app/feat-topics';
 import {SelectableItem} from '@app/common-components';
 import {Topics} from '@app/common-model';
 import {first} from 'rxjs/operators';
-import {ViewMode} from '../view-mode';
 import {MatSelectChange} from '@angular/material/select';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
@@ -25,7 +24,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
       <div class="schema-base-info">
 
         <div>
-          <div class="label">Topic</div>
+          <div class="label">
+            Topic
+            <span class="required-field">*</span>
+          </div>
           <mat-form-field [appearance]="'outline'">
             <mat-select [formControl]="getControl('topicName')">
               <mat-option *ngFor="let topic of topics" [value]="topic.value">
@@ -36,7 +38,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
         </div>
 
         <div>
-          <div class="label">Subject type</div>
+          <div class="label">
+            Subject type
+            <span class="required-field">*</span>
+          </div>
           <mat-form-field [appearance]="'outline'">
             <mat-select [formControl]="getControl('subjectType')">
               <mat-option *ngFor="let subjectType of subjectTypes" [value]="subjectType">
@@ -59,7 +64,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
         </div>
 
         <div>
-          <div class="label">Message format</div>
+          <div class="label">
+            Message format
+            <span class="required-field">*</span>
+          </div>
           <mat-form-field [appearance]="'outline'">
             <mat-select [formControl]="getControl('messageFormat')">
               <mat-option *ngFor="let messageFormat of messageFormats" [value]="messageFormat">
@@ -88,7 +96,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
       </div>
 
       <div>
-        <div class="label">Schema</div>
+        <div class="label">
+          Schema
+          <span class="required-field">*</span>
+        </div>
         <app-common-editor [schemaType]="getControl('messageFormat').value"
                            [editorHeight]="400"
                            [formControl]="getControl('plainTextSchema')"></app-common-editor>

@@ -54,7 +54,8 @@ public final class FunctionsGroupsConfigReader {
         List<FunctionName> adminFunctions = List.of(FunctionName.BROKERS_LIST, FunctionName.BROKER_DETAILS,
                 FunctionName.CONSUMER_GROUP_LIST, FunctionName.CONSUMER_GROUP_DETAILS, FunctionName.CONSUMER_GROUP_DELETE,
                 FunctionName.LOGIN,
-                FunctionName.CLUSTER_LIST);
+                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName
+                        .CLUSTER_DETAILS);
 
         List<FunctionName> editorFunctions = List.of(
                 FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DELETE, FunctionName.TOPIC_MESSAGES,
@@ -62,14 +63,14 @@ public final class FunctionsGroupsConfigReader {
                 FunctionName.TRACK_LIST,
                 FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_CREATE, FunctionName.SCHEMA_UPDATE, FunctionName.SCHEMA_DELETE, FunctionName.SCHEMA_DETAILS,
                 FunctionName.LOGIN,
-                FunctionName.CLUSTER_LIST);
+                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName.CLUSTER_DETAILS);
 
         List<FunctionName> viewerFunctions = List.of(
                 FunctionName.TOPIC_LIST, FunctionName.TOPIC_MESSAGES,
                 FunctionName.TRACK_LIST,
                 FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_DETAILS,
                 FunctionName.LOGIN,
-                FunctionName.CLUSTER_LIST);
+                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_DETAILS);
 
         List<UserGroup> groups = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 export {CommonComponentsModule} from './lib/common-components.module';
 export {AutocompleteComponent} from './lib/autocomplete/autocomplete.component';
-export {SelectableItem} from './lib/autocomplete/selectable-item';
+export {SelectableItem} from './lib/selectable-item';
 export {TableComponent} from './lib/table/table.component';
 export {TableColumn} from './lib/table-column/table-column';
 export {TableColumnComponent} from './lib/table-column/table-column.component';
@@ -8,3 +8,7 @@ export {AbstractTableComponent} from './lib/abstract-table.component';
 export {EditorComponent} from './lib/editor/editor.component';
 export {MonacoEditorService} from './lib/editor/monaco-editor.service';
 export {TableGroup} from './lib/table/table-group';
+export {TextFieldComponent} from './lib/text-field/text-field.component';
+export {PasswordFieldComponent} from './lib/password-field/password-field.component';
+export {SelectFieldComponent} from './lib/select-field/select-field.component';
+export {RadioFieldComponent} from './lib/radio-field/radio-field.component';

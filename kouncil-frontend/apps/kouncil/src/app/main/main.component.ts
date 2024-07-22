@@ -10,7 +10,6 @@ import {SidebarService} from '../side-bar/sidebar.service';
 
     <app-kafka-navbar></app-kafka-navbar>
     <div style="display: flex">
-
       <app-kafka-sidebar></app-kafka-sidebar>
 
       <div [ngClass]="(sidebarService.isOpened$ | async) ? 'sidebarOpened' : 'sidebarClosed'">

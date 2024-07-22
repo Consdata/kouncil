@@ -1,0 +1,21 @@
+@import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../../../../apps/kouncil/src/styles/spaces';
+
+:host {
+  display: block;
+  padding-top: $space-3;
+
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: $space-3;
+  }
+
+  .requiredField {
+    color: $red;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}

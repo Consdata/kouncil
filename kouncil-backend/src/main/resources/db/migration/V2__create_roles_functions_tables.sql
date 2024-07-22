@@ -46,3 +46,5 @@ VALUES (nextval('SEQ_FUNCTION'), 'TOPIC_LIST', 'Topic list'),
        (nextval('SEQ_FUNCTION'), 'SCHEMA_UPDATE', 'Update schema'),
        (nextval('SEQ_FUNCTION'), 'SCHEMA_DELETE', 'Delete schema'),
        (nextval('SEQ_FUNCTION'), 'LOGIN', 'Login');
+
+commit;

@@ -6,7 +6,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import {SelectableItem} from './selectable-item';
+import {SelectableItem} from '../selectable-item';
 import {map, Observable, startWith} from 'rxjs';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 import {FormControl} from '@angular/forms';

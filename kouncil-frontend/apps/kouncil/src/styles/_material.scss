@@ -2,12 +2,13 @@
 
 @use 'palette' as pallete;
 @use 'buttons' as buttons;
+@use 'spaces' as spaces;
 
 .mat-icon {
   color: pallete.$main-50;
   width: 15px;
   height: 15px;
-  margin: 0 8px;
+  margin: 0 spaces.$space-3;
 }
 
 .mat-mdc-button {
@@ -366,7 +367,7 @@ mat-form-field:hover {
 
 .filter-input {
   .mat-mdc-text-field-wrapper {
-    padding: 0 8px;
+    padding: spaces.$space-0 spaces.$space-3;
   }
 }
 
@@ -452,4 +453,22 @@ mat-option > span {
 
 .status-empty {
   color: pallete.$main-40;
+}
+
+mat-radio-button {
+  .mdc-form-field {
+    height: 64px;
+    border: 1px solid pallete.$main-30;
+    border-radius: 8px;
+    margin-right: spaces.$space-0;
+    width: 100%;
+
+    label {
+      width: 100%;
+    }
+  }
+}
+
+.mat-mdc-tab-body-content {
+  overflow: hidden !important;
 }

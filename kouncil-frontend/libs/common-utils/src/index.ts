@@ -9,3 +9,4 @@ export {ProgressBarService} from './lib/util/progress-bar.service';
 export {SnackBarComponent} from './lib/util/snack-bar.component';
 export {SnackBarData} from './lib/util/snack-bar-data';
 export {ObjectUtils} from './lib/util/object-utils';
+export {ViewMode} from './lib/util/view-mode';

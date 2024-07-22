@@ -38,5 +38,8 @@ public enum FunctionName {
     @FieldNameConstants.Include LOGIN,
 
     //clusters
-    @FieldNameConstants.Include CLUSTER_LIST
+    @FieldNameConstants.Include CLUSTER_LIST,
+    @FieldNameConstants.Include CLUSTER_CREATE,
+    @FieldNameConstants.Include CLUSTER_UPDATE,
+    @FieldNameConstants.Include CLUSTER_DETAILS
 }

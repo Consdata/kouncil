@@ -4,23 +4,35 @@ import {KouncilRole} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from './clusterModel';
-import {ProgressBarService, SearchService} from '@app/common-utils';
+import {ClusterBroker, ClusterMetadata, Clusters} from '../clusterModel';
+import {ProgressBarService} from '@app/common-utils';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-clusters',
   template: `
-    <div class="kafka-topics" *ngIf="filtered">
+    <div class="main-container">
+      <div class="toolbar-container">
+        <div class="toolbar">
+          <button mat-button class="action-button-black" (click)="createCluster()">
+            Add new cluster
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="clusters" *ngIf="clusters">
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
       </ng-template>
 
-      <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
-                        [tableData]="filtered" [columns]="columns"
+      <app-common-table *ngIf="clusters && clusters.length > 0; else noDataPlaceholder"
+                        [tableData]="clusters" [columns]="columns"
                         [actionColumns]="actionColumns"
                         matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
-                        (cdkDropListDropped)="drop($event)">
+                        (cdkDropListDropped)="drop($event)"
+                        (rowClickedAction)="navigateToDetails($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column"
@@ -47,7 +59,6 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
   KouncilRole: typeof KouncilRole = KouncilRole;
 
   clusters: ClusterMetadata[] = [];
-  filtered: ClusterMetadata[] = [];
 
   columns: TableColumn[] = [
     {
@@ -87,7 +98,7 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
 
   constructor(private clustersService: ClustersService,
               private progressBarService: ProgressBarService,
-              private searchService: SearchService) {
+              private router: Router) {
     super();
   }
 
@@ -98,10 +109,6 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
   ngOnInit(): void {
     this.progressBarService.setProgress(true);
     this.loadClusters();
-    this.subscription.add(this.searchService.getPhraseState$('clusters')
-    .subscribe(phrase => {
-      this.filter(phrase);
-    }));
   }
 
 
@@ -110,15 +117,15 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
     .pipe(first())
     .subscribe((data: Clusters) => {
       this.clusters = data.clusters;
-      // .map(cluster => new ClusterMetadata(cluster.name, cluster.brokers));
-      this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
     }));
   }
 
-  private filter(phrase?: string): void {
-    this.filtered = this.clusters.filter((clusterMetaData) => {
-      return !phrase || clusterMetaData.name.indexOf(phrase) > -1;
-    });
+  navigateToDetails(cluster: ClusterMetadata): void {
+    this.router.navigate([`/clusters/cluster/${cluster.name}`]);
+  }
+
+  createCluster(): void {
+    this.router.navigate([`/clusters/cluster`]);
   }
 }

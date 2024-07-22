@@ -34,7 +34,7 @@ public class Cluster {
     @Column(name = "NAME", nullable = false, length = 40, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "CLUSTER_ID")
     private Set<Broker> brokers;
 

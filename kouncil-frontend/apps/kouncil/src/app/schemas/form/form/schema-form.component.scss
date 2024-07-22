@@ -1,3 +1,5 @@
+@import '../../../../styles/palette';
+
 .schema-form {
   margin: 50px 50px 0 50px ;
 }
@@ -6,6 +8,10 @@
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 10px;
+
+  .required-field{
+    color: $red;
+  }
 }
 
 .schema-base-info {
