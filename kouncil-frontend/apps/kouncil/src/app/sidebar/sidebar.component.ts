@@ -2,31 +2,33 @@ import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthService, KouncilRole} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
+import {environment} from "../../environments/environment";
+import {Backend} from "@app/common-model";
 
 @Component({
   selector: 'app-sidebar',
   template: `
-    <div class="sidenav" [ngClass]="(currentState$ | async) ? 'opened' : 'closed'">
+    <div class="sidenav" [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
 
       <app-sidebar-menu-item [label]="'Topics'" [icon]="'topic'" [routeLink]="'/topics'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TOPIC_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Brokers'" [icon]="'hub'" [routeLink]="'/brokers'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.BROKERS_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Consumer Groups'" [icon]="'device_hub'"
                              [routeLink]="'/consumer-groups'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_ADMIN])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CONSUMER_GROUP_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Track'" [icon]="'manage_search'" [routeLink]="'/track'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TRACK_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Schema Registry'" [icon]="'code'" [routeLink]="'/schemas'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.SCHEMA_LIST])">
       </app-sidebar-menu-item>
 
       <div style="width: 100%; height: 32px">
@@ -45,6 +47,7 @@ import {SidebarService} from './sidebar.service';
 })
 export class SidebarComponent {
 
+  public backend: Backend = environment.backend;
   KouncilRole: typeof KouncilRole = KouncilRole;
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
