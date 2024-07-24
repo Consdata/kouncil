@@ -102,8 +102,10 @@ import {
 import {SurveyService} from './survey/survey.service';
 import {AuthBackendService, AuthDemoService, AuthService, CommonAuthModule} from '@app/common-auth';
 import {FeatTopicFormModule, TopicService} from '@app/feat-topic-form';
-import {SidebarComponent} from './side-bar/sidebar.component';
+import {SidebarComponent} from './sidebar/sidebar.component';
 import {ToolbarComponent} from './toolbar/toolbar.component';
+import {SidebarMenuItemComponent} from './sidebar/sidebar-menu-item/sidebar-menu-item.component';
+import {ClustersService, FeatClustersModule} from '@app/feat-clusters';
 import {ClusterService, ClustersService, FeatClustersModule} from '@app/feat-clusters';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
@@ -178,7 +180,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SchemaEditComponent,
     SchemaCreateComponent,
     SchemaDetailsComponent,
-    SchemaFormComponent
+    SchemaFormComponent,
+    SidebarMenuItemComponent
   ],
   imports: [
     BrowserModule,
