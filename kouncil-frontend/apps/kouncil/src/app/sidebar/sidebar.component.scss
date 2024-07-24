@@ -1,0 +1,43 @@
+@use '../../styles/inputs';
+@import '../../styles/palette';
+
+:host {
+  height: 100%;
+
+  &.opened {
+    width: 240px;
+  }
+
+  &.closed {
+    width: 50px;
+  }
+
+  .sidenav {
+    position: fixed;
+    z-index: 1000;
+    height: calc(100% - 72px);
+    top: 72px;
+    left: 0;
+    background-color: $main-0;
+    overflow-x: hidden;
+    padding-top: 8px;
+
+    &.opened {
+      width: 240px;
+    }
+
+    &.closed {
+      width: 50px;
+    }
+
+    .menu-grouping-separator {
+      border-top: 1px solid $main-20;
+      margin: 16px 8px 8px;
+    }
+  }
+
+  .sidenav-demo {
+    height: calc(100% - 114px);
+    top: 114px;
+  }
+}
