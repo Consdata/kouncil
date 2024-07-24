@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthService, KouncilRole} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
-import {environment} from "../../environments/environment";
-import {Backend} from "@app/common-model";
+import {environment} from '../../environments/environment';
+import {Backend} from '@app/common-model';
 
 @Component({
   selector: 'app-sidebar',
