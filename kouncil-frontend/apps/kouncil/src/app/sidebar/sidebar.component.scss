@@ -20,7 +20,7 @@
     left: 0;
     background-color: $main-0;
     overflow-x: hidden;
-    padding-top: 16px;
+    padding-top: 8px;
 
     &.opened {
       width: 240px;
@@ -40,29 +40,5 @@
       width: 100%;
     }
 
-    .menu-button {
-      padding: 8px 8px 8px 16px;
-      text-decoration: none;
-      color: $main-60;
-      display: block;
-      border-radius: 0;
-      min-width: 32px;
-      width: 100%;
-
-      &:focus {
-        background: transparent;
-      }
-
-      &.active {
-        background: $blue-10;
-        color: $blue-70;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-
-        .mat-icon {
-          color: $blue-70;
-        }
-      }
-    }
   }
 }

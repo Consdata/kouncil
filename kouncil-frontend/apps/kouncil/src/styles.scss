@@ -75,8 +75,10 @@ html, body {
 
 .kafka-desktop {
   height: calc(100% - 72px);
+  display: flex;
 }
 
 .kafka-desktop-demo {
   height: calc(100% - 120px);
+  display: flex;
 }
