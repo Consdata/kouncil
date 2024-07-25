@@ -19,9 +19,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchemaAwareClusterService {
 
-    private final Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
+    private Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
 
     public SchemaAwareClusterService(KouncilConfiguration kouncilConfiguration) {
+        reloadSchemaConfiguration(kouncilConfiguration);
+    }
+
+    public SchemaAwareCluster getClusterSchema(String serverId) {
+        return schemaAwareCluster.get(serverId);
+    }
+
+    public boolean clusterHasSchemaRegistry(String serverId) {
+        return schemaAwareCluster.containsKey(serverId);
+    }
+
+    public void reloadSchemaConfiguration(KouncilConfiguration kouncilConfiguration){
+        schemaAwareCluster = new ConcurrentHashMap<>();
         kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
             try {
                 SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null
@@ -36,14 +49,6 @@ public class SchemaAwareClusterService {
                 log.error("Error while starting schema registry for cluster={}", clusterKey, e);
             }
         });
-    }
-
-    public SchemaAwareCluster getClusterSchema(String serverId) {
-        return schemaAwareCluster.get(serverId);
-    }
-
-    public boolean clusterHasSchemaRegistry(String serverId) {
-        return schemaAwareCluster.containsKey(serverId);
     }
 
     private SchemaAwareCluster initializeSchemaAwareCluster(SchemaRegistryFacade schemaRegistryFacade) {
