@@ -23,7 +23,17 @@
     }
   }
 
+  .action-button-red {
+    @include buttons.button-red;
+    @include buttons.table-button;
+  }
+
   .action-button-blue {
     @include buttons.button-blue;
+  }
+
+  .action-button-white {
+    @include buttons.button-white;
+    @include buttons.table-button;
   }
 }

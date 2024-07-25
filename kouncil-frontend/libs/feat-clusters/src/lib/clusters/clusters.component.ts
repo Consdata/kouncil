@@ -4,10 +4,8 @@ import {AuthService, KouncilRole} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from '../clusterModel';
 import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
-import {ProgressBarService} from '@app/common-utils';
 import {Router} from '@angular/router';
 import {ConfirmService} from '@app/feat-confirm';
 import {ClusterService} from '../cluster-form/cluster.service';
@@ -52,9 +50,14 @@ import {ServersService} from '@app/common-servers';
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
                 <button *ngIf="authService.canAccess([KouncilRole.CLUSTER_DELETE])"
-                        class="action-button"
-                        (click)="confirmDeleteCluster(element.id, element.name)">
+                        mat-button class="action-button-red"
+                        (click)="$event.stopPropagation(); confirmDeleteCluster(element.id, element.name)">
                   Delete
+                </button>
+                <button *ngIf="authService.canAccess([KouncilRole.CLUSTER_UPDATE])"
+                        mat-button class="action-button-white"
+                        [routerLink]="['/clusters/cluster/', element.name, 'edit']">
+                  Edit
                 </button>
               </div>
             </ng-template>

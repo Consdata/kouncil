@@ -41,3 +41,9 @@
   cursor: not-allowed;
   color: $main-60;
 }
+
+@mixin table-button {
+  height: 24px;
+  font-size: 12px;
+  border-radius: 4px;
+}
