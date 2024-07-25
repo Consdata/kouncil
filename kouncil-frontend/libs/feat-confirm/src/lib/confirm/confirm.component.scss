@@ -1,4 +1,6 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
 @import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../../../../apps/kouncil/src/styles/spaces';
 
 :host {
 
@@ -21,18 +23,14 @@
     line-height: 24px;
   }
 
-  .actions > .action-button-black {
-    background: $red-60;
-  }
-
   .section {
     color: $main-100;
     font-size: 14px;
     font-weight: 500;
-    margin: 20px 0;
+    margin: $space-6 $space-0;
 
     div {
-      margin: 3px 0;
+      margin: $space-2 $space-0;
     }
   }
 
@@ -40,6 +38,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    .action-button-white {
+      @include buttons.button-white;
+    }
+
+    .action-button-red {
+      @include buttons.button-red;
+    }
   }
 
 }

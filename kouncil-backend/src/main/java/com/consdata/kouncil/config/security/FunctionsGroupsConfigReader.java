@@ -57,8 +57,8 @@ public final class FunctionsGroupsConfigReader {
                 FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName.CLUSTER_DETAILS, FunctionName.CLUSTER_DELETE);
 
         List<FunctionName> editorFunctions = List.of(
-                FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DELETE, FunctionName.TOPIC_MESSAGES,
-                FunctionName.TOPIC_RESEND_MESSAGE, FunctionName.TOPIC_SEND_MESSAGE,
+                FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DETAILS, FunctionName.TOPIC_DELETE,
+                FunctionName.TOPIC_MESSAGES, FunctionName.TOPIC_RESEND_MESSAGE, FunctionName.TOPIC_SEND_MESSAGE,
                 FunctionName.TRACK_LIST,
                 FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_CREATE, FunctionName.SCHEMA_UPDATE, FunctionName.SCHEMA_DELETE, FunctionName.SCHEMA_DETAILS,
                 FunctionName.LOGIN,

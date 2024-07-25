@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 import {ClusterService} from './cluster.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ClusterMetadata} from '../clusterModel';
+import {ClusterMetadata} from '../cluster.model';
 import {ServersService} from '@app/common-servers';
 import {map, Observable, Subscription} from 'rxjs';
 import {
@@ -32,51 +32,55 @@ import {ViewMode} from '@app/common-utils';
         </div>
       </div>
 
-      <mat-tab-group>
-        <mat-tab label="Cluster and broker data">
-          <div class="tab-content">
-            <app-common-text-field [label]="'Cluster name'" [required]="ViewMode.VIEW !== viewMode"
-                                   [placeholder]="'Unique cluster name'"
+      <mat-accordion class="panels-container">
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="panel-header"> Cluster and broker data</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <app-common-text-field [label]="'Cluster name'" [required]="ViewMode.VIEW !== viewMode"
+                                 [placeholder]="'Unique cluster name'"
+                                 [form]="clusterForm" [readonly]="ViewMode.CREATE !== viewMode"
+                                 [controlName]="'name'"></app-common-text-field>
+
+          <div class="jmx-section">
+            <app-common-text-field [label]="'Global JMX port'"
+                                   class="full-width"
                                    [form]="clusterForm"
-                                   [controlName]="'name'"></app-common-text-field>
+                                   [controlName]="'globalJmxPort'"></app-common-text-field>
 
-            <div class="jmx-section">
-              <app-common-text-field [label]="'Global JMX port'"
-                                     class="full-width"
-                                     [form]="clusterForm"
-                                     [controlName]="'globalJmxPort'"></app-common-text-field>
+            <app-common-text-field [label]="'Global JMX user'"
+                                   class="full-width"
+                                   [form]="clusterForm"
+                                   [controlName]="'globalJmxUser'"></app-common-text-field>
 
-              <app-common-text-field [label]="'Global JMX user'"
-                                     class="full-width"
-                                     [form]="clusterForm"
-                                     [controlName]="'globalJmxUser'"></app-common-text-field>
-
-              <app-common-password-field [label]="'Global JMX password'"
-                                         class="full-width"
-                                         [form]="clusterForm"
-                                         [controlName]="'globalJmxPassword'"></app-common-password-field>
-            </div>
-
-            <app-cluster-brokers [clusterForm]="clusterForm" [model]="model"
-                                 [viewMode]="viewMode"></app-cluster-brokers>
+            <app-common-password-field [label]="'Global JMX password'"
+                                       class="full-width"
+                                       [form]="clusterForm"
+                                       [controlName]="'globalJmxPassword'"></app-common-password-field>
           </div>
-        </mat-tab>
 
-        <mat-tab label="Cluster security">
-          <div class="tab-content">
-            <app-cluster-security [clusterForm]="clusterForm" [model]="model"
-                                  (updateTestConnectionState)="updateTestConnectionBtnState($event)"
-                                  [viewMode]="viewMode"></app-cluster-security>
-          </div>
-        </mat-tab>
+          <app-cluster-brokers [clusterForm]="clusterForm" [model]="model"
+                               [viewMode]="viewMode"></app-cluster-brokers>
+        </mat-expansion-panel>
 
-        <mat-tab label="Schema registry">
-          <div class="tab-content">
-            <app-cluster-schema-registry [clusterForm]="clusterForm" [model]="model"
-                                         [viewMode]="viewMode"></app-cluster-schema-registry>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="panel-header"> Cluster security</mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-cluster-security [clusterForm]="clusterForm" [model]="model"
+                                (updateTestConnectionState)="updateTestConnectionBtnState($event)"
+                                [viewMode]="viewMode"></app-cluster-security>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="panel-header"> Schema registry</mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-cluster-schema-registry [clusterForm]="clusterForm" [model]="model"
+                                       [viewMode]="viewMode"></app-cluster-schema-registry>
+        </mat-expansion-panel>
+      </mat-accordion>
 
       <app-cluster-actions [clusterForm]="clusterForm" [viewMode]="viewMode"
                            [clusterName]="model.name"></app-cluster-actions>
@@ -188,7 +192,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   saveCluster(): void {
     if (this.clusterForm.valid) {
-      this.model = Object.assign({}, this.clusterForm.value);
+      this.model = Object.assign({}, this.clusterForm.getRawValue());
       if (this.model.id) {
         this.subscriptions.add(this.clusterService.updateCluster$(this.model).subscribe(() => {
           this.navigateToList();
@@ -214,7 +218,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   getHeaderMessage(): string {
     switch (this.viewMode) {
       case ViewMode.CREATE:
-        return `Creating new cluster`;
+        return `Create new cluster`;
       case ViewMode.EDIT:
         return `Editing cluster ${this.model.name}`;
       case ViewMode.VIEW:

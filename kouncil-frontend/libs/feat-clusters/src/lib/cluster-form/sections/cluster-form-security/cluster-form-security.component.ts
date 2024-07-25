@@ -6,7 +6,7 @@ import {
   ClusterMetadata,
   ClusterSASLMechanism,
   ClusterSecurityProtocol
-} from '../../../clusterModel';
+} from '../../../cluster.model';
 import {SelectableItem} from '@app/common-components';
 import {ClusterFormUtil} from '../../cluster-form-util';
 import {ViewMode} from '@app/common-utils';

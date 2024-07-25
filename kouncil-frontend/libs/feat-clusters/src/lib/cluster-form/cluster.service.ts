@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {ClusterMetadata} from '../clusterModel';
+import {ClusterMetadata} from '../cluster.model';
 
 @Injectable()
 export abstract class ClusterService {

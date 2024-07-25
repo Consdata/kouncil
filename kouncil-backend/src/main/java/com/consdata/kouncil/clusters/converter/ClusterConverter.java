@@ -51,7 +51,7 @@ public final class ClusterConverter {
             schemaRegistry.getSchemaRegistrySecurityConfig().setAuthenticationMethod(SchemaAuthenticationMethod.NONE);
 
             SchemaRegistrySecurityConfigDto schemaRegistrySecurityConfigDto = schemaRegistryDto.getSchemaRegistrySecurityConfig();
-            if (schemaRegistrySecurityConfigDto != null) {
+            if (schemaRegistrySecurityConfigDto != null && !SchemaAuthenticationMethod.NONE.equals(schemaRegistrySecurityConfigDto.getAuthenticationMethod())) {
                 schemaRegistry.getSchemaRegistrySecurityConfig().setAuthenticationMethod(SchemaAuthenticationMethod.SSL);
 
                 if (SchemaAuthenticationMethod.SSL_BASIC_AUTH.equals(schemaRegistrySecurityConfigDto.getAuthenticationMethod())) {

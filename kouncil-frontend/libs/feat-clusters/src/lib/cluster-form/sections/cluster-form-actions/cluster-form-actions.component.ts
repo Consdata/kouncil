@@ -52,7 +52,7 @@ import {ClusterService} from '../../cluster.service';
 
       <button *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
               mat-button [disableRipple]="true"
-              class="action-button-black" type="submit"
+              class="action-button-blue" type="submit"
               [disabled]="clusterForm.invalid">
         Save
       </button>
@@ -60,7 +60,7 @@ import {ClusterService} from '../../cluster.service';
       <button *ngIf="isVisible([ViewMode.VIEW])"
               mat-button [disableRipple]="true"
               [routerLink]="['/clusters/cluster/', clusterName, 'edit']"
-              class="action-button-white" type="button">
+              class="action-button-blue" type="button">
         Edit
       </button>
     </div>
@@ -90,7 +90,7 @@ export class ClusterFormActionsComponent implements OnDestroy {
 
   testConnection(): void {
     this.testConnectionState = 'connecting';
-    this.subscriptions.add(this.clusterService.testConnection$(Object.assign({}, this.clusterForm.value)).subscribe(result => {
+    this.subscriptions.add(this.clusterService.testConnection$(Object.assign({}, this.clusterForm.getRawValue())).subscribe(result => {
       if (result) {
         this.updateTestConnectionBtnState('connected');
       } else {

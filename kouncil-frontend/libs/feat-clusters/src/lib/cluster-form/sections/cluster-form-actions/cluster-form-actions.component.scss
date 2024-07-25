@@ -30,20 +30,15 @@
   }
 
   .connected {
-    color: $dark-green !important;
-    background: $light-green;
+    @include buttons.button-green;
   }
 
   .unableToConnect {
-    color: $red-70 !important;
-    background: $red-20;
+    @include buttons.button-red;
   }
 
-  .action-button-black:disabled, .action-button-white:disabled {
-    border: 1px solid $main-50;
-    background-color: $main-30;
-    cursor: not-allowed;
-    color: $main-60;
+  .action-button-white:disabled, .action-button-blue:disabled {
+    @include buttons.button-disabled;
   }
 }
 
@@ -51,8 +46,8 @@
   width: 100%;
 }
 
-.action-button-black {
-  @include buttons.button-black;
+.action-button-blue {
+  @include buttons.button-blue;
 }
 
 .action-button-white {

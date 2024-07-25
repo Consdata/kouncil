@@ -6,6 +6,8 @@ import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../clusterModel';
 import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
+import {ProgressBarService} from '@app/common-utils';
 import {Router} from '@angular/router';
 import {ConfirmService} from '@app/feat-confirm';
 import {ClusterService} from '../cluster-form/cluster.service';
@@ -18,7 +20,7 @@ import {ServersService} from '@app/common-servers';
     <div class="main-container">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-black" (click)="createCluster()">
+          <button mat-button class="action-button-blue" (click)="createCluster()">
             Add new cluster
           </button>
         </div>
