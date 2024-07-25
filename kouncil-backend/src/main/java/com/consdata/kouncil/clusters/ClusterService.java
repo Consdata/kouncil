@@ -8,6 +8,7 @@ import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.config.ClusterConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.model.cluster.Cluster;
+import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -22,6 +23,7 @@ public class ClusterService {
     private final ClusterRepository clusterRepository;
     private final KouncilConfiguration kouncilConfiguration;
     private final KafkaConnectionService kafkaConnectionService;
+    private final SchemaAwareClusterService schemaAwareClusterService;
 
     public ClusterDto getClusterByName(String clusterName) {
         Cluster cluster = clusterRepository.findByName(clusterName);
@@ -31,6 +33,7 @@ public class ClusterService {
     public String saveCluster(ClusterDto cluster) {
         Cluster save = clusterRepository.save(ClusterConverter.convertToCluster(cluster));
         kouncilConfiguration.initializeClusters();
+        schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
         return save.getName();
     }
 
@@ -56,6 +59,7 @@ public class ClusterService {
         } finally {
             kafkaConnectionService.cleanAdminClients();
             kouncilConfiguration.initializeClusters();
+            schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
         }
     }
 

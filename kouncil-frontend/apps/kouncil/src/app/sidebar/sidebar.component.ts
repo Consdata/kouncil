@@ -39,11 +39,9 @@ import {Backend} from '@app/common-model';
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
       </app-sidebar-menu-item>
 
-      <div style="width: 100%; height: 32px">
-        <button mat-icon-button
-                style="bottom: 20px; right: 0; position: absolute;"
-                (click)="changeState()">
-          <mat-icon style="margin: 0" class="material-symbols-outlined">
+      <div class="toggle-sidebar-container">
+        <button mat-icon-button class="toggle-sidebar-btn" (click)="changeState()">
+          <mat-icon class="material-symbols-outlined toggle-sidebar-btn-icon">
             {{ (currentState$ | async) ? 'dock_to_right' : 'dock_to_left' }}
           </mat-icon>
         </button>
