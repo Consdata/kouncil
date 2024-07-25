@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {ClusterService} from './cluster.service';
-import {ClusterMetadata} from '../clusterModel';
+import {ClusterMetadata} from '../cluster.model';
 
 @Injectable({
   providedIn: 'root'

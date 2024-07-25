@@ -1,5 +1,11 @@
 @import "../../../../../../../apps/kouncil/src/styles/spaces";
 
+.schema-registry-header {
+  font-size: 18px !important;
+  padding-bottom: $space-5;
+  font-weight: 500;
+}
+
 .authentication-type {
   padding-bottom: $space-5;
   padding-right: $space-1;

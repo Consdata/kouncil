@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
-import {ClusterMetadata, SchemaAuthenticationMethod, StoreType} from '../../../clusterModel';
+import {ClusterMetadata, SchemaAuthenticationMethod, StoreType} from '../../../cluster.model';
 import {ClusterFormUtil} from '../../cluster-form-util';
 import {SelectableItem} from '@app/common-components';
 import {ViewMode} from '@app/common-utils';
@@ -10,7 +10,6 @@ import {ViewMode} from '@app/common-utils';
   selector: 'app-cluster-schema-registry',
   template: `
     <div class="schema-registry-section">
-      <div class="schema-registry-header">Schema registry</div>
 
       <app-common-text-field [label]="'Schema registry URL'"
                              [form]="schemaRegistryForm"

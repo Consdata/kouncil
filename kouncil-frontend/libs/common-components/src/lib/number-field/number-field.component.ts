@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, forwardRef, Input} from '@angular/co
 import {FormGroup, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
-  selector: 'app-common-text-field',
+  selector: 'app-common-number-field',
   template: `
     <div [formGroup]="form">
       <div class="label">
@@ -10,7 +10,7 @@ import {FormGroup, NG_VALUE_ACCESSOR} from '@angular/forms';
         <span *ngIf="required && !readonly" class="requiredField">*</span>
       </div>
       <mat-form-field [appearance]="'outline'" class="full-width">
-        <input matInput type="text" [formControlName]="controlName" [placeholder]="placeholder"
+        <input matInput type="number" [formControlName]="controlName" [placeholder]="placeholder"
                [readonly]="readonly"/>
       </mat-form-field>
 
@@ -18,23 +18,20 @@ import {FormGroup, NG_VALUE_ACCESSOR} from '@angular/forms';
         <mat-error class="error" *ngIf="hasError('required')">
           Field is required
         </mat-error>
-        <mat-error class="error" *ngIf="hasError('unique')">
-          Field value is not unique
-        </mat-error>
       </ng-container>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./text-field.component.scss'],
+  styleUrls: ['./number-field.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TextFieldComponent),
+      useExisting: forwardRef(() => NumberFieldComponent),
       multi: true,
     }
   ]
 })
-export class TextFieldComponent {
+export class NumberFieldComponent {
 
   @Input() form: FormGroup;
   @Input() controlName: string;

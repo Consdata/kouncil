@@ -38,13 +38,13 @@ import {SnackBarComponent, SnackBarData} from '@app/common-utils';
         </div>
 
         <div class="survey-buttons-container">
-          <button mat-button (click)="confirmSurvey()" class="survey-accept-button">
-            <span class="survey-button-label">Accept</span>
-            <mat-icon class="material-symbols-outlined survey-accept-button-icon">done</mat-icon>
+          <button mat-button (click)="confirmSurvey()" class="action-button-green">
+            Accept
+            <mat-icon class="material-symbols-outlined">done</mat-icon>
           </button>
-          <button mat-button (click)="closeSurvey()" class="survey-close-button">
-            <span class="survey-button-label">Close</span>
-            <mat-icon class="material-symbols-outlined survey-close-button-icon">close</mat-icon>
+          <button mat-button (click)="closeSurvey()" class="action-button-red">
+            Close
+            <mat-icon class="material-symbols-outlined">close</mat-icon>
           </button>
         </div>
       </div>
@@ -86,7 +86,8 @@ export class SurveyComponent implements OnInit, OnDestroy {
   confirmSurvey(): void {
     let valid = true;
     this.questionComponents.forEach(component => {
-      if (component.question.required && component.selectedValue === undefined) {
+      if (component.question.required && (component.selectedValue === undefined
+        || (component.isInRange() && (component.reason === undefined || component.reason.trim().length <= 0)))) {
         valid = false;
       }
     });

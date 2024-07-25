@@ -13,3 +13,31 @@
   border-radius: $default-border-radius;
   height: 40px;
 }
+
+@mixin button-blue {
+  background: $blue-60;
+  color: white;
+  border-radius: $default-border-radius;
+  height: 40px;
+}
+
+@mixin button-green {
+  background: $green-0;
+  color: $green-50 !important;
+  border-radius: $default-border-radius;
+  height: 40px;
+}
+
+@mixin button-red {
+  background: $red-10;
+  color: $red-70 !important;
+  border-radius: $default-border-radius;
+  height: 40px;
+}
+
+@mixin button-disabled {
+  border: 1px solid $main-30;
+  background-color: $main-20;
+  cursor: not-allowed;
+  color: $main-60;
+}

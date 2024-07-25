@@ -6,21 +6,6 @@
     width: 100%;
   }
 
-  .field-container-error {
-    border: 1px solid $red-50;
-    border-radius: $default-border-radius;
-  }
-
-  mat-error {
-    font-size: 12px;
-  }
-
-  .label {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-
   .topic-info {
     display: flex;
     flex-wrap: wrap;
@@ -32,27 +17,18 @@
       width: 100%;
       padding-bottom: 10px;
     }
-
-    div {
-      mat-form-field {
-        width: 100%;
-      }
-    }
   }
 
   .actions {
     float: right;
     margin-top: 20px;
 
-    .action-button-black {
-      @include buttons.button-black;
+    .action-button-blue {
+      @include buttons.button-blue;
     }
 
-    .action-button-black:disabled {
-      border: 1px solid $main-50;
-      background-color: $main-30;
-      cursor: not-allowed;
-      color: $main-60;
+    .action-button-blue:disabled {
+      @include buttons.button-disabled;
     }
 
     .action-button-white {

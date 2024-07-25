@@ -63,7 +63,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
         </button>
         <button mat-button [disableRipple]="true"
                 *ngIf="authService.canAccess([KouncilRole.TOPIC_RESEND_MESSAGE])"
-                class="action-button-black" (click)="resend(vm.messageData)">
+                class="action-button-blue" (click)="resend(vm.messageData)">
           Resend event
         </button>
       </div>

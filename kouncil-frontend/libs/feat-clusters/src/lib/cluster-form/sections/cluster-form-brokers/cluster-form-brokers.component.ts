@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ClusterBroker, ClusterMetadata} from '../../../clusterModel';
+import {ClusterBroker, ClusterMetadata} from '../../../cluster.model';
 import {ViewMode} from '@app/common-utils';
 
 @Component({
@@ -9,8 +9,8 @@ import {ViewMode} from '@app/common-utils';
     <div class="brokers-section">
       <div>
         <div class="brokers-section-header">Brokers</div>
-        <div class="add-broker-btn">
-          <button type="button" class="action-button-black" mat-button [disableRipple]="true"
+        <div class="add-broker-btn" *ngIf="viewMode !== ViewMode.VIEW">
+          <button type="button" class="action-button-blue" mat-button [disableRipple]="true"
                   (click)="addBroker()">
             <mat-icon class="material-symbols-outlined add add-button-icon">
               add
@@ -45,7 +45,7 @@ import {ViewMode} from '@app/common-utils';
                                      [controlName]="'jmxPassword'"></app-common-password-field>
 
           <button class="action-button-white" type="button" mat-button [disableRipple]="true"
-                  (click)="removeBroker(i)">
+                  (click)="removeBroker(i)" *ngIf="viewMode !== ViewMode.VIEW">
             <mat-icon class="material-symbols-outlined remove">
               remove
             </mat-icon>

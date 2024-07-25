@@ -4,7 +4,7 @@ import {KouncilRole} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from '../clusterModel';
+import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
 import {ProgressBarService} from '@app/common-utils';
 import {Router} from '@angular/router';
 
@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
     <div class="main-container">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-black" (click)="createCluster()">
+          <button mat-button class="action-button-blue" (click)="createCluster()">
             Add new cluster
           </button>
         </div>

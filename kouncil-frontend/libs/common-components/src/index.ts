@@ -12,3 +12,4 @@ export {TextFieldComponent} from './lib/text-field/text-field.component';
 export {PasswordFieldComponent} from './lib/password-field/password-field.component';
 export {SelectFieldComponent} from './lib/select-field/select-field.component';
 export {RadioFieldComponent} from './lib/radio-field/radio-field.component';
+export {NumberFieldComponent} from './lib/number-field/number-field.component';

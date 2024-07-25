@@ -1,18 +1,13 @@
 @import "../../../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../../../apps/kouncil/src/styles/palette";
 
 .schema-registry-section {
-  margin-top: $space-5;
-
   .authentication-type {
     padding-bottom: $space-5;
     padding-right: $space-1;
   }
 
-  .schema-registry-header {
-    font-size: 18px !important;
-    padding-bottom: $space-5;
-    font-weight: 500;
-  }
+
 
   .security-section {
     display: flex;

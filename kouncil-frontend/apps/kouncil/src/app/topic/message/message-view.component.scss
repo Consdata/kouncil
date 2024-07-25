@@ -1,16 +1,15 @@
 @import '../../../styles/palette';
+@import '../../../styles/spaces';
 
 :host {
-  $green: #127D48;
-
   .drawer-header {
-    margin-bottom: 20px;
+    margin-bottom: $space-6;
   }
 
   .label {
     font-size: 16px;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: $space-4;
   }
 
   .headers {
@@ -27,13 +26,13 @@
   .payload {
     display: flex;
     flex-direction: column;
-    margin: 24px 0;
+    margin: $space-6 $space-0;
     overflow: auto;
 
     .key-section {
       display: flex;
       flex-direction: column;
-      margin-bottom: 20px;
+      margin-bottom: $space-5;
     }
 
     .value-section {
@@ -44,25 +43,25 @@
 
     .message-payload {
       flex: 1;
-      padding: 24px;
+      padding: $space-6;
       background: $main-10;
     }
   }
 
   .actions {
-    gap: 16px;
+    gap: $space-5;
   }
 
   $type-colors: (
-    string: $green,
-    number: $green,
-    boolean: $green,
-    date: $green,
-    array: #999,
-    object: #999,
-    function: #999,
-    'null': #fff,
-    undefined: #fff
+    string: $green-50,
+    number: $green-50,
+    boolean: $green-50,
+    date: $green-50,
+    array: $main-40,
+    object: $main-40,
+    function: $main-40,
+    'null': $main-0,
+    undefined: $main-0
   );
 
   @each $type, $color in $type-colors {
