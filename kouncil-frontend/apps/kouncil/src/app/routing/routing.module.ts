@@ -32,6 +32,7 @@ import {
   ClusterFormViewComponent,
   ClustersComponent
 } from '@app/feat-clusters';
+import {UserGroupsComponent} from '@app/feat-user-groups';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -184,6 +185,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           roles: [KouncilRole.CLUSTER_UPDATE]
+        }
+      },
+      {
+        path: 'user-groups',
+        component: UserGroupsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [KouncilRole.USER_GROUPS_LIST]
         }
       }
     ]

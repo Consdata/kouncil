@@ -32,11 +32,16 @@ import {Backend} from '@app/common-model';
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.SCHEMA_LIST])">
       </app-sidebar-menu-item>
 
-      <div *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])"
-           class="menu-grouping-separator"></div>
+      <div
+        *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST, KouncilRole.USER_GROUPS_LIST])"
+        class="menu-grouping-separator"></div>
 
       <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
+      </app-sidebar-menu-item>
+
+      <app-sidebar-menu-item [label]="'User groups'" [icon]="'group'" [routeLink]="'/user-groups'"
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.USER_GROUPS_LIST])">
       </app-sidebar-menu-item>
 
       <div class="toggle-sidebar-container">
@@ -62,11 +67,11 @@ export class SidebarComponent {
 
   constructor(public authService: AuthService,
               private sidebarService: SidebarService) {
-    this.sidebarService.isOpened$.subscribe(isOpened=>{
-      if(isOpened){
-          this.hostClass = 'opened';
+    this.sidebarService.isOpened$.subscribe(isOpened => {
+      if (isOpened) {
+        this.hostClass = 'opened';
       } else {
-          this.hostClass = 'closed';
+        this.hostClass = 'closed';
       }
     });
   }

@@ -1,20 +1,20 @@
 package com.consdata.kouncil.config.security.inmemory;
 
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.ADMIN_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.EDITOR_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_CONFIG;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_GROUP;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.SUPERUSER_USERNAME;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_CONFIG;
-import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_GROUP;
+import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_DEFAULT_PASSWORD;
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_USERNAME;
 
 import com.consdata.kouncil.config.security.UserManager;
@@ -97,6 +97,11 @@ public class InMemoryUserManager implements UserManager {
                 path = Paths.get(VIEWER_CONFIG);
                 oldPassword = getUserOldPassword(path, VIEWER_DEFAULT_PASSWORD);
                 strToBytes = generateFileData(password, VIEWER_DEFAULT_GROUP);
+            }
+            case SUPERUSER_USERNAME -> {
+                path = Paths.get(SUPERUSER_CONFIG);
+                oldPassword = getUserOldPassword(path, SUPERUSER_DEFAULT_PASSWORD);
+                strToBytes = generateFileData(password, SUPERUSER_DEFAULT_GROUP);
             }
             default -> throw new IllegalStateException(
                     String.format("Can't change default password for %s", SecurityContextHolder.getContext().getAuthentication().getName()));

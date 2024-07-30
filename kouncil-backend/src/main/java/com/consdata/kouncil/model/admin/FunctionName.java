@@ -34,13 +34,19 @@ public enum FunctionName {
     @FieldNameConstants.Include SCHEMA_UPDATE,
     @FieldNameConstants.Include SCHEMA_DELETE,
 
-    //login
-    @FieldNameConstants.Include LOGIN,
-
     //clusters
     @FieldNameConstants.Include CLUSTER_LIST,
     @FieldNameConstants.Include CLUSTER_CREATE,
     @FieldNameConstants.Include CLUSTER_UPDATE,
     @FieldNameConstants.Include CLUSTER_DETAILS,
-    @FieldNameConstants.Include CLUSTER_DELETE
+    @FieldNameConstants.Include CLUSTER_DELETE,
+
+    //admin
+    @FieldNameConstants.Include LOGIN,
+    @FieldNameConstants.Include USER_GROUPS,
+    @FieldNameConstants.Include USER_GROUPS_LIST,
+    @FieldNameConstants.Include USER_GROUP_CREATE,
+    @FieldNameConstants.Include USER_GROUP_UPDATE,
+    @FieldNameConstants.Include USER_GROUP_DELETE
+
 }

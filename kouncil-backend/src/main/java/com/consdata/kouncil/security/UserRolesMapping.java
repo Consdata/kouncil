@@ -1,12 +1,10 @@
 package com.consdata.kouncil.security;
 
-import com.consdata.kouncil.model.admin.Function;
 import com.consdata.kouncil.model.admin.UserGroup;
-import com.consdata.kouncil.security.function.FunctionsRepository;
+import com.consdata.kouncil.security.group.UserGroupRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,19 +16,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserRolesMapping {
 
-    private final FunctionsRepository functionsRepository;
+    private final UserGroupRepository groupRepository;
 
     public Set<GrantedAuthority> mapToKouncilRoles(Set<String> userRoles) {
         Set<GrantedAuthority> collect = new HashSet<>();
 
-        List<Function> functions = StreamSupport.stream(functionsRepository.findAll().spliterator(), false).toList();
+        List<UserGroup> userGroups = groupRepository.findAllByCodeIn(userRoles).stream().toList();
 
-        userRoles.forEach(userRole -> functions.forEach(function -> {
-            List<String> list = function.getUserGroups().stream().map(UserGroup::getName).toList();
-            if (list.contains(userRole)) {
-                collect.add(new SimpleGrantedAuthority(function.getName().name()));
-            }
-        }));
+        userRoles.forEach(userRole -> userGroups
+                .forEach(userGroup ->
+                        collect.addAll(userGroup.getFunctions().stream().map(function -> new SimpleGrantedAuthority(function.getName().name())).toList())));
         log.info("User roles: {}", collect);
         return collect;
     }

@@ -1,7 +1,6 @@
 package com.consdata.kouncil.model.admin;
 
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,8 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -37,7 +34,10 @@ public class Function {
     @Column(name = "LABEL")
     private String label;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "FUNCTIONS_USER_GROUPS", joinColumns = @JoinColumn(name = "FUNCTION_ID"), inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
+    @Column(name = "FUNCTION_GROUP")
+    @Enumerated(EnumType.STRING)
+    private FunctionGroup functionGroup;
+
+    @ManyToMany(mappedBy = "functions", fetch = FetchType.EAGER)
     private Set<UserGroup> userGroups;
 }

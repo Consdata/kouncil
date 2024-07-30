@@ -13,6 +13,7 @@
     "feat-send": "libs/feat-send",
     "feat-topic-form": "libs/feat-topic-form",
     "feat-topics": "libs/feat-topics",
+    "feat-user-groups": "libs/feat-user-groups",
     "kouncil": "apps/kouncil",
     "message-data": "libs/message-data",
     "resend-events": "libs/resend-events",

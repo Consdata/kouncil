@@ -21,6 +21,17 @@ import {
   ClusterService,
   ClustersService
 } from '@app/feat-clusters';
+import {
+  FunctionsBackendService,
+  FunctionsDemoService,
+  FunctionsService,
+  UserGroupBackendService,
+  UserGroupDemoService,
+  UserGroupsBackendService,
+  UserGroupsDemoService,
+  UserGroupService,
+  UserGroupsService
+} from '@app/feat-user-groups';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -107,5 +118,38 @@ export function clusterServiceFactory(http: HttpClient): ClusterService {
     case Backend.DEMO:
     default:
       return new ClusterDemoService();
+  }
+}
+
+export function userGroupsServiceFactory(http: HttpClient): UserGroupsService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new UserGroupsBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new UserGroupsDemoService();
+  }
+}
+
+export function functionsServiceFactory(http: HttpClient): FunctionsService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new FunctionsBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new FunctionsDemoService();
+  }
+}
+
+export function userGroupServiceFactory(http: HttpClient): UserGroupService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new UserGroupBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new UserGroupDemoService();
   }
 }
