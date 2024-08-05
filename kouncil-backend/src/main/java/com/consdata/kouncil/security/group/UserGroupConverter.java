@@ -20,10 +20,7 @@ public final class UserGroupConverter {
     }
 
     public static UserGroup convertToUserGroup(UserGroupDto userGroupDto) {
-        UserGroup userGroup = new UserGroup();
-        userGroup.setId(userGroupDto.getId());
-        userGroup.setCode(userGroupDto.getCode());
-        userGroup.setName(userGroupDto.getName());
+        UserGroup userGroup = updateUserGroup(userGroupDto, new UserGroup());
         userGroup.setFunctions(userGroupDto.getFunctions().stream().map(FunctionConverter::convertToFunction).collect(Collectors.toSet()));
         return userGroup;
     }

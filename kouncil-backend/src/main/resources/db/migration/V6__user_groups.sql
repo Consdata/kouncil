@@ -8,7 +8,8 @@ FROM function;
 ALTER TABLE function
     add column function_group VARCHAR(40);
 ALTER TABLE user_group
-    add column code VARCHAR(255);
+    add column code VARCHAR(255) unique;
+alter table user_group drop constraint user_group_name_key;
 
 insert into function(id, name, label, function_group)
 VALUES (nextval('SEQ_FUNCTION'), 'TOPIC_LIST', 'Topic list', 'TOPIC'),
