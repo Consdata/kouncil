@@ -81,7 +81,6 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
   paused: boolean = false;
 
   paging$: Observable<Page> = this.topicService.getPagination$();
-  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   constructor(
     private route: ActivatedRoute,
