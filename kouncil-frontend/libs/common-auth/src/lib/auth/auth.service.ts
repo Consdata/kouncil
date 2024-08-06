@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User} from '@app/common-login';
-import {KouncilRole} from './kouncil-role';
+import {SystemFunctionName} from './system-function-name';
 
 @Injectable()
 export abstract class AuthService {
@@ -30,7 +30,7 @@ export abstract class AuthService {
 
   abstract getUserRoles$(): Observable<void>;
 
-  abstract canAccess(roles: KouncilRole[]): boolean;
+  abstract canAccess(roles: SystemFunctionName[]): boolean;
   abstract getInstallationId$(): void;
   abstract fetchContextPath$(): void;
 }

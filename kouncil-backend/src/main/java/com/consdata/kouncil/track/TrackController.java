@@ -1,8 +1,6 @@
 package com.consdata.kouncil.track;
 
-import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
-import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
-
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import com.consdata.kouncil.topic.TopicMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,8 +31,7 @@ public class TrackController {
 
     private final TrackService trackService;
 
-
-    @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
+    @RolesAllowed(Fields.TRACK_LIST)
     @GetMapping("/api/track/stats")
     public String printStats() throws JsonProcessingException {
         WebSocketStats wss = WebSocketStats.builder()
@@ -49,7 +46,7 @@ public class TrackController {
         return result;
     }
 
-    @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
+    @RolesAllowed(Fields.TRACK_LIST)
     @GetMapping("/api/track/sync")
     public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                       @RequestParam("field") String field,
@@ -61,7 +58,7 @@ public class TrackController {
         return trackService.getEvents(topicNames, field, operatorParam, value, beginningTimestampMillis, endTimestampMillis, serverId, new SyncTrackStrategy());
     }
 
-    @RolesAllowed({EDITOR_ROLE, VIEWER_ROLE})
+    @RolesAllowed(Fields.TRACK_LIST)
     @GetMapping("/api/track/async")
     public void getAsync(@RequestParam("topicNames") List<String> topicNames,
                          @RequestParam("field") String field,

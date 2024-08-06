@@ -19,7 +19,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {TopicFormComponent, TopicService} from '@app/feat-topic-form';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
@@ -28,7 +28,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
   selector: 'app-topics',
   template: `
 
-    <div class="main-container" *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])">
+    <div class="main-container" *ngIf="authService.canAccess([SystemFunctionName.TOPIC_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
           <button mat-button class="action-button-black" (click)="createTopic()">
@@ -83,11 +83,11 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                <button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_UPDATE])"
                         class="action-button" (click)="createTopic(element.name)">
                   Update
                 </button>
-                <button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                <button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_DELETE])"
                         class="action-button" (click)="removeTopic(element.name)">
                   Delete
                 </button>
@@ -102,7 +102,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 })
 export class TopicsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
 

@@ -17,6 +17,7 @@ import {
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {MatSort} from '@angular/material/sort';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -69,7 +70,8 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button class="action-button" (click)="deleteConsumerGroup(element.groupId)">
+                <button *ngIf="authService.canAccess([SystemFunctionName.CONSUMER_GROUP_DELETE])"
+                        class="action-button" (click)="deleteConsumerGroup(element.groupId)">
                   Delete
                 </button>
               </div>
@@ -85,6 +87,7 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   additionalColumns: TableColumn[] = [
     {
@@ -134,7 +137,8 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
               private snackbar: MatSnackBar,
               private router: Router,
               private servers: ServersService,
-              private favouritesService: FavouritesService) {
+              private favouritesService: FavouritesService,
+              protected authService: AuthService) {
     super();
   }
 
