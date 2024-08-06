@@ -62,7 +62,7 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
           clipboard
         </button>
         <button mat-button [disableRipple]="true"
-                *ngIf="authService.canAccess([KouncilRole.TOPIC_RESEND_MESSAGE])"
+                *ngIf="authService.canAccess([SystemFunctionName.TOPIC_RESEND_MESSAGE])"
                 class="action-button-black" (click)="resend(vm.messageData)">
           Resend event
         </button>
@@ -77,7 +77,7 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
 
   private isAnimationDone$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   columns: TableColumn[] = [
     {

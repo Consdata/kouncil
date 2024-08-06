@@ -41,11 +41,11 @@ export enum LiveUpdateState {
       </mat-form-field>
 
 
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_RESEND_MESSAGE])"
+      <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_RESEND_MESSAGE])"
               class="action-button-white" (click)="openResendPopup()">
         Resend events
       </button>
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_SEND_MESSAGE])"
+      <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_SEND_MESSAGE])"
               class="action-button-black" (click)="openSendPopup()">
         Send event
       </button>
@@ -62,7 +62,7 @@ export class TopicToolbarComponent {
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  KouncilRole: typeof SystemFunctionName  = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName  = SystemFunctionName;
 
   liveState: boolean = false;
   showHeaderColumns: boolean = true;
