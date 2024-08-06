@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
@@ -38,9 +38,9 @@ export class ChangePasswordComponent {
   }
 
   private navigateToDefaultPage() {
-    if (this.service.canAccess([KouncilRole.TOPIC_LIST])) {
+    if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
       this.router.navigate(['/topics']);
-    } else if (this.service.canAccess([KouncilRole.BROKERS_LIST])) {
+    } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
       this.router.navigate(['/brokers']);
     }
   }

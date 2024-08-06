@@ -4,7 +4,7 @@ import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
-import {KouncilRole} from './kouncil-role';
+import {SystemFunctionName} from './system-function-name';
 import {v4 as uuidv4} from 'uuid';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class AuthBackendService implements AuthService {
 
   private readonly IS_LOGGED_IN: string = 'isLoggedIn';
   private readonly USER_ROLES: string = 'userRoles';
-  private userRoles: Array<KouncilRole> = [];
+  private userRoles: Array<SystemFunctionName> = [];
 
   private readonly baseUrl: string;
   private contextPath: string;
@@ -95,13 +95,13 @@ export class AuthBackendService implements AuthService {
   }
 
   getUserRoles$(): Observable<void> {
-    return this.http.get<Array<KouncilRole>>('/api/userRoles').pipe(map((userRoles) => {
+    return this.http.get<Array<SystemFunctionName>>('/api/userRoles').pipe(map((userRoles) => {
       this.userRoles = userRoles;
       localStorage.setItem(this.USER_ROLES, JSON.stringify(this.userRoles));
     }));
   }
 
-  canAccess(roles: KouncilRole[]): boolean {
+  canAccess(roles: SystemFunctionName[]): boolean {
     const localStorageUserRoles = JSON.parse(localStorage.getItem(this.USER_ROLES));
     if (this.userRoles.length === 0 && localStorageUserRoles.length > 0) {
       this.userRoles = localStorageUserRoles;

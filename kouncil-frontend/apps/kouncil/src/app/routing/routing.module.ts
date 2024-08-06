@@ -19,7 +19,7 @@ import {ConfigResolver} from './config-resolver';
 import {ChangePasswordComponent} from '../login/change-password.component';
 import {MainLoginComponent} from '../login/main-login.component';
 import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
-import {KouncilRole} from '@app/common-auth';
+import {SystemFunctionName} from '@app/common-auth';
 import {AccessDeniedComponent} from '../access-denied/access-denied.component';
 import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
 import {SchemasComponent} from '../schemas/list/schemas.component';
@@ -68,7 +68,7 @@ const routes: Routes = [
         component: BrokersComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.BROKERS_LIST]
+          roles: [SystemFunctionName.BROKERS_LIST]
         }
       },
       {
@@ -76,7 +76,7 @@ const routes: Routes = [
         component: TopicsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.TOPIC_LIST]
+          roles: [SystemFunctionName.TOPIC_LIST]
         }
       },
       {
@@ -84,7 +84,7 @@ const routes: Routes = [
         component: TopicComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.TOPIC_MESSAGES]
+          roles: [SystemFunctionName.TOPIC_MESSAGES]
         }
       },
       {
@@ -92,7 +92,7 @@ const routes: Routes = [
         component: ConsumerGroupsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CONSUMER_GROUP_LIST]
+          roles: [SystemFunctionName.CONSUMER_GROUP_LIST]
         }
       },
       {
@@ -100,7 +100,7 @@ const routes: Routes = [
         component: ConsumerGroupComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CONSUMER_GROUP_DETAILS]
+          roles: [SystemFunctionName.CONSUMER_GROUP_DETAILS]
         }
       },
       {
@@ -108,7 +108,7 @@ const routes: Routes = [
         component: TrackComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.TRACK_LIST]
+          roles: [SystemFunctionName.TRACK_LIST]
         }
       },
       {
@@ -121,7 +121,7 @@ const routes: Routes = [
         component: SchemasComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.SCHEMA_LIST]
+          roles: [SystemFunctionName.SCHEMA_LIST]
         }
       },
       {
@@ -129,7 +129,7 @@ const routes: Routes = [
         component: SchemaEditComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.SCHEMA_UPDATE]
+          roles: [SystemFunctionName.SCHEMA_UPDATE]
         }
       },
       {
@@ -137,7 +137,7 @@ const routes: Routes = [
         component: SchemaCreateComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.SCHEMA_CREATE]
+          roles: [SystemFunctionName.SCHEMA_CREATE]
         }
       },
       {
@@ -145,7 +145,7 @@ const routes: Routes = [
         component: SchemaDetailsComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.SCHEMA_DETAILS]
+          roles: [SystemFunctionName.SCHEMA_DETAILS]
         }
       }
     ]

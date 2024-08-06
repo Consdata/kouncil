@@ -1,11 +1,11 @@
 package com.consdata.kouncil.config.security;
 
-import com.consdata.kouncil.model.admin.Function;
-import com.consdata.kouncil.model.admin.FunctionName;
+import com.consdata.kouncil.model.admin.SystemFunction;
+import com.consdata.kouncil.model.admin.SystemFunctionName;
 import com.consdata.kouncil.model.admin.UserGroup;
 import com.consdata.kouncil.security.KouncilRole;
-import com.consdata.kouncil.security.function.FunctionsRepository;
-import com.consdata.kouncil.security.group.GroupRepository;
+import com.consdata.kouncil.security.function.SystemFunctionsRepository;
+import com.consdata.kouncil.security.group.UserGroupRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 @Data
 @RequiredArgsConstructor
 @Slf4j
-public final class FunctionsGroupsConfigReader {
+public final class UserGroupsConfigReader {
 
     @Value("${kouncil.authorization.role-admin:}")
     private String adminRoles;
@@ -41,8 +41,8 @@ public final class FunctionsGroupsConfigReader {
     private String viewerRoles;
     private static final String VALUES_SEPARATOR = ";";
 
-    private final FunctionsRepository functionsRepository;
-    private final GroupRepository groupRepository;
+    private final SystemFunctionsRepository systemFunctionsRepository;
+    private final UserGroupRepository userGroupRepository;
 
     @PostConstruct
     public void init() {
@@ -51,26 +51,26 @@ public final class FunctionsGroupsConfigReader {
         roleMapping.put(KouncilRole.ROLE_KOUNCIL_EDITOR, new HashSet<>(Arrays.asList(editorRoles.split(VALUES_SEPARATOR))));
         roleMapping.put(KouncilRole.ROLE_KOUNCIL_VIEWER, new HashSet<>(Arrays.asList(viewerRoles.split(VALUES_SEPARATOR))));
 
-        List<FunctionName> adminFunctions = List.of(FunctionName.BROKERS_LIST, FunctionName.BROKER_DETAILS,
-                FunctionName.CONSUMER_GROUP_LIST, FunctionName.CONSUMER_GROUP_DETAILS, FunctionName.CONSUMER_GROUP_DELETE,
-                FunctionName.LOGIN);
+        List<SystemFunctionName> adminFunctions = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
+                SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
+                SystemFunctionName.LOGIN);
 
-        List<FunctionName> editorFunctions = List.of(
-                FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DELETE, FunctionName.TOPIC_MESSAGES,
-                FunctionName.TOPIC_RESEND_MESSAGE, FunctionName.TOPIC_SEND_MESSAGE,
-                FunctionName.TRACK_LIST,
-                FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_CREATE, FunctionName.SCHEMA_UPDATE, FunctionName.SCHEMA_DELETE, FunctionName.SCHEMA_DETAILS,
-                FunctionName.LOGIN);
+        List<SystemFunctionName> editorFunctions = List.of(
+                SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_CREATE, SystemFunctionName.TOPIC_UPDATE, SystemFunctionName.TOPIC_DELETE, SystemFunctionName.TOPIC_MESSAGES,
+                SystemFunctionName.TOPIC_RESEND_MESSAGE, SystemFunctionName.TOPIC_SEND_MESSAGE,
+                SystemFunctionName.TRACK_LIST,
+                SystemFunctionName.SCHEMA_LIST, SystemFunctionName.SCHEMA_CREATE, SystemFunctionName.SCHEMA_UPDATE, SystemFunctionName.SCHEMA_DELETE, SystemFunctionName.SCHEMA_DETAILS,
+                SystemFunctionName.LOGIN);
 
-        List<FunctionName> viewerFunctions = List.of(
-                FunctionName.TOPIC_LIST, FunctionName.TOPIC_MESSAGES,
-                FunctionName.TRACK_LIST,
-                FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_DETAILS,
-                FunctionName.LOGIN);
+        List<SystemFunctionName> viewerFunctions = List.of(
+                SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_MESSAGES,
+                SystemFunctionName.TRACK_LIST,
+                SystemFunctionName.SCHEMA_LIST, SystemFunctionName.SCHEMA_DETAILS,
+                SystemFunctionName.LOGIN);
 
         List<UserGroup> groups = new ArrayList<>();
 
-        List<String> foundGroupNames = StreamSupport.stream(groupRepository.findAll().spliterator(), false).map(UserGroup::getName).toList();
+        List<String> foundGroupNames = StreamSupport.stream(userGroupRepository.findAll().spliterator(), false).map(UserGroup::getName).toList();
 
         roleMapping.values()
                 .stream()
@@ -83,12 +83,12 @@ public final class FunctionsGroupsConfigReader {
                     groups.add(group);
                 });
 
-        groupRepository.saveAll(groups);
+        userGroupRepository.saveAll(groups);
 
         Map<String, UserGroup> groupMap = new HashMap<>();
         groups.forEach(savedGroup -> groupMap.put(savedGroup.getName(), savedGroup));
 
-        List<Function> functions = StreamSupport.stream(functionsRepository.findAll().spliterator(), false).toList();
+        List<SystemFunction> functions = StreamSupport.stream(systemFunctionsRepository.findAll().spliterator(), false).toList();
 
         functions.forEach(function -> {
 
@@ -106,10 +106,10 @@ public final class FunctionsGroupsConfigReader {
             }
         });
 
-        functionsRepository.saveAll(functions);
+        systemFunctionsRepository.saveAll(functions);
     }
 
-    private void addGroupToFunction(Function function, Set<String> roles, Map<String, UserGroup> groupMap) {
+    private void addGroupToFunction(SystemFunction function, Set<String> roles, Map<String, UserGroup> groupMap) {
         roles.forEach(groupFromConfig -> {
             if (groupMap.get(groupFromConfig) != null) {
                 function.getUserGroups().add(groupMap.get(groupFromConfig));

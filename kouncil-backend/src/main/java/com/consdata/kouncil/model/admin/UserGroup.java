@@ -28,5 +28,5 @@ public class UserGroup {
     private String name;
 
     @ManyToMany(mappedBy = "userGroups")
-    private Set<Function> functions;
+    private Set<SystemFunction> functions;
 }
