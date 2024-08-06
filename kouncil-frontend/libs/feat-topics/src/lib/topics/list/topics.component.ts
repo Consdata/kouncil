@@ -28,11 +28,12 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
   selector: 'app-topics',
   template: `
 
-    <div class="main-container">
+    <div class="main-container" *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])">
       <div class="toolbar-container">
         <div class="toolbar">
           <button mat-button class="action-button-black" (click)="createTopic()"
                   *ngIf="authService.canAccess([KouncilRole.TOPIC_CREATE])">
+          <button mat-button class="action-button-black" (click)="createTopic()">
             Create topic
           </button>
         </div>
