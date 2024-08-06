@@ -1,18 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ClustersService} from './clusters.service';
-import {KouncilRole} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from './clusterModel';
+import {ClusterBroker, ClusterMetadata, Clusters} from './cluster.model';
 import {ProgressBarService, SearchService} from '@app/common-utils';
+import {SystemFunctionName} from '@app/common-auth';
 
 @Component({
   selector: 'app-clusters',
   template: `
     <div class="kafka-topics" *ngIf="filtered">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder [objectTypeName]="'Topic'"></app-no-data-placeholder>
+        <app-no-data-placeholder [objectTypeName]="'Clusters'"></app-no-data-placeholder>
       </ng-template>
 
       <app-common-table *ngIf="filtered && filtered.length > 0; else noDataPlaceholder"
@@ -44,7 +44,7 @@ import {ProgressBarService, SearchService} from '@app/common-utils';
 })
 export class ClustersComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   clusters: ClusterMetadata[] = [];
   filtered: ClusterMetadata[] = [];
@@ -110,7 +110,6 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
     .pipe(first())
     .subscribe((data: Clusters) => {
       this.clusters = data.clusters;
-      // .map(cluster => new ClusterMetadata(cluster.name, cluster.brokers));
       this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
     }));

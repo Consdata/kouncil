@@ -154,7 +154,7 @@ const routes: Routes = [
         component: ClustersComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CLUSTER_LIST]
+          roles: [SystemFunctionName.CLUSTER_LIST]
         }
       }
     ]
