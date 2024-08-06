@@ -9,7 +9,7 @@ export enum LiveUpdateState {
 }
 
 @Component({
-  selector: 'app-kafka-toolbar',
+  selector: 'app-topic-toolbar',
   template: `
     <div class="kafka-toolbar">
       <app-breadcrumb [parentName]="'Topics'" [parentLink]="'/topics'"
