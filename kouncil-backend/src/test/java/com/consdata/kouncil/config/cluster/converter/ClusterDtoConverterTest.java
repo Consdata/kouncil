@@ -3,7 +3,7 @@ package com.consdata.kouncil.config.cluster.converter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.consdata.kouncil.clusters.converter.ClusterConverter;
+import com.consdata.kouncil.clusters.converter.ClusterDtoConverter;
 import com.consdata.kouncil.clusters.dto.BrokerDto;
 import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.model.Broker;
@@ -16,7 +16,7 @@ import com.consdata.kouncil.model.schemaregistry.SchemaSecurityProtocol;
 import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
-class ClusterConverterTest {
+class ClusterDtoConverterTest {
 
     @Test
     void should_convert_cluster_to_cluster_dto() {
@@ -47,7 +47,7 @@ class ClusterConverterTest {
         cluster.getSchemaRegistry().getSchemaRegistrySecurityConfig().setTruststorePassword("password");
         cluster.getSchemaRegistry().getSchemaRegistrySecurityConfig().setTruststoreLocation("/location/to/schema/truststore.jks");
 
-        ClusterDto clusterDto = ClusterConverter.convertToClusterDto(cluster);
+        ClusterDto clusterDto = ClusterDtoConverter.convertToClusterDto(cluster);
 
         assertAll(
                 () -> assertThat(clusterDto.getId()).isEqualTo(1L),
@@ -56,9 +56,9 @@ class ClusterConverterTest {
                 () -> assertThat(clusterDto.getGlobalJmxPassword()).isEqualTo("password"),
                 () -> assertThat(clusterDto.getGlobalJmxPort()).isEqualTo(8888),
                 () -> assertThat(clusterDto.getBrokers()).hasSize(2),
-                () -> assertThat(clusterDto.getBrokers()).containsExactly(
-                        addBrokerDto("localhost:9092", "broker JMX user", "password", 8889),
-                        addBrokerDto("localhost:9093", null, null, null)
+                () -> assertThat(clusterDto.getBrokers()).containsExactlyInAnyOrder(
+                        addBrokerDto(1L, "localhost:9092", "broker JMX user", "password", 8889),
+                        addBrokerDto(2L, "localhost:9093", null, null, null)
                 ),
                 () -> assertThat(clusterDto.getClusterSecurityConfig().getSecurityProtocol()).isEqualTo(ClusterSecurityProtocol.SSL),
                 () -> assertThat(clusterDto.getClusterSecurityConfig().getKeyPassword()).isEqualTo("password"),
@@ -71,9 +71,11 @@ class ClusterConverterTest {
                 () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getSecurityProtocol()).isEqualTo(SchemaSecurityProtocol.SSL),
                 () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getKeyPassword()).isEqualTo("password"),
                 () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getKeystorePassword()).isEqualTo("password"),
-                () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getKeystoreLocation()).isEqualTo("/location/to/schema/keystore.jks"),
+                () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getKeystoreLocation()).isEqualTo(
+                        "/location/to/schema/keystore.jks"),
                 () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getTruststorePassword()).isEqualTo("password"),
-                () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getTruststoreLocation()).isEqualTo("/location/to/schema/truststore.jks")
+                () -> assertThat(clusterDto.getSchemaRegistry().getSchemaRegistrySecurityConfig().getTruststoreLocation()).isEqualTo(
+                        "/location/to/schema/truststore.jks")
         );
     }
 
@@ -87,8 +89,9 @@ class ClusterConverterTest {
         return broker;
     }
 
-    private BrokerDto addBrokerDto(String bootstrapServer, String brokerJmxUser, String brokerJmxPassword, Integer brokerJmxPort) {
+    private BrokerDto addBrokerDto(long id, String bootstrapServer, String brokerJmxUser, String brokerJmxPassword, Integer brokerJmxPort) {
         BrokerDto brokerDto = new BrokerDto();
+        brokerDto.setId(id);
         brokerDto.setBootstrapServer(bootstrapServer);
         brokerDto.setJmxUser(brokerJmxUser);
         brokerDto.setJmxPassword(brokerJmxPassword);

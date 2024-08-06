@@ -3,11 +3,9 @@ import {ClustersService} from './clusters.service';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from './cluster.model';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {SystemFunctionName} from '@app/common-auth';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
-import {ProgressBarService} from '@app/common-utils';
 import {Router} from '@angular/router';
 
 @Component({

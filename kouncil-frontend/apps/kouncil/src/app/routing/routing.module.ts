@@ -167,7 +167,7 @@ const routes: Routes = [
         component: ClusterFormCreateComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CLUSTER_CREATE]
+          roles: [SystemFunctionName.CLUSTER_CREATE]
         }
       },
       {
@@ -175,7 +175,7 @@ const routes: Routes = [
         component: ClusterFormViewComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CLUSTER_DETAILS]
+          roles: [SystemFunctionName.CLUSTER_DETAILS]
         }
       },
       {
@@ -183,7 +183,7 @@ const routes: Routes = [
         component: ClusterFormEditComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.CLUSTER_UPDATE]
+          roles: [SystemFunctionName.CLUSTER_UPDATE]
         }
       }
     ]
