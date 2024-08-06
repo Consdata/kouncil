@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use 'styles/palette' as pallete;
+@use 'styles/buttons' as buttons;
 @import 'styles/ngx';
 @import 'styles/material';
 
@@ -29,7 +30,7 @@ html, body {
   height: 100%;
   margin: 0;
   background-color: pallete.$main-10;
-  font-family: 'Inter';
+  font-family: 'Inter' !important;
   min-width: 1440px;
 }
 

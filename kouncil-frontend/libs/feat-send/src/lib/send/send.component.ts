@@ -98,7 +98,7 @@ declare let monaco: any;
             Cancel
           </button>
           <button mat-button [disableRipple]="true"
-                  class="action-button-black"
+                  class="action-button-blue"
                   type="submit"
                   [disabled]="isSendButtonDisabled">
             Send event

@@ -7,6 +7,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicFormComponent} from './topic/topic-form.component';
+import {CommonComponentsModule} from '@app/common-components';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import {TopicFormComponent} from './topic/topic-form.component';
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
+    CommonComponentsModule,
   ],
   declarations: [
     TopicFormComponent

@@ -38,7 +38,7 @@ public class Broker {
     @Column(name = "JMX_PASSWORD", length = 40)
     private String jmxPassword;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "CLUSTER_ID", insertable = false, updatable = false)
     private Cluster cluster;
 }

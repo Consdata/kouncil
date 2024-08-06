@@ -103,4 +103,7 @@ public class KafkaConnectionService {
         return new KafkaConsumer<>(props);
     }
 
+    public void cleanAdminClients() {
+        this.adminClients.clear();
+    }
 }

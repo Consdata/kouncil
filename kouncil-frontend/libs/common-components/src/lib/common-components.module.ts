@@ -15,6 +15,14 @@ import {ResizeColumnDirective} from './table-column/resize-column.directive';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {EditorComponent} from './editor/editor.component';
+import {TextFieldComponent} from './text-field/text-field.component';
+import {PasswordFieldComponent} from './password-field/password-field.component';
+import {SelectFieldComponent} from './select-field/select-field.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from '@angular/material/radio';
+import {RadioFieldComponent} from './radio-field/radio-field.component';
+import {NumberFieldComponent} from './number-field/number-field.component';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -29,20 +37,33 @@ import {EditorComponent} from './editor/editor.component';
     DragDropModule,
     MatSortModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatButtonModule,
   ],
   declarations: [
     AutocompleteComponent,
     TableComponent,
     ResizeColumnDirective,
     TableColumnComponent,
-    EditorComponent
+    EditorComponent,
+    TextFieldComponent,
+    PasswordFieldComponent,
+    SelectFieldComponent,
+    RadioFieldComponent,
+    NumberFieldComponent
   ],
   exports: [
     AutocompleteComponent,
     TableComponent,
     TableColumnComponent,
-    EditorComponent
+    EditorComponent,
+    TextFieldComponent,
+    PasswordFieldComponent,
+    SelectFieldComponent,
+    RadioFieldComponent,
+    NumberFieldComponent
   ]
 })
 export class CommonComponentsModule {

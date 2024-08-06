@@ -27,8 +27,21 @@
     @include buttons.button-black;
   }
 
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+
   .action-button-white {
     @include buttons.button-white;
+  }
+
+  .action-button-white-table {
+    height: 32px;
+  }
+
+  .action-button-red {
+    @include buttons.button-red;
+    height: 32px;
   }
 
   .search-icon {

@@ -2,6 +2,5 @@ package com.consdata.kouncil.model.schemaregistry;
 
 public enum StoreType {
 
-    JKS,
-    PKCS12;
+    JKS
 }

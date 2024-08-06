@@ -21,8 +21,8 @@ import {ConfirmModel} from './confirm.model';
     </mat-dialog-content>
 
     <mat-dialog-actions>
-      <button mat-flat-button mat-dialog-close>No</button>
-      <button mat-flat-button color="warn" [mat-dialog-close]="true">Yes</button>
+      <button mat-flat-button mat-dialog-close class="action-button-white">No</button>
+      <button mat-flat-button class="action-button-red" [mat-dialog-close]="true">Yes</button>
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

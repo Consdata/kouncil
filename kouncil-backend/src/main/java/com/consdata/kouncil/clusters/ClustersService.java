@@ -1,6 +1,6 @@
 package com.consdata.kouncil.clusters;
 
-import com.consdata.kouncil.clusters.converter.ClusterConverter;
+import com.consdata.kouncil.clusters.converter.ClusterDtoConverter;
 import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.clusters.dto.ClustersDto;
 import com.consdata.kouncil.model.cluster.Cluster;
@@ -18,7 +18,7 @@ public class ClustersService {
     public ClustersDto getClusters() {
         Iterable<Cluster> all = clusterRepository.findAll();
         List<ClusterDto> clusterDtos = new ArrayList<>();
-        all.forEach(cluster -> clusterDtos.add(ClusterConverter.convertToClusterDto(cluster)));
+        all.forEach(cluster -> clusterDtos.add(ClusterDtoConverter.convertToClusterDto(cluster)));
         return ClustersDto.builder().clusters(clusterDtos).build();
     }
 }

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ViewMode} from '../view-mode';
+import {ViewMode} from '@app/common-utils';
 
 @Component({
   selector: 'app-schema-details',

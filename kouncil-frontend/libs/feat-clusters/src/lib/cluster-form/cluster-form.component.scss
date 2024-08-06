@@ -1,0 +1,44 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../apps/kouncil/src/styles/palette";
+
+.cluster-form {
+  margin: $space-5;
+
+  .cluster-form-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: $space-5;
+
+    .cluster-form-title {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+  }
+
+  .panels-container {
+    display: flex;
+    flex-direction: column;
+    gap: $space-5;
+
+    .panel-header {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .jmx-section {
+      display: inline-flex;
+      width: 100%;
+      gap: $space-5;
+      margin-top: $space-5;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+

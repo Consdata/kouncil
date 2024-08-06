@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Schema, SchemaRegistryService} from '@app/schema-registry';
 import {Router} from '@angular/router';
 import {ServersService} from '@app/common-servers';
-import {ViewMode} from '../view-mode';
+import {ViewMode} from '@app/common-utils';
 
 @Component({
   selector: 'app-schema-create',

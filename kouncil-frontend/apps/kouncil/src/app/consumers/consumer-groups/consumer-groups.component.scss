@@ -1,3 +1,5 @@
+@use '../../../styles/buttons';
+
 :host {
   .datatable-cell-anchor {
     display: flex;
@@ -6,5 +8,10 @@
     height: 100%;
     color: inherit;
     text-decoration: none;
+  }
+
+  .action-button-red {
+    @include buttons.button-red;
+    height: 32px;
   }
 }

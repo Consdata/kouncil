@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClusterRepository extends CrudRepository<Cluster, Long> {
 
+    Cluster findByName(String name);
 }

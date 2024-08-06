@@ -1,5 +1,6 @@
 package com.consdata.kouncil.clusters.dto;
 
+import com.consdata.kouncil.model.schemaregistry.SchemaAuthenticationMethod;
 import com.consdata.kouncil.model.schemaregistry.SchemaSecurityProtocol;
 import com.consdata.kouncil.model.schemaregistry.StoreType;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.Data;
 @Data
 public class SchemaRegistrySecurityConfigDto {
 
+    private SchemaAuthenticationMethod authenticationMethod;
     private SchemaSecurityProtocol securityProtocol;
     private StoreType truststoreType;
     private String truststoreLocation;

@@ -1,0 +1,26 @@
+@import "../../../../../../../apps/kouncil/src/styles/spaces";
+
+.schema-registry-header {
+  font-size: 18px !important;
+  padding-bottom: $space-5;
+  font-weight: 500;
+}
+
+.authentication-type {
+  padding-bottom: $space-5;
+  padding-right: $space-1;
+}
+
+.security-section {
+  display: flex;
+  gap: $space-5;
+  width: 100%;
+
+  .half-width {
+    width: 50%;
+  }
+}
+
+.full-width {
+  width: 100%;
+}

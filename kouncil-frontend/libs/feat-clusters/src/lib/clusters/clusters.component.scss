@@ -1,0 +1,29 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import '../../../../../apps/kouncil/src/styles/palette';
+
+:host {
+
+  .main-container {
+    display: flex;
+  }
+
+  .toolbar-container {
+    width: 100%;
+    height: 40px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-right: 16px
+    }
+  }
+
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+}

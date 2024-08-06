@@ -54,7 +54,7 @@ public final class UserGroupsConfigReader {
         List<SystemFunctionName> adminFunctions = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
                 SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
                 SystemFunctionName.LOGIN,
-                SystemFunctionName.CLUSTER_LIST);
+                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS);
 
         List<SystemFunctionName> editorFunctions = List.of(
                 SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_CREATE, SystemFunctionName.TOPIC_UPDATE, SystemFunctionName.TOPIC_DELETE, SystemFunctionName.TOPIC_MESSAGES,
@@ -62,14 +62,14 @@ public final class UserGroupsConfigReader {
                 SystemFunctionName.TRACK_LIST,
                 SystemFunctionName.SCHEMA_LIST, SystemFunctionName.SCHEMA_CREATE, SystemFunctionName.SCHEMA_UPDATE, SystemFunctionName.SCHEMA_DELETE, SystemFunctionName.SCHEMA_DETAILS,
                 SystemFunctionName.LOGIN,
-                SystemFunctionName.CLUSTER_LIST);
+                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS);
 
         List<SystemFunctionName> viewerFunctions = List.of(
                 SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_MESSAGES,
                 SystemFunctionName.TRACK_LIST,
                 SystemFunctionName.SCHEMA_LIST, SystemFunctionName.SCHEMA_DETAILS,
                 SystemFunctionName.LOGIN,
-                SystemFunctionName.CLUSTER_LIST);
+                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_DETAILS);
 
         List<UserGroup> groups = new ArrayList<>();
 

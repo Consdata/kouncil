@@ -9,13 +9,13 @@ import {SidebarService} from '../sidebar/sidebar.service';
     <app-demo *ngIf="backend === 'DEMO'"></app-demo>
 
     <app-kafka-navbar></app-kafka-navbar>
-    <app-survey></app-survey>
 
     <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
 
       <app-sidebar></app-sidebar>
 
       <div [ngClass]="(sidebarService.isOpened$ | async) ? 'sidebarOpened' : 'sidebarClosed'">
+        <app-survey></app-survey>
         <app-progress-bar></app-progress-bar>
         <router-outlet></router-outlet>
       </div>
