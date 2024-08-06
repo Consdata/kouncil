@@ -1,11 +1,15 @@
-@import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../styles/palette';
 
-.first-time-login {
-  color: $main-60;
-  font-size: 12px;
-  float: left;
-  margin-bottom: 20px;
-  display: grid;
-  width: 275px;
-  animation: 1s slide-in;
+:host {
+  width: 100%;
+
+  .first-time-login {
+    color: $main-60;
+    font-size: 12px;
+    float: left;
+    margin-bottom: 20px;
+    display: grid;
+    width: 275px;
+    animation: 1s slide-in;
+  }
 }

@@ -1,0 +1,29 @@
+@use '../../../styles/inputs';
+@import '../../../styles/palette';
+
+.menu-button {
+  padding: 24px 8px 24px 16px ;
+  text-decoration: none;
+  color: $main-60;
+  border-radius: 0;
+  min-width: 32px;
+  width: 100%;
+  font-size: 12px;
+  display: flex;
+  place-items: center;
+  justify-content: left;
+
+  &:focus {
+    background: transparent;
+  }
+
+  &.active {
+    background: $blue-10;
+    color: $blue-70;
+    border-right: 2px solid $blue-70;
+
+    .mat-icon {
+      color: $blue-70;
+    }
+  }
+}

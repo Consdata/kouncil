@@ -7,7 +7,7 @@ import {TopicService, topicServiceProvider} from './topic.service';
 import {Page} from './page';
 import {ResendComponent} from '@app/resend-events';
 import {MessageViewComponent} from './message/message-view.component';
-import {LiveUpdateState} from './toolbar/toolbar.component';
+import {LiveUpdateState} from './toolbar/topic-toolbar.component';
 import {JsonGridData} from './json-grid-data';
 import {Observable, Subscription} from 'rxjs';
 import {JsonGrid} from './json-grid';
@@ -24,13 +24,13 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
     <div class="topic">
       <div class="topic-table-area">
         <div class="topic-toolbar-area">
-          <app-kafka-toolbar [name]="topicName"
+          <app-topic-toolbar [name]="topicName"
                              (toggleLiveEvent)="toggleLiveEventHandler($event)"
                              (openSendPopupEvent)="openSendPopup()"
                              (openResendPopupEvent)="openResendPopup()"
                              (toggleHeadersEvent)="toggleHeadersEventHandler($event)"
                              (toggleJsonEvent)="toggleJsonEventHandler($event)">
-          </app-kafka-toolbar>
+          </app-topic-toolbar>
         </div>
 
         <ng-template #noDataPlaceholder>

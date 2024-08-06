@@ -8,7 +8,7 @@ import {ConfirmModel} from './confirm.model';
     <div mat-dialog-title class="header">
       <div class="title">{{data.title}}</div>
       <div class="spacer"></div>
-      <mat-icon mat-dialog-close class="close">close</mat-icon>
+      <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
     </div>
 
     <mat-dialog-content class="mat-typography">

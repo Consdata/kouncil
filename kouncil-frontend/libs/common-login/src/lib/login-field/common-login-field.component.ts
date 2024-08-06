@@ -7,7 +7,7 @@ import {FormControl} from '@angular/forms';
     <div #loginField class="login-field-container"
          [ngClass]="{'login-field-container-error': isFieldInvalid()}">
       <div class="login-field-icon-container">
-        <mat-icon class="login-field-icon">{{ icon }}</mat-icon>
+        <mat-icon class="material-symbols-outlined login-field-icon">{{ icon }}</mat-icon>
       </div>
       <div class="login-field-input-container">
         <input [placeholder]="label" class="input" matInput [type]="fieldType" required
