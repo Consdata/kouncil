@@ -38,3 +38,7 @@ kouncil:
     role-viewer: viewer_group
   survey:
     base-path: "https://kouncil-eximee-survey-n22nwdfueq-lm.a.run.app/kouncil"
+
+spring:
+  flyway:
+    enabled: true
