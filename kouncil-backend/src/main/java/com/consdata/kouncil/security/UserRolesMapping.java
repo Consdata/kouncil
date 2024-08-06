@@ -1,8 +1,8 @@
 package com.consdata.kouncil.security;
 
-import com.consdata.kouncil.model.admin.Function;
+import com.consdata.kouncil.model.admin.SystemFunction;
 import com.consdata.kouncil.model.admin.UserGroup;
-import com.consdata.kouncil.security.function.FunctionsRepository;
+import com.consdata.kouncil.security.function.SystemFunctionsRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,17 +18,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserRolesMapping {
 
-    private final FunctionsRepository functionsRepository;
+    private final SystemFunctionsRepository systemFunctionsRepository;
 
     public Set<GrantedAuthority> mapToKouncilRoles(Set<String> userRoles) {
         Set<GrantedAuthority> collect = new HashSet<>();
 
-        List<Function> functions = StreamSupport.stream(functionsRepository.findAll().spliterator(), false).toList();
+        List<SystemFunction> systemFunctions = StreamSupport.stream(systemFunctionsRepository.findAll().spliterator(), false).toList();
 
-        userRoles.forEach(userRole -> functions.forEach(function -> {
-            List<String> list = function.getUserGroups().stream().map(UserGroup::getName).toList();
+        userRoles.forEach(userRole -> systemFunctions.forEach(systemFunction -> {
+            List<String> list = systemFunction.getUserGroups().stream().map(UserGroup::getName).toList();
             if (list.contains(userRole)) {
-                collect.add(new SimpleGrantedAuthority(function.getName().name()));
+                collect.add(new SimpleGrantedAuthority(systemFunction.getName().name()));
             }
         }));
         log.info("User roles: {}", collect);

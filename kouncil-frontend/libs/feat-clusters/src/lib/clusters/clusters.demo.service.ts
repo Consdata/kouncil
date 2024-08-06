@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {Clusters} from '../cluster.model';
+import {Clusters} from './cluster.model';
 import {ClustersService} from './clusters.service';
 
 @Injectable({

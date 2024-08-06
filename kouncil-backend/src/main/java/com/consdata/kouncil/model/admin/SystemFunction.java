@@ -19,25 +19,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "FUNCTION")
+@Table(name = "SYSTEM_FUNCTION")
 @Getter
 @Setter
-public class Function {
+public class SystemFunction {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FUNCTION_GEN")
-    @SequenceGenerator(name = "SEQ_FUNCTION_GEN", sequenceName = "SEQ_FUNCTION", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SYSTEM_FUNCTION_GEN")
+    @SequenceGenerator(name = "SEQ_SYSTEM_FUNCTION_GEN", sequenceName = "SEQ_SYSTEM_FUNCTION", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Column(name = "NAME", length = 40, unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
-    private FunctionName name;
+    private SystemFunctionName name;
 
     @Column(name = "LABEL")
     private String label;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "FUNCTIONS_USER_GROUPS", joinColumns = @JoinColumn(name = "FUNCTION_ID"), inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
+    @JoinTable(name = "SYSTEM_FUNCTIONS_USER_GROUPS", joinColumns = @JoinColumn(name = "SYSTEM_FUNCTION_ID"), inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
     private Set<UserGroup> userGroups;
 }
