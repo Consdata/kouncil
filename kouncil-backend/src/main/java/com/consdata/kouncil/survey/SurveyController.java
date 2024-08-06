@@ -1,6 +1,6 @@
 package com.consdata.kouncil.survey;
 
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import javax.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

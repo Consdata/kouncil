@@ -1,6 +1,6 @@
 package com.consdata.kouncil.schema.registry;
 
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.schema.SchemasConfigurationDTO;
 import com.consdata.kouncil.schema.SchemasDTO;

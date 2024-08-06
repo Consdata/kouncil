@@ -2,7 +2,7 @@ package com.consdata.kouncil.consumergroup;
 
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.config.KouncilConfiguration;
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

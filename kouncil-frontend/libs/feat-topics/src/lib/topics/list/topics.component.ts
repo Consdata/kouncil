@@ -19,7 +19,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {TopicFormComponent, TopicService} from '@app/feat-topic-form';
 
 const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
@@ -28,11 +28,10 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
   selector: 'app-topics',
   template: `
 
-    <div class="main-container">
+    <div class="main-container" *ngIf="authService.canAccess([KouncilRole.TOPIC_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-black" (click)="createTopic()"
-                  *ngIf="authService.canAccess([KouncilRole.TOPIC_CREATE])">
+          <button mat-button class="action-button-black" (click)="createTopic()">
             Create topic
           </button>
         </div>
@@ -103,7 +102,7 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
 })
 export class TopicsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
   topics: TopicMetadata[] = [];
   filtered: TopicMetadata[] = [];
 
