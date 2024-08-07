@@ -1,0 +1,27 @@
+{
+  "name": "feat-clusters",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-clusters/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-clusters"],
+      "options": {
+        "jestConfig": "libs/feat-clusters/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/feat-clusters/**/*.ts",
+          "libs/feat-clusters/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

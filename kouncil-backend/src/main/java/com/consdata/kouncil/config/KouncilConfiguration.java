@@ -1,9 +1,9 @@
 package com.consdata.kouncil.config;
 
 import com.consdata.kouncil.KouncilRuntimeException;
-import com.consdata.kouncil.config.cluster.ClustersDto;
-import com.consdata.kouncil.config.cluster.ClustersService;
-import com.consdata.kouncil.config.cluster.converter.ClusterConfigConverter;
+import com.consdata.kouncil.clusters.ClustersService;
+import com.consdata.kouncil.clusters.converter.ClusterConfigConverter;
+import com.consdata.kouncil.clusters.dto.ClustersDto;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;

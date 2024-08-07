@@ -30,16 +30,10 @@
       width: 50px;
     }
 
-    .grouping-menu-item {
-      display: flex;
-      border-radius: 0;
-      min-width: 32px;
-      color: $main-40;
-      margin-top: 15px;
-      padding: 8px 8px 8px 16px;
-      width: 100%;
+    .menu-grouping-separator {
+      border-top: 1px solid $main-20;
+      margin: 16px 8px 8px;
     }
-
   }
 
   .sidenav-demo {

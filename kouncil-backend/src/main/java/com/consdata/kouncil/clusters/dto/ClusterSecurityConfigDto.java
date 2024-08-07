@@ -1,4 +1,4 @@
-package com.consdata.kouncil.config.cluster.dto;
+package com.consdata.kouncil.clusters.dto;
 
 import com.consdata.kouncil.model.cluster.ClusterAuthenticationMethod;
 import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;

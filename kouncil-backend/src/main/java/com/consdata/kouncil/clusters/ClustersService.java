@@ -1,7 +1,8 @@
-package com.consdata.kouncil.config.cluster;
+package com.consdata.kouncil.clusters;
 
-import com.consdata.kouncil.config.cluster.converter.ClusterConverter;
-import com.consdata.kouncil.config.cluster.dto.ClusterDto;
+import com.consdata.kouncil.clusters.converter.ClusterConverter;
+import com.consdata.kouncil.clusters.dto.ClusterDto;
+import com.consdata.kouncil.clusters.dto.ClustersDto;
 import com.consdata.kouncil.model.cluster.Cluster;
 import java.util.ArrayList;
 import java.util.List;

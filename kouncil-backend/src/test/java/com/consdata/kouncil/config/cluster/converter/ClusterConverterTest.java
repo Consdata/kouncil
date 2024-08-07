@@ -3,7 +3,9 @@ package com.consdata.kouncil.config.cluster.converter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.consdata.kouncil.config.cluster.dto.BrokerDto;
+import com.consdata.kouncil.clusters.converter.ClusterConverter;
+import com.consdata.kouncil.clusters.dto.BrokerDto;
+import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.model.Broker;
 import com.consdata.kouncil.model.cluster.Cluster;
 import com.consdata.kouncil.model.cluster.ClusterSecurityConfig;
@@ -45,7 +47,7 @@ class ClusterConverterTest {
         cluster.getSchemaRegistry().getSchemaRegistrySecurityConfig().setTruststorePassword("password");
         cluster.getSchemaRegistry().getSchemaRegistrySecurityConfig().setTruststoreLocation("/location/to/schema/truststore.jks");
 
-        com.consdata.kouncil.config.cluster.dto.ClusterDto clusterDto = ClusterConverter.convertToClusterDto(cluster);
+        ClusterDto clusterDto = ClusterConverter.convertToClusterDto(cluster);
 
         assertAll(
                 () -> assertThat(clusterDto.getId()).isEqualTo(1L),

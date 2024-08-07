@@ -1,10 +1,10 @@
-package com.consdata.kouncil.config.cluster.converter;
+package com.consdata.kouncil.clusters.converter;
 
-import com.consdata.kouncil.config.cluster.dto.BrokerDto;
-import com.consdata.kouncil.config.cluster.dto.ClusterDto;
-import com.consdata.kouncil.config.cluster.dto.ClusterSecurityConfigDto;
-import com.consdata.kouncil.config.cluster.dto.SchemaRegistryDto;
-import com.consdata.kouncil.config.cluster.dto.SchemaRegistrySecurityConfigDto;
+import com.consdata.kouncil.clusters.dto.BrokerDto;
+import com.consdata.kouncil.clusters.dto.ClusterDto;
+import com.consdata.kouncil.clusters.dto.ClusterSecurityConfigDto;
+import com.consdata.kouncil.clusters.dto.SchemaRegistryDto;
+import com.consdata.kouncil.clusters.dto.SchemaRegistrySecurityConfigDto;
 import com.consdata.kouncil.model.cluster.Cluster;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistry;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistrySecurityConfig;

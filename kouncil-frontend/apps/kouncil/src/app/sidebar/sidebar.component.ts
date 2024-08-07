@@ -9,7 +9,8 @@ import {SidebarState} from './sidebar-state';
 @Component({
   selector: 'app-sidebar',
   template: `
-    <div class="sidenav" [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
+    <div class="sidenav"
+         [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
 
       <app-sidebar-menu-item [label]="'Topics'" [icon]="'topic'" [routeLink]="'/topics'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.TOPIC_LIST])">
@@ -30,6 +31,13 @@ import {SidebarState} from './sidebar-state';
 
       <app-sidebar-menu-item [label]="'Schema Registry'" [icon]="'code'" [routeLink]="'/schemas'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.SCHEMA_LIST])">
+      </app-sidebar-menu-item>
+
+      <div *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])"
+           class="menu-grouping-separator"></div>
+
+      <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
       </app-sidebar-menu-item>
 
       <div style="width: 100%; height: 32px">
