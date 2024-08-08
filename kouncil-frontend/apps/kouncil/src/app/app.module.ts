@@ -51,7 +51,6 @@ import {TrackResultComponent} from './track/track-result/track-result.component'
 import {TrackService} from './track/track.service';
 import {TrackBackendService} from './track/track.backend.service';
 import {TrackDemoService} from './track/track.demo.service';
-import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {DemoComponent} from './demo/demo.component';
 import {CachedCellComponent} from './consumers/cached-cell/cached-cell.component';
 import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
@@ -64,18 +63,20 @@ import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   clusterServiceFactory,
   clustersServiceFactory,
+  functionsServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
   sendServiceFactory,
   surveyServiceFactory,
   topicServiceFactory,
-  topicsServiceFactory
+  topicsServiceFactory,
+  userGroupServiceFactory,
+  userGroupsServiceFactory
 } from './app-factories';
 import {FeatNoDataModule} from '@app/feat-no-data';
 import {ServersBackendService, ServersDemoService, ServersService} from '@app/common-servers';
 import {FeatSendModule, SendService} from '@app/feat-send';
 import {RxStompConfig} from '@stomp/rx-stomp';
-import {RxStompService} from './rx-stomp.service';
 import {rxStompServiceFactory} from './rx-stomp-service-factory';
 import {LoginComponent} from './login/login.component';
 import {MainComponent} from './main/main.component';
@@ -106,6 +107,14 @@ import {SidebarComponent} from './sidebar/sidebar.component';
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {SidebarMenuItemComponent} from './sidebar/sidebar-menu-item/sidebar-menu-item.component';
 import {ClusterService, ClustersService, FeatClustersModule} from '@app/feat-clusters';
+import {
+  FeatUserGroupsModule,
+  FunctionsService,
+  UserGroupService,
+  UserGroupsService
+} from '@app/feat-user-groups';
+import {RxStompService} from './rx-stomp.service';
+import {RX_STOMP_CONFIG} from './rx-stomp.config';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -221,7 +230,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     MatCheckboxModule,
     CommonAuthModule,
     FeatTopicFormModule,
-    FeatClustersModule
+    FeatClustersModule,
+    FeatUserGroupsModule
   ],
   providers: [
     {
@@ -312,6 +322,21 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     {
       provide: ClusterService,
       useFactory: clusterServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: UserGroupsService,
+      useFactory: userGroupsServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: FunctionsService,
+      useFactory: functionsServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: UserGroupService,
+      useFactory: userGroupServiceFactory,
       deps: [HttpClient]
     }
   ],

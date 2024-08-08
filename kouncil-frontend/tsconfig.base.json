@@ -37,6 +37,7 @@
       "@app/feat-send": ["libs/feat-send/src/index.ts"],
       "@app/feat-topic-form": ["libs/feat-topic-form/src/index.ts"],
       "@app/feat-topics": ["libs/feat-topics/src/index.ts"],
+      "@app/feat-user-groups": ["libs/feat-user-groups/src/index.ts"],
       "@app/message-data": ["libs/message-data/src/index.ts"],
       "@app/resend-events": ["libs/resend-events/src/index.ts"],
       "@app/schema-registry": ["libs/schema-registry/src/index.ts"]
