@@ -1,6 +1,7 @@
 package com.consdata.kouncil.security.group;
 
 import com.consdata.kouncil.KouncilRuntimeException;
+import com.consdata.kouncil.config.security.UserPermissionsReloader;
 import com.consdata.kouncil.model.admin.UserGroup;
 import com.consdata.kouncil.security.group.dto.UserGroupDto;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserGroupService {
 
     private final UserGroupRepository userGroupRepository;
+    private final UserPermissionsReloader userPermissionsReloader;
 
     public UserGroupDto getUserGroup(Long id) {
         return UserGroupConverter.convertToUserGroupDto(findById(id));
@@ -26,10 +28,12 @@ public class UserGroupService {
 
     public void updateUserGroup(UserGroupDto userGroup) {
         userGroupRepository.save(UserGroupConverter.updateUserGroup(userGroup, findById(userGroup.getId())));
+        userPermissionsReloader.reloadPermissions();
     }
 
     public void deleteUserGroup(Long id) {
         userGroupRepository.deleteById(id);
+        userPermissionsReloader.reloadPermissions();
     }
 
     public boolean isUserGroupCodeUnique(Long id, String userGroupName) {

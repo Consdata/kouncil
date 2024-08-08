@@ -1,5 +1,5 @@
 import {Component, Inject, LOCALE_ID, OnDestroy, OnInit} from '@angular/core';
-import {interval, Observable, Subscription} from 'rxjs';
+import {interval, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {ConsumerGroupService} from './consumer-group.service';
 import {switchMap, tap} from 'rxjs/operators';
@@ -61,7 +61,6 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
   filteredAssignments: ConsumerGroupOffset[] = [];
   paused: boolean = false;
   lastLags: IHash = {};
-  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   additionalColumns: TableColumn[] = [
     {

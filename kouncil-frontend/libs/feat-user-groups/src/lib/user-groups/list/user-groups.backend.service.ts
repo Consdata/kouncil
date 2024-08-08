@@ -15,4 +15,8 @@ export class UserGroupsBackendService implements UserGroupsService {
   getUserGroups$(): Observable<Array<UserGroup>> {
     return this.http.get<Array<UserGroup>>('/api/user-groups');
   }
+
+  updatePermissions$(userGroups: Array<UserGroup>): Observable<void> {
+    return this.http.post<void>('/api/user-groups', userGroups);
+  }
 }

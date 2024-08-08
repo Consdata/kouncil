@@ -12,7 +12,7 @@ import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
-import {SearchService} from '@app/common-utils';
+import {ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
 
@@ -53,6 +53,8 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
         </mat-select>
       </mat-form-field>
 
+      <app-notification-button></app-notification-button>
+
       <button *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated" class="menu-button"
               mat-button [disableRipple]="true"
               (click)="logout()">
@@ -83,7 +85,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
               private router: Router,
               private http: HttpClient,
               public servers: ServersService,
-              public authService: AuthService) {
+              public authService: AuthService,
+              private progressBarService: ProgressBarService) {
     router.events.subscribe(() => {
       this.searchInputElementRef?.nativeElement.focus();
     });
@@ -121,6 +124,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
 
   logout(): void {
     this.authService.logout$().subscribe(() => {
+      this.progressBarService.setProgress(false);
       this.router.navigate(['/login']);
     });
   }

@@ -1,4 +1,4 @@
-import { RxStompService } from './rx-stomp.service';
+import {RxStompService} from '@app/feat-notifications';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 
 export function rxStompServiceFactory(): RxStompService {

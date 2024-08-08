@@ -1,0 +1,31 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../../../../apps/kouncil/src/styles/spaces';
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: $space-3;
+
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 28px;
+    color: $main-100;
+  }
+}
+
+.message{
+  font-size: 14px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+}

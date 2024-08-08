@@ -138,7 +138,9 @@ export class UserGroupsComponent extends AbstractTableComponent implements OnIni
     const matDialogRef = this.dialog.open(UserGroupFormComponent, config);
 
     this.subscription.add(matDialogRef.afterClosed().subscribe(() => {
-      this.loadGroups();
+      if (!id) {
+        this.loadGroups();
+      }
     }));
   }
 
@@ -162,8 +164,7 @@ export class UserGroupsComponent extends AbstractTableComponent implements OnIni
     .pipe(first())
     .subscribe({
       next: () => {
-        this.loadGroups();
-
+        this.progressBarService.setProgress(false);
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`User group ${userGroupName} deleted`, 'snackbar-success', ''),
           panelClass: ['snackbar'],

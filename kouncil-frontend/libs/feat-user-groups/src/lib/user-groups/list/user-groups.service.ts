@@ -6,4 +6,6 @@ import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
 export abstract class UserGroupsService {
 
   abstract getUserGroups$(): Observable<Array<UserGroup>>;
+
+  abstract updatePermissions$(userGroups: Array<UserGroup>): Observable<void>;
 }

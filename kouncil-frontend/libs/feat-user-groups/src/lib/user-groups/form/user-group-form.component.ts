@@ -118,7 +118,11 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
     this.subscriptions.add(observable$.pipe(first())
     .subscribe({
       next: () => {
-        this.dialog.closeAll();
+        this.dialog.openDialogs.forEach(dialog => {
+          if (dialog.componentInstance === this) {
+            dialog.close();
+          }
+        });
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(successMsg, 'snackbar-success', ''),
           panelClass: ['snackbar'],

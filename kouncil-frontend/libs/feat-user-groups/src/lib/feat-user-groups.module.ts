@@ -13,6 +13,9 @@ import {FeatNoDataModule} from '@app/feat-no-data';
 import {UserGroupFormComponent} from './user-groups/form/user-group-form.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {ReactiveFormsModule} from '@angular/forms';
+import {
+  UserGroupsFunctionsMatrixComponent
+} from './user-groups-functions-matrix/user-groups-functions-matrix.component';
 
 @NgModule({
   imports: [
@@ -31,11 +34,13 @@ import {ReactiveFormsModule} from '@angular/forms';
   ],
   declarations: [
     UserGroupsComponent,
-    UserGroupFormComponent
+    UserGroupFormComponent,
+    UserGroupsFunctionsMatrixComponent
   ],
   exports: [
     UserGroupsComponent,
-    UserGroupFormComponent
+    UserGroupFormComponent,
+    UserGroupsFunctionsMatrixComponent
   ]
 })
 export class FeatUserGroupsModule {
