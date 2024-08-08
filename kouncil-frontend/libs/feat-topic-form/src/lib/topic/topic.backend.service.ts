@@ -28,7 +28,7 @@ export class TopicBackendService implements TopicService {
     return this.http.get<TopicData>(`/api/topic/${topicName}`, {params});
   }
 
-  deleteSchema$(topicName: string, serverId: string): Observable<void> {
+  deleteTopic$(topicName: string, serverId: string): Observable<void> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.delete<void>(`/api/topic/${topicName}`, {params});
   }

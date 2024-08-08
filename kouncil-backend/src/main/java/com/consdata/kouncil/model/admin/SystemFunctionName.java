@@ -41,5 +41,6 @@ public enum SystemFunctionName {
     @FieldNameConstants.Include CLUSTER_LIST,
     @FieldNameConstants.Include CLUSTER_CREATE,
     @FieldNameConstants.Include CLUSTER_UPDATE,
-    @FieldNameConstants.Include CLUSTER_DETAILS
+    @FieldNameConstants.Include CLUSTER_DETAILS,
+    @FieldNameConstants.Include CLUSTER_DELETE
 }

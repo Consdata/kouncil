@@ -11,5 +11,5 @@ export abstract class TopicService {
 
   abstract getTopic$(selectedServerId: string, topicName: string): Observable<TopicData>;
 
-  abstract deleteSchema$(topicName: string, selectedServerId: string): Observable<void>;
+  abstract deleteTopic$(topicName: string, selectedServerId: string): Observable<void>;
 }

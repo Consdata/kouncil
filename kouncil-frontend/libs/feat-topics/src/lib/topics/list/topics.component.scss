@@ -29,12 +29,12 @@
 
   .action-button-white {
     @include buttons.button-white;
-    height: 32px;
+    @include buttons.table-button;
   }
 
   .action-button-red {
     @include buttons.button-red;
-    height: 32px;
+    @include buttons.table-button;
   }
 
   .kafka-topics {

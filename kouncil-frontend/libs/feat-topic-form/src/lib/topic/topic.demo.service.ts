@@ -11,7 +11,7 @@ export class TopicDemoService implements TopicService {
     return of();
   }
 
-  deleteSchema$(_topicName: string, _selectedServerId: string): Observable<void> {
+  deleteTopic$(_topicName: string, _selectedServerId: string): Observable<void> {
     return of();
   }
 

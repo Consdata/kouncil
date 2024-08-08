@@ -32,8 +32,7 @@ public class ClusterService {
 
     public String saveCluster(ClusterDto cluster) {
         Cluster save = clusterRepository.save(ClusterConverter.convertToCluster(cluster));
-        kouncilConfiguration.initializeClusters();
-        schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
+        reloadConfig();
         return save.getName();
     }
 
@@ -58,12 +57,21 @@ public class ClusterService {
             return false;
         } finally {
             kafkaConnectionService.cleanAdminClients();
-            kouncilConfiguration.initializeClusters();
-            schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
+            reloadConfig();
         }
     }
 
     public boolean isClusterNameUnique(String clusterName) {
         return clusterRepository.findByName(clusterName) == null;
+    }
+
+    public void deleteCluster(Long id) {
+        clusterRepository.deleteById(id);
+        reloadConfig();
+    }
+
+    private void reloadConfig() {
+        kouncilConfiguration.initializeClusters();
+        schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
     }
 }
