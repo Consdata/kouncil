@@ -17,7 +17,7 @@ import {
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {MatSort} from '@angular/material/sort';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
@@ -88,7 +88,7 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
 
   additionalColumns: TableColumn[] = [
     {

@@ -2,7 +2,7 @@ package com.consdata.kouncil.config;
 
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;

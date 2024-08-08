@@ -28,7 +28,7 @@ export class ClusterDemoService implements ClusterService {
     return of();
   }
 
-  deleteTopic$(_id: number): Observable<void> {
+  deleteCluster$(_id: number): Observable<void> {
     return of();
   }
 

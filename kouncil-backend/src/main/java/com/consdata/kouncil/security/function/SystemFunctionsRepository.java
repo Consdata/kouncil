@@ -1,10 +1,10 @@
 package com.consdata.kouncil.security.function;
 
-import com.consdata.kouncil.model.admin.Function;
+import com.consdata.kouncil.model.admin.SystemFunction;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FunctionsRepository extends CrudRepository<Function, Long> {
+public interface SystemFunctionsRepository extends CrudRepository<SystemFunction, Long> {
 
 }

@@ -1,6 +1,6 @@
 package com.consdata.kouncil.security.group;
 
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import com.consdata.kouncil.security.group.dto.UserGroupDto;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
