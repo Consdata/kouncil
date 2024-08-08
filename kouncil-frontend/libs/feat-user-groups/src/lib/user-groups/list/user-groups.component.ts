@@ -164,8 +164,7 @@ export class UserGroupsComponent extends AbstractTableComponent implements OnIni
     .pipe(first())
     .subscribe({
       next: () => {
-        this.loadGroups();
-
+        this.progressBarService.setProgress(false);
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`User group ${userGroupName} deleted`, 'snackbar-success', ''),
           panelClass: ['snackbar'],

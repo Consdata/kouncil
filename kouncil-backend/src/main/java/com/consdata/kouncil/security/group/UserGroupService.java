@@ -33,6 +33,7 @@ public class UserGroupService {
 
     public void deleteUserGroup(Long id) {
         userGroupRepository.deleteById(id);
+        userPermissionsReloader.reloadPermissions();
     }
 
     public boolean isUserGroupCodeUnique(Long id, String userGroupName) {

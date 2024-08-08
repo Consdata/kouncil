@@ -200,7 +200,7 @@ const routes: Routes = [
         component: UserGroupsFunctionsMatrixComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [KouncilRole.USER_GROUPS]
+          roles: [SystemFunctionName.USER_GROUPS]
         }
       }
     ]
