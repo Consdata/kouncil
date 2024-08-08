@@ -1,12 +1,15 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ClustersService} from './clusters.service';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ProgressBarService, SearchService} from '@app/common-utils';
-import {SystemFunctionName} from '@app/common-auth';
-import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {
+  ProgressBarService,
+  SearchService,
+  SnackBarComponent,
+  SnackBarData
+} from '@app/common-utils';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
 import {Router} from '@angular/router';
 import {ConfirmService} from '@app/feat-confirm';
@@ -51,12 +54,12 @@ import {ServersService} from '@app/common-servers';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button *ngIf="authService.canAccess([KouncilRole.CLUSTER_DELETE])"
+                <button *ngIf="authService.canAccess([SystemFunctionName.CLUSTER_DELETE])"
                         mat-button class="action-button-red"
                         (click)="$event.stopPropagation(); confirmDeleteCluster(element.id, element.name)">
                   Delete
                 </button>
-                <button *ngIf="authService.canAccess([KouncilRole.CLUSTER_UPDATE])"
+                <button *ngIf="authService.canAccess([SystemFunctionName.CLUSTER_UPDATE])"
                         mat-button class="action-button-white"
                         [routerLink]="['/clusters/cluster/', element.name, 'edit']">
                   Edit
@@ -116,7 +119,6 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
   constructor(private clustersService: ClustersService,
               private progressBarService: ProgressBarService,
               private searchService: SearchService,
-              private router: Router) {
               private router: Router,
               private confirmService: ConfirmService,
               private clusterService: ClusterService,
@@ -181,7 +183,7 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
   }
 
   private deleteCluster(id: number, clusterName: string) {
-    this.subscription.add(this.clusterService.deleteTopic$(id)
+    this.subscription.add(this.clusterService.deleteCluster$(id)
     .pipe(first())
     .subscribe({
       next: () => {

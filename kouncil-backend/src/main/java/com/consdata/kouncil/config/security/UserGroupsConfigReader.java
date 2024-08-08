@@ -54,11 +54,7 @@ public final class UserGroupsConfigReader {
         List<SystemFunctionName> adminFunctions = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
                 SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
                 SystemFunctionName.LOGIN,
-                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS);
-        List<FunctionName> adminFunctions = List.of(FunctionName.BROKERS_LIST, FunctionName.BROKER_DETAILS,
-                FunctionName.CONSUMER_GROUP_LIST, FunctionName.CONSUMER_GROUP_DETAILS, FunctionName.CONSUMER_GROUP_DELETE,
-                FunctionName.LOGIN,
-                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName.CLUSTER_DETAILS, FunctionName.CLUSTER_DELETE);
+                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS, SystemFunctionName.CLUSTER_DELETE);
 
         List<SystemFunctionName> editorFunctions = List.of(
                 SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_CREATE, SystemFunctionName.TOPIC_UPDATE, SystemFunctionName.TOPIC_DELETE, SystemFunctionName.TOPIC_MESSAGES,
@@ -66,14 +62,7 @@ public final class UserGroupsConfigReader {
                 SystemFunctionName.TRACK_LIST,
                 SystemFunctionName.SCHEMA_LIST, SystemFunctionName.SCHEMA_CREATE, SystemFunctionName.SCHEMA_UPDATE, SystemFunctionName.SCHEMA_DELETE, SystemFunctionName.SCHEMA_DETAILS,
                 SystemFunctionName.LOGIN,
-                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS);
-        List<FunctionName> editorFunctions = List.of(
-                FunctionName.TOPIC_LIST, FunctionName.TOPIC_CREATE, FunctionName.TOPIC_UPDATE, FunctionName.TOPIC_DETAILS, FunctionName.TOPIC_DELETE,
-                FunctionName.TOPIC_MESSAGES, FunctionName.TOPIC_RESEND_MESSAGE, FunctionName.TOPIC_SEND_MESSAGE,
-                FunctionName.TRACK_LIST,
-                FunctionName.SCHEMA_LIST, FunctionName.SCHEMA_CREATE, FunctionName.SCHEMA_UPDATE, FunctionName.SCHEMA_DELETE, FunctionName.SCHEMA_DETAILS,
-                FunctionName.LOGIN,
-                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName.CLUSTER_DETAILS, FunctionName.CLUSTER_DELETE);
+                SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS, SystemFunctionName.CLUSTER_DELETE);
 
         List<SystemFunctionName> viewerFunctions = List.of(
                 SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_MESSAGES,
