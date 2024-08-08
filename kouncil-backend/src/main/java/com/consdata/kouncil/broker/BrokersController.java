@@ -5,7 +5,7 @@ import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;

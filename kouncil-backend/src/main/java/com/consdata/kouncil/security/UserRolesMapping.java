@@ -1,7 +1,9 @@
 package com.consdata.kouncil.security;
 
+import com.consdata.kouncil.model.admin.SystemFunction;
 import com.consdata.kouncil.model.admin.UserGroup;
 import com.consdata.kouncil.security.group.UserGroupRepository;
+import com.consdata.kouncil.security.function.SystemFunctionsRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserRolesMapping {
 
+    private final SystemFunctionsRepository systemFunctionsRepository;
     private final UserGroupRepository groupRepository;
 
     public Set<GrantedAuthority> mapToKouncilRoles(Set<String> userRoles) {

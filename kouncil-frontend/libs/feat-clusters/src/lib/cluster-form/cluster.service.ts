@@ -15,5 +15,5 @@ export abstract class ClusterService {
 
   abstract isClusterNameUnique$(clusterName: string): Observable<boolean>;
 
-  abstract deleteTopic$(id: number): Observable<void>;
+  abstract deleteCluster$(id: number): Observable<void>;
 }
