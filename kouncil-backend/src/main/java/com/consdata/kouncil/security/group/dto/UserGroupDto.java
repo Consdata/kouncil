@@ -1,6 +1,6 @@
 package com.consdata.kouncil.security.group.dto;
 
-import com.consdata.kouncil.security.function.dto.FunctionDto;
+import com.consdata.kouncil.security.function.dto.SystemFunctionDto;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ public class UserGroupDto {
     private Long id;
     private String code;
     private String name;
-    private Set<FunctionDto> functions;
+    private Set<SystemFunctionDto> functions;
 }

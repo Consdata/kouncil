@@ -1,4 +1,4 @@
-import {KouncilRole} from '@app/common-auth';
+import {SystemFunctionName} from '@app/common-auth';
 
 export class UserGroup {
 
@@ -8,7 +8,7 @@ export class UserGroup {
 
 export class SystemFunction {
 
-  constructor(public id: number, public name: KouncilRole, public label: string, public functionGroup: FunctionGroup) {
+  constructor(public id: number, public name: SystemFunctionName, public label: string, public functionGroup: FunctionGroup) {
   }
 }
 

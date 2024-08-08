@@ -39,7 +39,5 @@ public class SystemFunction {
     private FunctionGroup functionGroup;
 
     @ManyToMany(mappedBy = "functions", fetch = FetchType.EAGER)
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "SYSTEM_FUNCTIONS_USER_GROUPS", joinColumns = @JoinColumn(name = "SYSTEM_FUNCTION_ID"), inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
     private Set<UserGroup> userGroups;
 }

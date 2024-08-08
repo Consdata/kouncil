@@ -4,8 +4,6 @@ import com.consdata.kouncil.model.admin.SystemFunction;
 import com.consdata.kouncil.model.admin.SystemFunctionName;
 import com.consdata.kouncil.model.admin.UserGroup;
 import com.consdata.kouncil.security.KouncilRole;
-import com.consdata.kouncil.security.function.FunctionsRepository;
-import com.consdata.kouncil.security.group.UserGroupRepository;
 import com.consdata.kouncil.security.function.SystemFunctionsRepository;
 import com.consdata.kouncil.security.group.UserGroupRepository;
 import java.util.ArrayList;
@@ -56,12 +54,8 @@ public final class UserGroupsConfigReader {
         List<SystemFunctionName> adminFunctions = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
                 SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
                 SystemFunctionName.LOGIN,
+                SystemFunctionName.USER_GROUPS, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUP_CREATE, SystemFunctionName.USER_GROUP_UPDATE, SystemFunctionName.USER_GROUP_DELETE,
                 SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS, SystemFunctionName.CLUSTER_DELETE);
-        List<FunctionName> adminFunctions = List.of(FunctionName.BROKERS_LIST, FunctionName.BROKER_DETAILS,
-                FunctionName.CONSUMER_GROUP_LIST, FunctionName.CONSUMER_GROUP_DETAILS, FunctionName.CONSUMER_GROUP_DELETE,
-                FunctionName.LOGIN,
-                FunctionName.USER_GROUPS, FunctionName.USER_GROUPS_LIST, FunctionName.USER_GROUP_CREATE, FunctionName.USER_GROUP_UPDATE, FunctionName.USER_GROUP_DELETE,
-                FunctionName.CLUSTER_LIST, FunctionName.CLUSTER_CREATE, FunctionName.CLUSTER_UPDATE, FunctionName.CLUSTER_DETAILS, FunctionName.CLUSTER_DELETE);
 
         List<SystemFunctionName> editorFunctions = List.of(
                 SystemFunctionName.TOPIC_LIST, SystemFunctionName.TOPIC_CREATE, SystemFunctionName.TOPIC_UPDATE, SystemFunctionName.TOPIC_DELETE, SystemFunctionName.TOPIC_MESSAGES,
@@ -80,8 +74,7 @@ public final class UserGroupsConfigReader {
 
         List<UserGroup> groups = new ArrayList<>();
 
-        List<String> foundGroupNames = StreamSupport.stream(userGroupRepository.findAll().spliterator(), false).map(UserGroup::getName).toList();
-        List<String> foundGroupCodes = StreamSupport.stream(groupRepository.findAll().spliterator(), false).map(UserGroup::getCode).toList();
+        List<String> foundGroupCodes = StreamSupport.stream(userGroupRepository.findAll().spliterator(), false).map(UserGroup::getCode).toList();
 
         roleMapping.values()
                 .stream()
@@ -115,12 +108,10 @@ public final class UserGroupsConfigReader {
             }
         });
 
-        groupRepository.saveAll(groups);
-        systemFunctionsRepository.saveAll(functions);
+        userGroupRepository.saveAll(groups);
     }
 
-    private void addGroupToFunction(SystemFunction function, Set<String> roles, Map<String, UserGroup> groupMap) {
-    private void addFunctionToUserGroup(Function function, Set<String> roles, Map<String, UserGroup> groupMap) {
+    private void addFunctionToUserGroup(SystemFunction function, Set<String> roles, Map<String, UserGroup> groupMap) {
         roles.forEach(groupFromConfig -> {
             if (groupMap.get(groupFromConfig) != null) {
                 groupMap.get(groupFromConfig).getFunctions().add(function);

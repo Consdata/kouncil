@@ -1,15 +1,15 @@
 package com.consdata.kouncil.security.function;
 
-import com.consdata.kouncil.model.admin.Function;
-import com.consdata.kouncil.security.function.dto.FunctionDto;
+import com.consdata.kouncil.model.admin.SystemFunction;
+import com.consdata.kouncil.security.function.dto.SystemFunctionDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FunctionConverter {
 
-    public static FunctionDto convertToFunctionDto(Function function) {
-        FunctionDto functionDto = new FunctionDto();
+    public static SystemFunctionDto convertToFunctionDto(SystemFunction function) {
+        SystemFunctionDto functionDto = new SystemFunctionDto();
         functionDto.setId(function.getId());
         functionDto.setName(function.getName());
         functionDto.setLabel(function.getLabel());
@@ -17,8 +17,8 @@ public final class FunctionConverter {
         return functionDto;
     }
 
-    public static Function convertToFunction(FunctionDto functionDto) {
-        Function function = new Function();
+    public static SystemFunction convertToFunction(SystemFunctionDto functionDto) {
+        SystemFunction function = new SystemFunction();
         function.setId(functionDto.getId());
         function.setName(functionDto.getName());
         function.setLabel(functionDto.getLabel());

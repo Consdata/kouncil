@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {UserGroupsService} from './user-groups.service';
 import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
 import {UserGroupService} from './user-group.service';
@@ -16,12 +16,11 @@ import {UserGroupFormComponent} from '../form/user-group-form.component';
   selector: 'app-user-groups',
   template: `
 
-    <div class="main-container">
+    <div class="main-container"
+         *ngIf="authService.canAccess([SystemFunctionName.USER_GROUP_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-blue"
-                  *ngIf="authService.canAccess([KouncilRole.USER_GROUP_CREATE])"
-                  (click)="addNewGroup()">
+          <button mat-button class="action-button-blue" (click)="addNewGroup()">
             Add new group
           </button>
         </div>
@@ -49,12 +48,14 @@ import {UserGroupFormComponent} from '../form/user-group-form.component';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button mat-button *ngIf="authService.canAccess([KouncilRole.USER_GROUP_DELETE])"
+                <button mat-button
+                        *ngIf="authService.canAccess([SystemFunctionName.USER_GROUP_DELETE])"
                         class="action-button-red"
                         (click)="$event.stopPropagation(); removeUserGroup(element.id, element.name)">
                   Delete
                 </button>
-                <button mat-button *ngIf="authService.canAccess([KouncilRole.USER_GROUP_UPDATE])"
+                <button mat-button
+                        *ngIf="authService.canAccess([SystemFunctionName.USER_GROUP_UPDATE])"
                         class="action-button-white"
                         (click)="$event.stopPropagation(); addNewGroup(element.id)">
                   Edit
@@ -70,7 +71,7 @@ import {UserGroupFormComponent} from '../form/user-group-form.component';
 })
 export class UserGroupsComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
   groups: Array<UserGroup> = [];
 
   columns: TableColumn[] =
