@@ -15,9 +15,12 @@ import com.consdata.kouncil.model.schemaregistry.SchemaRegistrySecurityConfig;
 import com.consdata.kouncil.model.schemaregistry.SchemaSecurityProtocol;
 import java.util.HashSet;
 import java.util.List;
+import com.consdata.kouncil.model.schemaregistry.SchemaRegistrySecurityConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanUtils;
+
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClusterConverter {

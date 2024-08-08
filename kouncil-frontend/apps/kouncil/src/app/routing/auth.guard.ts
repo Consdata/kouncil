@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         return false;
       }
       if (route.data['roles'] !== undefined) {
-        const haveAccess = this.authService.canAccess(route.data['roles'] as Array<KouncilRole>);
+        const haveAccess = this.authService.canAccess(route.data['roles'] as Array<SystemFunctionName>);
         if (!haveAccess) {
           this.router.navigate(['/access-denied']);
         }

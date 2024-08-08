@@ -1,20 +1,21 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {SidebarState} from './sidebar-state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SidebarService {
 
-  currentState: string = 'opened';
+  currentState: SidebarState = SidebarState.OPENED;
 
   private opened$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.checkIfOpened());
 
   changeState(): void {
-    if (this.currentState === 'opened') {
-      this.currentState = ' closed';
+    if (SidebarState.OPENED === this.currentState) {
+      this.currentState = SidebarState.CLOSED;
     } else {
-      this.currentState = 'opened';
+      this.currentState = SidebarState.OPENED;
     }
     this.opened$.next(this.checkIfOpened());
   }
@@ -24,6 +25,6 @@ export class SidebarService {
   }
 
   checkIfOpened(): boolean {
-    return this.currentState === 'opened';
+    return SidebarState.OPENED === this.currentState;
   }
 }

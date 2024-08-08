@@ -1,9 +1,10 @@
 import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
 import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
+import {SidebarState} from './sidebar-state';
 
 @Component({
   selector: 'app-sidebar',
@@ -54,19 +55,19 @@ import {Backend} from '@app/common-model';
 export class SidebarComponent {
 
   public backend: Backend = environment.backend;
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
   currentState$: Observable<boolean> = this.sidebarService.isOpened$;
-  @HostBinding('class') hostClass: string = 'opened';
+  @HostBinding('class') hostClass: SidebarState = SidebarState.OPENED;
 
   constructor(public authService: AuthService,
               private sidebarService: SidebarService) {
     this.sidebarService.isOpened$.subscribe(isOpened=>{
       if(isOpened){
-          this.hostClass = 'opened';
+          this.hostClass = SidebarState.OPENED;
       } else {
-          this.hostClass = 'closed';
+          this.hostClass = SidebarState.CLOSED;
       }
     });
   }

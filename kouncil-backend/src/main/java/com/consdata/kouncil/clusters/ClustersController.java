@@ -1,7 +1,7 @@
 package com.consdata.kouncil.clusters;
 
 import com.consdata.kouncil.clusters.dto.ClustersDto;
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

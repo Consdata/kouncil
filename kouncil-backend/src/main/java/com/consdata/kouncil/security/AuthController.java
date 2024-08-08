@@ -3,7 +3,7 @@ package com.consdata.kouncil.security;
 import static com.consdata.kouncil.config.KouncilConfiguration.INSTALLATION_ID_FILE;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
-import com.consdata.kouncil.model.admin.FunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

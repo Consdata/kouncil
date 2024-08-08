@@ -1,7 +1,7 @@
-DELETE FROM functions_user_groups;
+DELETE FROM system_functions_user_groups;
 DELETE FROM user_group;
 
-insert into function(id, name, label)
-VALUES (nextval('SEQ_FUNCTION'), 'CLUSTER_LIST', 'Cluster list');
+insert into system_function(id, name, label)
+VALUES (nextval('SEQ_SYSTEM_FUNCTION'), 'CLUSTER_LIST', 'Cluster list');
 
 commit;

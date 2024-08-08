@@ -10,7 +10,7 @@ import {FormControl} from '@angular/forms';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {Router} from '@angular/router';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 @Component({
   selector: 'app-schemas',
@@ -86,7 +86,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
 })
 export class SchemasComponent extends AbstractTableComponent implements OnInit {
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
   filtered: Schema[] = [];
 
   columns: TableColumn[] = [

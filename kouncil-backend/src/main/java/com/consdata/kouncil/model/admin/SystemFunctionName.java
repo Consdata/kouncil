@@ -3,7 +3,7 @@ package com.consdata.kouncil.model.admin;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants(onlyExplicitlyIncluded = true)
-public enum FunctionName {
+public enum SystemFunctionName {
 
     //topic
     @FieldNameConstants.Include TOPIC_LIST,

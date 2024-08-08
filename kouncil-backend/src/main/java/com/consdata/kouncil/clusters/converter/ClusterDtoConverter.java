@@ -7,8 +7,10 @@ import com.consdata.kouncil.clusters.dto.SchemaRegistryDto;
 import com.consdata.kouncil.clusters.dto.SchemaRegistrySecurityConfigDto;
 import com.consdata.kouncil.model.cluster.Cluster;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistry;
+import com.consdata.kouncil.model.schemaregistry.SchemaRegistrySecurityConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,11 +28,9 @@ public final class ClusterDtoConverter {
         //brokers
         setClusterBrokers(cluster, clusterDto);
         //cluster security
-        getClusterSecurityConfigDto(cluster, clusterDto);
+        setClusterSecurityConfigDto(cluster, clusterDto);
         //schema registry
         setClusterSchemaRegistry(cluster, clusterDto);
-
-
         return clusterDto;
     }
 
@@ -46,20 +46,9 @@ public final class ClusterDtoConverter {
         });
     }
 
-    private static void getClusterSecurityConfigDto(Cluster cluster, ClusterDto clusterDto) {
+    private static void setClusterSecurityConfigDto(Cluster cluster, ClusterDto clusterDto) {
         ClusterSecurityConfigDto clusterSecurityConfigDto = new ClusterSecurityConfigDto();
-        clusterSecurityConfigDto.setAuthenticationMethod(cluster.getClusterSecurityConfig().getAuthenticationMethod());
-        clusterSecurityConfigDto.setSecurityProtocol(cluster.getClusterSecurityConfig().getSecurityProtocol());
-        clusterSecurityConfigDto.setSaslMechanism(cluster.getClusterSecurityConfig().getSaslMechanism());
-        clusterSecurityConfigDto.setTruststoreLocation(cluster.getClusterSecurityConfig().getTruststoreLocation());
-        clusterSecurityConfigDto.setTruststorePassword(cluster.getClusterSecurityConfig().getTruststorePassword());
-        clusterSecurityConfigDto.setKeystoreLocation(cluster.getClusterSecurityConfig().getKeystoreLocation());
-        clusterSecurityConfigDto.setKeystorePassword(cluster.getClusterSecurityConfig().getKeystorePassword());
-        clusterSecurityConfigDto.setKeyPassword(cluster.getClusterSecurityConfig().getKeyPassword());
-
-        clusterSecurityConfigDto.setUsername(cluster.getClusterSecurityConfig().getUsername());
-        clusterSecurityConfigDto.setPassword(cluster.getClusterSecurityConfig().getPassword());
-        clusterSecurityConfigDto.setAwsProfileName(cluster.getClusterSecurityConfig().getAwsProfileName());
+        BeanUtils.copyProperties(cluster.getClusterSecurityConfig(), clusterSecurityConfigDto);
         clusterDto.setClusterSecurityConfig(clusterSecurityConfigDto);
     }
 
@@ -71,31 +60,17 @@ public final class ClusterDtoConverter {
             schemaRegistryDto.setUrl(schemaRegistry.getUrl());
 
             if (schemaRegistry.getSchemaRegistrySecurityConfig() != null) {
-                schemaRegistryDto.setSchemaRegistrySecurityConfig(getSchemaRegistrySecurityConfigDto(schemaRegistry));
+                setSchemaRegistrySecurityConfigDto(schemaRegistry.getSchemaRegistrySecurityConfig(), schemaRegistryDto);
             }
 
             clusterDto.setSchemaRegistry(schemaRegistryDto);
         }
     }
 
-    private static SchemaRegistrySecurityConfigDto getSchemaRegistrySecurityConfigDto(SchemaRegistry schemaRegistry) {
+    private static void setSchemaRegistrySecurityConfigDto(SchemaRegistrySecurityConfig schemaRegistrySecurityConfig, SchemaRegistryDto schemaRegistryDto) {
         SchemaRegistrySecurityConfigDto schemaRegistrySecurityConfigDto = new SchemaRegistrySecurityConfigDto();
-
-        schemaRegistrySecurityConfigDto.setAuthenticationMethod(schemaRegistry.getSchemaRegistrySecurityConfig().getAuthenticationMethod());
-        schemaRegistrySecurityConfigDto.setSecurityProtocol(schemaRegistry.getSchemaRegistrySecurityConfig().getSecurityProtocol());
-
-        schemaRegistrySecurityConfigDto.setTruststoreLocation(schemaRegistry.getSchemaRegistrySecurityConfig().getTruststoreLocation());
-        schemaRegistrySecurityConfigDto.setTruststorePassword(schemaRegistry.getSchemaRegistrySecurityConfig().getTruststorePassword());
-        schemaRegistrySecurityConfigDto.setTruststoreType(schemaRegistry.getSchemaRegistrySecurityConfig().getTruststoreType());
-
-        schemaRegistrySecurityConfigDto.setKeystoreType(schemaRegistry.getSchemaRegistrySecurityConfig().getKeystoreType());
-        schemaRegistrySecurityConfigDto.setKeystoreLocation(schemaRegistry.getSchemaRegistrySecurityConfig().getKeystoreLocation());
-        schemaRegistrySecurityConfigDto.setKeystorePassword(schemaRegistry.getSchemaRegistrySecurityConfig().getKeystorePassword());
-        schemaRegistrySecurityConfigDto.setKeyPassword(schemaRegistry.getSchemaRegistrySecurityConfig().getKeyPassword());
-
-        schemaRegistrySecurityConfigDto.setUsername(schemaRegistry.getSchemaRegistrySecurityConfig().getUsername());
-        schemaRegistrySecurityConfigDto.setPassword(schemaRegistry.getSchemaRegistrySecurityConfig().getPassword());
-        return schemaRegistrySecurityConfigDto;
+        BeanUtils.copyProperties(schemaRegistrySecurityConfig, schemaRegistrySecurityConfigDto);
+        schemaRegistryDto.setSchemaRegistrySecurityConfig(schemaRegistrySecurityConfigDto);
     }
 
 }

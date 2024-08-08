@@ -1,4 +1,4 @@
-export enum KouncilRole {
+export enum SystemFunctionName {
 
   TOPIC_LIST = 'TOPIC_LIST',
   TOPIC_CREATE = 'TOPIC_CREATE',
