@@ -6,7 +6,6 @@ import {FunctionsService} from './functions/functions.service';
 import {ProgressBarService, ViewMode} from '@app/common-utils';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 
-
 @Component({
   selector: 'app-user-groups-functions-matrix',
   template: `
@@ -40,8 +39,9 @@ import {MatCheckboxChange} from '@angular/material/checkbox';
       <app-no-data-placeholder [objectTypeName]="'Permissions'"></app-no-data-placeholder>
     </ng-template>
 
-    <mat-accordion *ngIf="systemFunctionsGroups && systemFunctionsGroups.size > 0; else noDataPlaceholder"
-                   class="user-groups-main-container">
+    <mat-accordion
+      *ngIf="systemFunctionsGroups && systemFunctionsGroups.size > 0; else noDataPlaceholder"
+      class="user-groups-main-container">
       <ng-container *ngFor="let functionGroup of systemFunctionsGroups | keyvalue">
 
         <mat-expansion-panel>
