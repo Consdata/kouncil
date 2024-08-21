@@ -8,7 +8,6 @@ import com.consdata.kouncil.serde.formatter.schema.AvroMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.JsonSchemaMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,12 +36,8 @@ public class SchemaAwareClusterService {
         schemaAwareCluster = new ConcurrentHashMap<>();
         kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
             try {
-                SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null
-                        ? SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry())
-                        : null;
-
-                if (schemaRegistryClient != null) {
-                    SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
+                if (clusterValue.getSchemaRegistry() != null) {
+                    SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()));
                     this.schemaAwareCluster.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
                 }
             } catch (Exception e) {

@@ -12,7 +12,8 @@ import {FormGroup} from '@angular/forms';
       </div>
       <mat-radio-group aria-label="Select an option" [formControlName]="controlName"
                        class="radio-group">
-        <mat-radio-button *ngFor="let option of options" [value]="option.value" class="full-width">
+        <mat-radio-button *ngFor="let option of options" [value]="option.value"
+                          class="full-width common-radio-button">
           {{ option.label }}
         </mat-radio-button>
       </mat-radio-group>

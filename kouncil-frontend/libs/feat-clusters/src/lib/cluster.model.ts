@@ -74,5 +74,6 @@ export enum SchemaAuthenticationMethod {
 }
 
 export enum StoreType {
-  JKS = 'JKS'
+  JKS = 'JKS',
+  PKCS12 = 'PKCS12'
 }

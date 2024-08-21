@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FunctionService {
+public class SystemFunctionService {
 
-    private final SystemFunctionsRepository functionsRepository;
+    private final SystemFunctionsRepository systemFunctionsRepository;
 
-    public List<SystemFunctionDto> getFunctions() {
-        return StreamSupport.stream(functionsRepository.findAll().spliterator(), false).filter(f -> !SystemFunctionName.LOGIN.equals(f.getName()))
-                .map(FunctionConverter::convertToFunctionDto)
+    public List<SystemFunctionDto> getSystemFunctions() {
+        return StreamSupport.stream(systemFunctionsRepository.findAll().spliterator(), false).filter(f -> !SystemFunctionName.LOGIN.equals(f.getName()))
+                .map(SystemFunctionConverter::convertToFunctionDto)
                 .toList();
     }
 }
