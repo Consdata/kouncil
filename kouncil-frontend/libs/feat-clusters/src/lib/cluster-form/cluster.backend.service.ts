@@ -33,6 +33,6 @@ export class ClusterBackendService implements ClusterService {
   }
 
   deleteCluster$(id: number): Observable<void> {
-    return this.http.delete<void>(`/api/cluster/${id}`, );
+    return this.http.delete<void>(`/api/cluster/${id}`);
   }
 }

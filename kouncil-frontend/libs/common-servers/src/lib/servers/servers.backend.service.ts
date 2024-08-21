@@ -27,7 +27,7 @@ export class ServersBackendService extends ServersService {
             }
           }
 
-          if ((this.selectedServerId === undefined
+          if ((!this.selectedServerId
               || !this.servers.map((server: Server) => server.serverId).includes(this.selectedServerId))
             && this.servers.length > 0) {
             this.selectedServerId = this.servers[0].serverId;
