@@ -1,5 +1,11 @@
 ## Advanced config - TLS
 
+{% hint style="warning" %}
+**WARNING**
+
+This configuration will be deprecated in version 1.9 and removed in 1.10. In version 1.9 this configuration will be used to preload your clusters.
+{% endhint %}
+
 Let's assume that your Kafka is secured and you need mTLS to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate.
 Then add "kafka" node to your yaml with the following values:
 
