@@ -14,7 +14,7 @@ import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
-import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {AuthService} from '@app/common-auth';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -75,8 +75,6 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 
   @Input() hideForAuthenticated: boolean = false;
-
-  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
 
   backendVersion$?: Observable<string>;
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;

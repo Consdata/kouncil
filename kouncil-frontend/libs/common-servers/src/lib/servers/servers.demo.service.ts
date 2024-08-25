@@ -15,6 +15,7 @@ export class ServersDemoService extends ServersService {
       new Server('second_server_local_9092', 'second.server.local:9092')
     ];
     this.selectedServerId = 'first_server_local_9092';
+    this.updateServers(this.servers);
     return Promise.resolve(true);
   }
 }

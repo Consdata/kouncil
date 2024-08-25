@@ -5,7 +5,7 @@ import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {UserGroupsService} from './user-groups.service';
 import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
-import {UserGroupService} from './user-group.service';
+import {UserGroupService} from '../form/user-group.service';
 import {first} from 'rxjs/operators';
 import {ConfirmService} from '@app/feat-confirm';
 import {MatSnackBar} from '@angular/material/snack-bar';
