@@ -13,41 +13,42 @@ import {SidebarState} from './sidebar-state';
          [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
 
       <app-sidebar-menu-item [label]="'Topics'" [icon]="'topic'" [routeLink]="'/topics'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TOPIC_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.TOPIC_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Brokers'" [icon]="'hub'" [routeLink]="'/brokers'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.BROKERS_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.BROKERS_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Consumer Groups'" [icon]="'device_hub'"
                              [routeLink]="'/consumer-groups'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CONSUMER_GROUP_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.CONSUMER_GROUP_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Track'" [icon]="'manage_search'" [routeLink]="'/track'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.TRACK_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.TRACK_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'Schema Registry'" [icon]="'code'" [routeLink]="'/schemas'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.SCHEMA_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.SCHEMA_LIST])">
       </app-sidebar-menu-item>
 
       <div
-        *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST, KouncilRole.USER_GROUPS_LIST, KouncilRole.USER_GROUPS])"
+        *ngIf="(isAuthenticated$ | async)
+        && authService.canAccess([SystemFunctionName.CLUSTER_LIST, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUPS])"
         class="menu-grouping-separator"></div>
 
       <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.CLUSTER_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'User groups'" [icon]="'group'" [routeLink]="'/user-groups'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.USER_GROUPS_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.USER_GROUPS_LIST])">
       </app-sidebar-menu-item>
 
       <app-sidebar-menu-item [label]="'User groups permissions'" [icon]="'verified_user'"
                              [routeLink]="'/user-groups-permissions'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.USER_GROUPS])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.USER_GROUPS])">
       </app-sidebar-menu-item>
 
       <div class="toggle-sidebar-container">
@@ -65,7 +66,7 @@ import {SidebarState} from './sidebar-state';
 export class SidebarComponent {
 
   public backend: Backend = environment.backend;
-  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
   currentState$: Observable<boolean> = this.sidebarService.isOpened$;
@@ -73,11 +74,11 @@ export class SidebarComponent {
 
   constructor(public authService: AuthService,
               private sidebarService: SidebarService) {
-    this.sidebarService.isOpened$.subscribe(isOpened=>{
-      if(isOpened){
-          this.hostClass = SidebarState.OPENED;
+    this.sidebarService.isOpened$.subscribe(isOpened => {
+      if (isOpened) {
+        this.hostClass = SidebarState.OPENED;
       } else {
-          this.hostClass = SidebarState.CLOSED;
+        this.hostClass = SidebarState.CLOSED;
       }
     });
   }

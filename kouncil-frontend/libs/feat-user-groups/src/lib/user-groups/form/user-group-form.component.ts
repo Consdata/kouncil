@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 import {map, Observable, of, Subscription} from 'rxjs';
 import {SnackBarComponent, SnackBarData, ViewMode} from '@app/common-utils';
-import {UserGroupService} from '../list/user-group.service';
+import {UserGroupService} from './user-group.service';
 import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
 
 @Component({

@@ -6,14 +6,14 @@ export class ClusterMetadata {
 
   constructor(public id: number, public name: string, public brokers: Array<ClusterBroker>,
               public clusterSecurityConfig: ClusterSecurityConfig,
-              public globalJmxUser: string, public globalJmxPort: string, public globalJmxPassword: string,
-              public schemaRegistry: SchemaRegistry) {
+              public globalJmxUser?: string, public globalJmxPort?: string, public globalJmxPassword?: string,
+              public schemaRegistry?: SchemaRegistry) {
   }
 }
 
 export class ClusterBroker {
-  constructor(public id: number, public bootstrapServer: string, public jmxUser: string, public jmxPassword: string,
-              public jmxPort: number) {
+  constructor(public id: number, public bootstrapServer: string, public jmxUser?: string, public jmxPassword?: string,
+              public jmxPort?: number) {
   }
 }
 
@@ -39,15 +39,15 @@ export class SchemaRegistry {
 
 export class SchemaRegistrySecurityConfig {
   constructor(public authenticationMethod: SchemaAuthenticationMethod,
-              public keystoreLocation: string,
-              public keystorePassword: string,
-              public keystoreType: StoreType,
-              public keyPassword: string,
-              public truststoreLocation: string,
-              public truststorePassword: string,
-              public truststoreType: StoreType,
-              public username: string,
-              public password: string) {
+              public keystoreLocation?: string,
+              public keystorePassword?: string,
+              public keystoreType?: StoreType,
+              public keyPassword?: string,
+              public truststoreLocation?: string,
+              public truststorePassword?: string,
+              public truststoreType?: StoreType,
+              public username?: string,
+              public password?: string) {
   }
 }
 
