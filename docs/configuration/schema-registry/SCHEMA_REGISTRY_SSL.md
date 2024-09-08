@@ -1,12 +1,15 @@
 ## Advanced config - SSL Schema registry
 
 {% hint style="warning" %}
-**WARNING** 
+**WARNING**
 
-This configuration will be deprecated in version 1.9 and removed in 1.10. In version 1.9 this configuration will be used to preload your clusters.
+This configuration will be deprecated in version 1.9 and removed in 1.10. In version 1.9 this
+configuration will be used to preload your clusters.
 {% endhint %}
 
-Let's assume that your SchemaRegistry is secured and you need SSL to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate.
+Assuming your SchemaRegistry is secured and requires SSL for connection, you need to provide a
+client truststore that contains the CA's public certificate, and a keystore that includes both the
+client's private key and the CA-signed certificate.
 
 ```yaml
 kouncil:

@@ -1,8 +1,8 @@
 ### Local authentication
 
-Simplest user authentication is using in-memory provider. Do not require any configuration. Only for the test purposes! Default
-uses are superuser, admin, editor, viewer. Default password for each of these users is equal to
-username.
+The simplest in-memory provider. It does not require any configuration. Only for test purposes! The
+default uses are admin, editor, and viewer. The default password for each of these users is user
+name.
 
 ```yaml
 kouncil:
