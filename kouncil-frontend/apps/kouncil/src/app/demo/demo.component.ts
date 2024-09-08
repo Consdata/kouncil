@@ -5,7 +5,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   template: `
     <div>
       This is a demo version of Kouncil. Get the full version at&nbsp;<a href="https://kouncil.io" target="_blank">kouncil.io</a>
-      <mat-icon aria-hidden="false">open_in_new</mat-icon>
+      <mat-icon class="material-symbols-outlined" aria-hidden="false">open_in_new</mat-icon>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

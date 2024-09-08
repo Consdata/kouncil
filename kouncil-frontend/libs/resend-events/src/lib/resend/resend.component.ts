@@ -13,7 +13,7 @@ import {ResendFormService} from './resend-form.service';
       <div class="drawer-header">
         <div class="drawer-title">Resend events from {{ messageData.topicName }}</div>
         <div class="spacer"></div>
-        <mat-icon mat-dialog-close class="close">close</mat-icon>
+        <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
       </div>
 
       <form class="form"
@@ -35,7 +35,7 @@ import {ResendFormService} from './resend-form.service';
             <mat-autocomplete #auto="matAutocomplete" class="select select-topic"
                               (optionSelected)="resendFilterService.setPartitionsOnSrcTopicChanged($event.option.value)"
                               (closed)="handleClose(sourceTopicFilterCtrl, 'sourceTopicName')">
-              <mat-option disabled
+              <mat-option [disabled]="true"
                           *ngIf="(resendFilterService.sourceFilteredTopicsObs$ | async)?.length === 0">
                 No topics found
               </mat-option>
@@ -89,7 +89,7 @@ import {ResendFormService} from './resend-form.service';
             <mat-autocomplete #destinationAuto="matAutocomplete" class="select select-topic"
                               (optionSelected)="resendFilterService.setPartitionsOnDestTopicChanged($event.option.value)"
                               (closed)="handleClose(destinationTopicFilterCtrl, 'destinationTopicName')">
-              <mat-option disabled
+              <mat-option [disabled]="true"
                           *ngIf="(resendFilterService.destinationFilteredTopicsObs$ | async)?.length === 0">
                 No topics found
               </mat-option>
@@ -126,13 +126,13 @@ import {ResendFormService} from './resend-form.service';
             type="button"
             mat-dialog-close
             mat-button
-            disableRipple
+            [disableRipple]="true"
             class="action-button-white"
           >
             Cancel
           </button>
           <button mat-button
-                  disableRipple
+                  [disableRipple]="true"
                   class="action-button-black"
                   type="submit"
                   [disabled]="resendFormService.resendForm.invalid">

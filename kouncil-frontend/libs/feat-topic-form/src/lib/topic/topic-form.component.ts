@@ -19,7 +19,7 @@ import {SnackBarComponent, SnackBarData} from '@app/common-utils';
             {{ header }}
           </div>
           <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="close">close</mat-icon>
+          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
         </div>
 
         <div class="topic-info">

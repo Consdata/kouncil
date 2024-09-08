@@ -1,0 +1,9 @@
+.sidebarOpened {
+  width: calc(100% - 240px);
+  overflow: auto;
+}
+
+.sidebarClosed {
+  width: calc(100% - 50px);
+  overflow: auto;
+}
