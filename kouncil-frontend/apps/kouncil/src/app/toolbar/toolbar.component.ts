@@ -76,7 +76,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
 
   @Input() hideForAuthenticated: boolean = false;
 
-  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   backendVersion$?: Observable<string>;
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
