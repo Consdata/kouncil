@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
 import {Backend} from '@app/common-model';
@@ -80,9 +80,9 @@ export class LoginComponent implements OnInit {
       if (this.firstTimeLogin) {
         this.router.navigate(['/changePassword']);
       } else {
-        if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+        if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
           this.router.navigate(['/topics']);
-        } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+        } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
           this.router.navigate(['/brokers']);
         }
       }

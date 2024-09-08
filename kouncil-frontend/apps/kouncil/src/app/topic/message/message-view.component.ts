@@ -10,7 +10,7 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {DrawerService, ObjectUtils, SnackBarComponent, SnackBarData} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 @Component({
   selector: 'app-message-view',
@@ -62,7 +62,7 @@ import {AuthService, KouncilRole} from '@app/common-auth';
           clipboard
         </button>
         <button mat-button [disableRipple]="true"
-                *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+                *ngIf="authService.canAccess([SystemFunctionName.TOPIC_RESEND_MESSAGE])"
                 class="action-button-black" (click)="resend(vm.messageData)">
           Resend event
         </button>
@@ -77,7 +77,7 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
 
   private isAnimationDone$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  KouncilRole: typeof KouncilRole = KouncilRole;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   columns: TableColumn[] = [
     {

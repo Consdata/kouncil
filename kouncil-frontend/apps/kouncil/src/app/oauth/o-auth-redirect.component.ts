@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 @Component({
   selector: 'app-oauth-redirect',
@@ -31,9 +31,9 @@ export class OAuthRedirectComponent implements OnInit {
 
   private fetchUserRoles() {
     this.service.getUserRoles$().subscribe(() => {
-      if (this.service.canAccess([KouncilRole.KOUNCIL_EDITOR, KouncilRole.KOUNCIL_VIEWER])) {
+      if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
         this.router.navigate(['/topics']);
-      } else if (this.service.canAccess([KouncilRole.KOUNCIL_ADMIN])) {
+      } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
         this.router.navigate(['/brokers']);
       } else {
         this.router.navigate(['/access-denied']);

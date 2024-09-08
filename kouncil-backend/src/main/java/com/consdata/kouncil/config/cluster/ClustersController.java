@@ -1,8 +1,6 @@
 package com.consdata.kouncil.config.cluster;
 
-import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
-import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
-
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,7 @@ public class ClustersController {
 
     private final ClustersService clustersService;
 
-    @RolesAllowed({EDITOR_ROLE, ADMIN_ROLE})
+    @RolesAllowed({Fields.TOPIC_LIST, Fields.BROKERS_LIST})
     @GetMapping(path = "/api/clusters")
     public ClustersDto getClusters() {
         return clustersService.getClusters();

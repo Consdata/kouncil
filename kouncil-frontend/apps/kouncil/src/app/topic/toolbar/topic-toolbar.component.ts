@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TopicService} from '../topic.service';
 import {ServersService} from '@app/common-servers';
-import {AuthService, KouncilRole} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 
 export enum LiveUpdateState {
   PLAY = 'play',
@@ -41,11 +41,11 @@ export enum LiveUpdateState {
       </mat-form-field>
 
 
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+      <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_RESEND_MESSAGE])"
               class="action-button-white" (click)="openResendPopup()">
         Resend events
       </button>
-      <button mat-button *ngIf="authService.canAccess([KouncilRole.KOUNCIL_EDITOR])"
+      <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_SEND_MESSAGE])"
               class="action-button-black" (click)="openSendPopup()">
         Send event
       </button>
@@ -62,7 +62,7 @@ export class TopicToolbarComponent {
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  KouncilRole: typeof KouncilRole  = KouncilRole;
+  SystemFunctionName: typeof SystemFunctionName  = SystemFunctionName;
 
   liveState: boolean = false;
   showHeaderColumns: boolean = true;

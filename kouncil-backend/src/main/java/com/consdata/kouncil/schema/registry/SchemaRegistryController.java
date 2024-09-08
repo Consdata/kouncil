@@ -1,9 +1,6 @@
 package com.consdata.kouncil.schema.registry;
 
-import static com.consdata.kouncil.config.security.RoleNames.ADMIN_ROLE;
-import static com.consdata.kouncil.config.security.RoleNames.EDITOR_ROLE;
-import static com.consdata.kouncil.config.security.RoleNames.VIEWER_ROLE;
-
+import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import com.consdata.kouncil.schema.SchemaDTO;
 import com.consdata.kouncil.schema.SchemasConfigurationDTO;
 import com.consdata.kouncil.schema.SchemasDTO;
@@ -29,39 +26,44 @@ public class SchemaRegistryController {
 
     private final SchemaRegistryService schemaRegistryService;
 
-    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
+    @RolesAllowed(Fields.LOGIN)
     @GetMapping("/api/schemas/configs")
     public List<SchemasConfigurationDTO> getSchemasConfiguration() {
         return schemaRegistryService.getSchemasConfiguration();
     }
 
-    @RolesAllowed({ADMIN_ROLE, EDITOR_ROLE, VIEWER_ROLE})
+    @RolesAllowed(Fields.SCHEMA_DETAILS)
     @GetMapping("/api/schemas/latest/{topicName}")
     public SchemasDTO getLatestSchemas(@PathVariable String topicName, @RequestParam String serverId) {
         return schemaRegistryService.getLatestSchemas(serverId, topicName);
     }
 
+    @RolesAllowed(Fields.SCHEMA_LIST)
     @GetMapping("/api/schemas/{serverId}")
     public List<SchemaDTO> getSchemas(@PathVariable String serverId, @RequestParam("topicNames") List<String> topicNames) {
         return schemaRegistryService.getSchemas(serverId, topicNames);
     }
 
+    @RolesAllowed(Fields.SCHEMA_DETAILS)
     @GetMapping("/api/schemas/{serverId}/{subject}/{version}")
     public SchemaDTO getSchemaVersion(@PathVariable String serverId, @PathVariable String subject, @PathVariable Integer version)
             throws RestClientException, IOException {
         return schemaRegistryService.getSchemaVersion(serverId, subject, version);
     }
 
+    @RolesAllowed(Fields.SCHEMA_CREATE)
     @PostMapping("/api/schemas/{serverId}")
     public void createSchema(@PathVariable String serverId, @RequestBody SchemaDTO schema) throws RestClientException, IOException {
         schemaRegistryService.createSchema(serverId, schema);
     }
 
+    @RolesAllowed(Fields.SCHEMA_UPDATE)
     @PutMapping("/api/schemas/{serverId}")
     public void updateSchema(@PathVariable String serverId, @RequestBody SchemaDTO schema) throws RestClientException, IOException {
         schemaRegistryService.updateSchema(serverId, schema);
     }
 
+    @RolesAllowed(Fields.SCHEMA_DELETE)
     @DeleteMapping("/api/schemas/{serverId}/{subject}/{version}")
     public void deleteSchema(@PathVariable String serverId, @PathVariable String subject, @PathVariable String version)
             throws RestClientException, IOException {
