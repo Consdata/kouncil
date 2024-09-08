@@ -8,21 +8,23 @@ configuration will be used to preload user groups and based on that create permi
 group.
 {% endhint %}
 
-Kouncil allows to restrict access to pages and functions for users. To achieve that you should add
-to you configuration file appropriate properties.
-There are three of
-them, `kouncil.authorization.role-admin`, `kouncil.authorization.role-editor`, `kouncil.authorization.role-viewer`.
-Each one of this will allow user to do specific actions in Kouncil. Users with roles assigned to:
+## Authorization
 
-* `kouncil.authorization.role-admin` can view brokers and consumer groups pages.
-* `kouncil.authorization.role-editor` can view topics, event tracker pages and sent messages to
-  topics.
-* `kouncil.authorization.role-viewer` can only view topics and event tracker pages.
+Kouncil enables restricting access to pages and functions. To achieve that you should add
+appropriate properties to your configuration file.
+There are three: `kouncil.authorization.role-admin`, `kouncil.authorization.role-editor`,
+and`kouncil.authorization.role-viewer`.
+Each one of these allows users to do specific actions in Kouncil. Users with roles assigned to:
 
-As a values in these parameters you should provide semicolon (`;`) separated list of groups defined
-in selected authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`).
+* `kouncil.authorization.role-admin` can view brokers and consumer groups pages
+* `kouncil.authorization.role-editor` can view topics, event tracker pages, and send messages to
+  topics
+* `kouncil.authorization.role-viewer` can only view topics and event tracker pages
 
-For the default configuration, we have defined user groups:
+As a value in these parameters you should provide a list of groups defined in the selected
+authentication provider (`inmemory`, `LDAP`, `AD`, `SSO`), separated by a semicolon (`;`).
+
+For the default configuration, we have defined the user groups:
 
 ```yaml
 kouncil:
@@ -33,9 +35,9 @@ kouncil:
 ```
 
 These will be used in any authentication method unless you override them in any of your
-configuration files, which are used by Kouncil.
+configuration files used by Kouncil.
 
-Example roles configuration:
+Example of role configuration:
 
 ```yaml
 kouncil:
@@ -45,7 +47,7 @@ kouncil:
     role-viewer: KOUNCIL_VIEWER;viewer_group
 ```
 
-To get LDAP user groups in LDAP configuration we have to add few additional
+To get LDAP user groups in LDAP configuration, add a few additional
 parameters (`group-search-base`, `group-search-filter`, `group-role-attribute`)
 
 ```yaml

@@ -3,6 +3,7 @@
 Below you can find configuration snippets for authentication using LDAP, LDAPS and AD:
 
 * LDAPS authentication for all users.
+
 ```yaml
 kouncil:
   auth:
@@ -14,6 +15,7 @@ kouncil:
 ```
 
 * LDAP authentication with a technical user for users who belong to a KOUNCIL group.
+
 ```yaml
 kouncil:
   auth:
@@ -27,6 +29,7 @@ kouncil:
 ```
 
 * Active Directory authentication for users who belong to a KOUNCIL group.
+
 ```yaml
 kouncil:
   auth:
