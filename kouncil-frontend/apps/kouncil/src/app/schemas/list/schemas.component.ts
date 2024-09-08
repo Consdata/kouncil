@@ -35,7 +35,7 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
           </button>
 
           <button mat-button *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_CREATE])"
-                  class="action-button-black" [routerLink]="['/schemas/create']">
+                  class="action-button-blue" [routerLink]="['/schemas/create']">
             Add new schema
           </button>
         </div>
@@ -64,14 +64,14 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button class="action-button"
+                <button class="action-button-white action-button-white-table" mat-button
                         *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_UPDATE])"
                         [routerLink]="['/schemas/edit/' + element.subjectName + '/' + element.version]">
                   Edit
                 </button>
-                <button class="action-button"
+                <button class="action-button-red" mat-button
                         *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_DELETE])"
-                        (click)="deleteSchema(element.subjectName, element.version)">
+                        (click)="$event.stopPropagation(); deleteSchema(element.subjectName, element.version)">
                   Delete
                 </button>
               </div>

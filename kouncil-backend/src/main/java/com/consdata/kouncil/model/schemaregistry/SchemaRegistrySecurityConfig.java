@@ -27,6 +27,7 @@ public class SchemaRegistrySecurityConfig {
     private String truststorePassword;
 
     @Column(name = "TRUSTSTORE_TYPE")
+    @Enumerated(EnumType.STRING)
     private StoreType truststoreType;
 
     @Column(name = "KEYSTORE_LOCATION")
@@ -36,6 +37,7 @@ public class SchemaRegistrySecurityConfig {
     private String keystorePassword;
 
     @Column(name = "KEYSTORE_TYPE")
+    @Enumerated(EnumType.STRING)
     private StoreType keystoreType;
 
     @Column(name = "KEY_PASSWORD")

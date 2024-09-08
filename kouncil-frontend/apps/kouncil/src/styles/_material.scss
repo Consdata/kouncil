@@ -2,12 +2,12 @@
 
 @use 'palette' as pallete;
 @use 'buttons' as buttons;
+@use 'spaces' as spaces;
 
 .mat-icon {
-  color: pallete.$main-50;
   width: 15px;
   height: 15px;
-  margin: 0 8px;
+  margin: spaces.$space-0 spaces.$space-3;
 }
 
 .mat-mdc-button {
@@ -129,13 +129,13 @@ app-message-view {
       @include buttons.button-black;
     }
 
-    .action-button-black:disabled {
-      border: 1px solid pallete.$main-50;
-      background-color: pallete.$main-30;
-      cursor: not-allowed;
-      color: pallete.$main-60;
+    .action-button-blue {
+      @include buttons.button-blue;
     }
 
+    .action-button-black:disabled, .action-button-blue:disabled {
+      @include buttons.button-disabled;
+    }
   }
 
   .close {
@@ -366,7 +366,7 @@ mat-form-field:hover {
 
 .filter-input {
   .mat-mdc-text-field-wrapper {
-    padding: 0 8px;
+    padding: spaces.$space-0 spaces.$space-3;
   }
 }
 
@@ -443,13 +443,41 @@ mat-option > span {
 }
 
 .status-stable {
-  color: pallete.$green;
+  color: pallete.$green-50;
 }
 
 .status-dead {
-  color: pallete.$red;
+  color: pallete.$red-50;
 }
 
 .status-empty {
   color: pallete.$main-40;
+}
+
+.common-radio-button {
+  .mdc-form-field {
+    height: 64px;
+    border: 1px solid pallete.$main-30;
+    border-radius: 8px;
+    margin-right: spaces.$space-0;
+    width: 100%;
+
+    label {
+      width: 100%;
+    }
+  }
+}
+
+.mat-mdc-tab-body-content {
+  overflow: hidden !important;
+}
+
+.mat-expansion-panel-spacing {
+  margin: 0 !important;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]){
+  box-shadow: none !important;
+  border: 1px solid pallete.$main-20;
+  border-radius: 8px !important;
 }

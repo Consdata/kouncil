@@ -46,7 +46,7 @@ export enum LiveUpdateState {
         Resend events
       </button>
       <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_SEND_MESSAGE])"
-              class="action-button-black" (click)="openSendPopup()">
+              class="action-button-blue" (click)="openSendPopup()">
         Send event
       </button>
     </div>

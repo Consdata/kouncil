@@ -8,27 +8,20 @@ import com.consdata.kouncil.serde.formatter.schema.AvroMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.JsonSchemaMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import org.springframework.stereotype.Service;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class SchemaAwareClusterService {
-    private final Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
+
+    private Map<String, SchemaAwareCluster> schemaAwareCluster = new ConcurrentHashMap<>();
 
     public SchemaAwareClusterService(KouncilConfiguration kouncilConfiguration) {
-        kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
-            SchemaRegistryClient schemaRegistryClient = clusterValue.getSchemaRegistry() != null ?
-                    SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()) : null;
-
-            if (schemaRegistryClient != null) {
-                SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(schemaRegistryClient);
-                this.schemaAwareCluster.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
-            }
-        });
+        reloadSchemaConfiguration(kouncilConfiguration);
     }
 
     public SchemaAwareCluster getClusterSchema(String serverId) {
@@ -37,6 +30,20 @@ public class SchemaAwareClusterService {
 
     public boolean clusterHasSchemaRegistry(String serverId) {
         return schemaAwareCluster.containsKey(serverId);
+    }
+
+    public void reloadSchemaConfiguration(KouncilConfiguration kouncilConfiguration){
+        schemaAwareCluster = new ConcurrentHashMap<>();
+        kouncilConfiguration.getClusterConfig().forEach((clusterKey, clusterValue) -> {
+            try {
+                if (clusterValue.getSchemaRegistry() != null) {
+                    SchemaRegistryFacade schemaRegistryFacade = new SchemaRegistryFacade(SchemaRegistryClientBuilder.build(clusterValue.getSchemaRegistry()));
+                    this.schemaAwareCluster.put(clusterKey, initializeSchemaAwareCluster(schemaRegistryFacade));
+                }
+            } catch (Exception e) {
+                log.error("Error while starting schema registry for cluster={}", clusterKey, e);
+            }
+        });
     }
 
     private SchemaAwareCluster initializeSchemaAwareCluster(SchemaRegistryFacade schemaRegistryFacade) {

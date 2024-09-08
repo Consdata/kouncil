@@ -1,19 +1,20 @@
 @import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../../../../apps/kouncil/src/styles/spaces';
 
 :host {
   .header {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-right: 20px;
-    margin-bottom: 4px;
+    margin-right: $space-6;
+    margin-bottom: $space-2;
     align-items: center;
   }
 
   .small-button {
     color: $main-60;
     line-height: 22px;
-    margin-right: 8px;
+    margin-right: $space-3;
     min-width: 24px;
     width: 24px;
     height: 24px;
@@ -31,7 +32,7 @@
 
     input {
       border: none;
-      padding: 0 32px 0 8px;
+      padding: $space-0 $space-7 $space-0 $space-3;
     }
   }
 

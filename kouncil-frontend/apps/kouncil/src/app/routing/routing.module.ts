@@ -26,7 +26,12 @@ import {SchemasComponent} from '../schemas/list/schemas.component';
 import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
 import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
 import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
-import {ClustersComponent} from '@app/feat-clusters';
+import {
+  ClusterFormCreateComponent,
+  ClusterFormEditComponent,
+  ClusterFormViewComponent,
+  ClustersComponent
+} from '@app/feat-clusters';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -155,6 +160,30 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           roles: [SystemFunctionName.CLUSTER_LIST]
+        }
+      },
+      {
+        path: 'clusters/cluster',
+        component: ClusterFormCreateComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.CLUSTER_CREATE]
+        }
+      },
+      {
+        path: 'clusters/cluster/:clusterName',
+        component: ClusterFormViewComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.CLUSTER_DETAILS]
+        }
+      },
+      {
+        path: 'clusters/cluster/:clusterName/edit',
+        component: ClusterFormEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.CLUSTER_UPDATE]
         }
       }
     ]

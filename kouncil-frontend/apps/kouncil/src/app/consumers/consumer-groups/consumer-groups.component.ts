@@ -71,7 +71,8 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
                 <button *ngIf="authService.canAccess([SystemFunctionName.CONSUMER_GROUP_DELETE])"
-                        class="action-button" (click)="deleteConsumerGroup(element.groupId)">
+                        mat-button class="action-button-red"
+                        (click)="$event.stopPropagation(); deleteConsumerGroup(element.groupId)">
                   Delete
                 </button>
               </div>

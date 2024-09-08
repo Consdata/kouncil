@@ -1,9 +1,18 @@
+@use '../../styles/buttons';
 @use '../../styles/inputs';
 @import '../../styles/palette';
+@import '../../styles/spaces';
 
 .container {
   animation: slide-bottom 1s ease-in forwards;
-  background: $blue-0;
+  background: white;
+  margin-left: 16px;
+  margin-right: 16px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-bottom: 1px solid $main-20;
+  border-left: 1px solid $main-20;
+  border-right: 1px solid $main-20;
 
   .inner {
     animation: reveal 1s ease-in forwards;
@@ -72,12 +81,12 @@
 
   mat-icon {
     color: $blue-80;
-    margin: 0;
+    margin: $space-0;
   }
 }
 
 .survey-description {
-  padding: 0 30px 0;
+  padding: $space-0 $space-7 $space-0;
   font-size: 14px;
 
   span {
@@ -85,11 +94,11 @@
   }
 
   span:nth-child(1) {
-    padding: 10px 0;
+    padding: $space-4 $space-0;
   }
 
   span:nth-child(3) {
-    padding: 10px 0;
+    padding: $space-4 $space-0;
   }
 }
 
@@ -98,37 +107,18 @@
   width: 100%;
   flex-direction: row;
   flex-grow: 1;
-  justify-content: center;
+  justify-content: right;
+  gap: 16px;right: 16px;
+  position: relative;
+  bottom: 8px;
 
-
-  .survey-accept-button {
-    border: 1px solid $green;
-    color: $green !important;
-    background: $main-0;
-    margin-right: 20px;
-
-    .survey-button-label {
-      margin-left: 10px !important;
-    }
-
-    .survey-accept-button-icon {
-      color: $green;
-      margin: 0;
-    }
+  .action-button-green {
+    @include buttons.button-green;
+    height: 32px;
   }
 
-  .survey-close-button {
-    border: 1px solid $red;
-    color: $red !important;
-    background: $main-0;
-
-    .survey-button-label {
-      margin-left: 10px !important;
-    }
-
-    .survey-close-button-icon {
-      color: $red;
-      margin: 0;
-    }
+  .action-button-red {
+    @include buttons.button-red;
+    height: 32px;
   }
 }

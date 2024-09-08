@@ -42,11 +42,15 @@ public class KouncilConfiguration {
 
     @PostConstruct
     public void initialize() {
+        initializeClusters();
+        generateInstallationId();
+        log.info(toString());
+    }
+
+    public void initializeClusters() {
         this.clusterConfig = new HashMap<>();
         ClustersDto clusters = clustersService.getClusters();
         clusters.getClusters().forEach(cluster -> this.clusterConfig.put(cluster.getName(), ClusterConfigConverter.convertToClusterConfig(cluster)));
-        generateInstallationId();
-        log.info(toString());
     }
 
     /**

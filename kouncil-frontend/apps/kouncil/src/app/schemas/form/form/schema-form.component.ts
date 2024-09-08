@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ProgressBarService} from '@app/common-utils';
+import {ProgressBarService, ViewMode} from '@app/common-utils';
 import {
   Compatibility,
   MessageFormat,
@@ -13,7 +13,6 @@ import {TopicsService} from '@app/feat-topics';
 import {SelectableItem} from '@app/common-components';
 import {Topics} from '@app/common-model';
 import {first} from 'rxjs/operators';
-import {ViewMode} from '../view-mode';
 import {MatSelectChange} from '@angular/material/select';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
@@ -22,73 +21,56 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
   template: `
     <form [formGroup]="schemaForm" (ngSubmit)="saveSchema()" class="form schema-form">
 
-      <div class="schema-base-info">
+      <div class="schema-form-header">
+        <div class="schema-form-title">
+          {{ getHeaderMessage() }}
+        </div>
+      </div>
 
+      <div class="schema-base-info">
         <div>
-          <div class="label">Topic</div>
-          <mat-form-field [appearance]="'outline'">
-            <mat-select [formControl]="getControl('topicName')">
-              <mat-option *ngFor="let topic of topics" [value]="topic.value">
-                {{ topic.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-common-select-field [form]="schemaForm" [controlName]="'topicName'"
+                                   [label]="'Topic'"
+                                   [options]="topics" [required]="true"></app-common-select-field>
         </div>
 
         <div>
-          <div class="label">Subject type</div>
-          <mat-form-field [appearance]="'outline'">
-            <mat-select [formControl]="getControl('subjectType')">
-              <mat-option *ngFor="let subjectType of subjectTypes" [value]="subjectType">
-                {{ subjectType }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-common-select-field [form]="schemaForm" [controlName]="'subjectType'"
+                                   [label]="'Subject type'"
+                                   [options]="subjectTypes"
+                                   [required]="true"></app-common-select-field>
         </div>
 
         <div *ngIf="isVisible([ViewMode.VIEW]) && model">
-          <div class="label">Versions</div>
-          <mat-form-field [appearance]="'outline'">
-            <mat-select [formControl]="getControl('version')"
-                        (selectionChange)="changeSchemaVersion($event)">
-              <mat-option *ngFor="let version of model.versionsNo" [value]="version">
-                {{ version }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+
+          <app-common-select-field [form]="schemaForm" [controlName]="'version'"
+                                   [label]="'Versions'"
+                                   [options]="versionsNo"
+                                   (selectionChangeEvent)="changeSchemaVersion($event)"
+          ></app-common-select-field>
         </div>
 
         <div>
-          <div class="label">Message format</div>
-          <mat-form-field [appearance]="'outline'">
-            <mat-select [formControl]="getControl('messageFormat')">
-              <mat-option *ngFor="let messageFormat of messageFormats" [value]="messageFormat">
-                {{ messageFormat }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-common-select-field [form]="schemaForm" [controlName]="'messageFormat'"
+                                   [label]="'Message format'"
+                                   [options]="messageFormats"
+                                   [required]="true"></app-common-select-field>
         </div>
 
         <div>
-          <div class="label">Compatibility</div>
-          <mat-form-field [appearance]="'outline'" class="compatibilityInput">
-            <mat-select [formControl]="getControl('compatibility')">
-              <mat-option *ngFor="let compatibility of compatibilities" [value]="compatibility">
-                {{ compatibility }}
-              </mat-option>
-            </mat-select>
-            <button *ngIf="getControl('compatibility').value && !isDisabled([ViewMode.VIEW])"
-                    mat-icon-button matSuffix type="button" class="clear-btn"
-                    (click)="$event.stopPropagation(); getControl('compatibility').patchValue(null)">
-              <mat-icon class="material-symbols-outlined clear-icon">close</mat-icon>
-            </button>
-
-          </mat-form-field>
+          <app-common-select-field [form]="schemaForm" [controlName]="'compatibility'"
+                                   [label]="'Compatibility'"
+                                   [options]="compatibilities" class="compatibilityInput"
+                                   [readonly]="isDisabled([ViewMode.VIEW])"
+                                   [clearValueBtn]="true"></app-common-select-field>
         </div>
       </div>
 
       <div>
-        <div class="label">Schema</div>
+        <div class="label">
+          Schema
+          <span class="required-field">*</span>
+        </div>
         <app-common-editor [schemaType]="getControl('messageFormat').value"
                            [editorHeight]="400"
                            [formControl]="getControl('plainTextSchema')"></app-common-editor>
@@ -99,9 +81,14 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
                 [routerLink]="['/schemas']">
           Cancel
         </button>
+        <button mat-button [disableRipple]="true" class="action-button-blue"
+                *ngIf="isVisible([ViewMode.VIEW])"
+                [routerLink]="['/schemas/edit/', model.subjectName, model.version]">
+          Edit
+        </button>
         <button mat-button [disableRipple]="true"
                 *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
-                class="action-button-black" type="submit"
+                class="action-button-blue" type="submit"
                 [disabled]="!schemaForm.valid">
           Save
         </button>
@@ -113,10 +100,16 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 export class SchemaFormComponent implements OnInit {
 
   model: Schema;
-  subjectTypes: string[] = Object.keys(SubjectType).map(format => format);
-  messageFormats: string[] = [MessageFormat.JSON, MessageFormat.AVRO, MessageFormat.PROTOBUF];
-  compatibilities: string[] = Object.keys(Compatibility).map(format => format);
+  subjectTypes: SelectableItem[] = Object.keys(SubjectType).map(format => new SelectableItem(format, format, false));
+  messageFormats: SelectableItem[] = [
+    new SelectableItem(MessageFormat.JSON, MessageFormat.JSON, false),
+    new SelectableItem(MessageFormat.AVRO, MessageFormat.AVRO, false),
+    new SelectableItem(MessageFormat.PROTOBUF, MessageFormat.PROTOBUF, false)
+  ];
+  compatibilities: SelectableItem[] = Object.keys(Compatibility).map(format => new SelectableItem(format, format, false));
   topics: SelectableItem[] = [];
+  versionsNo: SelectableItem[] = [];
+
   ViewMode: typeof ViewMode = ViewMode;
 
   @Input() viewMode: ViewMode;
@@ -188,11 +181,7 @@ export class SchemaFormComponent implements OnInit {
   }
 
   saveSchema(): void {
-    this.model = {} as Schema;
-    Object.keys(this.schemaForm.controls).forEach(controlName => {
-      this.model[controlName] = this.schemaForm.controls[controlName].value;
-    });
-
+    this.model = Object.assign({}, this.schemaForm.getRawValue());
     this.saveEvent.emit(this.model);
   }
 
@@ -201,9 +190,8 @@ export class SchemaFormComponent implements OnInit {
     .pipe(first())
     .subscribe((result: Schema) => {
       this.model = result;
-      Object.keys(this.schemaForm.controls).forEach(controlName => {
-        this.schemaForm.controls[controlName].patchValue(this.model[controlName]);
-      });
+      this.versionsNo = this.model.versionsNo.map((vn) => new SelectableItem(`${vn}`, vn, false));
+      this.schemaForm.patchValue(this.model);
       this.progressBarService.setProgress(false);
     });
   }
@@ -221,6 +209,18 @@ export class SchemaFormComponent implements OnInit {
   }
 
   getControl(controlName: string): FormControl {
-    return this.schemaForm.controls[controlName] as FormControl;
+    return this.schemaForm.get(controlName) as FormControl;
+  }
+
+  getHeaderMessage(): string {
+    switch (this.viewMode) {
+      case ViewMode.CREATE:
+        return `Add new schema`;
+      case ViewMode.EDIT:
+        return `Editing schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
+      case ViewMode.VIEW:
+        return `Details of schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
+    }
+    return '';
   }
 }

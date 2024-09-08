@@ -2,6 +2,10 @@
 @import '../../styles/palette';
 
 :host {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
   mat-toolbar {
     height: 72px;
     border-bottom: 1px solid $main-20;

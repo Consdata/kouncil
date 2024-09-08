@@ -1,0 +1,25 @@
+@import "../../../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../../../apps/kouncil/src/styles/palette";
+
+.schema-registry-section {
+  .authentication-type {
+    padding-bottom: $space-5;
+    padding-right: $space-1;
+  }
+
+
+
+  .security-section {
+    display: flex;
+    gap: $space-5;
+    width: 100%;
+
+    .half-width {
+      width: 50%;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}

@@ -23,8 +23,18 @@
     }
   }
 
-  .action-button-black {
-    @include buttons.button-black;
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+
+  .action-button-white {
+    @include buttons.button-white;
+    height: 32px;
+  }
+
+  .action-button-red {
+    @include buttons.button-red;
+    height: 32px;
   }
 
   .kafka-topics {
@@ -42,10 +52,5 @@
     height: 100%;
     color: inherit;
     text-decoration: none;
-  }
-
-  ::ng-deep .datatable-cell-wrapper .datatable-body-cell-label {
-    width: 100%;
-    height: 100%;
   }
 }

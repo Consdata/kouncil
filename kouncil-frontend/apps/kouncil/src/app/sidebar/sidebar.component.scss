@@ -1,5 +1,6 @@
 @use '../../styles/inputs';
 @import '../../styles/palette';
+@import '../../styles/spaces';
 
 :host {
   height: 100%;
@@ -20,7 +21,7 @@
     left: 0;
     background-color: $main-0;
     overflow-x: hidden;
-    padding-top: 8px;
+    padding-top: $space-3;
 
     &.opened {
       width: 240px;
@@ -32,7 +33,23 @@
 
     .menu-grouping-separator {
       border-top: 1px solid $main-20;
-      margin: 16px 8px 8px;
+      margin: $space-5 $space-3 $space-3;
+    }
+
+    .toggle-sidebar-container {
+      width: 100%;
+      height: 32px;
+
+      .toggle-sidebar-btn {
+        bottom: 20px;
+        right: 0;
+        position: absolute;
+
+        .toggle-sidebar-btn-icon{
+          margin: $space-0;
+          color: $main-60;
+        }
+      }
     }
   }
 

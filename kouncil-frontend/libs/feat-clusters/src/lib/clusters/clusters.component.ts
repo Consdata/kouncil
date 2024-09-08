@@ -3,14 +3,25 @@ import {ClustersService} from './clusters.service';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ClusterBroker, ClusterMetadata, Clusters} from './cluster.model';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {SystemFunctionName} from '@app/common-auth';
+import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-clusters',
   template: `
-    <div class="kafka-topics" *ngIf="filtered">
+    <div class="main-container">
+      <div class="toolbar-container">
+        <div class="toolbar">
+          <button mat-button class="action-button-blue" (click)="createCluster()">
+            Add new cluster
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="clusters" *ngIf="clusters">
       <ng-template #noDataPlaceholder>
         <app-no-data-placeholder [objectTypeName]="'Clusters'"></app-no-data-placeholder>
       </ng-template>
@@ -20,7 +31,8 @@ import {SystemFunctionName} from '@app/common-auth';
                         [actionColumns]="actionColumns"
                         matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
-                        (cdkDropListDropped)="drop($event)">
+                        (cdkDropListDropped)="drop($event)"
+                        (rowClickedAction)="navigateToDetails($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column"
@@ -87,7 +99,8 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
 
   constructor(private clustersService: ClustersService,
               private progressBarService: ProgressBarService,
-              private searchService: SearchService) {
+              private searchService: SearchService,
+              private router: Router) {
     super();
   }
 
@@ -113,6 +126,14 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
       this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
     }));
+  }
+
+  navigateToDetails(cluster: ClusterMetadata): void {
+    this.router.navigate([`/clusters/cluster/${cluster.name}`]);
+  }
+
+  createCluster(): void {
+    this.router.navigate([`/clusters/cluster`]);
   }
 
   private filter(phrase?: string): void {

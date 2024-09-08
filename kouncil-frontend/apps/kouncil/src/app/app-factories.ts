@@ -13,7 +13,14 @@ import {
   SchemaRegistryDemoService,
   SchemaRegistryService
 } from '@app/schema-registry';
-import {ClustersBackendService, ClustersDemoService, ClustersService} from '@app/feat-clusters';
+import {
+  ClusterBackendService,
+  ClusterDemoService,
+  ClustersBackendService,
+  ClustersDemoService,
+  ClusterService,
+  ClustersService
+} from '@app/feat-clusters';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -89,5 +96,16 @@ export function clustersServiceFactory(http: HttpClient): ClustersService {
     case Backend.DEMO:
     default:
       return new ClustersDemoService();
+  }
+}
+
+export function clusterServiceFactory(http: HttpClient): ClusterService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new ClusterBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new ClusterDemoService();
   }
 }
