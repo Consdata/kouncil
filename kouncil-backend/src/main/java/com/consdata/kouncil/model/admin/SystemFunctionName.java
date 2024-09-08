@@ -35,5 +35,8 @@ public enum SystemFunctionName {
     @FieldNameConstants.Include SCHEMA_DELETE,
 
     //login
-    @FieldNameConstants.Include LOGIN
+    @FieldNameConstants.Include LOGIN,
+
+    //clusters
+    @FieldNameConstants.Include CLUSTER_LIST
 }

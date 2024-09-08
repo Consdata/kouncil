@@ -26,6 +26,7 @@ import {SchemasComponent} from '../schemas/list/schemas.component';
 import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
 import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
 import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
+import {ClustersComponent} from '@app/feat-clusters';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -146,6 +147,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           roles: [SystemFunctionName.SCHEMA_DETAILS]
+        }
+      },
+      {
+        path: 'clusters',
+        component: ClustersComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.CLUSTER_LIST]
         }
       }
     ]

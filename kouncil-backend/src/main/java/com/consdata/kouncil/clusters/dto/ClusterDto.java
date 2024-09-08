@@ -1,4 +1,4 @@
-package com.consdata.kouncil.config.cluster.dto;
+package com.consdata.kouncil.clusters.dto;
 
 import java.util.HashSet;
 import java.util.Set;
