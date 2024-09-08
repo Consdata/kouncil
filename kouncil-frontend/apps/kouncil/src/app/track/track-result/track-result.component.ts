@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Inject, LOCALE_ID,
+  Component,
+  Inject,
+  LOCALE_ID,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
@@ -16,11 +18,11 @@ import {MessageData, MessageDataService} from '@app/message-data';
 import {Crypto, DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
-import {RxStompService} from '../../rx-stomp.service';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {DatePipe} from '@angular/common';
 import {JsonGridData} from '../../topic/json-grid-data';
 import {JsonGrid} from '../../topic/json-grid';
+import {RxStompService} from '@app/feat-notifications';
 
 @Component({
   selector: 'app-track-result',
@@ -108,8 +110,6 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
       draggable: true
     }
   ];
-
-  loading$: Observable<boolean> = this.progressBarService.loading$;
 
   constructor(
     private route: ActivatedRoute,

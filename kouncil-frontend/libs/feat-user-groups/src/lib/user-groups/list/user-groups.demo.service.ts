@@ -11,4 +11,8 @@ export class UserGroupsDemoService implements UserGroupsService {
   getUserGroups$(): Observable<Array<UserGroup>> {
     return of();
   }
+
+  updatePermissions$(_userGroups: Array<UserGroup>): Observable<void> {
+    return of();
+  }
 }

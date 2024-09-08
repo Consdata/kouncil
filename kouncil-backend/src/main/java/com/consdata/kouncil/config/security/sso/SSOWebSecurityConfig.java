@@ -1,5 +1,6 @@
 package com.consdata.kouncil.config.security.sso;
 
+import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
 import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,8 +39,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SSOWebSecurityConfig {
 
     private final ObjectMapper mapper;
-
     private final UserRolesMapping userRolesMapping;
+    private final SimpMessagingTemplate eventSender;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -81,6 +83,11 @@ public class SSOWebSecurityConfig {
     @Bean
     GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
+    }
+
+    @Bean
+    public DefaultUserPermissionsReloader userPermissionsReloader(){
+        return new DefaultUserPermissionsReloader(eventSender);
     }
 
     private GrantedAuthoritiesMapper authoritiesMapper() {

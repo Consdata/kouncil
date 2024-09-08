@@ -34,6 +34,7 @@
       "@app/feat-confirm": ["libs/feat-confirm/src/index.ts"],
       "@app/feat-favourites": ["libs/feat-favourites/src/index.ts"],
       "@app/feat-no-data": ["libs/feat-no-data/src/index.ts"],
+      "@app/feat-notifications": ["libs/feat-notifications/src/index.ts"],
       "@app/feat-send": ["libs/feat-send/src/index.ts"],
       "@app/feat-topic-form": ["libs/feat-topic-form/src/index.ts"],
       "@app/feat-topics": ["libs/feat-topics/src/index.ts"],

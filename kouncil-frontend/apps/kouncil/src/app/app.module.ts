@@ -113,8 +113,8 @@ import {
   UserGroupService,
   UserGroupsService
 } from '@app/feat-user-groups';
-import {RxStompService} from './rx-stomp.service';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
+import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -231,7 +231,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     CommonAuthModule,
     FeatTopicFormModule,
     FeatClustersModule,
-    FeatUserGroupsModule
+    FeatUserGroupsModule,
+    FeatNotificationsModule
   ],
   providers: [
     {
