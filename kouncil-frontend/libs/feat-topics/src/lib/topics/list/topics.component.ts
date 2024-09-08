@@ -83,18 +83,12 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_UPDATE])"
-                        class="action-button" (click)="createTopic(element.name)">
-                  Update
-                </button>
-                <button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_DELETE])"
-                        class="action-button" (click)="removeTopic(element.name)">
-                <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_DELETE])"
+                <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_DELETE])"
                         class="action-button-red"
                         (click)="$event.stopPropagation(); removeTopic(element.name)">
                   Delete
                 </button>
-                <button mat-button *ngIf="authService.canAccess([KouncilRole.TOPIC_UPDATE])"
+                <button mat-button *ngIf="authService.canAccess([SystemFunctionName.TOPIC_UPDATE])"
                         class="action-button-white"
                         (click)="$event.stopPropagation(); createTopic(element.name)">
                   Edit

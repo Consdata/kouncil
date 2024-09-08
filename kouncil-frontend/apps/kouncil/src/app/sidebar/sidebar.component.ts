@@ -33,11 +33,11 @@ import {SidebarState} from './sidebar-state';
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.SCHEMA_LIST])">
       </app-sidebar-menu-item>
 
-      <div *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])"
+      <div *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.CLUSTER_LIST])"
            class="menu-grouping-separator"></div>
 
       <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([KouncilRole.CLUSTER_LIST])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.CLUSTER_LIST])">
       </app-sidebar-menu-item>
 
       <div class="toggle-sidebar-container">
