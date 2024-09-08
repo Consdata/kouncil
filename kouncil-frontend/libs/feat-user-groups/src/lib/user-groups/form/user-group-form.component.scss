@@ -1,0 +1,39 @@
+@use '../../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../../apps/kouncil/src/styles/spaces";
+
+:host {
+  .user-group-form {
+    width: 100%;
+  }
+
+  .user-group-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: $space-6;
+    width: 100%;
+
+    .user-group-form-field {
+      width: 100%;
+      padding-bottom: $space-4;
+    }
+  }
+
+  .actions {
+    float: right;
+    margin-top: $space-6;
+
+    .action-button-blue {
+      @include buttons.button-blue;
+    }
+
+    .action-button-blue:disabled {
+      @include buttons.button-disabled;
+    }
+
+    .action-button-white {
+      @include buttons.button-white;
+      margin-right: $space-4;
+    }
+  }
+}

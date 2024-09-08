@@ -54,6 +54,7 @@ public final class UserGroupsConfigReader {
         List<SystemFunctionName> adminFunctions = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
                 SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
                 SystemFunctionName.LOGIN,
+                SystemFunctionName.USER_GROUPS, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUP_CREATE, SystemFunctionName.USER_GROUP_UPDATE, SystemFunctionName.USER_GROUP_DELETE,
                 SystemFunctionName.CLUSTER_LIST, SystemFunctionName.CLUSTER_CREATE, SystemFunctionName.CLUSTER_UPDATE, SystemFunctionName.CLUSTER_DETAILS, SystemFunctionName.CLUSTER_DELETE);
 
         List<SystemFunctionName> editorFunctions = List.of(
@@ -73,49 +74,47 @@ public final class UserGroupsConfigReader {
 
         List<UserGroup> groups = new ArrayList<>();
 
-        List<String> foundGroupNames = StreamSupport.stream(userGroupRepository.findAll().spliterator(), false).map(UserGroup::getName).toList();
+        List<String> foundGroupCodes = StreamSupport.stream(userGroupRepository.findAll().spliterator(), false).map(UserGroup::getCode).toList();
 
         roleMapping.values()
                 .stream()
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet())
-                .stream().filter(groupName -> !foundGroupNames.contains(groupName))
-                .forEach(groupName -> {
+                .stream().filter(groupCode -> !foundGroupCodes.contains(groupCode))
+                .forEach(groupCode -> {
                     UserGroup group = new UserGroup();
-                    group.setName(groupName);
+                    group.setCode(groupCode);
+                    group.setName(groupCode.replace("_", " "));
+                    group.setFunctions(new HashSet<>());
                     groups.add(group);
                 });
 
         userGroupRepository.saveAll(groups);
 
         Map<String, UserGroup> groupMap = new HashMap<>();
-        groups.forEach(savedGroup -> groupMap.put(savedGroup.getName(), savedGroup));
+        groups.forEach(savedGroup -> groupMap.put(savedGroup.getCode(), savedGroup));
 
         List<SystemFunction> functions = StreamSupport.stream(systemFunctionsRepository.findAll().spliterator(), false).toList();
 
         functions.forEach(function -> {
-
-            if (function.getUserGroups() == null) {
-                function.setUserGroups(new HashSet<>());
-            }
             if (adminFunctions.contains(function.getName())) {
-                addGroupToFunction(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_ADMIN), groupMap);
+                addFunctionToUserGroup(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_ADMIN), groupMap);
             }
             if (editorFunctions.contains(function.getName())) {
-                addGroupToFunction(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_EDITOR), groupMap);
+                addFunctionToUserGroup(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_EDITOR), groupMap);
             }
             if (viewerFunctions.contains(function.getName())) {
-                addGroupToFunction(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_VIEWER), groupMap);
+                addFunctionToUserGroup(function, roleMapping.get(KouncilRole.ROLE_KOUNCIL_VIEWER), groupMap);
             }
         });
 
-        systemFunctionsRepository.saveAll(functions);
+        userGroupRepository.saveAll(groups);
     }
 
-    private void addGroupToFunction(SystemFunction function, Set<String> roles, Map<String, UserGroup> groupMap) {
+    private void addFunctionToUserGroup(SystemFunction function, Set<String> roles, Map<String, UserGroup> groupMap) {
         roles.forEach(groupFromConfig -> {
             if (groupMap.get(groupFromConfig) != null) {
-                function.getUserGroups().add(groupMap.get(groupFromConfig));
+                groupMap.get(groupFromConfig).getFunctions().add(function);
             }
         });
     }
