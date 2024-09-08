@@ -34,7 +34,8 @@ import {SidebarState} from './sidebar-state';
       </app-sidebar-menu-item>
 
       <div
-        *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.CLUSTER_LIST, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUPS])"
+        *ngIf="(isAuthenticated$ | async)
+        && authService.canAccess([SystemFunctionName.CLUSTER_LIST, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUPS])"
         class="menu-grouping-separator"></div>
 
       <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
