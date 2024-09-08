@@ -70,7 +70,7 @@ const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button *ngIf="authService.canAccess([KouncilRole.CONSUMER_GROUP_DELETE])"
+                <button *ngIf="authService.canAccess([SystemFunctionName.CONSUMER_GROUP_DELETE])"
                         mat-button class="action-button-red"
                         (click)="$event.stopPropagation(); deleteConsumerGroup(element.groupId)">
                   Delete
@@ -88,7 +88,7 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
 
   consumerGroups: ConsumerGroup[] = [];
   filtered: ConsumerGroup[] = [];
-  KouncilRole: typeof SystemFunctionName = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   additionalColumns: TableColumn[] = [
     {
