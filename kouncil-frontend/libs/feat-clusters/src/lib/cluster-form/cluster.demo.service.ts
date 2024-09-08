@@ -28,4 +28,8 @@ export class ClusterDemoService implements ClusterService {
     return of();
   }
 
+  deleteCluster$(_id: number): Observable<void> {
+    return of();
+  }
+
 }

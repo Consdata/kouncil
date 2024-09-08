@@ -14,4 +14,6 @@ export abstract class ClusterService {
   abstract testConnection$(cluster: ClusterMetadata): Observable<boolean>;
 
   abstract isClusterNameUnique$(clusterName: string): Observable<boolean>;
+
+  abstract deleteCluster$(id: number): Observable<void>;
 }

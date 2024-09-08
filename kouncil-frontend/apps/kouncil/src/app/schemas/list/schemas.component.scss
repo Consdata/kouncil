@@ -36,12 +36,12 @@
   }
 
   .action-button-white-table {
-    height: 32px;
+    @include buttons.table-button;
   }
 
   .action-button-red {
     @include buttons.button-red;
-    height: 32px;
+    @include buttons.table-button;
   }
 
   .search-icon {

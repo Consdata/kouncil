@@ -12,6 +12,6 @@
 
   .action-button-red {
     @include buttons.button-red;
-    height: 32px;
+    @include buttons.table-button;
   }
 }
