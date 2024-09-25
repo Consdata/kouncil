@@ -4,8 +4,8 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
   selector: 'app-breadcrumb',
   template: `
     <div class="wrapper">
-      <div routerLink="{{parentLink}}" class="parent">{{parentName}}</div>
-      <div class="divider">
+      <div *ngIf="parentLink" routerLink="{{parentLink}}" class="parent">{{parentName}}</div>
+      <div *ngIf="parentLink" class="divider">
         <mat-icon class="material-symbols-outlined arrow">arrow_forward_ios</mat-icon>
       </div>
       <div class="name"><span [matTooltip]="name">{{name}}</span></div>

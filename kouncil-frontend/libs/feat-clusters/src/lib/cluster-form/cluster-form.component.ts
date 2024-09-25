@@ -27,9 +27,9 @@ import {ViewMode} from '@app/common-utils';
     <form class="cluster-form" [formGroup]="clusterForm" (ngSubmit)="saveCluster()"
           autocomplete="off">
       <div class="cluster-form-header">
-        <div class="cluster-form-title">
-          {{ getHeaderMessage() }}
-        </div>
+
+        <app-breadcrumb [parentName]="'Clusters'" [parentLink]="'/clusters'"
+                        [name]="getHeaderMessage()"></app-breadcrumb>
       </div>
 
       <mat-accordion class="panels-container">
@@ -218,11 +218,11 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   getHeaderMessage(): string {
     switch (this.viewMode) {
       case ViewMode.CREATE:
-        return `Create new cluster`;
+        return `Create a new cluster`;
       case ViewMode.EDIT:
-        return `Editing cluster ${this.model.name}`;
+        return `Edit ${this.model.name} cluster`;
       case ViewMode.VIEW:
-        return `Details of ${this.model.name} cluster`;
+        return `${this.model.name}`;
     }
     return '';
   }

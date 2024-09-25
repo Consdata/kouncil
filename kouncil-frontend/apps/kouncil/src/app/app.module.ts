@@ -35,7 +35,6 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
@@ -63,6 +62,7 @@ import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   clusterServiceFactory,
   clustersServiceFactory,
+  dataMaskingPoliciesServiceFactory,
   functionsServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
@@ -115,6 +115,8 @@ import {
 } from '@app/feat-user-groups';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
+import {DataMaskingPoliciesService, FeatDataMaskingModule} from '@app/feat-data-masking';
+import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -169,7 +171,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     ConsumerGroupComponent,
     TopicPartitionsComponent,
     TopicPaginationComponent,
-    BreadcrumbComponent,
     BrokerComponent,
     MessageViewComponent,
     FileSizePipe,
@@ -232,7 +233,9 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatTopicFormModule,
     FeatClustersModule,
     FeatUserGroupsModule,
-    FeatNotificationsModule
+    FeatNotificationsModule,
+    FeatDataMaskingModule,
+    FeatBreadcrumbModule
   ],
   providers: [
     {
@@ -338,6 +341,11 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     {
       provide: UserGroupService,
       useFactory: userGroupServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: DataMaskingPoliciesService,
+      useFactory: dataMaskingPoliciesServiceFactory,
       deps: [HttpClient]
     }
   ],
