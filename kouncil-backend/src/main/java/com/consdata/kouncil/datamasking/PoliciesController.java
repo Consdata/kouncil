@@ -14,7 +14,7 @@ public class PoliciesController {
 
     private final PoliciesService policyService;
 
-    @RolesAllowed({Fields.DATA_MASKING_POLICIES})
+    @RolesAllowed({Fields.POLICY_LIST})
     @GetMapping(path = "/api/policies")
     public List<PolicyDto> getPolicies() {
         return policyService.getPolicies();

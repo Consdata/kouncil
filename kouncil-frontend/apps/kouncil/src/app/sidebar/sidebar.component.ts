@@ -39,7 +39,7 @@ import {SidebarState} from './sidebar-state';
         SystemFunctionName.CLUSTER_LIST,
         SystemFunctionName.USER_GROUPS_LIST,
         SystemFunctionName.USER_GROUPS,
-        SystemFunctionName.DATA_MASKING_POLICIES
+        SystemFunctionName.POLICY_LIST
         ])"
         class="menu-grouping-separator"></div>
 
@@ -58,7 +58,7 @@ import {SidebarState} from './sidebar-state';
 
       <app-sidebar-menu-item [label]="'Data masking policies'" [icon]="'policy'"
                              [routeLink]="'/data-masking-policies'"
-                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.DATA_MASKING_POLICIES])">
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.POLICY_LIST])">
       </app-sidebar-menu-item>
 
       <div class="toggle-sidebar-container">

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {DataMaskingPoliciesService} from './data-masking-policies.service';
+import {PoliciesService} from './policies.service';
 import {Observable} from "rxjs";
 import {Policy} from "../policy.model";
 import {HttpClient} from "@angular/common/http";
@@ -7,7 +7,7 @@ import {HttpClient} from "@angular/common/http";
 @Injectable({
   providedIn: 'root'
 })
-export class DataMaskingPoliciesBackendService implements DataMaskingPoliciesService {
+export class PoliciesBackendService implements PoliciesService {
 
   constructor(private http: HttpClient) {
   }

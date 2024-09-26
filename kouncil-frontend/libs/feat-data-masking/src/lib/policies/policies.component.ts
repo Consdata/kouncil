@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DataMaskingPoliciesService} from './data-masking-policies.service';
+import {PoliciesService} from './policies.service';
 import {SystemFunctionName} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
@@ -47,9 +47,9 @@ import {MaskingType, Policy} from "../policy.model";
       </app-common-table>
     </div>
   `,
-  styleUrls: ['./data-masking-policies.component.scss']
+  styleUrls: ['./policies.component.scss']
 })
-export class DataMaskingPoliciesComponent extends AbstractTableComponent implements OnInit, OnDestroy {
+export class PoliciesComponent extends AbstractTableComponent implements OnInit, OnDestroy {
 
   SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
@@ -75,7 +75,7 @@ export class DataMaskingPoliciesComponent extends AbstractTableComponent impleme
       draggable: true,
       width: 300,
       valueFormatter: (value: MaskingType): string => {
-        switch (value){
+        switch (value) {
           case MaskingType.ALL:
             return 'Mask all';
           case MaskingType.FIRST_5:
@@ -111,7 +111,7 @@ export class DataMaskingPoliciesComponent extends AbstractTableComponent impleme
 
   private subscription: Subscription = new Subscription();
 
-  constructor(private dataMaskingPoliciesService: DataMaskingPoliciesService,
+  constructor(private dataMaskingPoliciesService: PoliciesService,
               private progressBarService: ProgressBarService,
               private searchService: SearchService) {
     super();

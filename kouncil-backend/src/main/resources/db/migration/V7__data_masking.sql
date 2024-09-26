@@ -21,14 +21,14 @@ create table policy_resources
 CREATE SEQUENCE SEQ_POLICY MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
 
 insert into system_function(id, name, label, function_group)
-VALUES (nextval('SEQ_SYSTEM_FUNCTION'), 'DATA_MASKING_POLICIES', 'Policies list', 'DATA_MASKING'),
-       (nextval('SEQ_SYSTEM_FUNCTION'), 'DATA_MASKING_POLICY_CREATE', 'Create new policy',
+VALUES (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_LIST', 'Policies list', 'DATA_MASKING'),
+       (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_CREATE', 'Create new policy',
         'DATA_MASKING'),
-       (nextval('SEQ_SYSTEM_FUNCTION'), 'DATA_MASKING_POLICY_DETAILS', 'View policy details',
+       (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_DETAILS', 'View policy details',
         'DATA_MASKING'),
-       (nextval('SEQ_SYSTEM_FUNCTION'), 'DATA_MASKING_POLICY_UPDATE', 'Update policy',
+       (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_UPDATE', 'Update policy',
         'DATA_MASKING'),
-       (nextval('SEQ_SYSTEM_FUNCTION'), 'DATA_MASKING_POLICY_DELETE', 'Delete policy',
+       (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_DELETE', 'Delete policy',
         'DATA_MASKING')
 ;
 

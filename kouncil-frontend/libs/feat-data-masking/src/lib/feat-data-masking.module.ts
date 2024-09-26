@@ -6,9 +6,7 @@ import {CommonComponentsModule} from '@app/common-components';
 import {MatSortModule} from '@angular/material/sort';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonUtilsModule} from '@app/common-utils';
-import {
-  DataMaskingPoliciesComponent
-} from "./data-masking-policies/data-masking-policies.component";
+import {PoliciesComponent} from "./policies/policies.component";
 import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
@@ -23,10 +21,10 @@ import {MatButtonModule} from "@angular/material/button";
     MatButtonModule
   ],
   declarations: [
-    DataMaskingPoliciesComponent
+    PoliciesComponent
   ],
   exports: [
-    DataMaskingPoliciesComponent
+    PoliciesComponent
   ]
 })
 export class FeatDataMaskingModule {

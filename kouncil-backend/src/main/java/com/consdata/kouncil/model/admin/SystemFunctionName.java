@@ -50,10 +50,10 @@ public enum SystemFunctionName {
     @FieldNameConstants.Include USER_GROUP_DELETE,
 
     //data masking
-    @FieldNameConstants.Include DATA_MASKING_POLICIES,
-    @FieldNameConstants.Include DATA_MASKING_POLICY_CREATE,
-    @FieldNameConstants.Include DATA_MASKING_POLICY_DETAILS,
-    @FieldNameConstants.Include DATA_MASKING_POLICY_UPDATE,
-    @FieldNameConstants.Include DATA_MASKING_POLICY_DELETE
+    @FieldNameConstants.Include POLICY_LIST,
+    @FieldNameConstants.Include POLICY_CREATE,
+    @FieldNameConstants.Include POLICY_DETAILS,
+    @FieldNameConstants.Include POLICY_UPDATE,
+    @FieldNameConstants.Include POLICY_DELETE
 
 }

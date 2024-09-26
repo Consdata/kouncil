@@ -62,8 +62,8 @@ import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   clusterServiceFactory,
   clustersServiceFactory,
-  dataMaskingPoliciesServiceFactory,
   functionsServiceFactory,
+  policiesServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
   sendServiceFactory,
@@ -115,7 +115,7 @@ import {
 } from '@app/feat-user-groups';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
-import {DataMaskingPoliciesService, FeatDataMaskingModule} from '@app/feat-data-masking';
+import {FeatDataMaskingModule, PoliciesService} from '@app/feat-data-masking';
 import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
@@ -344,8 +344,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
       deps: [HttpClient]
     },
     {
-      provide: DataMaskingPoliciesService,
-      useFactory: dataMaskingPoliciesServiceFactory,
+      provide: PoliciesService,
+      useFactory: policiesServiceFactory,
       deps: [HttpClient]
     }
   ],

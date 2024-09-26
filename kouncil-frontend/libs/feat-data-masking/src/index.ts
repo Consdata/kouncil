@@ -1,13 +1,13 @@
 export {FeatDataMaskingModule} from './lib/feat-data-masking.module';
 export {
-  DataMaskingPoliciesComponent
-} from './lib/data-masking-policies/data-masking-policies.component';
+  PoliciesComponent
+} from './lib/policies/policies.component';
 export {
-  DataMaskingPoliciesService
-} from './lib/data-masking-policies/data-masking-policies.service';
+  PoliciesService
+} from './lib/policies/policies.service';
 export {
-  DataMaskingPoliciesBackendService
-} from './lib/data-masking-policies/data-masking-policies.backend.service';
+  PoliciesBackendService
+} from './lib/policies/policies.backend.service';
 export {
-  DataMaskingPoliciesDemoService
-} from './lib/data-masking-policies/data-masking-policies.demo.service';
+  PoliciesDemoService
+} from './lib/policies/policies.demo.service';

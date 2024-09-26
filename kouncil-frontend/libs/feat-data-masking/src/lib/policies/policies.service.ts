@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {Policy} from "../policy.model";
 
 @Injectable()
-export abstract class DataMaskingPoliciesService {
+export abstract class PoliciesService {
 
   abstract getPolicies$(): Observable<Array<Policy>>;
 }

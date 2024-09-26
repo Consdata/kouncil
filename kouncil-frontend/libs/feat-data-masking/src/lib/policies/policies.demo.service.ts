@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {DataMaskingPoliciesService} from './data-masking-policies.service';
+import {PoliciesService} from './policies.service';
 import {Policy} from "../policy.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataMaskingPoliciesDemoService implements DataMaskingPoliciesService {
+export class PoliciesDemoService implements PoliciesService {
 
   getPolicies$(): Observable<Array<Policy>> {
     return of();
