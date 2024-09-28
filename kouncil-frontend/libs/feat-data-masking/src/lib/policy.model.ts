@@ -5,7 +5,7 @@ export class Policy {
 }
 
 export enum MaskingType {
-  ALL = 'ALL',
-  FIRST_5 = 'FIRST_5',
-  LAST_5 = 'LAST_5'
+  ALL = 'Hide all',
+  FIRST_5 = 'Hide first 5 signs',
+  LAST_5 = 'Hide last 5 signs'
 }
