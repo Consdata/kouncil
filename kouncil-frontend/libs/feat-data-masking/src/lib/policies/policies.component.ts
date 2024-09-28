@@ -74,16 +74,7 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       sortable: true,
       draggable: true,
       width: 300,
-      valueFormatter: (value: MaskingType): string => {
-        switch (value) {
-          case MaskingType.ALL:
-            return 'Mask all';
-          case MaskingType.FIRST_5:
-            return 'Hide first 5 letters';
-          case MaskingType.LAST_5:
-            return 'Hide last 5 letters';
-        }
-      }
+      valueFormatter: (value: MaskingType): string => MaskingType[value]
     },
     {
       name: 'Fields',
@@ -146,4 +137,5 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       return !phrase || policy.name.indexOf(phrase) > -1;
     });
   }
+
 }

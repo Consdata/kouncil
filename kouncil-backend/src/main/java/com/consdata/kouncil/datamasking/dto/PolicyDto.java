@@ -11,5 +11,5 @@ public class PolicyDto {
     private String name;
     private MaskingType type;
     private Set<String> fields;
-    private Set<String> resources;
+    private Set<PolicyResourceDto> resources;
 }
