@@ -47,6 +47,13 @@ public enum SystemFunctionName {
     @FieldNameConstants.Include USER_GROUPS_LIST,
     @FieldNameConstants.Include USER_GROUP_CREATE,
     @FieldNameConstants.Include USER_GROUP_UPDATE,
-    @FieldNameConstants.Include USER_GROUP_DELETE
+    @FieldNameConstants.Include USER_GROUP_DELETE,
+
+    //data masking
+    @FieldNameConstants.Include POLICY_LIST,
+    @FieldNameConstants.Include POLICY_CREATE,
+    @FieldNameConstants.Include POLICY_DETAILS,
+    @FieldNameConstants.Include POLICY_UPDATE,
+    @FieldNameConstants.Include POLICY_DELETE
 
 }
