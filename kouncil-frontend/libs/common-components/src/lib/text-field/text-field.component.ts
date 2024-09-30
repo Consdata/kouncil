@@ -21,6 +21,9 @@ import {FormGroup, NG_VALUE_ACCESSOR} from '@angular/forms';
         <mat-error class="error" *ngIf="hasError('unique')">
           Field value is not unique
         </mat-error>
+        <mat-error class="error" *ngIf="hasError('incorrectValue')">
+          Field value is incorrect
+        </mat-error>
       </ng-container>
     </div>
   `,
