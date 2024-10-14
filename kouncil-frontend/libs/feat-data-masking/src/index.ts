@@ -6,3 +6,6 @@ export {PoliciesDemoService} from './lib/policies/policies.demo.service';
 export {PolicyService} from './lib/policy/policy.service';
 export {PolicyBackendService} from './lib/policy/policy-backend.service';
 export {PolicyDemoService} from './lib/policy/policy-demo.service';
+export {PolicyFormCreateComponent} from './lib/policy/policy-create/policy-form-create.component';
+export {PolicyFormEditComponent} from './lib/policy/policy-edit/policy-form-edit.component';
+export {PolicyFormViewComponent} from './lib/policy/policy-view/policy-form-view.component';

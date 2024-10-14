@@ -9,7 +9,8 @@ public class PolicyDto {
 
     private Long id;
     private String name;
-    private MaskingType type;
-    private Set<String> fields;
+    private MaskingType maskingType;
+    private Boolean applyToAllResources;
+    private Set<PolicyFieldDto> fields;
     private Set<PolicyResourceDto> resources;
 }
