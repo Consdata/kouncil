@@ -6,7 +6,7 @@ import {ServersService} from '@app/common-servers';
 @Component({
   selector: 'app-topic-partitions',
   template: `
-    <mat-form-field [appearance]="'outline'">
+    <mat-form-field [appearance]="'outline'" class="partitions">
       <mat-select class="select" [(value)]="selectedPartition" (selectionChange)="togglePartition($event)">
         <mat-option [value]="'all'">All partitions</mat-option>
         <mat-option *ngFor="let i of partitions" value="{{i}}">{{i}}</mat-option>

@@ -14,7 +14,7 @@
     align-items: center;
 
     & > * {
-      margin-right: 16px;
+      margin-right: 8px;
     }
 
   }
@@ -25,7 +25,7 @@
     font-weight: 500;
     border-radius: $default-border-radius;
     height: 40px;
-    padding: 0 12px;
+    padding: 0 8px;
 
     background: $main-0;
     border: 1px solid $main-20;
@@ -113,6 +113,14 @@
   }
 
   .offset-wrapper {
+    @media screen and (max-width: 1680px) {
+      max-width: 175px;
+    }
+
+    @media screen and (max-width: 1440px) {
+      max-width: 150px;
+    }
+
     .offset-input {
       font-size: 14px;
       line-height: $default-line-height;
