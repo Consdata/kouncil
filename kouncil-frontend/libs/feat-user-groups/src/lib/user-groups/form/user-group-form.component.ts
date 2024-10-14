@@ -19,40 +19,38 @@ import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
 @Component({
   selector: 'app-user-group-form',
   template: `
-    <mat-dialog-content>
-      <form [formGroup]="userGroupForm" (ngSubmit)="save()" class="form user-group-form">
-        <div class="drawer-header">
-          <div class="drawer-title">
-            {{ header }}
-          </div>
-          <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    <div mat-dialog-title class="drawer-header">
+      <div class="drawer-title">
+        {{ header }}
+      </div>
+      <div class="spacer"></div>
+      <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    </div>
+
+    <form [formGroup]="userGroupForm" (ngSubmit)="save()" class="form user-group-form">
+      <div mat-dialog-content class="user-group-info">
+        <div class="user-group-form-field">
+          <app-common-text-field [form]="userGroupForm" [controlName]="'code'"
+                                 [label]="'Code'" [required]="true"></app-common-text-field>
         </div>
 
-        <div class="user-group-info">
-          <div class="user-group-form-field">
-            <app-common-text-field [form]="userGroupForm" [controlName]="'code'"
-                                   [label]="'Code'" [required]="true"></app-common-text-field>
-          </div>
-
-          <div class="user-group-form-field">
-            <app-common-text-field [form]="userGroupForm" [controlName]="'name'"
-                                   [label]="'Name'" [required]="true"></app-common-text-field>
-          </div>
+        <div class="user-group-form-field">
+          <app-common-text-field [form]="userGroupForm" [controlName]="'name'"
+                                 [label]="'Name'" [required]="true"></app-common-text-field>
         </div>
+      </div>
+    </form>
 
-        <div class="actions">
-          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
-                  class="action-button-white">
-            Cancel
-          </button>
-          <button mat-button [disableRipple]="true"
-                  class="action-button-blue" type="submit" [disabled]="!userGroupForm.valid">
-            Save
-          </button>
-        </div>
-      </form>
-    </mat-dialog-content>
+    <div mat-dialog-actions class="actions">
+      <button type="button" mat-dialog-close mat-button [disableRipple]="true"
+              class="action-button-white">
+        Cancel
+      </button>
+      <button mat-button [disableRipple]="true"
+              class="action-button-blue" type="submit" [disabled]="!userGroupForm.valid">
+        Save
+      </button>
+    </div>
   `,
   styleUrls: ['./user-group-form.component.scss']
 })

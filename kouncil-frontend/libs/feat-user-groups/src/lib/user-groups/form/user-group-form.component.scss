@@ -10,7 +10,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-bottom: $space-6;
     width: 100%;
 
     .user-group-form-field {
@@ -20,7 +19,6 @@
   }
 
   .actions {
-    float: right;
     margin-top: $space-6;
 
     .action-button-blue {
