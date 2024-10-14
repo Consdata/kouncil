@@ -16,6 +16,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {
   UserGroupsFunctionsMatrixComponent
 } from './user-groups-functions-matrix/user-groups-functions-matrix.component';
+import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import {
     MatExpansionModule,
     FeatNoDataModule,
     MatDialogModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FeatBreadcrumbModule
   ],
   declarations: [
     UserGroupsComponent,
