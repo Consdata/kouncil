@@ -10,17 +10,22 @@ import {
   SnackBarComponent,
   SnackBarData
 } from '@app/common-utils';
-import {MaskingType, Policy} from "../policy.model";
-import {ConfirmService} from "@app/feat-confirm";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {PolicyService} from "../policy/policy.service";
+import {MaskingType, Policy, PolicyField} from '../policy.model';
+import {ConfirmService} from '@app/feat-confirm';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {PolicyService} from '../policy/policy.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-data-masking-policies',
   template: `
-    <div class="main-container">
+    <div class="main-container" *ngIf="authService.canAccess([SystemFunctionName.POLICY_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
+          <button mat-button class="action-button-blue"
+                  (click)="createPolicy()">
+            Add new policy
+          </button>
         </div>
       </div>
     </div>
@@ -35,7 +40,8 @@ import {PolicyService} from "../policy/policy.service";
                         [actionColumns]="actionColumns"
                         matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
-                        (cdkDropListDropped)="drop($event)">
+                        (cdkDropListDropped)="drop($event)"
+                        (rowClickedAction)="navigateToDetails($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column"
@@ -82,7 +88,7 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
     },
     {
       name: 'Masking type',
-      prop: 'type',
+      prop: 'maskingType',
       sticky: false,
       resizeable: true,
       sortable: true,
@@ -98,7 +104,7 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       sortable: true,
       draggable: true,
       width: 300,
-      valueFormatter: (value: Array<string>) => value.join(", ")
+      valueFormatter: (value: Array<PolicyField>): string => value.map(field => field.field).join(', ')
     },
   ];
 
@@ -122,6 +128,7 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
               private confirmService: ConfirmService,
               private snackbar: MatSnackBar,
               private policyService: PolicyService,
+              private router: Router,
               protected authService: AuthService) {
     super();
   }
@@ -139,11 +146,10 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
     }));
   }
 
-
   private loadPolicies(): void {
     this.subscription.add(this.dataMaskingPoliciesService.getPolicies$()
     .pipe(first())
-    .subscribe((data: any) => {
+    .subscribe((data: Array<Policy>) => {
       this.policies = data;
       this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
@@ -193,5 +199,13 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
         this.progressBarService.setProgress(false);
       }
     }));
+  }
+
+  createPolicy(): void {
+    this.router.navigate([`/data-masking-policy`]);
+  }
+
+  navigateToDetails(policy: Policy): void {
+    this.router.navigate([`data-masking-policy/${policy.id}`]);
   }
 }

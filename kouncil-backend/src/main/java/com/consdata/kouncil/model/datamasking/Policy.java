@@ -2,9 +2,7 @@ package com.consdata.kouncil.model.datamasking;
 
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,12 +34,11 @@ public class Policy {
 
     @Column(name = "MASKING_TYPE")
     @Enumerated(EnumType.STRING)
-    private MaskingType type;
+    private MaskingType maskingType;
 
-    @ElementCollection
-    @CollectionTable(name = "POLICY_FIELDS", joinColumns = @JoinColumn(name = "POLICY_ID"))
-    @Column(name = "FIELD")
-    private Set<String> fields;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "POLICY_ID")
+    private Set<PolicyField> fields;
 
     @Column(name = "APPLY_TO_ALL_RESOURCES")
     private Boolean applyToAllResources;
