@@ -63,11 +63,11 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
   userGroupForm: FormGroup = new FormGroup({
     id: new FormControl(),
     code: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, this.noOnlyWhitespace],
       asyncValidators: this.isUserGroupCodeUnique(),
       updateOn: 'change'
     }),
-    name: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required, this.noOnlyWhitespace]),
   });
   viewMode: ViewMode = ViewMode.CREATE;
   ViewMode: typeof ViewMode = ViewMode;
@@ -148,5 +148,13 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
         }))
         : of(null);
     };
+  }
+
+  noOnlyWhitespace(control: FormControl): ValidationErrors | null {
+    if (control.value) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return !isWhitespace ? null : {'noOnlyWhitespace': true};
+    }
+    return null;
   }
 }
