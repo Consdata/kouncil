@@ -1,5 +1,11 @@
 ## Advanced config - Schema registry SSL and BASIC Authentication
 
+{% hint style="warning" %}
+**WARNING**
+
+This configuration will be deprecated in version 1.9 and removed in the future. In version 1.9 this configuration will be used to preload your clusters.
+{% endhint %}
+
 Let's assume that your SchemaRegistry is secured and you need SSL and BASIC authentication to connect. You need to provide a client truststore, containing CA public certificate and keystore with both client private key and CA signed certificate.
 And fot the BASIC authentication you need to provide user-info which will be use to authenticate when Kouncil will connect to Schema Registry.
 
