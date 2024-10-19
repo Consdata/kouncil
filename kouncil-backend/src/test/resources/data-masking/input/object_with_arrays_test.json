@@ -1,0 +1,26 @@
+{
+  "firstName": "Jonathan",
+  "lastName": "Holloway",
+  "address": [
+    {
+      "street": "7361 Roehampton Ave.",
+      "streetNumber": 15
+    },
+    {
+      "street": "77 Laurel St.",
+      "streetNumber": 22,
+      "postalCodes": [
+        88978,
+        88979,
+        88980
+      ]
+    }
+  ],
+  "hobbies": [
+    "cooking",
+    "running",
+    "programming",
+    "pets"
+  ],
+  "salary": 123456.7
+}
