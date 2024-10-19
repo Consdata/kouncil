@@ -10,7 +10,7 @@ import {
   SnackBarComponent,
   SnackBarData
 } from '@app/common-utils';
-import {MaskingType, Policy, PolicyField} from '../policy.model';
+import {Policy, PolicyField} from '../policy.model';
 import {ConfirmService} from '@app/feat-confirm';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {PolicyService} from '../policy/policy.service';
@@ -85,16 +85,6 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       sortable: true,
       draggable: true,
       width: 300
-    },
-    {
-      name: 'Masking type',
-      prop: 'maskingType',
-      sticky: false,
-      resizeable: true,
-      sortable: true,
-      draggable: true,
-      width: 300,
-      valueFormatter: (value: MaskingType): string => MaskingType[value]
     },
     {
       name: 'Fields',

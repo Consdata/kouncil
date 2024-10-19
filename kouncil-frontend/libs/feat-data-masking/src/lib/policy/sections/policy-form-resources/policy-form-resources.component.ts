@@ -33,7 +33,7 @@ import {Subscription} from 'rxjs';
         <ng-container *ngFor="let resourceForm of resources.controls; let i = index">
           <div class="resource-fields">
             <app-common-select-field [form]="resourceForm" class="full-width"
-                                     [options]="clusters"
+                                     [options]="clusters" [placeholder]="'Cluster'"
                                      [controlName]="'cluster'"></app-common-select-field>
 
             <app-common-text-field class="full-width" [form]="resourceForm"
