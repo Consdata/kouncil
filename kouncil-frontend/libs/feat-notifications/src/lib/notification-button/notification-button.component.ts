@@ -9,10 +9,8 @@ import {NotificationAction, NotificationModel, NotificationType} from '../notifi
 
 @Component({
   selector: 'app-notification-button',
-  template: `
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ['./notification-button.component.scss']
+  template: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationButtonComponent implements OnDestroy {
 
@@ -51,7 +49,7 @@ export class NotificationButtonComponent implements OnDestroy {
     }));
   }
 
-  private logout() {
+  private logout(): void {
     this.subscription.add(this.authService.logout$().subscribe(() => {
       this.router.navigate(['/login']);
     }));

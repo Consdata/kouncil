@@ -3,7 +3,7 @@
 {% hint style="warning" %}
 **WARNING**
 
-This configuration will be deprecated in version 1.9 and removed in 1.10. In version 1.9 this configuration will be used to preload your clusters.
+This configuration will be deprecated in version 1.9 and removed in the future. In version 1.9 this configuration will be used to preload your clusters.
 {% endhint %}
 
 If one of your brokers in cluster environment needs SASL authentication you should specify `saslMechanism`, `saslProtocol` and `saslJassConfig` for this broker, like this:
