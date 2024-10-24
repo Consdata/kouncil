@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-public class FunctionsController {
+public class SystemFunctionsController {
 
-    private final FunctionService functionService;
+    private final SystemFunctionService systemFunctionService;
 
     @RolesAllowed(Fields.USER_GROUPS)
     @GetMapping(path = "/api/functions")
     public List<SystemFunctionDto> getFunctions() {
-        return functionService.getFunctions();
+        return systemFunctionService.getSystemFunctions();
     }
 }

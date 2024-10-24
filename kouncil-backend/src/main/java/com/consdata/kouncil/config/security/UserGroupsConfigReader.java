@@ -24,9 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * @deprecated will be removed in version 1.10.
+ * @deprecated will be removed in the future.
  */
-@Deprecated(since = "version 1.10")
+@Deprecated
 @Component
 @Data
 @RequiredArgsConstructor

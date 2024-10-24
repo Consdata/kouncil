@@ -139,13 +139,14 @@ export class SendComponent implements OnDestroy {
                 value: messageData.originalValue
                   ? messageData.originalValue
                   : (messageData.value
-                    ? messageData.value
+                    ? JSON.stringify(messageData.value, null, 2)
                     : JSON.stringify(exampleData.exampleValue, null, 2))
               })
             )),
           of({
               ...messageData,
-              value: messageData.originalValue ? JSON.stringify(messageData.originalValue, null, 2) : messageData.value
+              value: messageData.originalValue ? JSON.stringify(messageData.originalValue, null, 2) :
+                (messageData.value ? JSON.stringify(messageData.value, null, 2) : messageData.value)
             }
           ));
       }

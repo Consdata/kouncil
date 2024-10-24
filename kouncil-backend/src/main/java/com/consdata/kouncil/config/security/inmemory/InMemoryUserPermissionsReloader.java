@@ -43,14 +43,17 @@ public class InMemoryUserPermissionsReloader extends DefaultUserPermissionsReloa
     public void reloadPermissions() {
         super.reloadPermissions();
         List.of(ADMIN_USERNAME, EDITOR_USERNAME, VIEWER_USERNAME, SUPERUSER_USERNAME).forEach(user -> {
-            try {
-                String[] fileContent = Files.readString(getPath(user)).split(";");
-                userDetailsService.updateUser(User.withUsername(user)
-                        .password(String.format("{noop}%s", fileContent[0]))
-                        .authorities(userRolesMapping.mapToKouncilRoles(Set.of(fileContent[1].split(","))))
-                        .build());
-            } catch (IOException e) {
-                throw new KouncilRuntimeException(e);
+            Path path = getPath(user);
+            if (Files.exists(path)) {
+                try {
+                    String[] fileContent = Files.readString(path).split(";");
+                    userDetailsService.updateUser(User.withUsername(user)
+                            .password(String.format("{noop}%s", fileContent[0]))
+                            .authorities(userRolesMapping.mapToKouncilRoles(Set.of(fileContent[1].split(","))))
+                            .build());
+                } catch (IOException e) {
+                    throw new KouncilRuntimeException(e);
+                }
             }
         });
     }

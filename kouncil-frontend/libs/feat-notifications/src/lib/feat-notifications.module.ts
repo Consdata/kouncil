@@ -21,11 +21,11 @@ import {MatDialogModule} from '@angular/material/dialog';
     CommonComponentsModule,
     MatSortModule,
     DragDropModule,
-    MatDialogModule,
+    MatDialogModule
   ],
   declarations: [
     NotificationButtonComponent,
-    NotificationComponent,
+    NotificationComponent
   ],
   exports: [
     NotificationButtonComponent,

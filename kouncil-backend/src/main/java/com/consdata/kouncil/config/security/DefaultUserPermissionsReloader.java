@@ -5,7 +5,6 @@ import com.consdata.kouncil.notifications.NotificationAction;
 import com.consdata.kouncil.notifications.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequiredArgsConstructor
 public class DefaultUserPermissionsReloader implements UserPermissionsReloader {
@@ -14,8 +13,6 @@ public class DefaultUserPermissionsReloader implements UserPermissionsReloader {
 
     @Override
     public void reloadPermissions() {
-        SecurityContextHolder.clearContext();
-
         Notification notification = new Notification();
         notification.setMessage("User permissions were updated. You have to re-login.");
         notification.setType(NotificationType.PUSH_WITH_ACTION_REQUIRED);

@@ -5,7 +5,6 @@
 @use 'spaces' as spaces;
 
 .mat-icon {
-  //color: pallete.$main-50;
   width: 15px;
   height: 15px;
   margin: spaces.$space-0 spaces.$space-3;
@@ -455,7 +454,7 @@ mat-option > span {
   color: pallete.$main-40;
 }
 
-mat-radio-button {
+.common-radio-button {
   .mdc-form-field {
     height: 64px;
     border: 1px solid pallete.$main-30;
