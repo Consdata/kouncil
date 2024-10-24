@@ -9,6 +9,7 @@
   * [Authentication](configuration/security/AUTHENTICATION.md)
   * [Authorization](configuration/security/AUTHORIZATION.md)
   * SSL/TLS Configuration
+    * [Configuration](configuration/KAFKA_CLUSTER.md)
     * Kafka
       * [TLS configuration](configuration/kafka/TLS.md)
       * [Broker SSL configuration](configuration/kafka/SASL_PLAIN.md)
