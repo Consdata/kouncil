@@ -3,7 +3,7 @@
 {% hint style="warning" %}
 **WARNING**
 
-This configuration will be deprecated in version 1.9 and removed in 1.10. In version 1.9 this
+This configuration will be deprecated in version 1.9 and removed in the future. In version 1.9 this
 configuration will be used to preload user groups and based on that create permissions for each
 group.
 {% endhint %}
