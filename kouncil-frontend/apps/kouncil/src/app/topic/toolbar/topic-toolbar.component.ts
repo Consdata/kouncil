@@ -62,7 +62,7 @@ export class TopicToolbarComponent {
   @Output() toggleHeadersEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() toggleJsonEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  SystemFunctionName: typeof SystemFunctionName  = SystemFunctionName;
+  SystemFunctionName: typeof SystemFunctionName = SystemFunctionName;
 
   liveState: boolean = false;
   showHeaderColumns: boolean = true;
