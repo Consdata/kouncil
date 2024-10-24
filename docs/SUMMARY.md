@@ -7,6 +7,11 @@
   * [Development](installation/DEVELOPMENT.md)
 * Configuration
   * [Authentication](configuration/security/AUTHENTICATION.md)
+    * [Local authentication](configuration/security/LOCAL_AUTHENTICATION.md)
+    * [LDAP, LDAPS and AD authentication](configuration/security/LDAP.md)
+    * SSO
+      * [GitHub](configuration/security/GITHUB.md)
+      * [Okta](configuration/security/OKTA.md)
   * [Authorization](configuration/security/AUTHORIZATION.md)
   * SSL/TLS Configuration
     * [Configuration](configuration/KAFKA_CLUSTER.md)
