@@ -26,7 +26,11 @@
     display: inline-flex;
     width: 100%;
     gap: $space-5;
-    align-items: end;
+  }
+
+  .broker-remove-btn {
+    display: block;
+    padding-top: 36px;
   }
 }
 

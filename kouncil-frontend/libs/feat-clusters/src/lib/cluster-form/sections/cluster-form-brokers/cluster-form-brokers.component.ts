@@ -1,5 +1,13 @@
 import {Component, Input} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import {ClusterBroker, ClusterMetadata} from '../../../cluster.model';
 import {ViewMode} from '@app/common-utils';
 
@@ -44,12 +52,14 @@ import {ViewMode} from '@app/common-utils';
                                      [form]="brokerForm"
                                      [controlName]="'jmxPassword'"></app-common-password-field>
 
-          <button class="action-button-white" type="button" mat-button [disableRipple]="true"
-                  (click)="removeBroker(i)" *ngIf="viewMode !== ViewMode.VIEW">
-            <mat-icon class="material-symbols-outlined remove">
-              remove
-            </mat-icon>
-          </button>
+          <div class="broker-remove-btn">
+            <button class="action-button-white" type="button" mat-button [disableRipple]="true"
+                    (click)="removeBroker(i)" *ngIf="viewMode !== ViewMode.VIEW">
+              <mat-icon class="material-symbols-outlined remove">
+                remove
+              </mat-icon>
+            </button>
+          </div>
         </div>
       </ng-container>
 
@@ -71,7 +81,7 @@ export class ClusterFormBrokersComponent {
   addBroker(broker?: ClusterBroker): void {
     this.brokers.push(new FormGroup({
       id: new FormControl(broker ? broker.id : ''),
-      bootstrapServer: new FormControl(broker ? broker.bootstrapServer : '', [Validators.required]),
+      bootstrapServer: new FormControl(broker ? broker.bootstrapServer : '', [Validators.required, this.isCorrectValue()]),
       jmxUser: new FormControl(broker ? broker.jmxUser : ''),
       jmxPassword: new FormControl(broker ? broker.jmxPassword : ''),
       jmxPort: new FormControl(broker ? broker.jmxPort : '')
@@ -88,5 +98,12 @@ export class ClusterFormBrokersComponent {
 
   get brokers(): FormArray<FormGroup> {
     return this.clusterForm.get('brokers') as FormArray<FormGroup>;
+  }
+
+  private isCorrectValue(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const regExp: RegExp = /.*:[0-9]+/;
+      return control.value && !regExp.test(control.value) ? {incorrectValue: true} : null;
+    };
   }
 }
