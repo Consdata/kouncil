@@ -3,8 +3,6 @@
 In Kouncil you can configure GitHub SSO by adding below snippet to your configuration file. You have
 to replace `your-client-id`, `your-client-secret` and `your-application-url`.
 
-* Github SSO
-
 ```yaml
 kouncil:
   auth:
