@@ -1,13 +1,13 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {TopicData} from './topic-data';
-import {ServersService} from '@app/common-servers';
-import {first} from 'rxjs/operators';
-import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
-import {TopicService} from './topic.service';
-import {SnackBarComponent, SnackBarData, ViewMode} from '@app/common-utils';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { TopicData } from './topic-data';
+import { ServersService } from '@app/common-servers';
+import { first } from 'rxjs/operators';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { TopicService } from './topic.service';
+import { SnackBarComponent, SnackBarData, ViewMode } from '@app/common-utils';
 
 @Component({
   selector: 'app-topic-form',
@@ -41,18 +41,18 @@ import {SnackBarComponent, SnackBarData, ViewMode} from '@app/common-utils';
                                    [required]="true"></app-common-number-field>
         </div>
       </div>
-    </form>
 
-    <div mat-dialog-actions class="actions">
-      <button type="button" mat-dialog-close mat-button [disableRipple]="true"
-              class="action-button-white">
-        Cancel
-      </button>
-      <button mat-button [disableRipple]="true"
-              class="action-button-blue" type="submit" [disabled]="!topicForm.valid">
-        Save
-      </button>
-    </div>
+      <div mat-dialog-actions class="actions">
+        <button type="button" mat-dialog-close mat-button [disableRipple]="true"
+                class="action-button-white">
+          Cancel
+        </button>
+        <button mat-button [disableRipple]="true"
+                class="action-button-blue" type="submit" [disabled]="!topicForm.valid">
+          Save
+        </button>
+      </div>
+    </form>
   `,
   styleUrls: ['./topic-form.component.scss']
 })
