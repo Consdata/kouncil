@@ -74,11 +74,11 @@ export class SidebarComponent {
 
   constructor(public authService: AuthService,
               private sidebarService: SidebarService) {
-    this.sidebarService.isOpened$.subscribe(isOpened=>{
-      if(isOpened){
-          this.hostClass = SidebarState.OPENED;
+    this.sidebarService.isOpened$.subscribe(isOpened => {
+      if (isOpened) {
+        this.hostClass = SidebarState.OPENED;
       } else {
-          this.hostClass = SidebarState.CLOSED;
+        this.hostClass = SidebarState.CLOSED;
       }
     });
   }
