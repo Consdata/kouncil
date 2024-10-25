@@ -6,6 +6,7 @@ import {
   FormControl,
   FormGroup,
   ValidationErrors,
+  ValidatorFn,
   Validators
 } from '@angular/forms';
 import {ClusterService} from './cluster.service';
@@ -99,7 +100,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   clusterForm: FormGroup = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, this.noWhitespaces()],
       asyncValidators: this.nameShouldBeUnique(),
       updateOn: 'change'
     }),
@@ -198,6 +199,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
           this.navigateToList();
         }));
       } else {
+        this.model.name = this.model.name.trim();
         this.subscriptions.add(this.clusterService.addNewCluster$(this.model).subscribe(() => {
           this.navigateToList();
         }));
@@ -232,6 +234,12 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
       return this.clusterService.isClusterNameUnique$(control.value).pipe(map(result => {
         return !result ? {unique: !result} : null;
       }));
+    };
+  }
+
+  noWhitespaces(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return control.value.length === 0 || (control.value || '').trim().length ? null : {incorrectValue: true};
     };
   }
 }
