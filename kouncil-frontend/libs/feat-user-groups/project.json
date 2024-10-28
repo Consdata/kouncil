@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-user-groups"],
       "options": {
-        "jestConfig": "libs/feat-user-groups/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-user-groups/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-user-groups/**/*.ts",
-          "libs/feat-user-groups/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-confirm"],
       "options": {
-        "jestConfig": "libs/feat-confirm/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-confirm/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-confirm/**/*.ts",
-          "libs/feat-confirm/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

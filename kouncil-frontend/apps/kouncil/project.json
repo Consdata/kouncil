@@ -27,7 +27,7 @@
         "styles": [
           "apps/kouncil/src/styles.scss",
           "node_modules/monaco-editor/min/vs/editor/editor.main.css",
-          "node_modules/@angular/material/_theming.scss",
+          "node_modules/@angular/material/core/theming/_theming.scss",
           "node_modules/@swimlane/ngx-datatable/assets/icons.css"
         ],
         "scripts": [],
@@ -119,16 +119,16 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:webpack-dev-server",
+      "executor": "@nx/angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "kouncil:build:production"
+          "buildTarget": "kouncil:build:production"
         },
         "demo": {
-          "browserTarget": "kouncil:build:demo"
+          "buildTarget": "kouncil:build:demo"
         },
         "development": {
-          "browserTarget": "kouncil:build:development"
+          "buildTarget": "kouncil:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -136,24 +136,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "kouncil:build"
+        "buildTarget": "kouncil:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "apps/kouncil/src/**/*.ts",
-          "apps/kouncil/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/kouncil"],
       "options": {
-        "jestConfig": "apps/kouncil/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/kouncil/jest.config.ts"
       }
     }
   },

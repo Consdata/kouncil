@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/resend-events"],
       "options": {
-        "jestConfig": "libs/resend-events/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "libs/resend-events/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/resend-events/src/**/*.ts",
-          "libs/resend-events/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

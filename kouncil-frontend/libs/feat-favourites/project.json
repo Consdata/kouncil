@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-favourites"],
       "options": {
-        "jestConfig": "libs/feat-favourites/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-favourites/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-favourites/**/*.ts",
-          "libs/feat-favourites/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

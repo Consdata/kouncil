@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-no-data"],
       "options": {
-        "jestConfig": "libs/feat-no-data/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-no-data/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-no-data/**/*.ts",
-          "libs/feat-no-data/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-notifications"],
       "options": {
-        "jestConfig": "libs/feat-notifications/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-notifications/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-notifications/**/*.ts",
-          "libs/feat-notifications/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

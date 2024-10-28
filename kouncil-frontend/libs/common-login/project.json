@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/common-login"],
       "options": {
-        "jestConfig": "libs/common-login/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/common-login/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/common-login/src/**/*.ts",
-          "libs/common-login/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

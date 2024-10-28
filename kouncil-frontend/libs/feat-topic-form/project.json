@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-topic-form"],
       "options": {
-        "jestConfig": "libs/feat-topic-form/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-topic-form/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-topic-form/**/*.ts",
-          "libs/feat-topic-form/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []
