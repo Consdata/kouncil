@@ -6514,10 +6514,10 @@ eslint-plugin-prefer-arrow@1.2.3:
   resolved "https://registry.yarnpkg.com/eslint-plugin-prefer-arrow/-/eslint-plugin-prefer-arrow-1.2.3.tgz#e7fbb3fa4cd84ff1015b9c51ad86550e55041041"
   integrity sha512-J9I5PKCOJretVuiZRGvPQxCbllxGAV/viI20JO3LYblAodofBxyMnZAJ+WGeClHgANnSJberTNoFWWjrWKBuXQ==
 
-eslint-plugin-rxjs@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-rxjs/-/eslint-plugin-rxjs-5.0.2.tgz#0f6f31d227f7d11f4596c3bbbded16e278629684"
-  integrity sha512-Q2wsEHWInhZ3uz5df+YbD4g/NPQqAeYHjJuEsxqgVS+XAsYCuVE2pj9kADdMFy4GsQy2jt7KP+TOrnq1i6bI5Q==
+eslint-plugin-rxjs@5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-rxjs/-/eslint-plugin-rxjs-5.0.3.tgz#a7ec16549f0dd23051bb744fea5bc0cdf096131a"
+  integrity sha512-fcVkqLmYLRfRp+ShafjpUKuaZ+cw/sXAvM5dfSxiEr7M28QZ/NY7vaOr09FB4rSaZsQyLBnNPh5SL+4EgKjh8Q==
   dependencies:
     "@typescript-eslint/experimental-utils" "^5.0.0"
     common-tags "^1.8.0"
@@ -9075,10 +9075,10 @@ ngx-json-viewer@3.2.1:
   dependencies:
     tslib "^2.3.0"
 
-ngx-mat-select-search@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-6.0.0.tgz#293616ace6b7dce54da4dbb1ab042c4204ea373a"
-  integrity sha512-arrWZg2N/Pv3hCE2EV0qj3rqEUKImntmhW8qvo/aYxeN9iWPsseOpokcfMeC9I/SrLrqQFdfyPgHOgB9DqF2Hw==
+ngx-mat-select-search@7.0.5:
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-7.0.5.tgz#0468cdaeb5ea203061737edc9a3ce0efab79fa91"
+  integrity sha512-FRGkXhCkQ+c2B0bZnS9C1XAOukhq6QbJLsevbV3rFiV21cVgaGQ1calf6dUfEHyQdJ1CCaf+ViccY1i3WJTPdA==
   dependencies:
     tslib "^2.4.0"
 
