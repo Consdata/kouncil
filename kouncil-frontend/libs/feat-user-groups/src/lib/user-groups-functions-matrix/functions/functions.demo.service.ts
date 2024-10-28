@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {SystemFunction} from '../user-groups.model';
+import {FunctionGroup, SystemFunction} from '../user-groups.model';
 import {FunctionsService} from './functions.service';
+import {SystemFunctionName} from '@app/common-auth';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,181 @@ import {FunctionsService} from './functions.service';
 export class FunctionsDemoService implements FunctionsService {
 
   getFunctions$(): Observable<Array<SystemFunction>> {
-    return of();
+    return of([
+      {
+        id: 1,
+        name: SystemFunctionName.TOPIC_LIST,
+        label: 'Topic list',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 2,
+        name: SystemFunctionName.TOPIC_CREATE,
+        label: 'Create new topic',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 3,
+        name: SystemFunctionName.TOPIC_DETAILS,
+        label: 'View topic details',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 4,
+        name: SystemFunctionName.TOPIC_UPDATE,
+        label: 'Update topic',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 5,
+        name: SystemFunctionName.TOPIC_DELETE,
+        label: 'Delete topic',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 6,
+        name: SystemFunctionName.TOPIC_MESSAGES,
+        label: 'View topic messages',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 7,
+        name: SystemFunctionName.TOPIC_SEND_MESSAGE,
+        label: 'Send message',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 8,
+        name: SystemFunctionName.TOPIC_RESEND_MESSAGE,
+        label: 'Resend message',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 9,
+        name: SystemFunctionName.CONSUMER_GROUP_LIST,
+        label: 'View consumer group list',
+        functionGroup: FunctionGroup.CONSUMER_GROUP
+      },
+      {
+        id: 10,
+        name: SystemFunctionName.CONSUMER_GROUP_DELETE,
+        label: 'Delete consumer group',
+        functionGroup: FunctionGroup.CONSUMER_GROUP
+      },
+      {
+        id: 11,
+        name: SystemFunctionName.CONSUMER_GROUP_DETAILS,
+        label: 'View consumer group details',
+        functionGroup: FunctionGroup.CONSUMER_GROUP
+      },
+      {
+        id: 12,
+        name: SystemFunctionName.TRACK_LIST,
+        label: 'View event track list',
+        functionGroup: FunctionGroup.TOPIC
+      },
+      {
+        id: 13,
+        name: SystemFunctionName.SCHEMA_LIST,
+        label: 'View schema list',
+        functionGroup: FunctionGroup.SCHEMA_REGISTRY
+      },
+      {
+        id: 14,
+        name: SystemFunctionName.SCHEMA_DETAILS,
+        label: 'View schema details',
+        functionGroup: FunctionGroup.SCHEMA_REGISTRY
+      },
+      {
+        id: 15,
+        name: SystemFunctionName.SCHEMA_CREATE,
+        label: 'Create new schema',
+        functionGroup: FunctionGroup.SCHEMA_REGISTRY
+      },
+      {
+        id: 16,
+        name: SystemFunctionName.SCHEMA_UPDATE,
+        label: 'Update schema',
+        functionGroup: FunctionGroup.SCHEMA_REGISTRY
+      },
+      {
+        id: 17,
+        name: SystemFunctionName.SCHEMA_DELETE,
+        label: 'Delete schema',
+        functionGroup: FunctionGroup.SCHEMA_REGISTRY
+      },
+      {
+        id: 18,
+        name: SystemFunctionName.CLUSTER_LIST,
+        label: 'Cluster list',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 19,
+        name: SystemFunctionName.CLUSTER_CREATE,
+        label: 'Create new cluster',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 20,
+        name: SystemFunctionName.CLUSTER_UPDATE,
+        label: 'Update cluster',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 21,
+        name: SystemFunctionName.CLUSTER_DETAILS,
+        label: 'View cluster details',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 22,
+        name: SystemFunctionName.CLUSTER_DELETE,
+        label: 'Delete cluster',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 23,
+        name: SystemFunctionName.BROKERS_LIST,
+        label: 'View broker list',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 24,
+        name: SystemFunctionName.BROKER_DETAILS,
+        label: 'View broker details',
+        functionGroup: FunctionGroup.CLUSTER
+      },
+      {
+        id: 25,
+        name: SystemFunctionName.USER_GROUPS,
+        label: 'Manage user groups',
+        functionGroup: FunctionGroup.ADMIN
+      },
+      {
+        id: 26,
+        name: SystemFunctionName.USER_GROUPS_LIST,
+        label: 'Groups list',
+        functionGroup: FunctionGroup.ADMIN
+      },
+      {
+        id: 27,
+        name: SystemFunctionName.USER_GROUP_CREATE,
+        label: 'Add new group',
+        functionGroup: FunctionGroup.ADMIN
+      },
+      {
+        id: 28,
+        name: SystemFunctionName.USER_GROUP_UPDATE,
+        label: 'Update group',
+        functionGroup: FunctionGroup.ADMIN
+      },
+      {
+        id: 29,
+        name: SystemFunctionName.USER_GROUP_DELETE,
+        label: 'Delete group',
+        functionGroup: FunctionGroup.ADMIN
+      }
+    ]);
   }
 }

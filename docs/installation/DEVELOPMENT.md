@@ -1,11 +1,15 @@
 # Local Development
 
 ## Running the project
-For the backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092``` pointing to any of your Kafka brokers and ```spring.config.name=kouncil```.
 
-For the frontend, having node and yarn installed, run ```yarn``` and ```yarn start```
+For the backend, run KouncilApplication passing parameter ```bootstrapServers=localhost:9092```
+pointing to any of your Kafka brokers and ```spring.config.name=kouncil```.
 
-For the local Kafka, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your docker host IP)
+For the frontend, with Node.js and Yarn installed, run ```yarn``` and ```yarn start```
+
+For the local Kafka, create docker-compose.yml (KAFKA_ADVERTISED_HOST_NAME should match your Docker
+host IP)
+
 ```yaml
 version: "2"
 
@@ -31,17 +35,21 @@ run ```docker-compose up -d```
 
 more info: https://hub.docker.com/r/bitnami/kafka/
 
-By default, authentication is set to inmemory. Default users role configuration is described here [Authorization](../configuration/security/AUTHORIZATION.md). 
-You can modify this to match your needs, for example if you want to have editor role on an admin user you have to add `admin-group` to the `role-editor`. 
+By default, authentication is set to inmemory. The default users role configuration is described
+here [Authorization](../configuration/security/AUTHORIZATION.md).
+You can modify this to match your needs. For example if you want to assign the editor role to an
+admin user, you need to add `admin-group` to the `role-editor`.
 
 ## Release
 
-To release just push to release branch:
+To release, simply push to release branch:
+
 ```bash
 git push origin master:release
 ```
 
-after a successful release, remember to merge back to master:
+after a successful release, remember to merge back into the master:
+
 ```bash
 git merge origin/release
 ```
