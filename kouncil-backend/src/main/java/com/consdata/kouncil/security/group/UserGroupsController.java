@@ -2,8 +2,8 @@ package com.consdata.kouncil.security.group;
 
 import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
 import com.consdata.kouncil.security.group.dto.UserGroupDto;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
