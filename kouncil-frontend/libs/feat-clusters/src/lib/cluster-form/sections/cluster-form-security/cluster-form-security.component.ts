@@ -113,7 +113,6 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
   authMethods: Array<SelectableItem> = Object.keys(ClusterAuthenticationMethod)
   .map(method => new SelectableItem(ClusterAuthenticationMethod[method], method, false));
 
-
   constructor() {
   }
 
