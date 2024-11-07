@@ -1,4 +1,10 @@
-import {FormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 
 export class ClusterFormUtil {
 
@@ -15,5 +21,11 @@ export class ClusterFormUtil {
   public static cleanFieldValue(fieldName: string, form: FormGroup): void {
     form.get(fieldName).patchValue(null);
     form.get(fieldName).markAsUntouched();
+  }
+
+  public static noWhitespaces(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return control.value?.length === 0 || (control.value || '').trim().length ? null : {incorrectValue: true};
+    };
   }
 }
