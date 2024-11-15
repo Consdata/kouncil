@@ -25,7 +25,7 @@ export class ClusterFormUtil {
 
   public static noWhitespaces(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      return control.value?.length === 0 || (control.value || '').trim().length ? null : {incorrectValue: true};
+      return control.value === null || control.value?.length === 0 || (control.value || '').trim().length ? null : {incorrectValue: true};
     };
   }
 }
