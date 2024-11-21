@@ -9,7 +9,6 @@ public enum SystemFunctionName {
     @FieldNameConstants.Include TOPIC_LIST,
     @FieldNameConstants.Include TOPIC_CREATE,
     @FieldNameConstants.Include TOPIC_UPDATE,
-    @FieldNameConstants.Include TOPIC_DETAILS,
     @FieldNameConstants.Include TOPIC_DELETE,
     @FieldNameConstants.Include TOPIC_MESSAGES,
     @FieldNameConstants.Include TOPIC_SEND_MESSAGE,

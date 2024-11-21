@@ -20,6 +20,7 @@ import {
   ClusterFormActionsComponent
 } from './sections/cluster-form-actions/cluster-form-actions.component';
 import {ViewMode} from '@app/common-utils';
+import {ClusterFormUtil} from './cluster-form-util';
 
 @Component({
   selector: 'app-cluster',
@@ -99,7 +100,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   clusterForm: FormGroup = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, ClusterFormUtil.noWhitespaces()],
       asyncValidators: this.nameShouldBeUnique(),
       updateOn: 'change'
     }),
@@ -107,32 +108,52 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
       authenticationMethod: new FormControl('NONE'),
       securityProtocol: new FormControl(),
       saslMechanism: new FormControl(),
-      keystoreLocation: new FormControl(),
+      keystoreLocation: new FormControl('', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
       keystorePassword: new FormControl(),
       keyPassword: new FormControl(),
-      truststoreLocation: new FormControl(),
+      truststoreLocation: new FormControl('', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
       truststorePassword: new FormControl(),
-      awsProfileName: new FormControl(),
-      username: new FormControl(),
+      awsProfileName: new FormControl('', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
+      username: new FormControl('', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
       password: new FormControl(),
     }),
     brokers: new FormArray([], [Validators.required]),
-    globalJmxUser: new FormControl(),
-    globalJmxPort: new FormControl(),
+    globalJmxUser: new FormControl('', {
+      validators: [ClusterFormUtil.noWhitespaces()]
+    }),
+    globalJmxPort: new FormControl('', {
+      validators: [ClusterFormUtil.noWhitespaces()]
+    }),
     globalJmxPassword: new FormControl(),
     schemaRegistry: new FormGroup({
       id: new FormControl(),
-      url: new FormControl(),
+      url: new FormControl('', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
       schemaRegistrySecurityConfig: new FormGroup({
         authenticationMethod: new FormControl('NONE'),
-        keystoreLocation: new FormControl(),
+        keystoreLocation: new FormControl('', {
+          validators: [ClusterFormUtil.noWhitespaces()]
+        }),
         keystorePassword: new FormControl(),
         keystoreType: new FormControl(),
         keyPassword: new FormControl(),
-        truststoreLocation: new FormControl(),
+        truststoreLocation: new FormControl('', {
+          validators: [ClusterFormUtil.noWhitespaces()]
+        }),
         truststorePassword: new FormControl(),
         truststoreType: new FormControl(),
-        username: new FormControl(),
+        username: new FormControl('', {
+          validators: [ClusterFormUtil.noWhitespaces()]
+        }),
         password: new FormControl(),
       }),
     })
@@ -198,6 +219,7 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
           this.navigateToList();
         }));
       } else {
+        this.model.name = this.model.name.trim();
         this.subscriptions.add(this.clusterService.addNewCluster$(this.model).subscribe(() => {
           this.navigateToList();
         }));

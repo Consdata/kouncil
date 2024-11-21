@@ -126,7 +126,7 @@ export class TrackFilterComponent implements OnInit {
   asyncModeState: boolean = this.trackService.isAsyncEnable();
   toolTip: string = 'By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. ' +
     'If this does not work for you,' +
-    ' turn it off, but then you have to wait for for the whole search to complete.';
+    ' turn it off, but then you have to wait for the whole search to complete.';
 
   constructor(
     private trackService: TrackService,

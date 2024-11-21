@@ -74,7 +74,7 @@ public class TopicController {
         topicService.updateTopicPartitions(newTopic, serverId);
     }
 
-    @RolesAllowed({Fields.TOPIC_DETAILS, Fields.TOPIC_UPDATE})
+    @RolesAllowed(Fields.TOPIC_UPDATE)
     @GetMapping("/{topicName}")
     @EntryExitLogger
     public TopicData getTopicData(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
