@@ -1,60 +1,58 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {TopicData} from './topic-data';
-import {ServersService} from '@app/common-servers';
-import {first} from 'rxjs/operators';
-import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
-import {TopicService} from './topic.service';
-import {SnackBarComponent, SnackBarData, ViewMode} from '@app/common-utils';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { TopicData } from './topic-data';
+import { ServersService } from '@app/common-servers';
+import { first } from 'rxjs/operators';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { TopicService } from './topic.service';
+import { SnackBarComponent, SnackBarData, ViewMode } from '@app/common-utils';
 
 @Component({
   selector: 'app-topic-form',
   template: `
-    <mat-dialog-content>
-      <form [formGroup]="topicForm" (ngSubmit)="save()" class="form topic-form">
-        <div class="drawer-header">
-          <div class="drawer-title">
-            {{ header }}
-          </div>
-          <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    <div mat-dialog-title class="drawer-header">
+      <div class="drawer-title">
+        {{ header }}
+      </div>
+      <div class="spacer"></div>
+      <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    </div>
+
+    <form [formGroup]="topicForm" (ngSubmit)="save()" class="form topic-form">
+      <div mat-dialog-content class="topic-info">
+        <div class="topic-form-field">
+          <app-common-text-field [form]="topicForm" [controlName]="'name'"
+                                 [readonly]="ViewMode.CREATE !== viewMode"
+                                 [label]="'Name'" [required]="true"></app-common-text-field>
         </div>
 
-        <div class="topic-info">
-          <div class="topic-form-field">
-            <app-common-text-field [form]="topicForm" [controlName]="'name'"
+        <div class="topic-form-field">
+          <app-common-number-field [form]="topicForm" [controlName]="'partitions'"
+                                   [label]="'Partitions'"
+                                   [required]="true"></app-common-number-field>
+        </div>
+
+        <div class="topic-form-field">
+          <app-common-number-field [form]="topicForm" [controlName]="'replicationFactor'"
+                                   [label]="'Replication Factor'"
                                    [readonly]="ViewMode.CREATE !== viewMode"
-                                   [label]="'Name'" [required]="true"></app-common-text-field>
-          </div>
-
-          <div class="topic-form-field">
-            <app-common-number-field [form]="topicForm" [controlName]="'partitions'"
-                                     [label]="'Partitions'"
-                                     [required]="true"></app-common-number-field>
-          </div>
-
-          <div class="topic-form-field">
-            <app-common-number-field [form]="topicForm" [controlName]="'replicationFactor'"
-                                     [label]="'Replication Factor'"
-                                     [readonly]="ViewMode.CREATE !== viewMode"
-                                     [required]="true"></app-common-number-field>
-          </div>
+                                   [required]="true"></app-common-number-field>
         </div>
+      </div>
 
-        <div class="actions">
-          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
-                  class="action-button-white">
-            Cancel
-          </button>
-          <button mat-button [disableRipple]="true"
-                  class="action-button-blue" type="submit" [disabled]="!topicForm.valid">
-            Save
-          </button>
-        </div>
-      </form>
-    </mat-dialog-content>
+      <div mat-dialog-actions class="actions">
+        <button type="button" mat-dialog-close mat-button [disableRipple]="true"
+                class="action-button-white">
+          Cancel
+        </button>
+        <button mat-button [disableRipple]="true"
+                class="action-button-blue" type="submit" [disabled]="!topicForm.valid">
+          Save
+        </button>
+      </div>
+    </form>
   `,
   styleUrls: ['./topic-form.component.scss']
 })
