@@ -1,8 +1,8 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {ServersService} from '@app/common-servers';
-import {first} from 'rxjs/operators';
-import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ServersService } from '@app/common-servers';
+import { first } from 'rxjs/operators';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -11,48 +11,46 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import {map, Observable, of, Subscription} from 'rxjs';
-import {SnackBarComponent, SnackBarData, ViewMode} from '@app/common-utils';
-import {UserGroupService} from '../list/user-group.service';
-import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
+import { map, Observable, of, Subscription } from 'rxjs';
+import { SnackBarComponent, SnackBarData, ViewMode } from '@app/common-utils';
+import { UserGroupService } from './user-group.service';
+import { UserGroup } from '../../user-groups-functions-matrix/user-groups.model';
 
 @Component({
   selector: 'app-user-group-form',
   template: `
-    <mat-dialog-content>
-      <form [formGroup]="userGroupForm" (ngSubmit)="save()" class="form user-group-form">
-        <div class="drawer-header">
-          <div class="drawer-title">
-            {{ header }}
-          </div>
-          <div class="spacer"></div>
-          <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    <div mat-dialog-title class="drawer-header">
+      <div class="drawer-title">
+        {{ header }}
+      </div>
+      <div class="spacer"></div>
+      <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
+    </div>
+
+    <form [formGroup]="userGroupForm" (ngSubmit)="save()" class="form user-group-form">
+      <div mat-dialog-content class="user-group-info">
+        <div class="user-group-form-field">
+          <app-common-text-field [form]="userGroupForm" [controlName]="'code'"
+                                 [label]="'Code'" [required]="true"></app-common-text-field>
         </div>
 
-        <div class="user-group-info">
-          <div class="user-group-form-field">
-            <app-common-text-field [form]="userGroupForm" [controlName]="'code'"
-                                   [label]="'Code'" [required]="true"></app-common-text-field>
-          </div>
-
-          <div class="user-group-form-field">
-            <app-common-text-field [form]="userGroupForm" [controlName]="'name'"
-                                   [label]="'Name'" [required]="true"></app-common-text-field>
-          </div>
+        <div class="user-group-form-field">
+          <app-common-text-field [form]="userGroupForm" [controlName]="'name'"
+                                 [label]="'Name'" [required]="true"></app-common-text-field>
         </div>
+      </div>
 
-        <div class="actions">
-          <button type="button" mat-dialog-close mat-button [disableRipple]="true"
-                  class="action-button-white">
-            Cancel
-          </button>
-          <button mat-button [disableRipple]="true"
-                  class="action-button-blue" type="submit" [disabled]="!userGroupForm.valid">
-            Save
-          </button>
-        </div>
-      </form>
-    </mat-dialog-content>
+      <div mat-dialog-actions class="actions">
+        <button type="button" mat-dialog-close mat-button [disableRipple]="true"
+                class="action-button-white">
+          Cancel
+        </button>
+        <button mat-button [disableRipple]="true"
+                class="action-button-blue" type="submit" [disabled]="!userGroupForm.valid">
+          Save
+        </button>
+      </div>
+    </form>
   `,
   styleUrls: ['./user-group-form.component.scss']
 })
@@ -63,11 +61,11 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
   userGroupForm: FormGroup = new FormGroup({
     id: new FormControl(),
     code: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, this.noOnlyWhitespace],
       asyncValidators: this.isUserGroupCodeUnique(),
       updateOn: 'change'
     }),
-    name: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required, this.noOnlyWhitespace]),
   });
   viewMode: ViewMode = ViewMode.CREATE;
   ViewMode: typeof ViewMode = ViewMode;
@@ -148,5 +146,13 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
         }))
         : of(null);
     };
+  }
+
+  noOnlyWhitespace(control: FormControl): ValidationErrors | null {
+    if (control.value) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return !isWhitespace ? null : {'noOnlyWhitespace': true};
+    }
+    return null;
   }
 }

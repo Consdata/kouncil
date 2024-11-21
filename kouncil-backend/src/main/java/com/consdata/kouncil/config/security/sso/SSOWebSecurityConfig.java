@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -94,7 +95,10 @@ public class SSOWebSecurityConfig {
         return authorities -> {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             authorities.forEach(authority -> {
-                if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
+                if(authority instanceof OidcUserAuthority){
+                    List<String> groups = (List<String>) ((OidcUserAuthority) authority).getAttributes().get("groups");
+                    mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(new HashSet<>(groups)));
+                } else  if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
                 }
             });
