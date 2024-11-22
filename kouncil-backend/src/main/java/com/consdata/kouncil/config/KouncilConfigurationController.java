@@ -2,7 +2,7 @@ package com.consdata.kouncil.config;
 
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
@@ -22,7 +22,7 @@ public class KouncilConfigurationController {
     @Value("${kouncil.context-path:}")
     private String contextPath;
 
-    @RolesAllowed(Fields.LOGIN)
+    @RolesAllowed(SystemFunctionNameConstants.LOGIN)
     @GetMapping("/connection")
     @EntryExitLogger
     public Map<String, String> getAllConnections() {
