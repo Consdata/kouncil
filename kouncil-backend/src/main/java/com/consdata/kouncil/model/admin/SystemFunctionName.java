@@ -1,51 +1,48 @@
 package com.consdata.kouncil.model.admin;
 
-import lombok.experimental.FieldNameConstants;
-
-@FieldNameConstants(onlyExplicitlyIncluded = true)
 public enum SystemFunctionName {
 
     //topic
-    @FieldNameConstants.Include TOPIC_LIST,
-    @FieldNameConstants.Include TOPIC_CREATE,
-    @FieldNameConstants.Include TOPIC_UPDATE,
-    @FieldNameConstants.Include TOPIC_DELETE,
-    @FieldNameConstants.Include TOPIC_MESSAGES,
-    @FieldNameConstants.Include TOPIC_SEND_MESSAGE,
-    @FieldNameConstants.Include TOPIC_RESEND_MESSAGE,
+    TOPIC_LIST,
+    TOPIC_CREATE,
+    TOPIC_UPDATE,
+    TOPIC_DELETE,
+    TOPIC_MESSAGES,
+    TOPIC_SEND_MESSAGE,
+    TOPIC_RESEND_MESSAGE,
 
     //broker
-    @FieldNameConstants.Include BROKERS_LIST,
-    @FieldNameConstants.Include BROKER_DETAILS,
+    BROKERS_LIST,
+    BROKER_DETAILS,
 
     //consumer groups
-    @FieldNameConstants.Include CONSUMER_GROUP_LIST,
-    @FieldNameConstants.Include CONSUMER_GROUP_DELETE,
-    @FieldNameConstants.Include CONSUMER_GROUP_DETAILS,
+    CONSUMER_GROUP_LIST,
+    CONSUMER_GROUP_DELETE,
+    CONSUMER_GROUP_DETAILS,
 
     //track
-    @FieldNameConstants.Include TRACK_LIST,
+    TRACK_LIST,
 
     //schemas
-    @FieldNameConstants.Include SCHEMA_LIST,
-    @FieldNameConstants.Include SCHEMA_DETAILS,
-    @FieldNameConstants.Include SCHEMA_CREATE,
-    @FieldNameConstants.Include SCHEMA_UPDATE,
-    @FieldNameConstants.Include SCHEMA_DELETE,
+    SCHEMA_LIST,
+    SCHEMA_DETAILS,
+    SCHEMA_CREATE,
+    SCHEMA_UPDATE,
+    SCHEMA_DELETE,
 
     //clusters
-    @FieldNameConstants.Include CLUSTER_LIST,
-    @FieldNameConstants.Include CLUSTER_CREATE,
-    @FieldNameConstants.Include CLUSTER_UPDATE,
-    @FieldNameConstants.Include CLUSTER_DETAILS,
-    @FieldNameConstants.Include CLUSTER_DELETE,
+    CLUSTER_LIST,
+    CLUSTER_CREATE,
+    CLUSTER_UPDATE,
+    CLUSTER_DETAILS,
+    CLUSTER_DELETE,
 
     //admin
-    @FieldNameConstants.Include LOGIN,
-    @FieldNameConstants.Include USER_GROUPS,
-    @FieldNameConstants.Include USER_GROUPS_LIST,
-    @FieldNameConstants.Include USER_GROUP_CREATE,
-    @FieldNameConstants.Include USER_GROUP_UPDATE,
-    @FieldNameConstants.Include USER_GROUP_DELETE
+    LOGIN,
+    USER_GROUPS,
+    USER_GROUPS_LIST,
+    USER_GROUP_CREATE,
+    USER_GROUP_UPDATE,
+    USER_GROUP_DELETE
 
 }
