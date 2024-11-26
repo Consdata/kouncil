@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.consdata</groupId>
         <artifactId>kouncil</artifactId>
-        <version>1.10-SNAPSHOT</version>
+        <version>1.9</version>
     </parent>
 
     <properties>
