@@ -13,40 +13,9 @@
     line-height: 28px;
   }
 
-  .policy-form-container{
+  .policy-form-container {
     background: $main-0;
     padding: $space-5;
-  }
-
-
-
-  .fields-section, .resources-section {
-    margin-top: $space-5;
-    margin-bottom: $space-3;
-    min-height: 50px;
-
-    .fields-section-header, .resources-section-header {
-      float: left;
-      font-size: 16px !important;
-      padding-bottom: $space-3;
-      padding-top: $space-3;
-      font-weight: 500;
-    }
-
-    .add-field-btn, .add-resource-btn {
-      float: right;
-
-      .add-button-icon {
-        color: $main-0;
-      }
-    }
-
-    .field-section, .resource-fields {
-      display: inline-flex;
-      width: 100%;
-      gap: $space-5;
-      align-items: end;
-    }
   }
 
   .full-width {
