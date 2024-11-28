@@ -1,7 +1,7 @@
 package com.consdata.kouncil.datamasking;
 
 import com.consdata.kouncil.datamasking.dto.PolicyDto;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ public class PoliciesController {
 
     private final PoliciesService policyService;
 
-    @RolesAllowed({Fields.POLICY_LIST})
+    @RolesAllowed({SystemFunctionNameConstants.POLICY_LIST})
     @GetMapping(path = "/api/policies")
     public List<PolicyDto> getPolicies() {
         return policyService.getPolicies();
