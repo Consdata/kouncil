@@ -3,6 +3,7 @@ package com.consdata.kouncil.datamasking;
 import com.consdata.kouncil.model.datamasking.MaskingType;
 import com.consdata.kouncil.model.datamasking.Policy;
 import com.consdata.kouncil.model.datamasking.PolicyField;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,15 +30,27 @@ public final class PolicyApplier {
     }
 
     public static String apply(Policy policy, String value) {
-        try {
-            JsonNode jsonNode = OBJECT_MAPPER.readTree(new StringReader(value));
-            for (PolicyField field : policy.getFields()) {
-                String[] split = field.getField().split(FIELD_SEPARATOR);
-                traversFieldPathAndUpdateValue(field, jsonNode, split, 0);
+        if (isValidJson(value)) {
+            try {
+                JsonNode jsonNode = OBJECT_MAPPER.readTree(new StringReader(value));
+                for (PolicyField field : policy.getFields()) {
+                    String[] split = field.getField().split(FIELD_SEPARATOR);
+                    traversFieldPathAndUpdateValue(field, jsonNode, split, 0);
+                }
+                return jsonNode.toString();
+            } catch (IOException e) {
+                throw new DataMaskingExcpetion(e);
             }
-            return jsonNode.toString();
-        } catch (IOException e) {
-            throw new DataMaskingExcpetion(e);
+        }
+        return value;
+    }
+
+    private static boolean isValidJson(String value) {
+        try {
+            OBJECT_MAPPER.readTree(value);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
         }
     }
 
