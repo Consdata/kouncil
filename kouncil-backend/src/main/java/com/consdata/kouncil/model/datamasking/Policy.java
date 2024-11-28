@@ -4,8 +4,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,10 +29,6 @@ public class Policy {
 
     @Column(name = "NAME")
     private String name;
-
-    @Column(name = "MASKING_TYPE")
-    @Enumerated(EnumType.STRING)
-    private MaskingType maskingType;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "POLICY_ID")

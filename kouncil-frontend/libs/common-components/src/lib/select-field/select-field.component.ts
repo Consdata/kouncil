@@ -12,7 +12,7 @@ import {MatSelectChange} from '@angular/material/select';
         <span *ngIf="required" class="requiredField">*</span>
       </div>
       <mat-form-field [appearance]="'outline'" class="full-width">
-        <mat-select [formControlName]="controlName"
+        <mat-select [formControlName]="controlName" placeholder="{{placeholder}}"
                     (selectionChange)="selectionChangeEvent.emit($event)">
           <mat-option *ngFor="let option of options" [value]="option.value">
             {{ option.label }}
@@ -42,6 +42,7 @@ export class SelectFieldComponent {
   @Input() form: FormGroup;
   @Input() controlName: string;
   @Input() label: string;
+  @Input() placeholder: string;
   @Input() required: boolean = false;
   @Input() readonly: boolean = false;
   @Input() clearValueBtn: boolean = false;
