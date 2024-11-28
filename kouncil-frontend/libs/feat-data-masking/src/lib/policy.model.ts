@@ -2,7 +2,7 @@ export class Policy {
 
   constructor(public id: number, public name: string,
               public applyToAllResources: boolean, public fields: Array<PolicyField>,
-              public resources: Array<PolicyResource>) {
+              public resources: Array<PolicyResource>, public userGroups: Array<number>) {
   }
 }
 

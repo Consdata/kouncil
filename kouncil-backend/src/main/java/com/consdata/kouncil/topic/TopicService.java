@@ -7,6 +7,7 @@ import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.MessagesHelper;
 import com.consdata.kouncil.datamasking.DataMaskingService;
+import com.consdata.kouncil.model.datamasking.Policy;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.serialization.SerializationService;
@@ -175,6 +176,7 @@ public class TopicService {
         int emptyPolls = 0;
         int messagesCount = 0;
         long lastOffset = 0;
+        List<Policy> policies = dataMaskingService.getPoliciesForClusterAndTopic(partition.topic(), clusterId);
         while (emptyPolls < 5 && messagesCount < limit && lastOffset <= endOffset - 1) {
             ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, partition);
             if (records.isEmpty()) {
@@ -196,10 +198,10 @@ public class TopicService {
 
                     messages.add(TopicMessage
                             .builder()
-                            .key(dataMaskingService.maskTopicMessage(deserializedMessage.getKeyData().getDeserialized(), partition.topic(), clusterId))
+                            .key(dataMaskingService.maskTopicMessage(deserializedMessage.getKeyData().getDeserialized(), policies))
                             .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
-                            .value(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getDeserialized(), partition.topic(), clusterId))
-                            .originalValue(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getOriginalValue(), partition.topic(), clusterId))
+                            .value(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getDeserialized(), policies))
+                            .originalValue(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getOriginalValue(), policies))
                             .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())

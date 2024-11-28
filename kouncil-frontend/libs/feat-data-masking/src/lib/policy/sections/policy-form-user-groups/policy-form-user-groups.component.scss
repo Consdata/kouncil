@@ -1,0 +1,32 @@
+@use '../../../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../../../apps/kouncil/src/styles/palette";
+
+.user-groups-section {
+  margin-top: $space-5;
+  margin-bottom: $space-3;
+  min-height: 50px;
+
+  .user-groups-section-header-container {
+    padding-bottom: $space-5;
+    display: flex;
+    flex-direction: column;
+
+    .user-groups-section-header {
+      float: left;
+      font-size: 16px !important;
+      padding-bottom: $space-3;
+      padding-top: $space-3;
+      font-weight: 500;
+    }
+  }
+
+  user-groups-fields {
+    display: inline-flex;
+    width: 100%;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
