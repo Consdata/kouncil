@@ -1,7 +1,7 @@
 package com.consdata.kouncil.clusters;
 
 import com.consdata.kouncil.clusters.dto.ClusterDto;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,37 +20,37 @@ public class ClusterController {
 
     private final ClusterService clusterService;
 
-    @RolesAllowed({Fields.CLUSTER_UPDATE, Fields.CLUSTER_DETAILS})
+    @RolesAllowed({SystemFunctionNameConstants.CLUSTER_UPDATE, SystemFunctionNameConstants.CLUSTER_DETAILS})
     @GetMapping(path = "/{clusterName}")
     public ClusterDto getClusterByName(@PathVariable("clusterName") String clusterName) {
         return clusterService.getClusterByName(clusterName);
     }
 
-    @RolesAllowed(Fields.CLUSTER_CREATE)
+    @RolesAllowed(SystemFunctionNameConstants.CLUSTER_CREATE)
     @PostMapping
     public String addNewCluster(@RequestBody ClusterDto cluster) {
         return clusterService.saveCluster(cluster);
     }
 
-    @RolesAllowed(Fields.CLUSTER_UPDATE)
+    @RolesAllowed(SystemFunctionNameConstants.CLUSTER_UPDATE)
     @PutMapping
     public String updateCluster(@RequestBody ClusterDto cluster) {
         return clusterService.saveCluster(cluster);
     }
 
-    @RolesAllowed({Fields.CLUSTER_CREATE, Fields.CLUSTER_UPDATE})
+    @RolesAllowed({SystemFunctionNameConstants.CLUSTER_CREATE, SystemFunctionNameConstants.CLUSTER_UPDATE})
     @PostMapping(path = "/testConnection")
     public boolean testConnection(@RequestBody ClusterDto cluster) {
         return clusterService.testConnection(cluster);
     }
 
-    @RolesAllowed({Fields.CLUSTER_CREATE, Fields.CLUSTER_UPDATE})
+    @RolesAllowed({SystemFunctionNameConstants.CLUSTER_CREATE, SystemFunctionNameConstants.CLUSTER_UPDATE})
     @GetMapping(path = "/{clusterName}/isClusterNameUnique")
     public boolean isClusterNameUnique(@PathVariable("clusterName") String clusterName) {
         return clusterService.isClusterNameUnique(clusterName);
     }
 
-    @RolesAllowed(Fields.CLUSTER_DELETE)
+    @RolesAllowed(SystemFunctionNameConstants.CLUSTER_DELETE)
     @DeleteMapping(path = "/{id}")
     public void deleteCluster(@PathVariable("id") Long id) {
         clusterService.deleteCluster(id);
