@@ -41,6 +41,7 @@ import {
   ClusterFormViewComponent
 } from './cluster-form/cluster-form-view/cluster-form-view.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
 
 @NgModule({
   imports: [
@@ -63,6 +64,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatProgressSpinnerModule,
     MatTabsModule,
     MatExpansionModule,
+    FeatBreadcrumbModule,
   ],
   declarations: [
     ClustersComponent,
