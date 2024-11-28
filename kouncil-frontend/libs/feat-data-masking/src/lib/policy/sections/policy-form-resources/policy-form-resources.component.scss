@@ -1,0 +1,48 @@
+@use '../../../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../../../apps/kouncil/src/styles/palette";
+
+
+.resources-section {
+  margin-top: $space-5;
+  margin-bottom: $space-3;
+  min-height: 50px;
+
+  .resources-section-header {
+    float: left;
+    font-size: 16px !important;
+    padding-bottom: $space-3;
+    padding-top: $space-3;
+    font-weight: 500;
+  }
+
+  .add-resource-btn {
+    float: right;
+
+    .add-button-icon {
+      color: $main-0;
+    }
+  }
+
+  .resource-fields {
+    display: inline-flex;
+    width: 100%;
+    gap: $space-5;
+    align-items: end;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.action-button-blue {
+  @include buttons.button-blue;
+}
+
+.action-button-white {
+  @include buttons.button-white;
+  height: 40px !important;
+}
+
+

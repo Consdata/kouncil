@@ -43,6 +43,7 @@ public final class ClusterConfigConverter {
         clusterDto.getBrokers().forEach(brokerDto -> {
             BrokerConfig brokerConfig = new BrokerConfig();
             String[] hostPort = brokerDto.getBootstrapServer().split(":");
+            //todo walidacja na FE na poprawność
             brokerConfig.setHost(hostPort[0]);
             brokerConfig.setPort(Integer.parseInt(hostPort[1]));
             brokerConfig.setJmxUser(brokerDto.getJmxUser());
