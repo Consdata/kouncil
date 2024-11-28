@@ -1,6 +1,6 @@
 package com.consdata.kouncil.security.function;
 
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import com.consdata.kouncil.security.function.dto.SystemFunctionDto;
 import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
@@ -14,7 +14,7 @@ public class SystemFunctionsController {
 
     private final SystemFunctionService systemFunctionService;
 
-    @RolesAllowed(Fields.USER_GROUPS)
+    @RolesAllowed(SystemFunctionNameConstants.USER_GROUPS)
     @GetMapping(path = "/api/functions")
     public List<SystemFunctionDto> getFunctions() {
         return systemFunctionService.getSystemFunctions();

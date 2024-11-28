@@ -64,11 +64,6 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
 
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
-                <button class="action-button-white action-button-white-table" mat-button
-                        *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_UPDATE])"
-                        [routerLink]="['/schemas/edit/' + element.subjectName + '/' + element.version]">
-                  Edit
-                </button>
                 <button class="action-button-red" mat-button
                         *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_DELETE])"
                         (click)="$event.stopPropagation(); deleteSchema(element.subjectName, element.version)">

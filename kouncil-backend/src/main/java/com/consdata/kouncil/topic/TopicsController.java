@@ -1,7 +1,7 @@
 package com.consdata.kouncil.topic;
 
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ public class TopicsController {
 
     private final TopicsService topicsService;
 
-    @RolesAllowed(Fields.TOPIC_LIST)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_LIST)
     @GetMapping("/api/topics")
     @EntryExitLogger
     public TopicsDto getTopics(@RequestParam("serverId") String serverId) {

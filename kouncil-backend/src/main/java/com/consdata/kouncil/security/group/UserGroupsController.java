@@ -1,6 +1,6 @@
 package com.consdata.kouncil.security.group;
 
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import com.consdata.kouncil.security.group.dto.UserGroupDto;
 import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
@@ -18,13 +18,13 @@ public class UserGroupsController {
 
     private final UserGroupsService userGroupsService;
 
-    @RolesAllowed(Fields.USER_GROUPS)
+    @RolesAllowed({SystemFunctionNameConstants.USER_GROUPS, SystemFunctionNameConstants.USER_GROUPS_LIST})
     @GetMapping
     public List<UserGroupDto> getUserGroups() {
         return userGroupsService.getUserGroups();
     }
 
-    @RolesAllowed(Fields.USER_GROUPS)
+    @RolesAllowed(SystemFunctionNameConstants.USER_GROUPS)
     @PostMapping
     public void updatePermissions(@RequestBody List<UserGroupDto> userGroupDtoList) {
         userGroupsService.saveAll(userGroupDtoList);

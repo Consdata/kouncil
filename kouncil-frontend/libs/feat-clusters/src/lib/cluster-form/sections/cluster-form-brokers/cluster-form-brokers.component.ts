@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import {ClusterBroker, ClusterMetadata} from '../../../cluster.model';
 import {ViewMode} from '@app/common-utils';
+import {ClusterFormUtil} from '../../cluster-form-util';
 
 @Component({
   selector: 'app-cluster-brokers',
@@ -81,10 +82,14 @@ export class ClusterFormBrokersComponent {
   addBroker(broker?: ClusterBroker): void {
     this.brokers.push(new FormGroup({
       id: new FormControl(broker ? broker.id : ''),
-      bootstrapServer: new FormControl(broker ? broker.bootstrapServer : '', [Validators.required, this.isCorrectValue()]),
-      jmxUser: new FormControl(broker ? broker.jmxUser : ''),
+      bootstrapServer: new FormControl(broker ? broker.bootstrapServer : '', [Validators.required, this.checkHostPortValueCorrect()]),
+      jmxUser: new FormControl(broker ? broker.jmxUser : '', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      }),
       jmxPassword: new FormControl(broker ? broker.jmxPassword : ''),
-      jmxPort: new FormControl(broker ? broker.jmxPort : '')
+      jmxPort: new FormControl(broker ? broker.jmxPort : '', {
+        validators: [ClusterFormUtil.noWhitespaces()]
+      })
     }));
   }
 
@@ -100,7 +105,7 @@ export class ClusterFormBrokersComponent {
     return this.clusterForm.get('brokers') as FormArray<FormGroup>;
   }
 
-  private isCorrectValue(): ValidatorFn {
+  private checkHostPortValueCorrect(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const regExp: RegExp = /.*:[0-9]+/;
       return control.value && !regExp.test(control.value) ? {incorrectValue: true} : null;
