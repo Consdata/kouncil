@@ -2,7 +2,7 @@ package com.consdata.kouncil.topic;
 
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class TopicController {
 
     private final TopicService topicService;
 
-    @RolesAllowed(Fields.TOPIC_MESSAGES)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_MESSAGES)
     @GetMapping("/messages/{topicName}/{partition}")
     public TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
                                              @PathVariable("partition") String partitions,
@@ -39,7 +39,7 @@ public class TopicController {
         return topicService.getTopicMessages(topicName, partitions, pageParam, limitParam, beginningTimestampMillis, endTimestampMillis, offset, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_SEND_MESSAGE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_SEND_MESSAGE)
     @PostMapping("/send/{topicName}/{count}")
     @EntryExitLogger
     public void send(@PathVariable("topicName") String topicName,
@@ -51,7 +51,7 @@ public class TopicController {
         log.debug("TCS99 topicName={}, count={}, serverId={}", topicName, count, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_RESEND_MESSAGE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_RESEND_MESSAGE)
     @PostMapping("/resend")
     @EntryExitLogger
     public void resend(@RequestBody TopicResendEventsModel resendData,
@@ -60,28 +60,28 @@ public class TopicController {
         topicService.resend(resendData, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_CREATE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_CREATE)
     @PostMapping("/create")
     @EntryExitLogger
     public void create(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.create(newTopic, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_UPDATE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_UPDATE)
     @PutMapping("/partitions/update")
     @EntryExitLogger
     public void updateTopicPartitions(@RequestBody TopicData newTopic, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.updateTopicPartitions(newTopic, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_UPDATE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_UPDATE)
     @GetMapping("/{topicName}")
     @EntryExitLogger
     public TopicData getTopicData(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         return topicService.getTopicData(topicName, serverId);
     }
 
-    @RolesAllowed(Fields.TOPIC_DELETE)
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_DELETE)
     @DeleteMapping("/{topicName}")
     @EntryExitLogger
     public void removeTopic(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {

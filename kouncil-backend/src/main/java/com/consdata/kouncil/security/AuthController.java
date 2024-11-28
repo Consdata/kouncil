@@ -3,7 +3,7 @@ package com.consdata.kouncil.security;
 import static com.consdata.kouncil.config.KouncilConfiguration.INSTALLATION_ID_FILE;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,14 +63,14 @@ public class AuthController {
         req.logout();
     }
 
-    @RolesAllowed(Fields.LOGIN)
+    @RolesAllowed(SystemFunctionNameConstants.LOGIN)
     @GetMapping("/api/userRoles")
     public Set<String> getUserRoles() {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
     }
 
-    @RolesAllowed(Fields.LOGIN)
+    @RolesAllowed(SystemFunctionNameConstants.LOGIN)
     @GetMapping("/api/installationId")
     public String getInstallationId() throws IOException {
         return Files.readString(Path.of(INSTALLATION_ID_FILE));

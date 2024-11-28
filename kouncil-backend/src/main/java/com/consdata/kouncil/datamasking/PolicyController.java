@@ -1,6 +1,6 @@
 package com.consdata.kouncil.datamasking;
 
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +16,7 @@ public class PolicyController {
 
     private final PolicyService policyService;
 
-    @RolesAllowed(Fields.POLICY_DELETE)
+    @RolesAllowed(SystemFunctionNameConstants.POLICY_DELETE)
     @DeleteMapping(path = "/{id}")
     public void deletePolicy(@PathVariable("id") Long id) {
         policyService.deletePolicy(id);
