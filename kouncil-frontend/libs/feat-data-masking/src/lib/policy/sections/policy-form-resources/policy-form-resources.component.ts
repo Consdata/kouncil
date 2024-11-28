@@ -65,7 +65,7 @@ export class PolicyFormResourcesComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngOnInit(): void {
-    if (this.viewMode === ViewMode.CREATE) {
+    if (ViewMode.VIEW !== this.viewMode) {
       this.subscriptions.add(this.policyForm.get('applyToAllResources').valueChanges.subscribe(
         value => {
           if (value) {

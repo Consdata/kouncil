@@ -7,6 +7,7 @@ import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.MessagesHelper;
 import com.consdata.kouncil.datamasking.DataMaskingService;
+import com.consdata.kouncil.datamasking.PoliciesService;
 import com.consdata.kouncil.model.datamasking.Policy;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
@@ -61,6 +62,7 @@ public class TopicService {
     private final SerializationService serializationService;
     private final DeserializationService deserializationService;
     private final DataMaskingService dataMaskingService;
+    private final PoliciesService policiesService;
     private final MessagesHelper messagesHelper;
     private static final int RESEND_MAX_POLL_RECORDS = 100;
 
@@ -176,7 +178,7 @@ public class TopicService {
         int emptyPolls = 0;
         int messagesCount = 0;
         long lastOffset = 0;
-        List<Policy> policies = dataMaskingService.getPoliciesForClusterAndTopic(partition.topic(), clusterId);
+        List<Policy> policies = policiesService.getPoliciesForClusterAndTopic(partition.topic(), clusterId);
         while (emptyPolls < 5 && messagesCount < limit && lastOffset <= endOffset - 1) {
             ConsumerRecords<Bytes, Bytes> records = getConsumerRecords(consumer, partition);
             if (records.isEmpty()) {
