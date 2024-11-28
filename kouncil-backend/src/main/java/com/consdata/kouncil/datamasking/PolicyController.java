@@ -1,7 +1,7 @@
 package com.consdata.kouncil.datamasking;
 
 import com.consdata.kouncil.datamasking.dto.PolicyDto;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,25 +21,25 @@ public class PolicyController {
 
     private final PolicyService policyService;
 
-    @RolesAllowed({Fields.POLICY_DETAILS, Fields.POLICY_UPDATE})
+    @RolesAllowed({SystemFunctionNameConstants.POLICY_DETAILS, SystemFunctionNameConstants.POLICY_UPDATE})
     @GetMapping(path = "/{policyId}")
     public PolicyDto getPolicyById(@PathVariable("policyId") Long id) {
         return policyService.getPolicyById(id);
     }
 
-    @RolesAllowed(Fields.POLICY_CREATE)
+    @RolesAllowed(SystemFunctionNameConstants.POLICY_CREATE)
     @PostMapping()
     public void addNewPolicy(@RequestBody PolicyDto policyDto) {
         policyService.savePolicy(policyDto);
     }
 
-    @RolesAllowed(Fields.POLICY_UPDATE)
+    @RolesAllowed(SystemFunctionNameConstants.POLICY_UPDATE)
     @PutMapping()
     public void updatePolicy(@RequestBody PolicyDto policyDto) {
         policyService.savePolicy(policyDto);
     }
 
-    @RolesAllowed(Fields.POLICY_DELETE)
+    @RolesAllowed(SystemFunctionNameConstants.POLICY_DELETE)
     @DeleteMapping(path = "/{id}")
     public void deletePolicy(@PathVariable("id") Long id) {
         policyService.deletePolicy(id);
