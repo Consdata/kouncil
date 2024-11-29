@@ -23,6 +23,14 @@
     "@angular-devkit/core" "18.2.11"
     rxjs "7.8.1"
 
+"@angular-devkit/architect@0.1802.12":
+  version "0.1802.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.1802.12.tgz#096f8e9cf71f8848c6f0172c03f3f1135509e133"
+  integrity sha512-bepVb2/GtJppYKaeW8yTGE6egmoWZ7zagFDsmBdbF+BYp+HmeoPsclARcdryBPVq68zedyTRdvhWSUTbw1AYuw==
+  dependencies:
+    "@angular-devkit/core" "18.2.12"
+    rxjs "7.8.1"
+
 "@angular-devkit/build-angular@18.2.11":
   version "18.2.11"
   resolved "https://registry.yarnpkg.com/@angular-devkit/build-angular/-/build-angular-18.2.11.tgz#96766d409559074c9abf8c2691b7e189911896e6"
@@ -113,12 +121,35 @@
     rxjs "7.8.1"
     source-map "0.7.4"
 
+"@angular-devkit/core@18.2.12":
+  version "18.2.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-18.2.12.tgz#fb514e9b3c9ea87ddaa1582d3947f1b094c9b387"
+  integrity sha512-NtB6ypsaDyPE6/fqWOdfTmACs+yK5RqfH5tStEzWFeeDsIEDYKsJ06ypuRep7qTjYus5Rmttk0Ds+cFgz8JdUQ==
+  dependencies:
+    ajv "8.17.1"
+    ajv-formats "3.0.1"
+    jsonc-parser "3.3.1"
+    picomatch "4.0.2"
+    rxjs "7.8.1"
+    source-map "0.7.4"
+
 "@angular-devkit/schematics@18.2.11":
   version "18.2.11"
   resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-18.2.11.tgz#5e3a9303d27286d0dd0e642d7ccaba5b7e3899a0"
   integrity sha512-efRK3FotTFp4KD5u42jWfXpHUALXB9kJNsWiB4wEImKFH6CN+vjBspJQuLqk2oeBFh/7D2qRMc5P+2tZHM5hdw==
   dependencies:
     "@angular-devkit/core" "18.2.11"
+    jsonc-parser "3.3.1"
+    magic-string "0.30.11"
+    ora "5.4.1"
+    rxjs "7.8.1"
+
+"@angular-devkit/schematics@18.2.12":
+  version "18.2.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-18.2.12.tgz#15d1a8611bf9f18215435604672411b1929bf4d1"
+  integrity sha512-mMea9txHbnCX5lXLHlo0RAgfhFHDio45/jMsREM2PA8UtVf2S8ltXz7ZwUrUyMQRv8vaSfn4ijDstF4hDMnRgQ==
+  dependencies:
+    "@angular-devkit/core" "18.2.12"
     jsonc-parser "3.3.1"
     magic-string "0.30.11"
     ora "5.4.1"
@@ -209,17 +240,17 @@
   optionalDependencies:
     parse5 "^7.1.2"
 
-"@angular/cli@~18.2.11":
-  version "18.2.11"
-  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-18.2.11.tgz#07bc4f797b68946ed9900f8be1ce5a76d0f19b67"
-  integrity sha512-0JI1xjOLRemBPjdT/yVlabxc3Zkjqa/lhvVxxVC1XhKoW7yGxIGwNrQ4pka4CcQtCuktO6KPMmTGIu8YgC3cpw==
+"@angular/cli@~18.2.12":
+  version "18.2.12"
+  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-18.2.12.tgz#ea1af54d1fd172bf8bd3c7ed977a422c1c1a94d9"
+  integrity sha512-xhuZ/b7IhqNw1MgXf+arWf4x+GfUSt/IwbdWU4+CO8A7h0Y46zQywouP/KUK3cMQZfVdHdciTBvlpF3vFacA6Q==
   dependencies:
-    "@angular-devkit/architect" "0.1802.11"
-    "@angular-devkit/core" "18.2.11"
-    "@angular-devkit/schematics" "18.2.11"
+    "@angular-devkit/architect" "0.1802.12"
+    "@angular-devkit/core" "18.2.12"
+    "@angular-devkit/schematics" "18.2.12"
     "@inquirer/prompts" "5.3.8"
     "@listr2/prompt-adapter-inquirer" "2.0.15"
-    "@schematics/angular" "18.2.11"
+    "@schematics/angular" "18.2.12"
     "@yarnpkg/lockfile" "1.1.0"
     ini "4.1.3"
     jsonc-parser "3.3.1"
@@ -3604,6 +3635,15 @@
     "@angular-devkit/schematics" "18.2.11"
     jsonc-parser "3.3.1"
 
+"@schematics/angular@18.2.12":
+  version "18.2.12"
+  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-18.2.12.tgz#28df36bcd34e85a33dbd0d39932d5ca2de2a9e52"
+  integrity sha512-sIoeipsisK5eTLW3XuNZYcal83AfslBbgI7LnV+3VrXwpasKPGHwo2ZdwhCd2IXAkuJ02Iyu7MyV0aQRM9i/3g==
+  dependencies:
+    "@angular-devkit/core" "18.2.12"
+    "@angular-devkit/schematics" "18.2.12"
+    jsonc-parser "3.3.1"
+
 "@sigstore/bundle@^2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@sigstore/bundle/-/bundle-2.3.2.tgz#ad4dbb95d665405fd4a7a02c8a073dbd01e4e95e"
@@ -3684,21 +3724,21 @@
   resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-7.0.0.tgz#46b5c454a9dc8262e0b20f3b3dbacaa113993077"
   integrity sha512-fGdq4wPDnSV/KyOsjq4P+zLc8MFWC3lMmP5FBgLWKPJTYcuCbAIrnRGjB7q2jHZdYCOD5vxLuFoKIYLy5/u8Pw==
 
-"@storybook/addon-interactions@^8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-interactions/-/addon-interactions-8.4.1.tgz#a7d7b13e6c9424c818756babd3ee935a03cb0fd2"
-  integrity sha512-rMxKehtQogV6Scjb/oqMFM0Mwn8NJRuGFDRJE3TBijNSJ2HPJms+xXp8KVZJengadlsF5HFwQBbnZzIeFDQRLw==
+"@storybook/addon-interactions@^8.4.6":
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-interactions/-/addon-interactions-8.4.6.tgz#cd6e5aaae6badf0f0f1475d0f3a4f12cc095de13"
+  integrity sha512-sR2oUSYIGUoAdrHT+fM1zgykhad98bsJ11c79r7HfBMXEPWc1yRcjIMmz8Xz06FMROMfebqduYDf60V++/I0Jw==
   dependencies:
     "@storybook/global" "^5.0.0"
-    "@storybook/instrumenter" "8.4.1"
-    "@storybook/test" "8.4.1"
+    "@storybook/instrumenter" "8.4.6"
+    "@storybook/test" "8.4.6"
     polished "^4.2.2"
     ts-dedent "^2.2.0"
 
-"@storybook/core@8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@storybook/core/-/core-8.4.1.tgz#e6094f3c7cc2f0c81d1c1195c91a7230641ba9eb"
-  integrity sha512-q3Q4OFBj7MHHbIFYk/Beejlqv5j7CC3+VWhGcr0TK3SGvdCIZ7EliYuc5JIOgDlEPsnTIk+lkgWI4LAA9mLzSw==
+"@storybook/core@8.4.6":
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/@storybook/core/-/core-8.4.6.tgz#78a3155f428635be808c4ef2912eeb79140228c8"
+  integrity sha512-WeojVtHy0/t50tzw/15S+DLzKsj8BN9yWdo3vJMvm+nflLFvfq1XvD9WGOWeaFp8E/o3AP+4HprXG0r42KEJtA==
   dependencies:
     "@storybook/csf" "^0.1.11"
     better-opn "^3.0.2"
@@ -3724,22 +3764,22 @@
   resolved "https://registry.yarnpkg.com/@storybook/global/-/global-5.0.0.tgz#b793d34b94f572c1d7d9e0f44fac4e0dbc9572ed"
   integrity sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==
 
-"@storybook/instrumenter@8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@storybook/instrumenter/-/instrumenter-8.4.1.tgz#cdb9e3476410a2acfe4b14da093810ed491b598d"
-  integrity sha512-MgrhrLVW78jqno+Dh9h9Es06Ja3867TlrIUd8B3K3U1hsCFUQuFKXJBuGjNJF8U0QJY/aSIRnAgUBurHdVkPcw==
+"@storybook/instrumenter@8.4.6":
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/@storybook/instrumenter/-/instrumenter-8.4.6.tgz#3e760d6aecf4041dd7aaeeb9dde5a2d365607462"
+  integrity sha512-snXjlgbp065A6KoK9zkjBYEIMCSlN5JefPKzt1FC0rbcbtahhD+iPpqISKhDSczwgOku/JVhVUDp/vU7AIf4mg==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@vitest/utils" "^2.1.1"
 
-"@storybook/test@8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@storybook/test/-/test-8.4.1.tgz#e78d5f644466d2c8fa5b099f5ddb8a49204ed0dc"
-  integrity sha512-najn9kCxB8NaHykhD7Fv+Iq0FnxmIJYOJlYiI8NMgVLwaSDFf6gnqAY6HHVPRqkhej8TuT1L2e2RxKqzWEB+mA==
+"@storybook/test@8.4.6":
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/@storybook/test/-/test-8.4.6.tgz#7ea0ac47b8492e04be2a11d7c1c6be54399c9355"
+  integrity sha512-MeU1g65YgU66M2NtmEIL9gVeHk+en0k9Hp0wfxEO7NT/WLfaOD5RXLRDJVhbAlrH/6tLeWKIPNh/D26y27vO/g==
   dependencies:
     "@storybook/csf" "^0.1.11"
     "@storybook/global" "^5.0.0"
-    "@storybook/instrumenter" "8.4.1"
+    "@storybook/instrumenter" "8.4.6"
     "@testing-library/dom" "10.4.0"
     "@testing-library/jest-dom" "6.5.0"
     "@testing-library/user-event" "14.5.2"
@@ -11288,12 +11328,12 @@ stop-iteration-iterator@^1.0.0:
   dependencies:
     internal-slot "^1.0.4"
 
-storybook@^8.4.1:
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/storybook/-/storybook-8.4.1.tgz#97baa471677566d614a5677deab0cd243c0142dc"
-  integrity sha512-0tfFIFghjho9FtnFoiJMoxhcs2iIdvEF81GTSVnTsDVJrYA84nB+FxN3UY1fT0BcQ8BFlbf+OhSjZL7ufqqWKA==
+storybook@^8.4.6:
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/storybook/-/storybook-8.4.6.tgz#6a25899fc4a58657e3a66c0b0d9066f3c201f8cc"
+  integrity sha512-J6juZSZT2u3PUW0QZYZZYxBq6zU5O0OrkSgkMXGMg/QrS9to9IHmt4FjEMEyACRbXo8POcB/fSXa3VpGe7bv3g==
   dependencies:
-    "@storybook/core" "8.4.1"
+    "@storybook/core" "8.4.6"
 
 streamroller@^3.1.5:
   version "3.1.5"
