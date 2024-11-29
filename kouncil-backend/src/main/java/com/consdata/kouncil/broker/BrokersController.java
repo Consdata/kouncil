@@ -5,7 +5,7 @@ import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.config.BrokerConfig;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.logging.EntryExitLogger;
-import com.consdata.kouncil.model.admin.SystemFunctionName.Fields;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class BrokersController {
 
     private final KouncilConfiguration kouncilConfiguration;
 
-    @RolesAllowed(Fields.BROKERS_LIST)
+    @RolesAllowed(SystemFunctionNameConstants.BROKERS_LIST)
     @GetMapping("/api/brokers")
     @EntryExitLogger
     public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
@@ -90,6 +90,7 @@ public class BrokersController {
     }
 
     @GetMapping("/api/configs/{name}")
+    @RolesAllowed(SystemFunctionNameConstants.BROKER_DETAILS)
     @EntryExitLogger
     public Collection<KafkaBrokerConfig> getConfigs(@PathVariable("name") String name, @RequestParam("serverId") String serverId) {
         try {
