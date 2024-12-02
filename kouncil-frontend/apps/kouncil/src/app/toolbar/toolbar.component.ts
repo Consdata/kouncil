@@ -2,19 +2,19 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  Input,
+  ElementRef, Input, OnDestroy,
   OnInit,
   ViewChild
 } from '@angular/core';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {filter, mergeMap, Observable, Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
 import {ProgressBarService, SearchService} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-kafka-navbar',
@@ -42,7 +42,7 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
                #searchInput>
       </div>
       <mat-form-field class="servers-form-field" [appearance]="'outline'"
-                      *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated">
+                      *ngIf="(isAuthenticated$ | async) && !hideForAuthenticated && !hideClusterContext">
         <mat-select panelClass="servers-list"
                     class="select servers"
                     [(value)]="servers.selectedServerId"
@@ -70,7 +70,7 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent implements OnInit, AfterViewInit {
+export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('searchInput', {static: true}) private searchInputElementRef?: ElementRef;
 
@@ -80,6 +80,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
 
   backendVersion$?: Observable<string>;
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
+  hideClusterContext: boolean = false;
+  subscriptions: Subscription = new Subscription();
 
   constructor(public searchService: SearchService,
               private router: Router,
@@ -87,9 +89,26 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
               public servers: ServersService,
               public authService: AuthService,
               private progressBarService: ProgressBarService) {
-    router.events.subscribe(() => {
+    this.subscriptions.add(router.events.subscribe(() => {
       this.searchInputElementRef?.nativeElement.focus();
-    });
+    }));
+
+    this.subscriptions.add(router.events.pipe(filter(event => event instanceof NavigationEnd))
+    .pipe(
+      mergeMap(() => this.getRoute(this.router.routerState.root).data),
+      map(data => data['hideClusterContext'] ? data['hideClusterContext'] : false)
+    ).subscribe(result => {
+      this.hideClusterContext = result;
+    }));
+
+  }
+
+  private getRoute(route: ActivatedRoute): ActivatedRoute {
+    return route.firstChild ? this.getRoute(route.firstChild) : route;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   public serverSelectionChanged(): void {
