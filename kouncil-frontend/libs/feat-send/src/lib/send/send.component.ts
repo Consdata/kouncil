@@ -16,9 +16,11 @@ import {
 import {ServersService} from '@app/common-servers';
 import {EditorComponent, MonacoEditorService} from '@app/common-components';
 import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {LoggerFactory} from '@consdata/logger-api';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let monaco: any;
+const log = LoggerFactory.getLogger('SendComponent');
 
 @Component({
   selector: 'app-send',
@@ -224,7 +226,7 @@ export class SendComponent implements OnDestroy {
           duration: 3000
         });
       }, error => {
-        console.error(error);
+        log.error(error);
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`Error occurred while sending events to ${messageData.topicName}`, 'snackbar-error', ''),
           panelClass: ['snackbar'],

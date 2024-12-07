@@ -11,6 +11,9 @@ import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {Router} from '@angular/router';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {LoggerFactory} from '@consdata/logger-api';
+
+const log = LoggerFactory.getLogger('SchemasComponent');
 
 @Component({
   selector: 'app-schemas',
@@ -214,7 +217,7 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
         duration: 3000
       });
     }, error => {
-      console.error(error);
+      log.error(error);
       this.snackbar.openFromComponent(SnackBarComponent, {
         data: new SnackBarData(`Schema version ${version} for subject ${subject} couldn't be deleted`, 'snackbar-error', ''),
         panelClass: ['snackbar'],
