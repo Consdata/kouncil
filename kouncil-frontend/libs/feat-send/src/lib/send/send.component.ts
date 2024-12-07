@@ -1,21 +1,21 @@
-import {Component, OnDestroy, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {FormControl, NgForm, Validators} from '@angular/forms';
-import {SendService} from './send.service';
-import {first, map, switchMap} from 'rxjs/operators';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
-import {combineLatest, iif, Observable, of} from 'rxjs';
+import { Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { FormControl, NgForm, Validators } from '@angular/forms';
+import { SendService } from './send.service';
+import { first, map, switchMap } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MessageData, MessageDataHeader, MessageDataService } from '@app/message-data';
+import { combineLatest, iif, Observable, of } from 'rxjs';
 import {
   MessageFormat,
   SchemaFacadeService,
   SchemaRegistryService,
   SchemaStateService
 } from '@app/schema-registry';
-import {ServersService} from '@app/common-servers';
-import {EditorComponent, MonacoEditorService} from '@app/common-components';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import { ServersService } from '@app/common-servers';
+import { EditorComponent, MonacoEditorService } from '@app/common-components';
+import { SnackBarComponent, SnackBarData } from '@app/common-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let monaco: any;
@@ -31,10 +31,10 @@ declare let monaco: any;
           <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
         </div>
 
-        <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}<!----> }
+        <div class="drawer-section-subtitle" ngNonBindable>
+          Available placeholders: {{uuid}} {{count}}, {{timestamp}}
           <br>
-          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!----> }).
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}}).
           Format should be given after <strong>colon (:)</strong> which precedes placeholder.
           Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>

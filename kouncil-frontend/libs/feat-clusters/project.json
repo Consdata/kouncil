@@ -6,21 +6,14 @@
   "prefix": "app",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-clusters"],
       "options": {
-        "jestConfig": "libs/feat-clusters/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-clusters/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-clusters/**/*.ts",
-          "libs/feat-clusters/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

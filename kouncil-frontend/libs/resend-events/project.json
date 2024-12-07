@@ -1,25 +1,19 @@
 {
   "name": "resend-events",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/resend-events/src",
   "prefix": "kouncil",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/resend-events"],
       "options": {
-        "jestConfig": "libs/resend-events/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "libs/resend-events/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/resend-events/src/**/*.ts",
-          "libs/resend-events/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -6,21 +6,14 @@
   "prefix": "app",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-send"],
       "options": {
-        "jestConfig": "libs/feat-send/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-send/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-send/**/*.ts",
-          "libs/feat-send/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []
