@@ -7,6 +7,9 @@ import {ProtobufUtilsService} from '../protobuf/protobuf-utils.service';
 import {JSONSchemaFaker} from 'json-schema-faker';
 import {SchemaRegistryService} from './schema-registry.service';
 import {AvroUtilsService} from '../avro/avro-utils.service';
+import {LoggerFactory} from '@consdata/logger-api';
+
+const log = LoggerFactory.getLogger('SchemaFacadeService');
 
 @Injectable({
   providedIn: 'root'
@@ -32,18 +35,18 @@ export class SchemaFacadeService {
     switch (messageFormat) {
       case MessageFormat.PROTOBUF:
         example = this.protobufUtilsService.fillProtobufSchemaWithData(plainTextSchema);
-        console.log(`Found schema, isKey=[${isKey}]`);
+        log.info(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.JSON:
         example = JSONSchemaFaker.generate(JSON.parse(plainTextSchema));
-        console.log(`Found schema, isKey=[${isKey}]`);
+        log.info(`Found schema, isKey=[${isKey}]`);
         break;
       case MessageFormat.AVRO:
         example = this.avroUtilsService.fillAvroSchemaWithData(plainTextSchema);
-        console.log(`Found schema, isKey=[${isKey}]`);
+        log.info(`Found schema, isKey=[${isKey}]`);
         break;
       default:
-        console.log(`No schema, isKey=[${isKey}]`);
+        log.info(`No schema, isKey=[${isKey}]`);
         break;
     }
     return example;
