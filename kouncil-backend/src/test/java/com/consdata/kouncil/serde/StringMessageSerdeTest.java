@@ -1,12 +1,10 @@
 package com.consdata.kouncil.serde;
 
-import com.consdata.kouncil.serde.formatter.StringMessageFormatter;
-import org.apache.kafka.common.utils.Bytes;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.kafka.common.utils.Bytes;
+import org.junit.jupiter.api.Test;
 
 class StringMessageSerdeTest {
 

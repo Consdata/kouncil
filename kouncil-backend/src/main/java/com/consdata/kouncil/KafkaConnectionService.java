@@ -38,7 +38,7 @@ public class KafkaConnectionService {
 
     public KafkaTemplate<Bytes, Bytes> getKafkaTemplate(String serverId) {
         return kafkaTemplates.computeIfAbsent(serverId, k -> {
-            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildProducerProperties();
+            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildProducerProperties(null);
             String serverByClusterId = this.kouncilConfiguration.getServerByClusterId(serverId);
 
             props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, serverByClusterId);
@@ -54,7 +54,7 @@ public class KafkaConnectionService {
 
     public AdminClient getAdminClient(String serverId) {
         return adminClients.computeIfAbsent(serverId, k -> {
-            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties();
+            Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildAdminProperties(null);
             String serverByClusterId = this.kouncilConfiguration.getServerByClusterId(serverId);
             props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, serverByClusterId);
             props.put(AdminClientConfig.RECONNECT_BACKOFF_MS_CONFIG, RECONNECT_BACKOFF_MS_CONFIG_CONSTANT_VALUE);
@@ -87,7 +87,7 @@ public class KafkaConnectionService {
 
     //we cannot cache this ever
     public KafkaConsumer<Bytes, Bytes> getKafkaConsumer(String serverId, int limit) {
-        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties();
+        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties(null);
         String serverByClusterId = this.kouncilConfiguration.getServerByClusterId(serverId);
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, serverByClusterId);

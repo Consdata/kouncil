@@ -1,5 +1,10 @@
 package com.consdata.kouncil.serde;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
@@ -8,10 +13,17 @@ import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.formatter.schema.AvroMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import io.confluent.kafka.schemaregistry.avro.AvroSchema;
+import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.EnumMap;
+import java.util.Objects;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,22 +33,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.EnumMap;
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class AvroDeserializationServiceTest {
-    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116, 117, 114, -6, -84, 68, 20, 50, 48, 50, 52, 45, 48, 49, 45, 48, 49};
+
+    private static final byte[] AVRO_SIMPLE_MESSAGE_BYTES = new byte[]{0, 0, 0, 0, 0, 34, 76, 111, 114, 101, 109, 32, 99, 111, 110, 115, 101, 99, 116, 101, 116,
+            117, 114, -6, -84, 68, 20, 50, 48, 50, 52, 45, 48, 49, 45, 48, 49};
     private static final String LOREM = "lorem";
     private static final String CLUSTER_ID = "clusterId";
     private static AvroSchema AVRO_SCHEMA;
@@ -47,8 +49,7 @@ class AvroDeserializationServiceTest {
     @MockBean
     private SchemaRegistryFacade schemaRegistryFacade;
 
-    @MockBean
-    private SchemaRegistryClient schemaRegistryClient;
+    private final SchemaRegistryClient schemaRegistryClient = new MockSchemaRegistryClient();
 
     @Autowired
     private DeserializationService deserializationService;
@@ -74,8 +75,9 @@ class AvroDeserializationServiceTest {
                 new Bytes(LOREM.getBytes(StandardCharsets.UTF_8)),
                 new Bytes(AVRO_SIMPLE_MESSAGE_BYTES)
         );
+        schemaRegistryClient.register("sometopic-value", AVRO_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(AVRO_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -102,8 +104,9 @@ class AvroDeserializationServiceTest {
                 new Bytes(AVRO_SIMPLE_MESSAGE_BYTES),
                 new Bytes(LOREM.getBytes(StandardCharsets.UTF_8))
         );
+        schemaRegistryClient.register("sometopic-value", AVRO_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(AVRO_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -130,8 +133,9 @@ class AvroDeserializationServiceTest {
                 null,
                 new Bytes(AVRO_SIMPLE_MESSAGE_BYTES)
         );
+        schemaRegistryClient.register("sometopic-value", AVRO_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(AVRO_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -158,8 +162,9 @@ class AvroDeserializationServiceTest {
                 new Bytes(AVRO_SIMPLE_MESSAGE_BYTES),
                 null
         );
+        schemaRegistryClient.register("sometopic-value", AVRO_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(AVRO_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -179,11 +184,6 @@ class AvroDeserializationServiceTest {
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
         return new ConsumerRecord<>("sometopic",
-                0,
-                0,
-                0,
-                TimestampType.NO_TIMESTAMP_TYPE,
-                0L,
                 0,
                 0,
                 key,
