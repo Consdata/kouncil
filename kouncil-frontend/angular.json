@@ -9,6 +9,7 @@
     "common-utils": "libs/common-utils",
     "feat-confirm": "libs/feat-confirm",
     "feat-favourites": "libs/feat-favourites",
+    "feat-first-time-app-launch": "libs/feat-first-time-app-launch",
     "feat-no-data": "libs/feat-no-data",
     "feat-notifications": "libs/feat-notifications",
     "feat-send": "libs/feat-send",

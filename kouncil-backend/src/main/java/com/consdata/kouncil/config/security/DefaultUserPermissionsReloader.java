@@ -12,11 +12,13 @@ public class DefaultUserPermissionsReloader implements UserPermissionsReloader {
     private final SimpMessagingTemplate eventSender;
 
     @Override
-    public void reloadPermissions() {
-        Notification notification = new Notification();
-        notification.setMessage("User permissions were updated. You have to re-login.");
-        notification.setType(NotificationType.PUSH_WITH_ACTION_REQUIRED);
-        notification.setAction(NotificationAction.LOGOUT);
-        eventSender.convertAndSend("/notifications", notification);
+    public void reloadPermissions(boolean sendNotification) {
+        if (sendNotification) {
+            Notification notification = new Notification();
+            notification.setMessage("User permissions were updated. You have to re-login.");
+            notification.setType(NotificationType.PUSH_WITH_ACTION_REQUIRED);
+            notification.setAction(NotificationAction.LOGOUT);
+            eventSender.convertAndSend("/notifications", notification);
+        }
     }
 }

@@ -79,6 +79,11 @@ html, body {
   display: flex;
 }
 
+.kafka-desktop-banner {
+  height: calc(100% - 120px);
+  display: flex;
+}
+
 .kafka-desktop-demo {
   height: calc(100% - 120px);
   display: flex;

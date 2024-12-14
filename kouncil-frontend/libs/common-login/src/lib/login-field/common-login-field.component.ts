@@ -16,7 +16,7 @@ import {FormControl} from '@angular/forms';
       </div>
     </div>
     <mat-error class="error" *ngIf="isFieldInvalid()">
-      Field is <strong>required</strong>
+      Field is required
     </mat-error>
     <br>
   `,

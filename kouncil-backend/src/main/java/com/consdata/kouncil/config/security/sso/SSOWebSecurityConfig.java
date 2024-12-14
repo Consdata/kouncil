@@ -16,11 +16,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -60,8 +57,8 @@ public class SSOWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path", "/*",
-                        "/assets/**")
+                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path",
+                        "/api/permissions-not-defined", "/api/create-temporary-admin", "/*", "/assets/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -72,7 +69,8 @@ public class SSOWebSecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo
                         .userAuthoritiesMapper(this.authoritiesMapper())
                         .and()
-                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
+                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {
+                        })
                 )
                 .and()
                 .exceptionHandling()
@@ -82,12 +80,7 @@ public class SSOWebSecurityConfig {
     }
 
     @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
-
-    @Bean
-    public DefaultUserPermissionsReloader userPermissionsReloader(){
+    public DefaultUserPermissionsReloader userPermissionsReloader() {
         return new DefaultUserPermissionsReloader(eventSender);
     }
 
@@ -95,10 +88,10 @@ public class SSOWebSecurityConfig {
         return authorities -> {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             authorities.forEach(authority -> {
-                if(authority instanceof OidcUserAuthority){
+                if (authority instanceof OidcUserAuthority) {
                     List<String> groups = (List<String>) ((OidcUserAuthority) authority).getAttributes().get("groups");
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(new HashSet<>(groups)));
-                } else  if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
+                } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
                 }
             });
@@ -110,11 +103,5 @@ public class SSOWebSecurityConfig {
             throws IOException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.getWriter().write(mapper.writeValueAsString(Collections.singletonMap("error", "Unauthenticated")));
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
     }
 }

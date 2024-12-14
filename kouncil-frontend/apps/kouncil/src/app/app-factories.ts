@@ -32,6 +32,14 @@ import {
   UserGroupService,
   UserGroupsService
 } from '@app/feat-user-groups';
+import {
+  FirstTimeAppLaunchBackendService,
+  FirstTimeAppLaunchDemoService,
+  FirstTimeAppLaunchService
+} from '@app/feat-first-time-app-launch';
+import {ConfirmService} from '@app/feat-confirm';
+import {AuthService} from '@app/common-auth';
+import {Router} from '@angular/router';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -151,5 +159,17 @@ export function userGroupServiceFactory(http: HttpClient): UserGroupService {
     case Backend.DEMO:
     default:
       return new UserGroupDemoService();
+  }
+}
+
+export function firstTimeAppLaunchServiceFactory(http: HttpClient, confirmService: ConfirmService,
+                                                 auth: AuthService, router: Router): FirstTimeAppLaunchService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new FirstTimeAppLaunchBackendService(http, confirmService, auth, router);
+    }
+    case Backend.DEMO:
+    default:
+      return new FirstTimeAppLaunchDemoService();
   }
 }
