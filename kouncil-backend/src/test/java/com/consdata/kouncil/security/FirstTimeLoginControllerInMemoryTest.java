@@ -9,12 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.consdata.kouncil.config.security.UserGroupsConfigReader;
 import com.consdata.kouncil.config.security.inmemory.FirstTimeLoginController;
 import com.consdata.kouncil.config.security.inmemory.InMemoryUserManager;
 import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
-import com.consdata.kouncil.security.function.SystemFunctionsRepository;
-import com.consdata.kouncil.security.group.UserGroupRepository;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,17 +27,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ContextConfiguration(classes = {FirstTimeLoginController.class, InMemoryUserManager.class, InMemoryWebSecurityConfig.class, UserGroupsConfigReader.class})
+@ContextConfiguration(classes = {FirstTimeLoginController.class, InMemoryUserManager.class, InMemoryWebSecurityConfig.class})
 class FirstTimeLoginControllerInMemoryTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private UserRolesMapping userRolesMapping;
-    @MockBean
-    private SystemFunctionsRepository systemFunctionsRepository;
-    @MockBean
-    private UserGroupRepository userGroupRepository;
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
