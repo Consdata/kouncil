@@ -33,6 +33,7 @@ import {
   ClustersComponent
 } from '@app/feat-clusters';
 import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
+import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -207,6 +208,9 @@ const routes: Routes = [
   },
   {
     path: '', component: MainLoginComponent,
+    resolve: {
+      config: PermissionsConfigResolver
+    },
     children: [
       {path: 'login', component: LoginComponent},
       {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}

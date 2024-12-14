@@ -10,12 +10,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -48,18 +45,14 @@ public class ActiveDirectoryWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/*", "/assets/**").permitAll()
+                .antMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/api/permissions-not-defined",
+                        "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
 
     @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
-
-    @Bean
-    public DefaultUserPermissionsReloader userPermissionsReloader(){
+    public DefaultUserPermissionsReloader userPermissionsReloader() {
         return new DefaultUserPermissionsReloader(eventSender);
     }
 
@@ -82,11 +75,5 @@ public class ActiveDirectoryWebSecurityConfig {
         provider.setSearchFilter(searchFilter);
         provider.setUserDetailsContextMapper(new ActiveDirectoryUserDetailsMapper(userRolesMapping));
         return provider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
     }
 }
