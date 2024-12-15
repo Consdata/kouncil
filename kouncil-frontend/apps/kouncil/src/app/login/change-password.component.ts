@@ -8,10 +8,7 @@ import {LoginUtil} from './login-util';
 @Component({
   selector: 'app-change-password',
   template: `
-    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
-                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
-    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
-                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+    <app-common-login-icon></app-common-login-icon>
 
     <app-common-change-password (changePasswordEvent)="changePassword($event)"
                                 (skipChangeEvent)="skipChange()"></app-common-change-password>
