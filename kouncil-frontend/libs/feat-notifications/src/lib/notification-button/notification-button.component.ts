@@ -6,6 +6,8 @@ import {NotificationComponent} from '../notification/notification.component';
 import {AuthService} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {NotificationAction, NotificationModel, NotificationType} from '../notification.model';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackBarComponent, SnackBarData} from "@app/common-utils";
 
 @Component({
   selector: 'app-notification-button',
@@ -19,13 +21,18 @@ export class NotificationButtonComponent implements OnDestroy {
   constructor(private rxStompService: RxStompService,
               private dialog: MatDialog,
               private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private snackBar: MatSnackBar) {
 
     this.subscription.add(this.rxStompService.watch('/notifications')
     .subscribe((message) => {
       const notification: NotificationModel = JSON.parse(message.body);
-      if (NotificationType.PUSH_WITH_ACTION_REQUIRED === notification.type) {
-        this.processPushWithActionNotification(notification);
+      switch (notification.type) {
+        case NotificationType.PUSH_WITH_ACTION_REQUIRED:
+          this.processPushWithActionNotification(notification);
+          break;
+        case NotificationType.PUSH:
+          this.openPushNotification(notification);
       }
     }));
   }
@@ -53,5 +60,12 @@ export class NotificationButtonComponent implements OnDestroy {
     this.subscription.add(this.authService.logout$().subscribe(() => {
       this.router.navigate(['/login']);
     }));
+  }
+
+  private openPushNotification(notification: NotificationModel) {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      data: new SnackBarData(notification.message, 'snackbar-error', 'Close'),
+      panelClass: ['snackbar']
+    });
   }
 }
