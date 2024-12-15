@@ -24,10 +24,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "kouncil.auth", name = "active-provider", havingValue = "inmemory")
-public class InMemoryUserPermissionsLoader {
+public class InMemoryBaseDataLoader {
 
     private final SystemFunctionsRepository systemFunctionsRepository;
     private final UserGroupRepository userGroupRepository;
+    private final InMemoryUserManager inMemoryUserManager;
 
     private static final List<SystemFunctionName> ADMIN_FUNCTIONS = List.of(SystemFunctionName.BROKERS_LIST, SystemFunctionName.BROKER_DETAILS,
             SystemFunctionName.CONSUMER_GROUP_LIST, SystemFunctionName.CONSUMER_GROUP_DETAILS, SystemFunctionName.CONSUMER_GROUP_DELETE,
@@ -93,6 +94,8 @@ public class InMemoryUserPermissionsLoader {
 
             userGroupRepository.saveAll(groups);
         }
+
+        inMemoryUserManager.createDefaultUsers();
     }
 
     private void addFunctionToUserGroup(SystemFunction function, String role, Map<String, UserGroup> groupMap) {
