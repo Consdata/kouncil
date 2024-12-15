@@ -3,6 +3,7 @@ package com.consdata.kouncil.security.group;
 import com.consdata.kouncil.config.security.UserPermissionsReloader;
 import com.consdata.kouncil.model.admin.SystemFunction;
 import com.consdata.kouncil.model.admin.SystemFunctionName;
+import com.consdata.kouncil.model.admin.UserGroup;
 import com.consdata.kouncil.security.FirstTimeApplicationLaunchService;
 import com.consdata.kouncil.security.function.SystemFunctionsRepository;
 import com.consdata.kouncil.security.group.dto.UserGroupDto;
@@ -33,14 +34,25 @@ public class UserGroupsService {
                 .stream()
                 .map(UserGroupConverter::convertToUserGroup)
                 .map(ug -> {
-                    if (ug.getFunctions().stream().noneMatch(fn -> fn.getName().equals(SystemFunctionName.LOGIN))) {
-                        ug.getFunctions().add(loginFunction);
-                    }
+                    addLoginFunctionIfMissing(ug, loginFunction);
+                    removeLoginFunctionIfLastFunction(ug, loginFunction);
                     return ug;
                 }).toList());
 
         if (!firstAppLaunchService.isTemporaryAdminLoggedIn()) {
             userPermissionsReloader.reloadPermissions(true);
+        }
+    }
+
+    private void removeLoginFunctionIfLastFunction(UserGroup ug, SystemFunction loginFunction) {
+        if (ug.getFunctions().size() == 1 && ug.getFunctions().add(loginFunction)) {
+            ug.getFunctions().clear();
+        }
+    }
+
+    private void addLoginFunctionIfMissing(UserGroup ug, SystemFunction loginFunction) {
+        if (ug.getFunctions().stream().noneMatch(fn -> fn.getName().equals(SystemFunctionName.LOGIN))) {
+            ug.getFunctions().add(loginFunction);
         }
     }
 }
