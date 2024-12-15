@@ -12,7 +12,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmService} from '@app/feat-confirm';
 import {filter, first} from 'rxjs/operators';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 import {ResendDataModel} from './resend.data.model';
 import {ResendService} from './resend.service';
 
@@ -84,15 +84,14 @@ export class ResendFormService {
         this.dialog.closeAll();
         this.resendForm.reset();
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`,
-            'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Successfully sent events from ${resendData.sourceTopicName} to ${resendData.destinationTopicName}`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 5000
         });
       }, error: () => () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Error occurred while resending events`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Error occurred while resending events`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 5000
         });
       }

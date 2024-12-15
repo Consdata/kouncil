@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Schema, SchemaRegistryService} from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, SelectableItem, TableColumn} from '@app/common-components';
-import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {ProgressBarService, SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 import {first} from 'rxjs/operators';
 import {ConfirmService} from '@app/feat-confirm';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -209,15 +209,15 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
       this.loadSchemas();
 
       this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Schema version ${version} for subject ${subject} deleted`, 'snackbar-success', ''),
-        panelClass: ['snackbar'],
+        data: new SnackBarData(`Schema version ${version} for subject ${subject} deleted`, SnackBarType.SUCCESS),
+        panelClass: ['snackbar', 'snackbar-container-success'],
         duration: 3000
       });
     }, error => {
       console.error(error);
       this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Schema version ${version} for subject ${subject} couldn't be deleted`, 'snackbar-error', ''),
-        panelClass: ['snackbar'],
+        data: new SnackBarData(`Schema version ${version} for subject ${subject} couldn't be deleted`, SnackBarType.ERROR),
+        panelClass: ['snackbar', 'snackbar-container-error'],
         duration: 3000
       });
       this.progressBarService.setProgress(false);

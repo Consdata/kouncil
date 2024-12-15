@@ -1,6 +1,6 @@
 import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {Router} from '@angular/router';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 export class LoginUtil {
@@ -16,8 +16,8 @@ export class LoginUtil {
       router.navigate(['/user-groups']);
     } else if (snackBar) {
       snackBar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData('Access is denied', 'snackbar-error', 'Close'),
-        panelClass: ['snackbar'],
+        data: new SnackBarData('Access is denied', SnackBarType.ERROR),
+        panelClass: ['snackbar', 'snackbar-container-error'],
         duration: 5000
       });
     } else {

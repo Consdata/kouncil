@@ -6,11 +6,11 @@ import {Router} from '@angular/router';
 import {FavouritesService} from '@app/feat-favourites';
 import {
   ArraySortService,
-  DrawerService,
   ProgressBarService,
   SearchService,
   SnackBarComponent,
-  SnackBarData
+  SnackBarData,
+  SnackBarType
 } from '@app/common-utils';
 import {TopicMetadata, Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
@@ -152,7 +152,6 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
               private arraySortService: ArraySortService,
               private topicsService: TopicsService,
               private router: Router,
-              private drawerService: DrawerService,
               private servers: ServersService,
               private favouritesService: FavouritesService,
               private dialog: MatDialog,
@@ -271,15 +270,15 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
         this.loadTopics();
 
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Topic ${topicName} deleted`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Topic ${topicName} deleted`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Topic ${topicName} couldn't be deleted`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Topic ${topicName} couldn't be deleted`, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.progressBarService.setProgress(false);

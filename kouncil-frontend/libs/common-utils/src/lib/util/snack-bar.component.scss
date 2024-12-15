@@ -1,0 +1,18 @@
+@import "../../../../../apps/kouncil/src/styles/palette";
+
+.snackbar-label, .snackbar-actions {
+  display: flex;
+  place-items: center;
+}
+
+.snackbar-info-action-button {
+  color: $blue-70 !important;
+}
+
+.snackbar-success-action-button {
+  color: $green-50 !important;
+}
+
+.snackbar-error-action-button {
+  color: $red-70 !important;
+}

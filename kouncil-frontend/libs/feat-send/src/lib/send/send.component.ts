@@ -15,7 +15,7 @@ import {
 } from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
 import {EditorComponent, MonacoEditorService} from '@app/common-components';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let monaco: any;
@@ -219,23 +219,23 @@ export class SendComponent implements OnDestroy {
         this.resetForm();
         this.isSendButtonDisabled = false;
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Successfully sent to ${messageData.topicName}`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Successfully sent to ${messageData.topicName}`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
       }, error => {
         console.error(error);
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Error occurred while sending events to ${messageData.topicName}`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Error occurred while sending events to ${messageData.topicName}`, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.isSendButtonDisabled = false;
       });
     } else {
       this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Schema validation error`, 'snackbar-error', ''),
-        panelClass: ['snackbar'],
+        data: new SnackBarData(`Schema validation error`, SnackBarType.ERROR),
+        panelClass: ['snackbar', 'snackbar-container-error'],
         duration: 3000
       });
     }
