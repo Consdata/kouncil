@@ -24,13 +24,11 @@ import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 @Data
-@DependsOn({"clusterConfigReader"})
 public class KouncilConfiguration {
 
     public static final String INSTALLATION_ID_FILE = "kouncil_installation_id.txt";
