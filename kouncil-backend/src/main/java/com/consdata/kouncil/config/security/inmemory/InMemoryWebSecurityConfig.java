@@ -75,7 +75,7 @@ public class InMemoryWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/firstTimeLogin", "/api/login", "/api/activeProvider", "/api/context-path","/*", "/assets/**")
+                .antMatchers("/api/info/version", "/api/first-time-login", "/api/login", "/api/active-provider", "/api/context-path","/*", "/assets/**")
                 .permitAll()
                 .anyRequest().authenticated();
         return http.build();

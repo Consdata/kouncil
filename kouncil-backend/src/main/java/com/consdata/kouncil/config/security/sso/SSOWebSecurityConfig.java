@@ -60,7 +60,7 @@ public class SSOWebSecurityConfig {
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path", "/*",
+                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/sso-providers", "/api/active-provider", "/api/context-path", "/*",
                         "/assets/**")
                 .permitAll()
                 .anyRequest().authenticated()

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
@@ -19,6 +20,7 @@ import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 @RestController
 @RequiredArgsConstructor
 @SuppressWarnings("java:S6212") //val
+@RequestMapping("/api/track")
 public class TrackController {
 
     private final SimpMessagingTemplate eventSender;
@@ -32,7 +34,7 @@ public class TrackController {
     private final TrackService trackService;
 
     @RolesAllowed(SystemFunctionNameConstants.TRACK_LIST)
-    @GetMapping("/api/track/stats")
+    @GetMapping("/stats")
     public String printStats() throws JsonProcessingException {
         WebSocketStats wss = WebSocketStats.builder()
                 .wsSession(webSocketMessageBrokerStats.getWebSocketSessionStatsInfo())
@@ -47,7 +49,7 @@ public class TrackController {
     }
 
     @RolesAllowed(SystemFunctionNameConstants.TRACK_LIST)
-    @GetMapping("/api/track/sync")
+    @GetMapping("/sync")
     public List<TopicMessage> getSync(@RequestParam("topicNames") List<String> topicNames,
                                       @RequestParam("field") String field,
                                       @RequestParam("operator") String operatorParam,
@@ -59,7 +61,7 @@ public class TrackController {
     }
 
     @RolesAllowed(SystemFunctionNameConstants.TRACK_LIST)
-    @GetMapping("/api/track/async")
+    @GetMapping("/async")
     public void getAsync(@RequestParam("topicNames") List<String> topicNames,
                          @RequestParam("field") String field,
                          @RequestParam("operator") String operatorParam,

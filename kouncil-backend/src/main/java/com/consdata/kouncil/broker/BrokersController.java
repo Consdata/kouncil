@@ -25,12 +25,14 @@ import org.apache.kafka.common.Node;
 import org.apache.kafka.common.config.ConfigResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api")
 public class BrokersController {
 
     private final KafkaConnectionService kafkaConnectionService;
@@ -40,7 +42,7 @@ public class BrokersController {
     private final KouncilConfiguration kouncilConfiguration;
 
     @RolesAllowed(SystemFunctionNameConstants.BROKERS_LIST)
-    @GetMapping("/api/brokers")
+    @GetMapping("/brokers")
     @EntryExitLogger
     public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
         try {
@@ -89,7 +91,7 @@ public class BrokersController {
         });
     }
 
-    @GetMapping("/api/configs/{name}")
+    @GetMapping("/configs/{name}")
     @RolesAllowed(SystemFunctionNameConstants.BROKER_DETAILS)
     @EntryExitLogger
     public Collection<KafkaBrokerConfig> getConfigs(@PathVariable("name") String name, @RequestParam("serverId") String serverId) {

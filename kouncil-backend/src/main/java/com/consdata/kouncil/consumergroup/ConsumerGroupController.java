@@ -12,47 +12,30 @@ import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
-import org.apache.kafka.clients.admin.ConsumerGroupListing;
-import org.apache.kafka.clients.admin.ListConsumerGroupsResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/consumer-group")
 public class ConsumerGroupController {
 
     private final KafkaConnectionService kafkaConnectionService;
 
     private final KouncilConfiguration kouncilConfiguration;
 
-    @RolesAllowed(SystemFunctionNameConstants.CONSUMER_GROUP_LIST)
-    @GetMapping("/api/consumer-groups")
-    public ConsumerGroupsResponse getConsumerGroups(@RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
-        ConsumerGroupsResponse result = ConsumerGroupsResponse
-                .builder()
-                .consumerGroups(new ArrayList<>())
-                .build();
-        ListConsumerGroupsResult groups = kafkaConnectionService.getAdminClient(serverId).listConsumerGroups();
-        List<String> groupIds = groups.all().get().stream().map(ConsumerGroupListing::groupId).toList();
-        Map<String, KafkaFuture<ConsumerGroupDescription>> consumerGroupSummary = kafkaConnectionService.getAdminClient(serverId).describeConsumerGroups(groupIds).describedGroups();
-        for (Map.Entry<String, KafkaFuture<ConsumerGroupDescription>> entry : consumerGroupSummary.entrySet()) {
-            result.getConsumerGroups().add(ConsumerGroup.builder().groupId(entry.getKey()).status(entry.getValue().get().state().toString()).build());
-        }
-        return result;
-    }
-
     @RolesAllowed(SystemFunctionNameConstants.CONSUMER_GROUP_DETAILS)
-    @GetMapping("/api/consumer-group/{groupId}")
+    @GetMapping("/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(
             @PathVariable("groupId") String groupId,
             @RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
@@ -94,7 +77,7 @@ public class ConsumerGroupController {
     }
 
     @RolesAllowed(SystemFunctionNameConstants.CONSUMER_GROUP_DELETE)
-    @DeleteMapping("/api/consumer-group/{groupId}")
+    @DeleteMapping("/{groupId}")
     public void deleteConsumerGroup(
             @PathVariable("groupId") String groupId,
             @RequestParam("serverId") String serverId) {
