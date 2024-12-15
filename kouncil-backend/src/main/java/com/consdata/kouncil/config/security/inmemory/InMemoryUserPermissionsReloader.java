@@ -1,8 +1,8 @@
 package com.consdata.kouncil.config.security.inmemory;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.notifications.NotificationService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,8 +11,8 @@ public class InMemoryUserPermissionsReloader extends DefaultUserPermissionsReloa
 
     private final InMemoryUserManager inMemoryUserManager;
 
-    public InMemoryUserPermissionsReloader(SimpMessagingTemplate eventSender, InMemoryUserManager inMemoryUserManager) {
-        super(eventSender);
+    public InMemoryUserPermissionsReloader(NotificationService notificationService, InMemoryUserManager inMemoryUserManager) {
+        super(notificationService);
         this.inMemoryUserManager = inMemoryUserManager;
     }
 

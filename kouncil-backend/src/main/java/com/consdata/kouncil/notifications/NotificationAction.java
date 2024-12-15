@@ -2,5 +2,6 @@ package com.consdata.kouncil.notifications;
 
 public enum NotificationAction {
 
-    LOGOUT
+    LOGOUT,
+    CLUSTERS_NOT_DEFINED
 }
