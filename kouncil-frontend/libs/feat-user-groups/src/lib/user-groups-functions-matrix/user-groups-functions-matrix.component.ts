@@ -11,7 +11,7 @@ import {MatCheckboxChange} from '@angular/material/checkbox';
   template: `
     <div class="user-groups-header">
       <div class="user-groups-title">
-        Manage user groups
+        <app-breadcrumb [name]="'User groups permissions'"></app-breadcrumb>
       </div>
 
       <div class="user-groups-actions">
