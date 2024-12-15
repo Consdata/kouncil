@@ -23,6 +23,6 @@ export class BrokerBackendService implements BrokerService {
       const params = new HttpParams().set('serverId', serverId);
       return this.http.get<Brokers>(`/api/brokers`, {params});
     }
-    return of({brokers: []})
+    return of({brokers: []});
   }
 }

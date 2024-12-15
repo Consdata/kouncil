@@ -24,7 +24,7 @@ export class SchemaRegistryBackendService implements SchemaRegistryService {
       const params = new HttpParams().set('topicNames', topics.join(','));
       return this.httpClient.get<Schema[]>(`/api/schemas/${selectedServerId}`, {params});
     }
-    return of([])
+    return of([]);
   }
 
   deleteSchema$(selectedServerId: string, subject: string, version: string): Observable<void> {
