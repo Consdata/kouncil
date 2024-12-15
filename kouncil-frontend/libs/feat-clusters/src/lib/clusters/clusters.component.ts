@@ -8,7 +8,8 @@ import {
   ProgressBarService,
   SearchService,
   SnackBarComponent,
-  SnackBarData
+  SnackBarData,
+  SnackBarType
 } from '@app/common-utils';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
 import {Router} from '@angular/router';
@@ -192,15 +193,15 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
         this.serversService.load().then(() => this.cdr.detectChanges());
 
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Cluster ${clusterName} deleted`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Cluster ${clusterName} deleted`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Cluster ${clusterName} couldn't be deleted`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Cluster ${clusterName} couldn't be deleted`, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.progressBarService.setProgress(false);

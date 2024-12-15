@@ -7,7 +7,7 @@ import {AuthService} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {NotificationAction, NotificationModel, NotificationType} from '../notification.model';
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {SnackBarComponent, SnackBarData} from "@app/common-utils";
+import {SnackBarComponent, SnackBarData, SnackBarType} from "@app/common-utils";
 
 @Component({
   selector: 'app-notification-button',
@@ -64,8 +64,24 @@ export class NotificationButtonComponent implements OnDestroy {
 
   private openPushNotification(notification: NotificationModel) {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      data: new SnackBarData(notification.message, 'snackbar-error', 'Close'),
-      panelClass: ['snackbar']
+      data: new SnackBarData(notification.message, this.getSnackBarType(notification), 'Close'),
+      panelClass: ['snackbar', this.getPanelClass(notification)]
     });
+  }
+
+  private getSnackBarType(notification: NotificationModel): SnackBarType {
+    switch (notification.action) {
+      case NotificationAction.CLUSTERS_NOT_DEFINED:
+        return SnackBarType.ERROR;
+    }
+    return SnackBarType.INFO;
+  }
+
+  getPanelClass(notification: NotificationModel): string {
+    switch (notification.action) {
+      case NotificationAction.CLUSTERS_NOT_DEFINED:
+        return 'snackbar-container-error';
+    }
+    return 'snackbar-container-info';
   }
 }
