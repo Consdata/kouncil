@@ -26,10 +26,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AuthController {
 
     @Resource(name = "authenticationManager")
@@ -38,12 +40,12 @@ public class AuthController {
     @Value("${kouncil.auth.active-provider}")
     private String activeProvider;
 
-    @GetMapping("/api/activeProvider")
+    @GetMapping("/active-provider")
     public String activeProvider() {
         return activeProvider;
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public boolean login(HttpServletRequest req, @RequestBody User user) {
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication auth = authManager.authenticate(authReq);
@@ -58,20 +60,20 @@ public class AuthController {
         return currentPrincipalName != null && !currentPrincipalName.isEmpty();
     }
 
-    @GetMapping("/api/logout")
+    @GetMapping("/logout")
     public void logout(HttpServletRequest req) throws ServletException {
         req.logout();
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
-    @GetMapping("/api/userRoles")
+    @GetMapping("/user-roles")
     public Set<String> getUserRoles() {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
-    @GetMapping("/api/installationId")
+    @GetMapping("/installation-id")
     public String getInstallationId() throws IOException {
         return Files.readString(Path.of(INSTALLATION_ID_FILE));
     }

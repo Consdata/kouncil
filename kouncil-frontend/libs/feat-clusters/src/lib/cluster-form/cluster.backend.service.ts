@@ -25,11 +25,11 @@ export class ClusterBackendService implements ClusterService {
   }
 
   testConnection$(cluster: ClusterMetadata): Observable<boolean> {
-    return this.http.post<boolean>('/api/cluster/testConnection', cluster);
+    return this.http.post<boolean>('/api/cluster/test-connection', cluster);
   }
 
   isClusterNameUnique$(clusterName: string): Observable<boolean> {
-    return this.http.get<boolean>(`/api/cluster/${clusterName}/isClusterNameUnique`);
+    return this.http.get<boolean>(`/api/cluster/${clusterName}/is-cluster-name-unique`);
   }
 
   deleteCluster$(id: number): Observable<void> {

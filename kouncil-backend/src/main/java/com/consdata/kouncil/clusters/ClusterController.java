@@ -39,13 +39,13 @@ public class ClusterController {
     }
 
     @RolesAllowed({SystemFunctionNameConstants.CLUSTER_CREATE, SystemFunctionNameConstants.CLUSTER_UPDATE})
-    @PostMapping(path = "/testConnection")
+    @PostMapping(path = "/test-connection")
     public boolean testConnection(@RequestBody ClusterDto cluster) {
         return clusterService.testConnection(cluster);
     }
 
     @RolesAllowed({SystemFunctionNameConstants.CLUSTER_CREATE, SystemFunctionNameConstants.CLUSTER_UPDATE})
-    @GetMapping(path = "/{clusterName}/isClusterNameUnique")
+    @GetMapping(path = "/{clusterName}/is-cluster-name-unique")
     public boolean isClusterNameUnique(@PathVariable("clusterName") String clusterName) {
         return clusterService.isClusterNameUnique(clusterName);
     }
