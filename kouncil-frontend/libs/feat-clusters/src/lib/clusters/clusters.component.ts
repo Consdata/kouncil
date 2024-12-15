@@ -190,13 +190,13 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
     .subscribe({
       next: () => {
         this.loadClusters();
-        this.serversService.load().then(() => this.cdr.detectChanges());
 
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`Cluster ${clusterName} deleted`, SnackBarType.SUCCESS),
           panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
+        this.reloadServers();
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
@@ -205,7 +205,14 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
           duration: 3000
         });
         this.progressBarService.setProgress(false);
+        this.reloadServers();
       }
+    }));
+  }
+
+  private reloadServers(): void {
+    this.subscription.add(this.snackbar._openedSnackBarRef.afterDismissed().subscribe(() => {
+      this.serversService.load().then(() => this.cdr.detectChanges());
     }));
   }
 }

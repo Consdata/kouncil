@@ -7,7 +7,7 @@ import {AuthService} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {NotificationAction, NotificationModel, NotificationType} from '../notification.model';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 
 @Component({
   selector: 'app-notification-button',

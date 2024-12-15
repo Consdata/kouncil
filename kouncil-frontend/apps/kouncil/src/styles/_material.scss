@@ -167,7 +167,6 @@ mat-snack-bar-container.snackbar {
 
 mat-snack-bar-container.snackbar-container-info > div {
   background: pallete.$blue-10 !important;
-  border-bottom: 5px solid pallete.$blue-70 !important;
 }
 
 .snackbar-info-label {
@@ -181,7 +180,6 @@ mat-snack-bar-container.snackbar-container-info > div {
 
 mat-snack-bar-container.snackbar-container-success > div {
   background: pallete.$green-0 !important;
-  border-bottom: 5px solid pallete.$green-50 !important;
 }
 
 .snackbar-success-label {
@@ -195,7 +193,6 @@ mat-snack-bar-container.snackbar-container-success > div {
 
 mat-snack-bar-container.snackbar-container-error > div {
   background: pallete.$red-10 !important;
-  border-bottom: 5px solid pallete.$red-70 !important;
 }
 
 .snackbar-error-label {
