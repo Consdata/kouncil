@@ -30,6 +30,7 @@
 
 
 * [Features](FEATURES.md)
+  * [Onboarding](features/ONBOARDING.md)
 
 
 * [FAQ](FAQ.md)
