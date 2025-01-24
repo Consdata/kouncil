@@ -6,21 +6,14 @@
   "prefix": "app",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/feat-user-groups"],
       "options": {
-        "jestConfig": "libs/feat-user-groups/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/feat-user-groups/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/feat-user-groups/**/*.ts",
-          "libs/feat-user-groups/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []
