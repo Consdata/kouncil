@@ -5,8 +5,8 @@ import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
-  HttpClientModule,
-  HttpClientXsrfModule
+  provideHttpClient,
+  withInterceptorsFromDi
 } from '@angular/common/http';
 import {TopicComponent} from './topic/topic.component';
 import {RoutingModule} from './routing/routing.module';
@@ -194,7 +194,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     RoutingModule,
     FormsModule,
     NgxDatatableModule,
@@ -220,7 +219,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatNoDataModule,
     FeatSendModule,
     CommonLoginModule,
-    HttpClientXsrfModule,
     MatAutocompleteModule,
     CommonComponentsModule,
     MatSortModule,
@@ -297,12 +295,12 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     },
     {
       provide: RxStompConfig,
-      useValue: RX_STOMP_CONFIG,
+      useValue: RX_STOMP_CONFIG
     },
     {
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
-      deps: [RxStompConfig],
+      deps: [RxStompConfig]
     },
     {
       provide: AuthService,
@@ -347,7 +345,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
       provide: PoliciesService,
       useFactory: policiesServiceFactory,
       deps: [HttpClient]
-    }
+    },
+    provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]
 })

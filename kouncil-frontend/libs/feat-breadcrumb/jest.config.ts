@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'feat-clusters',
+  displayName: 'feat-breadcrumb',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -9,7 +9,7 @@ export default {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/libs/feat-clusters',
+  coverageDirectory: '../../coverage/libs/feat-breadcrumb',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
