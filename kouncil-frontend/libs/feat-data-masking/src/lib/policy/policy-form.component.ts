@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {ViewMode} from '@app/common-utils';
-import {MaskingType, Policy, PolicyField, PolicyResource} from '../policy.model';
+import {Policy, PolicyField, PolicyResource} from '../policy.model';
 import {
   FormArray,
   FormControl,
@@ -36,11 +36,6 @@ import {Clusters, ClustersService} from '@app/feat-clusters';
                                [form]="policyForm"
                                [controlName]="'name'"></app-common-text-field>
 
-        <app-common-select-field [label]="'Masking type'" [form]="policyForm"
-                                 class="full-width" [required]="viewMode !== ViewMode.VIEW"
-                                 [options]="maskingTypeOptions"
-                                 [controlName]="'maskingType'"></app-common-select-field>
-
         <app-policy-fields [policyForm]="policyForm"
                            [viewMode]="viewMode"
         ></app-policy-fields>
@@ -68,7 +63,6 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
   policyForm: FormGroup = new FormGroup({
     id: new FormControl(),
     name: new FormControl('', [Validators.required]),
-    maskingType: new FormControl('', [Validators.required]),
     applyToAllResources: new FormControl(false),
     fields: new FormArray([], {
       validators: this.validateFields(),
@@ -80,8 +74,6 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
     })
   });
 
-  maskingTypeOptions: Array<SelectableItem> = Object.keys(MaskingType)
-  .map(maskingType => new SelectableItem(MaskingType[maskingType], maskingType, false));
   clusters: Array<SelectableItem> = [];
 
 
@@ -96,7 +88,6 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     this.subscriptions.add(this.clustersService.getClusters$()
     .pipe(first())
     .subscribe((data: Clusters) => {
@@ -156,7 +147,7 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
   private validateFields(): ValidatorFn {
     return (): ValidationErrors | null => {
       const fields: Array<PolicyField> = this.policyForm?.get('fields')?.value;
-      return fields && (fields.length === 0 || fields.some(field => !field.field || !field.findRule)) ? {required: true} : null;
+      return fields && (fields.length === 0 || fields.some(field => !field.field || !field.maskingType)) ? {required: true} : null;
     };
   }
 

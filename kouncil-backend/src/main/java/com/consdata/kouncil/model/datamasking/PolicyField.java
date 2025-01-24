@@ -30,9 +30,9 @@ public class PolicyField {
     @Column(name = "FIELD")
     private String field;
 
-    @Column(name = "FIND_RULE")
+    @Column(name = "MASKING_TYPE")
     @Enumerated(EnumType.STRING)
-    private FieldFindRule findRule;
+    private MaskingType maskingType;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "POLICY_ID", insertable = false, updatable = false)

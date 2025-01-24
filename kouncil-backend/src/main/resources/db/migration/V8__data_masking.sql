@@ -2,16 +2,15 @@ create table policy
 (
     id                     bigint not null primary key,
     apply_to_all_resources boolean,
-    name                   varchar(255),
-    masking_type           varchar(255)
+    name                   varchar(255)
 );
 
 create table policy_field
 (
-    id        bigint not null primary key,
-    field     varchar(255),
-    find_rule varchar(255),
-    policy_id bigint
+    id           bigint not null primary key,
+    field        varchar(255),
+    masking_type varchar(255),
+    policy_id    bigint
         constraint fkppv2kuelp29jag142kqgvober references policy
 );
 

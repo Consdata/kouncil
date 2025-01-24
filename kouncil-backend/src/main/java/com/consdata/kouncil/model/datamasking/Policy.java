@@ -34,10 +34,6 @@ public class Policy {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "MASKING_TYPE")
-    @Enumerated(EnumType.STRING)
-    private MaskingType maskingType;
-
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "POLICY_ID")
     private Set<PolicyField> fields;
