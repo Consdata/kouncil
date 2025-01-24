@@ -1,11 +1,11 @@
 package com.consdata.kouncil.security;
 
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Set;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

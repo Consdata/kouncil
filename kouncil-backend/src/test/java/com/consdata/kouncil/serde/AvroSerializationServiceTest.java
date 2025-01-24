@@ -2,7 +2,6 @@ package com.consdata.kouncil.serde;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -14,6 +13,8 @@ import com.consdata.kouncil.serde.formatter.schema.AvroMessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.serialization.SerializationService;
 import io.confluent.kafka.schemaregistry.avro.AvroSchema;
+import io.confluent.kafka.schemaregistry.avro.AvroSchemaProvider;
+import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -31,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -43,14 +45,14 @@ class AvroSerializationServiceTest {
     private static final String CLUSTER_ID = "clusterId";
     private static AvroSchema AVRO_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
-    @MockBean
+    @MockitoBean
     private SchemaAwareClusterService schemaAwareClusterService;
 
-    @MockBean
+    @MockitoBean
     private SchemaRegistryFacade schemaRegistryFacade;
 
-    @MockBean
-    private SchemaRegistryClient schemaRegistryClient;
+    private final SchemaRegistryClient schemaRegistryClient = new MockSchemaRegistryClient(
+            List.of(new AvroSchemaProvider()));
 
     @Autowired
     private SerializationService serializationService;
@@ -76,9 +78,10 @@ class AvroSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
-        when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
-        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(AVRO_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+
+        schemaRegistryClient.register("topicName-value", AVRO_SCHEMA, 0, 0);
+
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
         when(schemaAwareClusterService.getClusterSchema(CLUSTER_ID)).thenReturn(SchemaAwareCluster.builder()
@@ -102,9 +105,9 @@ class AvroSerializationServiceTest {
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(true))).thenReturn(Optional.of(SCHEMA_METADATA_MOCK));
         when(schemaRegistryFacade.getLatestSchemaMetadata(anyString(), eq(false))).thenReturn(Optional.empty());
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.AVRO);
-        when(schemaRegistryClient.getLatestSchemaMetadata(anyString())).thenReturn(SCHEMA_METADATA_MOCK);
-        when(schemaRegistryClient.parseSchema(anyString(), anyString(), anyList())).thenReturn(Optional.of(AVRO_SCHEMA));
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
+
+        schemaRegistryClient.register("topicName-key", AVRO_SCHEMA, 0, 0);
 
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.AVRO, new AvroMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
