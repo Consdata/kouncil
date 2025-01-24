@@ -33,10 +33,10 @@ const log = LoggerFactory.getLogger('SendComponent');
           <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
         </div>
 
-        <div class="drawer-section-subtitle">
-          Available placeholders: {{uuid}<!----> }, {{count}<!----> }, {{timestamp}<!----> }
+        <div class="drawer-section-subtitle" ngNonBindable>
+          Available placeholders: {{uuid}} {{count}}, {{timestamp}}
           <br>
-          Each placeholder could be formatted (e.g. {{timestamp:YYYY}<!----> }).
+          Each placeholder could be formatted (e.g. {{timestamp:YYYY}}).
           Format should be given after <strong>colon (:)</strong> which precedes placeholder.
           Supported formats: date patterns (e.g. YYYY), decimal integer conversion (e.g. 04d)
         </div>
