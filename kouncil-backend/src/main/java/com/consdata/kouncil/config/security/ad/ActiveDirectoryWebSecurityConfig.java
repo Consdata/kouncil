@@ -51,7 +51,7 @@ public class ActiveDirectoryWebSecurityConfig {
                     return configuration;
                 }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/*", "/assets/**").permitAll()
+                        .requestMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

@@ -21,7 +21,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -63,16 +62,15 @@ public class SSOWebSecurityConfig {
                 }))
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path", "/*",
-                                "/assets/**").permitAll()
+                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/sso-providers", "/api/active-provider", "/api/context-path",
+                                "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
                         .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(this.authoritiesMapper()))
-                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
                 )
-                .exceptionHandling(handling-> handling.authenticationEntryPoint(this::authenticationEntryPoint));
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 
         return http.build();
     }
