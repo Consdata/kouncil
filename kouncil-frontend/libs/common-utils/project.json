@@ -6,21 +6,14 @@
   "prefix": "app",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/common-utils"],
       "options": {
-        "jestConfig": "libs/common-utils/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/common-utils/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/common-utils/**/*.ts",
-          "libs/common-utils/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

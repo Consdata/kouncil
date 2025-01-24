@@ -6,21 +6,14 @@
   "prefix": "kouncil",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/message-data"],
       "options": {
-        "jestConfig": "libs/message-data/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/message-data/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/message-data/src/**/*.ts",
-          "libs/message-data/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []
