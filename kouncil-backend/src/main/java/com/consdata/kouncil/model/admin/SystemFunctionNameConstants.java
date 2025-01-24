@@ -48,4 +48,10 @@ public class SystemFunctionNameConstants {
     public static final String USER_GROUP_CREATE = "USER_GROUP_CREATE";
     public static final String USER_GROUP_UPDATE = "USER_GROUP_UPDATE";
     public static final String USER_GROUP_DELETE = "USER_GROUP_DELETE";
+
+    public static final String POLICY_LIST = "POLICY_LIST";
+    public static final String POLICY_CREATE = "POLICY_CREATE";
+    public static final String POLICY_DETAILS = "POLICY_DETAILS";
+    public static final String POLICY_UPDATE = "POLICY_UPDATE";
+    public static final String POLICY_DELETE = "POLICY_DELETE";
 }
