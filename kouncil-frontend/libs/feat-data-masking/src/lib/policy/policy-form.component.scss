@@ -1,0 +1,66 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../apps/kouncil/src/styles/palette";
+
+.policy-form {
+  margin: $space-5;
+
+  .policy-form-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: $space-5;
+    line-height: 28px;
+  }
+
+  .policy-form-container{
+    background: $main-0;
+    padding: $space-5;
+  }
+
+
+
+  .fields-section, .resources-section {
+    margin-top: $space-5;
+    margin-bottom: $space-3;
+    min-height: 50px;
+
+    .fields-section-header, .resources-section-header {
+      float: left;
+      font-size: 16px !important;
+      padding-bottom: $space-3;
+      padding-top: $space-3;
+      font-weight: 500;
+    }
+
+    .add-field-btn, .add-resource-btn {
+      float: right;
+
+      .add-button-icon {
+        color: $main-0;
+      }
+    }
+
+    .field-section, .resource-fields {
+      display: inline-flex;
+      width: 100%;
+      gap: $space-5;
+      align-items: end;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+
+  .action-button-white {
+    @include buttons.button-white;
+    height: 40px !important;
+  }
+}
+
+

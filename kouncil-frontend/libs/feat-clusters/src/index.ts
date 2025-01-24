@@ -15,3 +15,4 @@ export {
 export {ClusterService} from './lib/cluster-form/cluster.service';
 export {ClusterBackendService} from './lib/cluster-form/cluster.backend.service';
 export {ClusterDemoService} from './lib/cluster-form/cluster.demo.service';
+export {Clusters} from './lib/cluster.model';
