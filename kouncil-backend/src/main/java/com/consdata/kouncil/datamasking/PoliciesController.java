@@ -3,7 +3,7 @@ package com.consdata.kouncil.datamasking;
 import com.consdata.kouncil.datamasking.dto.PolicyDto;
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
