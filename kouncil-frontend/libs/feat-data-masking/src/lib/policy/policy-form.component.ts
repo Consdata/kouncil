@@ -143,7 +143,7 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
       this.model = policy;
       this.model.fields.forEach(() => this.fields.addField());
       this.model.resources.forEach(() => this.resources.addResource());
-      this.policyForm.patchValue(this.model);
+      this.policyForm.patchValue(this.model, {emitEvent: false});
       this.groups.forEach(group => group.selected = this.model.userGroups.includes(group.value));
       this.policyForm.controls['userGroups'].patchValue(this.groups);
       this.defineDisabled(this.policyForm);
