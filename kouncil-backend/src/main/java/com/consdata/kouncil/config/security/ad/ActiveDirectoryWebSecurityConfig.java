@@ -19,6 +19,7 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -35,8 +36,11 @@ public class ActiveDirectoryWebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-                .cors().configurationSource(request -> {
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                )
+                .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("*"));
                     configuration.setAllowedMethods(List.of("*"));
@@ -45,11 +49,11 @@ public class ActiveDirectoryWebSecurityConfig {
                     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                     source.registerCorsConfiguration("/**", configuration);
                     return configuration;
-                })
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/*", "/assets/**").permitAll()
-                .anyRequest().authenticated();
+                }))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/*", "/assets/**").permitAll()
+                        .anyRequest().authenticated()
+                );
         return http.build();
     }
 
@@ -59,7 +63,7 @@ public class ActiveDirectoryWebSecurityConfig {
     }
 
     @Bean
-    public DefaultUserPermissionsReloader userPermissionsReloader(){
+    public DefaultUserPermissionsReloader userPermissionsReloader() {
         return new DefaultUserPermissionsReloader(eventSender);
     }
 

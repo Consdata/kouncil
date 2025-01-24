@@ -3,12 +3,12 @@ package com.consdata.kouncil.consumergroup;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.config.KouncilConfiguration;
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
@@ -85,7 +85,7 @@ public class ConsumerGroupController {
     }
 
     private KafkaConsumer<String, String> createConsumer(String serverId) {
-        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties();
+        Map<String, Object> props = kouncilConfiguration.getKafkaProperties(serverId).buildConsumerProperties(null);
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kouncilConfiguration.getServerByClusterId(serverId));
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
