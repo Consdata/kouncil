@@ -23,13 +23,15 @@ public final class PolicyDtoConverter {
             policyDto.getFields().add(policyFieldDto);
         });
 
-
         policyDto.setResources(new HashSet<>());
         policy.getResources().forEach(resource -> {
             PolicyResourceDto policyResource = new PolicyResourceDto();
             BeanUtils.copyProperties(resource, policyResource);
             policyDto.getResources().add(policyResource);
         });
+
+        policyDto.setUserGroups(new HashSet<>());
+        policy.getUserGroups().forEach(userGroup -> policyDto.getUserGroups().add(userGroup.getId()));
 
         return policyDto;
     }

@@ -11,4 +11,5 @@ public class PolicyDto {
     private Boolean applyToAllResources;
     private Set<PolicyFieldDto> fields;
     private Set<PolicyResourceDto> resources;
+    private Set<Long> userGroups;
 }

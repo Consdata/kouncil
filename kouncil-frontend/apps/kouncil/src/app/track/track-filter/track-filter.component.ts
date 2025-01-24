@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {TrackService} from '../track.service';
-import {FormControl, NgForm} from '@angular/forms';
+import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {TrackFilter, TrackOperator} from './track-filter';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
@@ -44,7 +44,8 @@ import {SelectableItem} from '@app/common-components';
       </div>
 
       <div class="field-with-label">
-        <app-common-autocomplete [control]="topicFilterControl"
+        <app-common-autocomplete [form]="trackFilterForm"
+                                 [controlName]="'topicFilterControl'"
                                  [data]="topicList"
                                  [placeholder]="'Topics'"
                                  [emptyFilteredMsg]="'No topics found'"
@@ -53,7 +54,7 @@ import {SelectableItem} from '@app/common-components';
       </div>
 
       <div class="form-control">
-        <div class="wrapper" ngDefaultControl [formControl]="datesControl">
+        <div class="wrapper" ngDefaultControl [formControl]="getFormControl('datesControl')">
           <span class="wrapper-glue-start">Track from</span>
           <mat-form-field class="filter-input date-picker-form-field test" [appearance]="'outline'">
             <input class="wrapper-field"
@@ -73,13 +74,13 @@ import {SelectableItem} from '@app/common-components';
             />
           </mat-form-field>
         </div>
-        <div class="validation-error" *ngIf="datesControl.invalid">
-          {{ datesControl.errors['validation'].message }}
+        <div class="validation-error" *ngIf="getFormControl('datesControl').invalid">
+          {{ getFormControl('datesControl').errors['validation'].message }}
         </div>
       </div>
 
       <button mat-button
-              disableRipple
+              [disableRipple]="true"
               class="clear-button"
               type="button"
               (click)="clearFilter()">
@@ -87,7 +88,7 @@ import {SelectableItem} from '@app/common-components';
       </button>
 
       <button mat-button
-              disableRipple
+              [disableRipple]="true"
               class="filter-button"
               [class.spinner]="loading"
               [disabled]="loading"
@@ -96,8 +97,8 @@ import {SelectableItem} from '@app/common-components';
       </button>
     </form>
 
-    <mat-slide-toggle [class.active]="asyncModeState === true"
-                      disableRipple
+    <mat-slide-toggle [class.active]="asyncModeState"
+                      [disableRipple]="true"
                       class="switch"
                       (change)="toggleAsyncMode()"
                       [(ngModel)]="asyncModeState"
@@ -119,8 +120,12 @@ export class TrackFilterComponent implements OnInit {
 
   topicList: SelectableItem[] = [];
   visibleTopicList: string[] = [];
-  topicFilterControl: FormControl = new FormControl();
-  datesControl: FormControl = new FormControl();
+
+  trackFilterForm: FormGroup = new FormGroup({
+    topicFilterControl: new FormControl(),
+    datesControl: new FormControl()
+  });
+
   loading: boolean = false;
   trackFilter: TrackFilter;
   asyncModeState: boolean = this.trackService.isAsyncEnable();
@@ -156,7 +161,7 @@ export class TrackFilterComponent implements OnInit {
 
   clearFilter(): void {
     this.trackFilter = this.trackService.defaultFilter();
-    this.topicFilterControl.setValue([]);
+    this.getFormControl('topicFilterControl').setValue([]);
     this.topicList.forEach(topic => topic.selected = false);
   }
 
@@ -172,7 +177,7 @@ export class TrackFilterComponent implements OnInit {
   validate(): boolean {
     if (this.trackFilter) {
       if (this.trackFilter.stopDateTime < this.trackFilter.startDateTime) {
-        this.datesControl.setErrors({
+        this.getFormControl('datesControl').setErrors({
           validation: {
             message: 'Invalid date range',
           },
@@ -181,11 +186,15 @@ export class TrackFilterComponent implements OnInit {
       }
     }
 
-    this.datesControl.setErrors(null);
+    this.getFormControl('datesControl').setErrors(null);
     return true;
   }
 
   updateTopics($event: Array<string>): void {
     this.trackFilter.topics = $event;
+  }
+
+  getFormControl(name: string): FormControl{
+    return this.trackFilterForm.controls[name] as FormControl;
   }
 }

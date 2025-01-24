@@ -60,6 +60,11 @@ import {Router} from '@angular/router';
                   (click)="$event.stopPropagation(); confirmDeletePolicy(element.id, element.name)">
                   Delete
                 </button>
+                <button *ngIf="authService.canAccess([SystemFunctionName.POLICY_UPDATE])"
+                        mat-button class="action-button-white"
+                        [routerLink]="['/data-masking-policy', element.id, 'edit']">
+                  Edit
+                </button>
               </div>
             </ng-template>
           </app-common-table-column>

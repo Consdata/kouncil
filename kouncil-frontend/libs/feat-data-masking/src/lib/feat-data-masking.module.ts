@@ -24,6 +24,9 @@ import {
 import {
   PolicyFormResourcesComponent
 } from './policy/sections/policy-form-resources/policy-form-resources.component';
+import {
+  PolicyFormUserGroupsComponent
+} from "./policy/sections/policy-form-user-groups/policy-form-user-groups.component";
 
 @NgModule({
   imports: [
@@ -47,7 +50,8 @@ import {
     PolicyFormComponent,
     PolicyFormActionsComponent,
     PolicyFormFieldsComponent,
-    PolicyFormResourcesComponent
+    PolicyFormResourcesComponent,
+    PolicyFormUserGroupsComponent
   ],
   exports: [
     PoliciesComponent,
