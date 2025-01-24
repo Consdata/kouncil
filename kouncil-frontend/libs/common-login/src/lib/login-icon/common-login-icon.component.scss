@@ -1,29 +1,29 @@
 @import '../../../../../apps/kouncil/src/styles/palette';
 
-.icon-login-container {
-  display: flex;
-  place-items: center;
-  height: 100px;
-  width: 100px;
-  background: $blue-20;
-  position: absolute;
-  border-radius: 50%;
-  left: calc(50% - 50px);
-  z-index: 1;
-}
-
-.icon-login-container-desktop {
-  top: 130px;
-}
-
-.icon-login-container-demo {
-  top: 172px;
-}
-
-.icon-login {
-  width: 75px;
-  height: 75px;
-  font-size: 75px;
+.icon-login-main-container {
+  width: 100%;
   margin: 0 auto;
-  color: $blue-50;
+  display: flex;
+  position: relative;
+
+  .icon-login-container {
+    display: flex;
+    place-items: center;
+    height: 100px;
+    width: 100px;
+    background: $blue-20;
+    position: absolute;
+    border-radius: 50%;
+    left: calc(50% - 50px);
+    z-index: 1;
+    top: 58px;
+
+    .icon-login {
+      width: 75px;
+      height: 75px;
+      font-size: 75px;
+      margin: 0 auto;
+      color: $blue-50;
+    }
+  }
 }
