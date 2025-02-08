@@ -10,7 +10,7 @@ import {SidebarState} from './sidebar-state';
   selector: 'app-sidebar',
   template: `
     <div class="sidenav"
-         [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false}">
+         [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
 
       <app-sidebar-menu-item [label]="'Topics'" [icon]="'topic'" [routeLink]="'/topics'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.TOPIC_LIST])">

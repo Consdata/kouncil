@@ -6,12 +6,11 @@ import {SidebarService} from '../sidebar/sidebar.service';
 @Component({
   selector: 'app-main',
   template: `
-<!--    <app-demo *ngIf="backend === 'DEMO'"></app-demo>-->
+    <app-demo *ngIf="backend === 'DEMO'"></app-demo>
 
     <app-kafka-navbar></app-kafka-navbar>
 
-    <div class="kafka-desktop">
-<!--         [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop'">-->
+    <div [ngClass]="backend === 'SERVER' ? 'kafka-desktop' : 'kafka-desktop-demo'">
 
       <app-sidebar></app-sidebar>
 
