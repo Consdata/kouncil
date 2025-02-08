@@ -17,28 +17,62 @@ kouncil:
   auth:
     active-provider: inmemory # inmemory, ldap, ad, sso
     ldap:
-      provider-url: "ldaps://kouncil.io"
-      search-base: "OU=Users,DC=kouncil,DC=io"
-      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
-      group-search-base: "ou=Groups,DC=kouncil,DC=io"
-      group-search-filter: "(memberuid={0})"
-      group-role-attribute: "cn"
+      provider-url: "ldap://mssql.bre.eximee.consdata.local:389"
+      search-base: "cn=Users,dc=consdata,dc=pl"
+      search-filter: "(&(objectClass=user)(sAMAccountName={0}))"
+      group-search-base: "cn=Users,dc=consdata,dc=pl"
+      group-search-filter: "(&(objectClass=user)(sAMAccountName={0}))"
+      group-role-attribute: "memberOf"
+      technical-user-name: "techmandarynka@consdata.pl"
+      technical-user-password: "q1w2e3r4"
     ad:
-      domain: "acme.com"
-      url: "ldap://acme.com:389"
-      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+      domain: "consdata.pl"
+      url: "ldap://mssql.bre.eximee.consdata.local:389"
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL_ADMIN,cn=Users,dc=consdata,dc=pl))"
     sso:
       supported:
         providers: github,okta
   topics:
     exclude-regex-patterns: __.*
   authorization:
-    role-admin: admin_group
-    role-editor: editor_group
-    role-viewer: viewer_group
+    role-admin: admin_group;KOUNCIL_ADMIN
+    role-editor: editor_group;KOUNCIL_ADMIN
+    role-viewer: viewer_group;KOUNCIL_ADMIN
   survey:
     base-path: "https://kouncil-eximee-survey-n22nwdfueq-lm.a.run.app/kouncil"
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          okta:
+            client-id: 0oaj281hnvF4shOeg5d7
+            client-secret: v8jChJ1FtWlxfUjZpVVWNs5pb8RwQx30wo9tKct3w9BtlJ_z2uIgun4YpoW4-0Z_
+            redirect-uri: http://localhost:4200/oauth
+            scope: openid,profile,email,groups
+        provider:
+          okta:
+            authorization-uri: https://dev-92221925.okta.com/oauth2/v1/authorize
+            token-uri: https://dev-92221925.okta.com/oauth2/v1/token
+            user-info-uri: https://dev-92221925.okta.com/oauth2/v1/userinfo
+            jwk-set-uri: https://dev-92221925.okta.com/oauth2/v1/keys
+  datasource:
+    #    H2
+    #        url: jdbc:h2:file:~/test_h2_database;AUTO_SERVER=TRUE;SCHEMA=KOUNCIL
+    #        username: custom_user
+    #        password:
+    #    PostgreSQL
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=kouncil
+    username: postgres
+    password: password
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+    hibernate:
+      default_schema: kouncil
+
   flyway:
     enabled: true
