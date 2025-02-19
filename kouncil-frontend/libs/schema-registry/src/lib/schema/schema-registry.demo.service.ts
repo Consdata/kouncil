@@ -65,5 +65,9 @@ export class SchemaRegistryDemoService implements SchemaRegistryService {
   addNewSchema$(_model: Schema, _selectedServerId: string): Observable<void> {
     return of(undefined);
   }
+
+  testCompatibility$(_model: Schema, _selectedServerId: string): Observable<boolean> {
+    return of(true);
+  }
 }
 
