@@ -41,5 +41,9 @@ export class SchemaRegistryBackendService implements SchemaRegistryService {
   addNewSchema$(model: Schema, selectedServerId: string): Observable<void> {
     return this.httpClient.post<void>(`/api/schemas/${selectedServerId}`, model);
   }
+
+  testCompatibility$(model: Schema, selectedServerId: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(`/api/schemas/test-compatibility/${selectedServerId}`, model);
+  }
 }
 

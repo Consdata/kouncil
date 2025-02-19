@@ -27,73 +27,58 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         </div>
       </div>
 
-      <div class="schema-base-info">
-        <div>
-          <app-common-select-field [form]="schemaForm" [controlName]="'topicName'"
-                                   [label]="'Topic'"
-                                   [options]="topics"
-                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
-        </div>
+      <mat-accordion class="panels-container">
+        <mat-expansion-panel [expanded]="true" [hideToggle]="true"
+                             style="padding-top: 16px; padding-bottom: 8px">
+          <div class="schema-base-info">
+            <app-common-select-field [form]="schemaForm" [controlName]="'topicName'"
+                                     [label]="'Topic'"
+                                     class="full-width"
+                                     [options]="topics"
+                                     [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
+            <app-common-select-field [form]="schemaForm" [controlName]="'subjectType'"
+                                     class="full-width"
+                                     [label]="'Subject type'"
+                                     [options]="subjectTypes"
+                                     [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
 
-        <div>
-          <app-common-select-field [form]="schemaForm" [controlName]="'subjectType'"
-                                   [label]="'Subject type'"
-                                   [options]="subjectTypes"
-                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
-        </div>
 
-        <div *ngIf="isVisible([ViewMode.VIEW]) && model">
+            <app-common-select-field [form]="schemaForm" [controlName]="'compatibility'"
+                                     [label]="'Compatibility'"
+                                     class="full-width"
+                                     [options]="compatibilities"
+                                     [readonly]="isDisabled([ViewMode.VIEW])"
+                                     [clearValueBtn]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
 
-          <app-common-select-field [form]="schemaForm" [controlName]="'version'"
-                                   [label]="'Versions'"
-                                   [options]="versionsNo"
-                                   (selectionChangeEvent)="changeSchemaVersion($event)"
-          ></app-common-select-field>
-        </div>
+            <app-common-select-field [form]="schemaForm" [controlName]="'version'"
+                                     [label]="'Versions'"
+                                     *ngIf="isVisible([ViewMode.VIEW]) && model"
+                                     [options]="versionsNo"
+                                     (selectionChangeEvent)="changeSchemaVersion($event)"
+            ></app-common-select-field>
+          </div>
 
-        <div>
-          <app-common-select-field [form]="schemaForm" [controlName]="'messageFormat'"
-                                   [label]="'Message format'"
-                                   [options]="messageFormats"
-                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
-        </div>
 
-        <div>
-          <app-common-select-field [form]="schemaForm" [controlName]="'compatibility'"
-                                   [label]="'Compatibility'"
-                                   [options]="compatibilities" class="compatibilityInput"
-                                   [readonly]="isDisabled([ViewMode.VIEW])"
-                                   [clearValueBtn]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
-        </div>
-      </div>
+          <div class="schema-base-info">
+            <app-common-radio-field [label]="'Message format'" [form]="schemaForm"
+                                    [controlName]="'messageFormat'"
+                                    [required]="!isVisible([ViewMode.VIEW])"
+                                    class="full-width"
+                                    [options]="messageFormats"></app-common-radio-field>
+          </div>
+          <div class="label">
+            Schema
+            <span class="required-field" *ngIf="!isVisible([ViewMode.VIEW])">*</span>
+          </div>
+          <app-common-editor [schemaType]="getControl('messageFormat').value"
+                             [editorHeight]="400"
+                             [formControl]="getControl('plainTextSchema')"></app-common-editor>
+        </mat-expansion-panel>
+      </mat-accordion>
 
-      <div>
-        <div class="label">
-          Schema
-          <span class="required-field" *ngIf="!isVisible([ViewMode.VIEW])">*</span>
-        </div>
-        <app-common-editor [schemaType]="getControl('messageFormat').value"
-                           [editorHeight]="400"
-                           [formControl]="getControl('plainTextSchema')"></app-common-editor>
-      </div>
-
-      <div class="actions">
-        <button mat-button [disableRipple]="true" class="action-button-white"
-                [routerLink]="['/schemas']">
-          Cancel
-        </button>
-        <button mat-button [disableRipple]="true" class="action-button-blue"
-                *ngIf="isVisible([ViewMode.VIEW]) && model"
-                [routerLink]="['/schemas/edit/', model.subjectName, model.version]">
-          Edit
-        </button>
-        <button mat-button [disableRipple]="true"
-                *ngIf="isVisible([ViewMode.CREATE, ViewMode.EDIT])"
-                class="action-button-blue" type="submit"
-                [disabled]="!schemaForm.valid">
-          Save
-        </button>
-      </div>
+      <app-schema-form-actions [schemaForm]="schemaForm"
+                               [viewMode]="viewMode"
+                               [model]="model"></app-schema-form-actions>
     </form>
   `,
   styleUrls: ['./schema-form.component.scss']
