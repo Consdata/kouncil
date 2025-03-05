@@ -183,11 +183,15 @@ public class ClusterConfigReader {
 
         if (ssl != null) {
             try {
-                clusterSecurityConfig.setKeystoreLocation(ssl.getKeyStoreLocation().getFile().getAbsolutePath());
+                if (ssl.getKeyStoreLocation() != null) {
+                    clusterSecurityConfig.setKeystoreLocation(ssl.getKeyStoreLocation().getFile().getAbsolutePath());
+                }
                 clusterSecurityConfig.setKeystorePassword(ssl.getKeyStorePassword());
                 clusterSecurityConfig.setKeyPassword(ssl.getKeyPassword());
 
-                clusterSecurityConfig.setTruststoreLocation(ssl.getTrustStoreLocation().getFile().getAbsolutePath());
+                if (ssl.getTrustStoreLocation() != null) {
+                    clusterSecurityConfig.setTruststoreLocation(ssl.getTrustStoreLocation().getFile().getAbsolutePath());
+                }
                 clusterSecurityConfig.setTruststorePassword(ssl.getTrustStorePassword());
             } catch (IOException e) {
                 throw new KouncilRuntimeException(e);
@@ -226,10 +230,14 @@ public class ClusterConfigReader {
                 schemaRegistrySecurityConfig.setKeyPassword(schemaRegistrySSL.getKeyPassword());
                 schemaRegistrySecurityConfig.setKeystorePassword(schemaRegistrySSL.getKeyStorePassword());
                 schemaRegistrySecurityConfig.setKeystoreType(StoreType.valueOf(schemaRegistrySSL.getKeyStoreType()));
-                schemaRegistrySecurityConfig.setKeystoreLocation(schemaRegistrySSL.getKeyStoreLocation().getFile().getAbsolutePath());
+                if (schemaRegistrySSL.getKeyStoreLocation() != null) {
+                    schemaRegistrySecurityConfig.setKeystoreLocation(schemaRegistrySSL.getKeyStoreLocation().getFile().getAbsolutePath());
+                }
 
                 schemaRegistrySecurityConfig.setTruststoreType(StoreType.valueOf(schemaRegistrySSL.getTrustStoreType()));
-                schemaRegistrySecurityConfig.setTruststoreLocation(schemaRegistrySSL.getTrustStoreLocation().getFile().getAbsolutePath());
+                if (schemaRegistrySSL.getTrustStoreLocation() != null) {
+                    schemaRegistrySecurityConfig.setTruststoreLocation(schemaRegistrySSL.getTrustStoreLocation().getFile().getAbsolutePath());
+                }
                 schemaRegistrySecurityConfig.setTruststorePassword(schemaRegistrySSL.getTrustStorePassword());
             } catch (IOException e) {
                 throw new KouncilRuntimeException(e);
