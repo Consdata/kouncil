@@ -33,7 +33,8 @@ public class MessagesHelper {
     protected final SerializationService serializationService;
     protected final DeserializationService deserializationService;
 
-    public Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<Bytes, Bytes> consumer, Collection<TopicPartition> topicPartitions) {
+    public Map<Integer, Long> calculateEndOffsets(Long endTimestampMillis, Long offset, KafkaConsumer<Bytes, Bytes> consumer,
+            Collection<TopicPartition> topicPartitions) {
         final Map<Integer, Long> endOffsets;
         final Map<Integer, Long> globalEndOffsets = consumer.endOffsets(topicPartitions).entrySet()
                 .stream().collect(Collectors.toMap(k -> k.getKey().partition(), Map.Entry::getValue));
@@ -86,17 +87,22 @@ public class MessagesHelper {
     private String transformHeaderValue(Header header) {
         String headerValue = null;
         if (header.value() != null) {
-            ByteBuffer byteBuffer = ByteBuffer.wrap(header.value());
+            ByteBuffer.wrap(header.value());
+            ByteBuffer byteBuffer;
             if (List.of(KafkaHeaders.DLT_ORIGINAL_TIMESTAMP, KafkaHeaders.DLT_ORIGINAL_OFFSET, KafkaHeaders.ORIGINAL_TIMESTAMP, KafkaHeaders.ORIGINAL_OFFSET)
                     .contains(header.key())) {
-                headerValue = Long.toString(byteBuffer.getLong());
+                byteBuffer = ByteBuffer.allocate(Math.max(header.value().length, 8)).put(header.value());
+                headerValue = Long.toString(byteBuffer.getLong(0));
             } else if (List.of(KafkaHeaders.DLT_ORIGINAL_PARTITION, KafkaHeaders.ORIGINAL_PARTITION, RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS)
                     .contains(header.key())) {
-                headerValue = Integer.toString(byteBuffer.getInt());
+                byteBuffer = ByteBuffer.allocate(Math.max(header.value().length, 4)).put(header.value());
+                headerValue = Integer.toString(byteBuffer.getInt(0));
             } else if (List.of(RetryTopicHeaders.DEFAULT_HEADER_ORIGINAL_TIMESTAMP, RetryTopicHeaders.DEFAULT_HEADER_BACKOFF_TIMESTAMP)
                     .contains(header.key())) {
-                headerValue = BigInteger.valueOf(byteBuffer.getInt()).toString();
+                byteBuffer = ByteBuffer.allocate(Math.max(header.value().length, 4)).put(header.value());
+                headerValue = BigInteger.valueOf(byteBuffer.getInt(0)).toString();
             } else {
+                byteBuffer = ByteBuffer.wrap(header.value());
                 headerValue = new String(byteBuffer.array(), StandardCharsets.UTF_8);
             }
         }
