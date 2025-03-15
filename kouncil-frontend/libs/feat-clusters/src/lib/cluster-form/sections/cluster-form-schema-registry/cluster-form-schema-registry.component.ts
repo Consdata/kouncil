@@ -27,24 +27,20 @@ import {ViewMode} from '@app/common-utils';
         <div class="half-width">
           <app-common-text-field [label]="'Keystore file location'"
                                  [form]="schemaRegistrySecurityForm"
-                                 [controlName]="'keystoreLocation'"
-                                 [required]="viewMode !== ViewMode.VIEW">
+                                 [controlName]="'keystoreLocation'">
           </app-common-text-field>
           <app-common-password-field [label]="'Keystore password'"
                                      [form]="schemaRegistrySecurityForm"
-                                     [controlName]="'keystorePassword'"
-                                     [required]="viewMode !== ViewMode.VIEW">
+                                     [controlName]="'keystorePassword'">
           </app-common-password-field>
           <app-common-select-field [label]="'Keystore type'"
                                    [form]="schemaRegistrySecurityForm"
                                    class="full-width"
-                                   [required]="viewMode !== ViewMode.VIEW"
                                    [options]="certStoreType"
                                    [controlName]="'keystoreType'"></app-common-select-field>
           <app-common-password-field [label]="'Key password'"
                                      [form]="schemaRegistrySecurityForm"
-                                     [controlName]="'keyPassword'"
-                                     [required]="viewMode !== ViewMode.VIEW">
+                                     [controlName]="'keyPassword'">
           </app-common-password-field>
         </div>
         <div class="half-width">
@@ -110,14 +106,13 @@ export class ClusterFormSchemaRegistryComponent implements OnInit, OnDestroy {
             });
             break;
           case 'SSL_BASIC_AUTH':
-            ['username', 'password', 'keystoreLocation', 'keystorePassword', 'keystoreType', 'keyPassword',
-              'truststoreLocation', 'truststorePassword', 'truststoreType']
+            ['username', 'password', 'truststoreLocation', 'truststorePassword', 'truststoreType']
             .forEach(securityControlName => {
               ClusterFormUtil.addFieldRequirement(securityControlName, this.schemaRegistrySecurityForm);
             });
             break;
           case 'SSL':
-            ['keystoreLocation', 'keystorePassword', 'keystoreType', 'keyPassword', 'truststoreLocation', 'truststorePassword', 'truststoreType']
+            ['truststoreLocation', 'truststorePassword', 'truststoreType']
             .forEach(securityControlName => {
               ClusterFormUtil.addFieldRequirement(securityControlName, this.schemaRegistrySecurityForm);
             });

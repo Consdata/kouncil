@@ -16,6 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Table(name = "CLUSTER")
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = "id")
 public class Cluster {
 
     @Id
@@ -50,7 +52,7 @@ public class Cluster {
     @Embedded
     private ClusterSecurityConfig clusterSecurityConfig;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "SCHEMA_REGISTRY_ID", referencedColumnName = "ID")
     private SchemaRegistry schemaRegistry;
 }

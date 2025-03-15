@@ -4,5 +4,5 @@ public enum ClusterSecurityProtocol {
 
     SASL_PLAINTEXT,
     SASL_SSL,
-    SSL;
+    SSL
 }
