@@ -19,6 +19,7 @@ spring:
             client-id: your-client-id
             client-secret: your-client-secret
             redirect-uri: http://your-application-url/oauth
+            scope: read:org
 ```
 
 Since GitHub doesn't have user roles like other RBAC systems, we decided to use GitHub teams as
