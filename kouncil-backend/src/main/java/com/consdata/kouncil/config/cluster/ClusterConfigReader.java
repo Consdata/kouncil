@@ -125,6 +125,8 @@ public class ClusterConfigReader {
                     if (isNotBlank(schemaRegistryUrl)) {
                         SchemaRegistry schemaRegistry = new SchemaRegistry();
                         schemaRegistry.setUrl(schemaRegistryUrl);
+                        schemaRegistry.setSchemaRegistrySecurityConfig(new SchemaRegistrySecurityConfig());
+                        schemaRegistry.getSchemaRegistrySecurityConfig().setAuthenticationMethod(SchemaAuthenticationMethod.NONE);
                         cluster.setSchemaRegistry(schemaRegistry);
                     }
 
