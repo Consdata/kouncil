@@ -478,8 +478,12 @@ mat-option > span {
   margin: 0 !important;
 }
 
-.mat-expansion-panel:not([class*=mat-elevation-z]){
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
   box-shadow: none !important;
   border: 1px solid pallete.$main-20;
   border-radius: 8px !important;
+}
+
+.multiline-tooltip {
+  white-space: pre-line;
 }

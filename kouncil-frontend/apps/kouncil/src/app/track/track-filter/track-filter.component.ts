@@ -12,7 +12,7 @@ import {SelectableItem} from '@app/common-components';
   template: `
     <form #filtersForm="ngForm">
 
-      <div class="wrapper">
+      <div class="wrapper" [matTooltip]="correlationTooltip" [matTooltipClass]="'multiline-tooltip'">
         <mat-form-field class="filter-input right-padding correlation-field"
                         [appearance]="'outline'">
           <input class="wrapper-field"
@@ -127,6 +127,8 @@ export class TrackFilterComponent implements OnInit {
   toolTip: string = 'By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. ' +
     'If this does not work for you,' +
     ' turn it off, but then you have to wait for the whole search to complete.';
+  correlationTooltip: string = 'Filter messages by specifying the name and value of a message header.\nYou can select the matching method:\n' +
+    '~ - contains value\n!~ - does not contain value\nis - exact match\nis not - does not match\nregex - regular expression match ';
 
   constructor(
     private trackService: TrackService,
