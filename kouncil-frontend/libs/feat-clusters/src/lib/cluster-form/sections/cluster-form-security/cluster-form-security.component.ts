@@ -52,17 +52,14 @@ import {ViewMode} from '@app/common-utils';
       <div class="half-width">
         <app-common-text-field [label]="'Keystore file location'"
                                [form]="clusterSecurityForm"
-                               [controlName]="'keystoreLocation'"
-                               [required]="viewMode !== ViewMode.VIEW">
+                               [controlName]="'keystoreLocation'">
         </app-common-text-field>
         <app-common-password-field [label]="'Keystore password'"
                                    [form]="clusterSecurityForm"
-                                   [controlName]="'keystorePassword'"
-                                   [required]="viewMode !== ViewMode.VIEW">
+                                   [controlName]="'keystorePassword'">
         </app-common-password-field>
         <app-common-password-field [label]="'Key password'" [form]="clusterSecurityForm"
-                                   [controlName]="'keyPassword'"
-                                   [required]="viewMode !== ViewMode.VIEW">
+                                   [controlName]="'keyPassword'">
         </app-common-password-field>
       </div>
       <div class="half-width">
@@ -134,13 +131,13 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
               ClusterFormUtil.addFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
 
-            ['keystoreLocation', 'keystorePassword', 'keyPassword', 'truststoreLocation', 'truststorePassword', 'awsProfileName']
+            ['truststoreLocation', 'truststorePassword', 'awsProfileName']
             .forEach(securityControlName => {
               ClusterFormUtil.removeFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
             break;
           case 'SSL':
-            ['keystoreLocation', 'keystorePassword', 'keyPassword', 'truststoreLocation', 'truststorePassword'].forEach(securityControlName => {
+            ['truststoreLocation', 'truststorePassword'].forEach(securityControlName => {
               ClusterFormUtil.addFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
 
@@ -153,8 +150,7 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
               ClusterFormUtil.addFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
 
-            ['securityProtocol', 'saslMechanism', 'username', 'password', 'keystoreLocation', 'keystorePassword',
-              'keyPassword', 'truststoreLocation', 'truststorePassword']
+            ['securityProtocol', 'saslMechanism', 'username', 'password', 'truststoreLocation', 'truststorePassword']
             .forEach(securityControlName => {
               ClusterFormUtil.removeFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
