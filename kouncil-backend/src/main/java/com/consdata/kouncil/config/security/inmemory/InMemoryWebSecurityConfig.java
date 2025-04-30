@@ -18,6 +18,7 @@ import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER
 import static com.consdata.kouncil.config.security.inmemory.InMemoryConst.VIEWER_USERNAME;
 
 import com.consdata.kouncil.KouncilRuntimeException;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +46,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -65,7 +65,7 @@ public class InMemoryWebSecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
