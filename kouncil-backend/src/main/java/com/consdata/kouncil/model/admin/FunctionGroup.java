@@ -6,5 +6,6 @@ public enum FunctionGroup {
     CONSUMER_GROUP,
     SCHEMA_REGISTRY,
     CLUSTER,
-    ADMIN
+    ADMIN,
+    DATA_MASKING
 }
