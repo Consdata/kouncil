@@ -1,0 +1,7 @@
+kouncil:
+  auth:
+    active-provider: ad
+    ad:
+      domain: "acme.com"
+      url: "ldap://acme.com:389"
+      search-filter: "(&(objectClass=user)(userPrincipalName={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"

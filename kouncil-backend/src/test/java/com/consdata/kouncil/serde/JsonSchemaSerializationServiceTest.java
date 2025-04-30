@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -49,10 +49,10 @@ class JsonSchemaSerializationServiceTest {
     private static JsonSchema JSON_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
 
-    @MockBean
+    @MockitoBean
     private SchemaAwareClusterService schemaAwareClusterService;
 
-    @MockBean
+    @MockitoBean
     private SchemaRegistryFacade schemaRegistryFacade;
 
     private final SchemaRegistryClient schemaRegistryClient = new MockSchemaRegistryClient(
