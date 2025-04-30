@@ -25,7 +25,7 @@
     "@angular/router": "18.2.10",
     "@consdata/logger-api": "0.15.0",
     "@consdata/logger-console": "0.15.0",
-    "@nx/angular": "20.0.7",
+    "@nx/angular": "20.5.1",
     "@stomp/rx-stomp": "2.0.0",
     "@stomp/stompjs": "7.0.0",
     "@storybook/addon-interactions": "^8.5.3",
