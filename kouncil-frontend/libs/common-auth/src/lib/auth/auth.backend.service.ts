@@ -47,6 +47,7 @@ export class AuthBackendService implements AuthService {
   logout$(): Observable<void> {
     return this.http.get<void>('/api/logout').pipe(map(() => {
       localStorage.removeItem(this.IS_LOGGED_IN);
+      localStorage.removeItem(this.USER_ROLES);
       this.setAuthenticated(false);
     }));
   }

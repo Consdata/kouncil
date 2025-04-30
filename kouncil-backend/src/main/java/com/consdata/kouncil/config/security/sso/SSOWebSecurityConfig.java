@@ -1,6 +1,7 @@
 package com.consdata.kouncil.config.security.sso;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,14 +22,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -42,13 +44,14 @@ public class SSOWebSecurityConfig {
     private final ObjectMapper mapper;
     private final UserRolesMapping userRolesMapping;
     private final SimpMessagingTemplate eventSender;
+    private final CustomOAuth2UserService customUserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
@@ -68,7 +71,7 @@ public class SSOWebSecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
-                        .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(this.authoritiesMapper()))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customUserService).userAuthoritiesMapper(this.authoritiesMapper()))
                 )
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 
@@ -94,6 +97,8 @@ public class SSOWebSecurityConfig {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(new HashSet<>(groups)));
                 } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
+                } else if (authority instanceof SimpleGrantedAuthority simpleGrantedAuthority) {
+                    mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(simpleGrantedAuthority.getAuthority())));
                 }
             });
             return mappedAuthorities;
