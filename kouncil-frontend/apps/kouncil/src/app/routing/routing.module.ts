@@ -123,7 +123,10 @@ const routes: Routes = [
       {
         path: 'access-denied',
         component: AccessDeniedComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          hideClusterContext: true
+        }
       },
       {
         path: 'schemas',
@@ -162,7 +165,8 @@ const routes: Routes = [
         component: ClustersComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_LIST]
+          roles: [SystemFunctionName.CLUSTER_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -170,7 +174,8 @@ const routes: Routes = [
         component: ClusterFormCreateComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_CREATE]
+          roles: [SystemFunctionName.CLUSTER_CREATE],
+          hideClusterContext: true
         }
       },
       {
@@ -178,7 +183,8 @@ const routes: Routes = [
         component: ClusterFormViewComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_DETAILS]
+          roles: [SystemFunctionName.CLUSTER_DETAILS],
+          hideClusterContext: true
         }
       },
       {
@@ -186,7 +192,8 @@ const routes: Routes = [
         component: ClusterFormEditComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_UPDATE]
+          roles: [SystemFunctionName.CLUSTER_UPDATE],
+          hideClusterContext: true
         }
       },
       {
@@ -194,7 +201,8 @@ const routes: Routes = [
         component: UserGroupsComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS_LIST]
+          roles: [SystemFunctionName.USER_GROUPS_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -202,7 +210,8 @@ const routes: Routes = [
         component: UserGroupsFunctionsMatrixComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS]
+          roles: [SystemFunctionName.USER_GROUPS],
+          hideClusterContext: true
         }
       }
     ]
@@ -221,7 +230,10 @@ const routes: Routes = [
       {
         path: '**',
         pathMatch: 'full',
-        component: PageNotFoundComponent
+        component: PageNotFoundComponent,
+        data: {
+          hideClusterContext: true
+        }
       }
     ]
   }
