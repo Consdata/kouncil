@@ -1,4 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {TrackService} from '../track.service';
 import {FormControl, NgForm} from '@angular/forms';
 import {TrackFilter, TrackOperator} from './track-filter';
@@ -6,12 +11,14 @@ import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {SelectableItem} from '@app/common-components';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-track-filter',
   template: `
     <form #filtersForm="ngForm">
 
+        {{trackFilter.field}}
       <div class="wrapper">
         <mat-form-field class="filter-input right-padding correlation-field"
                         [appearance]="'outline'">
@@ -79,7 +86,7 @@ import {SelectableItem} from '@app/common-components';
       </div>
 
       <button mat-button
-              disableRipple
+              [disableRipple]="true"
               class="clear-button"
               type="button"
               (click)="clearFilter()">
@@ -87,7 +94,7 @@ import {SelectableItem} from '@app/common-components';
       </button>
 
       <button mat-button
-              disableRipple
+              [disableRipple]="true"
               class="filter-button"
               [class.spinner]="loading"
               [disabled]="loading"
@@ -96,8 +103,8 @@ import {SelectableItem} from '@app/common-components';
       </button>
     </form>
 
-    <mat-slide-toggle [class.active]="asyncModeState === true"
-                      disableRipple
+    <mat-slide-toggle [class.active]="asyncModeState"
+                      [disableRipple]="true"
                       class="switch"
                       (change)="toggleAsyncMode()"
                       [(ngModel)]="asyncModeState"
@@ -107,7 +114,7 @@ import {SelectableItem} from '@app/common-components';
   `,
   styleUrls: ['./track-filter.component.scss'],
 })
-export class TrackFilterComponent implements OnInit {
+export class TrackFilterComponent implements OnInit, OnDestroy {
   @ViewChild('filtersForm', {static: false}) filtersForm?: NgForm;
 
   operators: { name: string; index: number }[] = Object.keys(TrackOperator)
@@ -128,11 +135,11 @@ export class TrackFilterComponent implements OnInit {
     'If this does not work for you,' +
     ' turn it off, but then you have to wait for the whole search to complete.';
 
-  constructor(
-    private trackService: TrackService,
-    private topicsService: TopicsService,
-    private servers: ServersService
-  ) {
+  private readonly subscription: Subscription = new Subscription();
+
+  constructor(private readonly trackService: TrackService,
+              private readonly topicsService: TopicsService,
+              private readonly servers: ServersService) {
     this.trackFilter = this.trackService.getStoredTrackFilter();
   }
 
@@ -145,9 +152,17 @@ export class TrackFilterComponent implements OnInit {
     });
     this.trackFilter = this.trackService.getStoredTrackFilter();
 
-    this.trackService.trackFinished.subscribe(() => {
+    this.subscription.add(this.trackService.trackFinished.subscribe(() => {
       this.loading = false;
-    });
+    }));
+
+    this.subscription.add(this.servers.selectedServerChanged$.subscribe(() => {
+      this.trackService.resetStoredTrackFilter();
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   toggleAsyncMode(): void {
