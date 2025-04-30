@@ -21,7 +21,7 @@ public class SSOProvidersController {
     @Value("${kouncil.auth.sso.supported.providers}")
     private List<String> providers;
 
-    @GetMapping("/ssoproviders")
+    @GetMapping("/sso-providers")
     public List<String> getAllAvailableSSOProviders() {
         List<String> availableProviders = new ArrayList<>();
         if (providers != null) {

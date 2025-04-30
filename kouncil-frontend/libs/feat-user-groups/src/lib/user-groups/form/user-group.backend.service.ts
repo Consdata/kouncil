@@ -29,7 +29,7 @@ export class UserGroupBackendService implements UserGroupService {
   }
 
   isUserGroupCodeUnique$(id: number | null, code: string): Observable<boolean> {
-    return this.http.post<boolean>(`/api/user-group/isUserGroupCodeUnique`,{
+    return this.http.post<boolean>(`/api/user-group/is-user-group-code-unique`,{
       id,
       code
     });
