@@ -26,7 +26,7 @@
     "@nx/angular": "20.5.1",
     "@stomp/rx-stomp": "2.0.0",
     "@stomp/stompjs": "7.0.0",
-    "@storybook/addon-interactions": "^8.5.3",
+    "@storybook/addon-interactions": "^8.6.12",
     "@swimlane/ngx-datatable": "20.1.0",
     "avro-typescript": "^1.1.0",
     "core-js": "3.39.0",
