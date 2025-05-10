@@ -1,5 +1,7 @@
 package com.consdata.kouncil.topic;
 
+import static com.consdata.kouncil.model.admin.SystemFunctionNameConstants.TOPIC_SEND_MESSAGE;
+
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
@@ -39,7 +41,7 @@ public class TopicController {
         return topicService.getTopicMessages(topicName, partitions, pageParam, limitParam, beginningTimestampMillis, endTimestampMillis, offset, serverId);
     }
 
-    @RolesAllowed(SystemFunctionNameConstants.TOPIC_SEND_MESSAGE)
+    @RolesAllowed(TOPIC_SEND_MESSAGE)
     @PostMapping("/send/{topicName}/{count}")
     @EntryExitLogger
     public void send(@PathVariable("topicName") String topicName,
@@ -86,5 +88,12 @@ public class TopicController {
     @EntryExitLogger
     public void removeTopic(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) throws KouncilRuntimeException {
         topicService.removeTopic(topicName, serverId);
+    }
+
+    @RolesAllowed(SystemFunctionNameConstants.TOPIC_MESSAGES)
+    @GetMapping("/is-topic-exist/{topicName}")
+    @EntryExitLogger
+    public void isTopicExist(@PathVariable("topicName") String topicName, @RequestParam("serverId") String serverId) {
+        topicService.isTopicExist(topicName, serverId);
     }
 }

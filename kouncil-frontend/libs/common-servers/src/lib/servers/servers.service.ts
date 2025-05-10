@@ -6,8 +6,8 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 export abstract class ServersService {
   servers: Server[] = [];
   selectedServerId: string;
-  private serversSubject$: BehaviorSubject<Server[]> = new BehaviorSubject<Server[]>([]);
-  private selectedServerChangedSubject$: Subject<void> = new Subject<void>();
+  private readonly serversSubject$: BehaviorSubject<Server[]> = new BehaviorSubject<Server[]>([]);
+  private readonly selectedServerChangedSubject$: Subject<void> = new Subject<void>();
 
   getSelectedServerId(): string {
     return this.selectedServerId;
@@ -30,5 +30,4 @@ export abstract class ServersService {
   selectedServerChanged(): void {
     this.selectedServerChangedSubject$.next();
   }
-
 }

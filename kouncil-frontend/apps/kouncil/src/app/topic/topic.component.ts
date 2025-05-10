@@ -13,7 +13,11 @@ import {Observable, Subscription} from 'rxjs';
 import {JsonGrid} from './json-grid';
 import {TopicMessages} from './topic-messages';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {
+  DrawerService,
+  ProgressBarService,
+  SearchService,
+} from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
@@ -83,17 +87,17 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
   paging$: Observable<Page> = this.topicService.getPagination$();
 
   constructor(
-    private route: ActivatedRoute,
-    private searchService: SearchService,
-    private jsonGrid: JsonGrid,
-    private titleService: Title,
-    private progressBarService: ProgressBarService,
-    private topicService: TopicService,
-    private drawerService: DrawerService,
-    private servers: ServersService,
-    private messageDataService: MessageDataService,
-    private router: Router,
-    private location: Location
+    private readonly route: ActivatedRoute,
+    private readonly searchService: SearchService,
+    private readonly jsonGrid: JsonGrid,
+    private readonly titleService: Title,
+    private readonly progressBarService: ProgressBarService,
+    private readonly topicService: TopicService,
+    private readonly drawerService: DrawerService,
+    private readonly servers: ServersService,
+    private readonly messageDataService: MessageDataService,
+    private readonly router: Router,
+    private readonly location: Location
   ) {
     super();
     this.jsonToGridSubscription = this.topicService
@@ -116,10 +120,7 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
     this.progressBarService.setProgress(true);
     this.route.params.subscribe((params) => {
       this.topicName = params['topic'];
-      this.topicService.getMessages(
-        this.servers.getSelectedServerId(),
-        this.topicName
-      );
+      this.getMessageIfTopicExist();
       this.titleService.setTitle(this.topicName + ' Kouncil');
       this.paused = true;
     });
@@ -335,5 +336,12 @@ export class TopicComponent extends AbstractTableComponent implements OnInit, On
   public updateQueryParams(page: number): void {
     const urlTree = this.router.createUrlTree([], {relativeTo: this.route, queryParams: {page}});
     this.location.go(urlTree.toString());
+  }
+
+  private getMessageIfTopicExist() {
+    this.topicService.isTopicExist$(this.servers.getSelectedServerId(), this.topicName).subscribe({
+      next: ()=> this.topicService.getMessages(this.servers.getSelectedServerId(), this.topicName),
+      error: ()=> this.router.navigate(['/topics'])
+    });
   }
 }
