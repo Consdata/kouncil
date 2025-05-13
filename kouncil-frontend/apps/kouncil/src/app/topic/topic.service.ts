@@ -27,6 +27,8 @@ export abstract class TopicService {
   abstract goToOffset(serverId: string, topicName: string, offset?: number): void;
 
   abstract getPagination$(): Observable<Page>;
+
+  abstract isTopicExist$(serverId: string, topicName: string): Observable<boolean>;
 }
 
 export function topicServiceFactory(http: HttpClient, progressBarService: ProgressBarService): TopicService {

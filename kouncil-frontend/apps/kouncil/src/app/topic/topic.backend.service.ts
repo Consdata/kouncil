@@ -5,6 +5,7 @@ import {TopicMessages} from './topic-messages';
 import {Page} from './page';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProgressBarService} from '@app/common-utils';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class TopicBackendService implements TopicService {
   partitionEndOffsets: { [key: number]: number } = {};
   partitions?: number[];
   selectedPartition?: string;
-  private convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
-  private numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
+  private readonly convertTopicMessagesJsonToGrid$: Subject<TopicMessages> = new Subject<TopicMessages>();
+  private readonly numberOfPartitionsChanged$: Subject<number> = new Subject<number>();
   // eslint-disable-next-line rxjs/no-exposed-subjects
   protected paginationChanged$: BehaviorSubject<Page> = new BehaviorSubject<Page>({pageNumber: 1, size: 10});
 
@@ -24,7 +25,7 @@ export class TopicBackendService implements TopicService {
   }
 
   getMessages(serverId: string, topicName: string, offset?: number): void {
-    let url;
+    let url: string;
     if (typeof this.selectedPartition !== 'undefined') {
       url = `/api/topic/messages/${topicName}/${this.selectedPartition}`;
     } else {
@@ -91,5 +92,13 @@ export class TopicBackendService implements TopicService {
 
   goToOffset(serverId: string, topicName: string, offset: number): void {
     this.getMessages(serverId, topicName, offset);
+  }
+
+  isTopicExist$(serverId: string, topicName: string): Observable<boolean>{
+    const params = new HttpParams().set('serverId', serverId);
+
+    return this.http.get<void>(`/api/topic/is-topic-exist/${topicName}`, {params}).pipe(map(() => {
+      return true;
+    }));
   }
 }

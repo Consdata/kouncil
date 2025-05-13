@@ -94,6 +94,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit {
 
   public serverSelectionChanged(): void {
     localStorage.setItem('lastSelectedServer', this.servers.getSelectedServerId());
+    this.servers.selectedServerChanged();
     this.router.navigate([this.router.url]);
   }
 

@@ -4,6 +4,7 @@ import {TopicBackendService} from './topic.backend.service';
 import {MessageData, MessageDataHeader} from '@app/message-data';
 import {Crypto, RandomUtils} from '@app/common-utils';
 import {demoTopics} from '@app/feat-topics';
+import {Observable, of} from 'rxjs';
 
 @Injectable()
 export class TopicDemoService extends TopicBackendService {
@@ -75,5 +76,9 @@ export class TopicDemoService extends TopicBackendService {
       headers: [{key: 'traceId', value: Crypto.uuidv4()} as MessageDataHeader],
       topicName: ''
     } as MessageData;
+  }
+
+  override isTopicExist$(_serverId: string, _topicName: string): Observable<boolean> {
+    return of(true);
   }
 }

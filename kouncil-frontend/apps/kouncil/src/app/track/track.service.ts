@@ -40,6 +40,10 @@ export abstract class TrackService {
     }
   }
 
+  resetStoredTrackFilter(): void {
+    this.trackFilter = undefined;
+  }
+
   defaultFilter(): TrackFilter {
     const from = new Date();
     from.setMinutes(from.getMinutes() - 5);
