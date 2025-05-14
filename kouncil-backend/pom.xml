@@ -17,7 +17,7 @@
         <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
         <swagger-annotations.version>2.2.6</swagger-annotations.version>
         <testcontainers.version>1.17.6</testcontainers.version>
-        <postgresql.version>42.7.3</postgresql.version>
+        <postgresql.version>42.7.5</postgresql.version>
         <h2database.version>2.2.224</h2database.version>
         <spring.okta.version>3.0.7</spring.okta.version>
     </properties>
