@@ -15,7 +15,7 @@
     <properties>
         <confluent.version>7.7.1</confluent.version>
         <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
-        <swagger-annotations.version>2.2.6</swagger-annotations.version>
+        <swagger-annotations.version>2.2.30</swagger-annotations.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <postgresql.version>42.7.3</postgresql.version>
         <h2database.version>2.2.224</h2database.version>
