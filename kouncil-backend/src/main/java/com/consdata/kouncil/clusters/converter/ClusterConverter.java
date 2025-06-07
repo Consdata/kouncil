@@ -63,7 +63,8 @@ public final class ClusterConverter {
                     schemaRegistry.getSchemaRegistrySecurityConfig().setPassword(schemaRegistrySecurityConfigDto.getPassword());
                 }
 
-                if (List.of(SchemaAuthenticationMethod.SSL, SchemaAuthenticationMethod.SSL_BASIC_AUTH).contains(schemaRegistrySecurityConfigDto.getAuthenticationMethod())) {
+                if (List.of(SchemaAuthenticationMethod.SSL, SchemaAuthenticationMethod.SSL_BASIC_AUTH)
+                        .contains(schemaRegistrySecurityConfigDto.getAuthenticationMethod())) {
                     schemaRegistry.getSchemaRegistrySecurityConfig().setSecurityProtocol(SchemaSecurityProtocol.SSL);
                     schemaRegistry.getSchemaRegistrySecurityConfig().setKeystoreLocation(schemaRegistrySecurityConfigDto.getKeystoreLocation());
                     schemaRegistry.getSchemaRegistrySecurityConfig().setKeystorePassword(schemaRegistrySecurityConfigDto.getKeystorePassword());
@@ -101,9 +102,14 @@ public final class ClusterConverter {
             switch (dtoSecurityConfig.getAuthenticationMethod()) {
                 case SASL:
                     clusterSecurityConfig.setSecurityProtocol(dtoSecurityConfig.getSecurityProtocol());
-                    clusterSecurityConfig.setSaslMechanism(ClusterSASLMechanism.PLAIN);
+                    clusterSecurityConfig.setSaslMechanism(dtoSecurityConfig.getSaslMechanism());
                     clusterSecurityConfig.setUsername(dtoSecurityConfig.getUsername());
                     clusterSecurityConfig.setPassword(dtoSecurityConfig.getPassword());
+                    clusterSecurityConfig.setKeystoreLocation(dtoSecurityConfig.getKeystoreLocation());
+                    clusterSecurityConfig.setKeystorePassword(dtoSecurityConfig.getKeystorePassword());
+                    clusterSecurityConfig.setKeyPassword(dtoSecurityConfig.getKeyPassword());
+                    clusterSecurityConfig.setTruststoreLocation(dtoSecurityConfig.getTruststoreLocation());
+                    clusterSecurityConfig.setTruststorePassword(dtoSecurityConfig.getTruststorePassword());
                     break;
                 case SSL:
                     clusterSecurityConfig.setSecurityProtocol(ClusterSecurityProtocol.SSL);

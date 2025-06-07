@@ -47,7 +47,9 @@ import {ViewMode} from '@app/common-utils';
 
     <!--SSL Authentication-->
     <div
-      *ngIf="clusterSecurityForm.get('authenticationMethod').value === 'SSL'"
+      *ngIf="clusterSecurityForm.get('authenticationMethod').value === 'SSL'
+      || (clusterSecurityForm.get('authenticationMethod').value === 'SASL'
+      && clusterSecurityForm.get('securityProtocol').value  === 'SASL_SSL')"
       class="security-section">
       <div class="half-width">
         <app-common-text-field [label]="'Keystore file location'"
@@ -135,6 +137,10 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
             .forEach(securityControlName => {
               ClusterFormUtil.removeFieldRequirement(securityControlName, this.clusterSecurityForm);
             });
+
+            ['keystoreLocation', 'keystorePassword', 'keyPassword'].forEach(securityControlName => {
+              ClusterFormUtil.cleanFieldValue(securityControlName, this.clusterSecurityForm);
+            });
             break;
           case 'SSL':
             ['truststoreLocation', 'truststorePassword'].forEach(securityControlName => {
@@ -143,6 +149,10 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
 
             ['securityProtocol', 'saslMechanism', 'username', 'password', 'awsProfileName'].forEach(securityControlName => {
               ClusterFormUtil.removeFieldRequirement(securityControlName, this.clusterSecurityForm);
+            });
+
+            ['keystoreLocation', 'keystorePassword', 'keyPassword'].forEach(securityControlName => {
+              ClusterFormUtil.cleanFieldValue(securityControlName, this.clusterSecurityForm);
             });
             break;
           case 'AWS_MSK':
@@ -158,6 +168,21 @@ export class ClusterFormSecurityComponent implements OnInit, OnDestroy {
         }
       }));
     }
+
+    this.subscriptions.add(this.clusterSecurityForm.get('securityProtocol').valueChanges.subscribe(value => {
+      this.updateTestConnectionState.emit('default');
+      if(this.clusterSecurityForm.get('securityProtocol').value  === 'SASL_PLAINTEXT'){
+        ['truststoreLocation', 'truststorePassword', 'keystorePassword', 'keystoreLocation', 'keyPassword'].forEach(securityControlName => {
+          ClusterFormUtil.removeFieldRequirement(securityControlName, this.clusterSecurityForm);
+        });
+      }
+
+      if(this.clusterSecurityForm.get('securityProtocol').value  === 'SASL_SSL'){
+        ['truststoreLocation', 'truststorePassword'].forEach(securityControlName => {
+          ClusterFormUtil.addFieldRequirement(securityControlName, this.clusterSecurityForm);
+        });
+      }
+    }));
   }
 
   ngOnDestroy(): void {
