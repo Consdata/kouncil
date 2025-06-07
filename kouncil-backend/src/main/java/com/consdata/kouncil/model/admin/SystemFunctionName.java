@@ -43,6 +43,13 @@ public enum SystemFunctionName {
     USER_GROUPS_LIST,
     USER_GROUP_CREATE,
     USER_GROUP_UPDATE,
-    USER_GROUP_DELETE
+    USER_GROUP_DELETE,
+
+    //data masking
+    POLICY_LIST,
+    POLICY_CREATE,
+    POLICY_DETAILS,
+    POLICY_UPDATE,
+    POLICY_DELETE
 
 }

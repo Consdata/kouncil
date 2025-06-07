@@ -33,6 +33,7 @@ import {
   ClustersComponent
 } from '@app/feat-clusters';
 import { UserGroupsComponent, UserGroupsFunctionsMatrixComponent } from '@app/feat-user-groups';
+import {PoliciesComponent} from '@app/feat-data-masking';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -203,6 +204,14 @@ const routes: Routes = [
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.USER_GROUPS]
+        }
+      },
+      {
+        path: 'data-masking-policies',
+        component: PoliciesComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_LIST]
         }
       }
     ]
