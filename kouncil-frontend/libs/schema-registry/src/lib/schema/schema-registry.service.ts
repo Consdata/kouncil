@@ -18,5 +18,7 @@ export abstract class SchemaRegistryService {
   abstract addNewSchemaVersion$(model: Schema, selectedServerId: string): Observable<void>;
 
   abstract addNewSchema$(model: Schema, selectedServerId: string): Observable<void>;
+
+  abstract testCompatibility$(model: Schema, selectedServerId: string): Observable<boolean>;
 }
 

@@ -16,6 +16,12 @@
       line-height: 28px;
     }
   }
+
+  .panels-container {
+    display: flex;
+    flex-direction: column;
+    gap: $space-5;
+  }
 }
 
 .label {
@@ -30,9 +36,9 @@
 }
 
 .schema-base-info {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: inline-flex;
+  width: 100%;
+  gap: $space-5;
   margin-bottom: $space-5;
 }
 
@@ -43,6 +49,6 @@
   gap: $space-3;
 }
 
-.compatibilityInput {
-  width: 250px;
+.full-width {
+  width: 100%;
 }
