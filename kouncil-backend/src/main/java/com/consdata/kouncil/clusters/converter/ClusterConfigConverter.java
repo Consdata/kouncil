@@ -9,7 +9,6 @@ import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistryAuth;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySSL;
 import com.consdata.kouncil.config.SchemaRegistryConfig.SchemaRegistrySecurity;
 import com.consdata.kouncil.model.cluster.ClusterAuthenticationMethod;
-import com.consdata.kouncil.model.cluster.ClusterSASLMechanism;
 import com.consdata.kouncil.model.cluster.ClusterSecurityProtocol;
 import java.util.ArrayList;
 import lombok.AccessLevel;
@@ -72,19 +71,17 @@ public final class ClusterConfigConverter {
             setSSLProperties(clusterConfig, clusterDto);
 
             if (clusterDto.getClusterSecurityConfig().getSaslMechanism() != null) {
-                clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_MECHANISM, clusterDto.getClusterSecurityConfig().getSaslMechanism().name());
+                clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_MECHANISM, clusterDto.getClusterSecurityConfig().getSaslMechanism().getMechanismName());
             }
 
-            //sasl plain config properties
-            setSASLPlainProperties(clusterConfig, clusterDto);
-
-            //aws msk config properties
-            setAWSMSKProperties(clusterConfig, clusterDto);
+            //sasl config properties
+            setSASLProperties(clusterConfig, clusterDto);
         }
     }
 
     private static void setSSLProperties(ClusterConfig clusterConfig, ClusterDto clusterDto) {
-        if (ClusterSecurityProtocol.SSL.equals(clusterDto.getClusterSecurityConfig().getSecurityProtocol())) {
+        if (ClusterSecurityProtocol.SSL.equals(clusterDto.getClusterSecurityConfig().getSecurityProtocol())
+                || ClusterSecurityProtocol.SASL_SSL.equals(clusterDto.getClusterSecurityConfig().getSecurityProtocol())) {
             clusterConfig.getKafka().getSsl().setKeyStoreLocation(clusterDto.getClusterSecurityConfig().getKeystoreLocation() != null
                     ? new PathResource(clusterDto.getClusterSecurityConfig().getKeystoreLocation())
                     : null);
@@ -98,23 +95,24 @@ public final class ClusterConfigConverter {
         }
     }
 
-    private static void setSASLPlainProperties(ClusterConfig clusterConfig, ClusterDto clusterDto) {
-        if (clusterDto.getClusterSecurityConfig().getSaslMechanism() != null
-                && ClusterSASLMechanism.PLAIN.equals(clusterDto.getClusterSecurityConfig().getSaslMechanism())) {
-            clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_JAAS_CONFIG,
-                    String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
-                            clusterDto.getClusterSecurityConfig().getUsername(), clusterDto.getClusterSecurityConfig().getPassword()));
-        }
-    }
+    private static void setSASLProperties(ClusterConfig clusterConfig, ClusterDto clusterDto) {
+        if (clusterDto.getClusterSecurityConfig().getSaslMechanism() != null) {
 
-    private static void setAWSMSKProperties(ClusterConfig clusterConfig, ClusterDto clusterDto) {
-        if (clusterDto.getClusterSecurityConfig().getSaslMechanism() != null
-                && ClusterSASLMechanism.AWS_MSK_IAM.equals(clusterDto.getClusterSecurityConfig().getSaslMechanism())) {
-            clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_JAAS_CONFIG,
-                    String.format("software.amazon.msk.auth.iam.IAMLoginModule required awsProfileName=\"%s\";",
-                            clusterDto.getClusterSecurityConfig().getAwsProfileName()));
-            clusterConfig.getKafka().getProperties()
-                    .put(SaslConfigs.SASL_CLIENT_CALLBACK_HANDLER_CLASS, "software.amazon.msk.auth.iam.IAMClientCallbackHandler");
+            switch (clusterDto.getClusterSecurityConfig().getSaslMechanism()) {
+                case PLAIN -> clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_JAAS_CONFIG,
+                        String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
+                                clusterDto.getClusterSecurityConfig().getUsername(), clusterDto.getClusterSecurityConfig().getPassword()));
+                case AWS_MSK_IAM -> {
+                    clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_JAAS_CONFIG,
+                            String.format("software.amazon.msk.auth.iam.IAMLoginModule required awsProfileName=\"%s\";",
+                                    clusterDto.getClusterSecurityConfig().getAwsProfileName()));
+                    clusterConfig.getKafka().getProperties()
+                            .put(SaslConfigs.SASL_CLIENT_CALLBACK_HANDLER_CLASS, "software.amazon.msk.auth.iam.IAMClientCallbackHandler");
+                }
+                case SCRAM_SHA_256, SCRAM_SHA_512 -> clusterConfig.getKafka().getProperties().put(SaslConfigs.SASL_JAAS_CONFIG,
+                        String.format("org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";",
+                                clusterDto.getClusterSecurityConfig().getUsername(), clusterDto.getClusterSecurityConfig().getPassword()));
+            }
         }
     }
 

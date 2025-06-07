@@ -146,7 +146,8 @@ public class ClusterConfigReader {
 
                     String saslJassConfig = broker.getSaslJassConfig();
 
-                    if (ClusterSecurityProtocol.SASL_PLAINTEXT.equals(clusterSecurityConfig.getSecurityProtocol())) {
+                    if (ClusterSecurityProtocol.SASL_PLAINTEXT.equals(clusterSecurityConfig.getSecurityProtocol())
+                            || ClusterSecurityProtocol.SASL_SSL.equals(clusterSecurityConfig.getSecurityProtocol())) {
                         clusterSecurityConfig.setUsername(getValueFromTextUsingRegex("username=\"(.*?)\"", saslJassConfig));
                         clusterSecurityConfig.setPassword(getValueFromTextUsingRegex("password=\"(.*?)\"", saslJassConfig));
                         clusterSecurityConfig.setAuthenticationMethod(ClusterAuthenticationMethod.SASL);
