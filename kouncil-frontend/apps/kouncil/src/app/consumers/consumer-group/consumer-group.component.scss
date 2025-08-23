@@ -1,4 +1,6 @@
+@use '../../../styles/buttons';
 @import '../../../styles/palette';
+@import '../../../styles/spaces';
 
 :host {
   .kafka-consumer-group {
@@ -6,9 +8,16 @@
     height: calc(100% - 22px);
     padding-top: 22px;
 
-    .brokers-table {
-      width: 100%;
-      margin-top: 24px;
+    .kafka-consumer-group-header {
+      display: flex;
+      flex-direction: row;
+      place-items: center;
+      place-content: space-between;
+      padding-right: $space-6;
     }
+  }
+
+  .action-button-black {
+    @include buttons.button-black;
   }
 }

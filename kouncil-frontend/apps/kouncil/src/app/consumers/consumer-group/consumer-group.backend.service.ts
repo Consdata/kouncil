@@ -3,17 +3,22 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {ConsumerGroupService} from './consumer-group.service';
 import {Observable} from 'rxjs';
 import {ConsumerGroupResponse} from '@app/common-model';
+import {ConsumerGroupResetOffset} from './consumer-group-reset-offset.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsumerGroupBackendService implements ConsumerGroupService {
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
   getConsumerGroup$(serverId: string, groupId: string): Observable<ConsumerGroupResponse> {
     const params = new HttpParams().set('serverId', serverId);
     return this.http.get<ConsumerGroupResponse>(`/api/consumer-group/${groupId}`, {params});
+  }
+
+  resetOffset$(data: ConsumerGroupResetOffset): Observable<void> {
+    return this.http.post<void>(`/api/consumer-group/${data.groupId}/reset`, data);
   }
 }

@@ -23,6 +23,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {RadioFieldComponent} from './radio-field/radio-field.component';
 import {NumberFieldComponent} from './number-field/number-field.component';
 import {MatButtonModule} from '@angular/material/button';
+import {DateTimeFieldComponent} from './date-time-field/date-time-field.component';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import {MatButtonModule} from '@angular/material/button';
     PasswordFieldComponent,
     SelectFieldComponent,
     RadioFieldComponent,
-    NumberFieldComponent
+    NumberFieldComponent,
+    DateTimeFieldComponent
   ],
   exports: [
     AutocompleteComponent,
@@ -63,7 +65,8 @@ import {MatButtonModule} from '@angular/material/button';
     PasswordFieldComponent,
     SelectFieldComponent,
     RadioFieldComponent,
-    NumberFieldComponent
+    NumberFieldComponent,
+    DateTimeFieldComponent
   ]
 })
 export class CommonComponentsModule {

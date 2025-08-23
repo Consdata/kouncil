@@ -1,0 +1,31 @@
+@import '../../../../../apps/kouncil/src/styles/palette';
+@import '../../../../../apps/kouncil/src/styles/spaces';
+
+:host {
+  display: block;
+  padding-top: $space-3;
+
+  .label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: $space-3;
+    color: $main-60;
+  }
+
+  .date-time-field {
+    gap: 16px;
+    display: flex;
+  }
+
+  .requiredField {
+    color: $red-50;
+  }
+
+  .half-width {
+    width: 50%;
+  }
+
+  .error {
+    font-size: 12px;
+  }
+}

@@ -8,21 +8,26 @@ import {ConsumerGroupOffset, ConsumerGroupResponse} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {DecimalPipe} from '@angular/common';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {ConsumerGroupResetOffsetComponent} from './consumer-group-reset-offset.component';
 
 @Component({
   selector: 'app-kafka-consumer-group',
   template: `
     <div class="kafka-consumer-group">
       <ng-template #noDataPlaceholder>
-        <app-no-data-placeholder
-          [objectTypeName]="'Consumer'"
-        ></app-no-data-placeholder>
+        <app-no-data-placeholder [objectTypeName]="'Consumer'"></app-no-data-placeholder>
       </ng-template>
-      <app-breadcrumb
-        [parentLink]="'/consumer-groups'"
-        [name]="groupId"
-        [parentName]="'Consumer Groups'"
-      ></app-breadcrumb>
+      <div class="kafka-consumer-group-header">
+
+        <app-breadcrumb [parentLink]="'/consumer-groups'"
+                        [name]="groupId"
+                        [parentName]="'Consumer Groups'"></app-breadcrumb>
+        <button mat-button class="action-button-black" (click)="resetOffset()">
+          Reset offset
+          <mat-icon class="material-symbols-outlined refresh-icon">refresh</mat-icon>
+        </button>
+      </div>
       <section
         *ngIf="filteredAssignments && filteredAssignments.length > 0; else noDataPlaceholder">
         <app-common-table [tableData]="filteredAssignments" matSort [sort]="sort"
@@ -146,22 +151,20 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
         } else {
           if (value > 0) {
             return `↑ ${new DecimalPipe(this.locale).transform(value)}`;
-          } else {
-            return `↓ ${new DecimalPipe(this.locale).transform(value)}`;
           }
+          return `↓ ${new DecimalPipe(this.locale).transform(value)}`;
         }
       }
     },
   ];
 
-  constructor(
-    private searchService: SearchService,
-    private route: ActivatedRoute,
-    private progressBarService: ProgressBarService,
-    private consumerGroupService: ConsumerGroupService,
-    private servers: ServersService,
-    @Inject(LOCALE_ID) public locale: string
-  ) {
+  constructor(private readonly searchService: SearchService,
+              private readonly route: ActivatedRoute,
+              private readonly progressBarService: ProgressBarService,
+              private readonly consumerGroupService: ConsumerGroupService,
+              private readonly servers: ServersService,
+              @Inject(LOCALE_ID) public locale: string,
+              private readonly dialog: MatDialog) {
     super();
   }
 
@@ -240,6 +243,19 @@ export class ConsumerGroupComponent extends AbstractTableComponent implements On
       assignment.topic +
       assignment.partition
     );
+  }
+
+  resetOffset(): void {
+    const config: MatDialogConfig = {
+      width: '600px',
+      autoFocus: 'dialog',
+      data: {
+        serverId: this.servers.getSelectedServerId(),
+        groupId: this.groupId
+      }
+    };
+
+    this.dialog.open(ConsumerGroupResetOffsetComponent, config).afterClosed().subscribe();
   }
 }
 
