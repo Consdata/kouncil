@@ -23,7 +23,7 @@
     "@angular/platform-browser": "18.2.13",
     "@angular/platform-browser-dynamic": "18.2.13",
     "@angular/router": "18.2.13",
-    "@nx/angular": "20.5.1",
+    "@nx/angular": "21.2.2",
     "@stomp/rx-stomp": "2.0.0",
     "@stomp/stompjs": "7.0.0",
     "@storybook/addon-interactions": "^8.6.12",
