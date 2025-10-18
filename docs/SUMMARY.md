@@ -31,6 +31,8 @@
 
 * [Features](FEATURES.md)
   * [Data masking](features/DATA_MASKING.md)
+  * [Onboarding](features/ONBOARDING.md)
+
 
 * [FAQ](FAQ.md)
 
