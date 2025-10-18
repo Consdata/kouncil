@@ -45,24 +45,27 @@ public class BrokersController {
     @GetMapping("/brokers")
     @EntryExitLogger
     public BrokersDto getBrokers(@RequestParam("serverId") String serverId) {
-        try {
-            DescribeClusterResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeCluster();
-            Collection<Node> nodes = describeClusterResult.nodes().get();
-            List<KafkaBroker> kafkaBrokers = new ArrayList<>();
-            nodes.forEach(node -> kafkaBrokers.add(KafkaBroker.builder()
-                    .host(node.host())
-                    .port(node.port())
-                    .port(node.port())
-                    .id(node.idString())
-                    .rack(node.rack())
-                    .build()));
-            loadJmxMetrics(serverId, kafkaBrokers);
-            Collections.sort(kafkaBrokers);
-            return BrokersDto.builder().brokers(kafkaBrokers).build();
-        } catch (Exception e) {
-            Thread.currentThread().interrupt();
-            throw new KouncilRuntimeException(e);
+        if (serverId != null && !serverId.isBlank()) {
+            try {
+                DescribeClusterResult describeClusterResult = kafkaConnectionService.getAdminClient(serverId).describeCluster();
+                Collection<Node> nodes = describeClusterResult.nodes().get();
+                List<KafkaBroker> kafkaBrokers = new ArrayList<>();
+                nodes.forEach(node -> kafkaBrokers.add(KafkaBroker.builder()
+                        .host(node.host())
+                        .port(node.port())
+                        .port(node.port())
+                        .id(node.idString())
+                        .rack(node.rack())
+                        .build()));
+                loadJmxMetrics(serverId, kafkaBrokers);
+                Collections.sort(kafkaBrokers);
+                return BrokersDto.builder().brokers(kafkaBrokers).build();
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+                throw new KouncilRuntimeException(e);
+            }
         }
+        throw new KouncilRuntimeException("Clusters are not defined. Please register new clusters or reach out to your administrator for further information.");
     }
 
     private void loadJmxMetrics(String serverId, List<KafkaBroker> kafkaBrokers) {

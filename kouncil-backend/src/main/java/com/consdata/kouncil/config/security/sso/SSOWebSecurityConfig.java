@@ -68,6 +68,7 @@ public class SSOWebSecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
                         .userInfoEndpoint(userInfo -> userInfo.userService(customUserService).userAuthoritiesMapper(this.authoritiesMapper()))
+                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
                 )
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 

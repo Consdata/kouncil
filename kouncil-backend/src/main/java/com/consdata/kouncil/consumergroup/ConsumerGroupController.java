@@ -22,12 +22,6 @@ public class ConsumerGroupController {
 
     private final ConsumerGroupService consumerGroupService;
 
-    @RolesAllowed(SystemFunctionNameConstants.CONSUMER_GROUP_LIST)
-    @GetMapping
-    public ConsumerGroupsResponse getConsumerGroups(@RequestParam("serverId") String serverId) throws ExecutionException, InterruptedException {
-        return consumerGroupService.getConsumerGroups(serverId);
-    }
-
     @RolesAllowed(SystemFunctionNameConstants.CONSUMER_GROUP_DETAILS)
     @GetMapping("/{groupId}")
     public ConsumerGroupResponse getConsumerGroup(@PathVariable("groupId") String groupId, @RequestParam("serverId") String serverId)

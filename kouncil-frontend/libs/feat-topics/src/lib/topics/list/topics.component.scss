@@ -27,6 +27,10 @@
     @include buttons.button-blue;
   }
 
+  .action-button-blue:disabled {
+    @include buttons.button-disabled;
+  }
+
   .action-button-white {
     @include buttons.button-white;
     @include buttons.table-button;

@@ -76,7 +76,6 @@ export class SurveyComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.surveyService.fetchSurvey$(this.router.url);
   }
 
   ngOnDestroy(): void {

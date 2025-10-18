@@ -32,6 +32,11 @@ export class ServersBackendService extends ServersService {
             && this.servers.length > 0) {
             this.selectedServerId = this.servers[0].serverId;
           }
+
+          if (this.servers.length === 0) {
+            this.selectedServerId = null;
+          }
+
           this.updateServers(this.servers);
         }
         resolve(true);
