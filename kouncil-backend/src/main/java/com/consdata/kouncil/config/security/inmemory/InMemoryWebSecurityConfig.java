@@ -26,13 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
 public class InMemoryWebSecurityConfig {
 
-    private final InMemoryUserManager inMemoryUserManager;
-
-    @PostConstruct
-    public void init() {
-        inMemoryUserManager.createDefaultUsers();
-    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
