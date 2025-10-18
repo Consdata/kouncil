@@ -32,7 +32,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 
       <mat-autocomplete #autocomplete="matAutocomplete"
                         [displayWith]="displayFn" [panelWidth]="panelWidth" (opened)="panelOpened()"
-                        (closed)="panelClosed()">
+                        (closed)="panelClosed()" [class]="class">
         <mat-option disabled *ngIf="(filteredData$ | async)?.length === 0">
           {{ emptyFilteredMsg }}
         </mat-option>
@@ -60,6 +60,8 @@ export class AutocompleteComponent implements OnInit {
   @Input() required: boolean;
   @Input() readonly: boolean;
   @Input() emptyFilteredMsg: string;
+  @Input() allElementsSelectedMsg: string = 'All selected';
+  @Input() class: string;
   @Input() panelWidth: string | number;
   @Output() selectedValueEvent: EventEmitter<Array<any>> = new EventEmitter();
 
@@ -78,8 +80,9 @@ export class AutocompleteComponent implements OnInit {
   }
 
   displayFn: () => string = (): string => this.getControl().getRawValue() != null
-    ? this.getControl().getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')
-    : '';
+    ? (this.data.length === this.getControl().getRawValue().filter(item => item.selected).length
+      ? this.allElementsSelectedMsg
+      : this.getControl().getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')) : '';
 
   filter: (filter: string) => Array<SelectableItem> = (filter: string): Array<SelectableItem> => {
     if (!this.data) {

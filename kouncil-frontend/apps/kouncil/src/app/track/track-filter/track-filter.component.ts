@@ -18,8 +18,7 @@ import {Subscription} from 'rxjs';
   template: `
     <form #filtersForm="ngForm">
 
-        {{trackFilter.field}}
-      <div class="wrapper">
+      <div class="wrapper" [matTooltip]="correlationTooltip" [matTooltipClass]="'multiline-tooltip'">
         <mat-form-field class="filter-input right-padding correlation-field"
                         [appearance]="'outline'">
           <input class="wrapper-field"
@@ -57,6 +56,7 @@ import {Subscription} from 'rxjs';
                                  [placeholder]="'Topics'"
                                  [emptyFilteredMsg]="'No topics found'"
                                  [panelWidth]="'auto'"
+                                 [class]="'autocomplete-panel-min-width'"
                                  (selectedValueEvent)="updateTopics($event)"></app-common-autocomplete>
       </div>
 
@@ -139,6 +139,8 @@ export class TrackFilterComponent implements OnInit, OnDestroy {
   toolTip: string = 'By default, Kouncil uses Web Sockets and sends events to the browser in small chunks. ' +
     'If this does not work for you,' +
     ' turn it off, but then you have to wait for the whole search to complete.';
+  correlationTooltip: string = 'Filter messages by specifying the name and value of a message header.\nYou can select the matching method:\n' +
+    '~ - contains value\n!~ - does not contain value\nis - exact match\nis not - does not match\nregex - regular expression match ';
 
   private readonly subscription: Subscription = new Subscription();
 

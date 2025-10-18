@@ -27,6 +27,7 @@ const log = LoggerFactory.getLogger('SchemasComponent');
                                    [placeholder]="'Topics'"
                                    [emptyFilteredMsg]="'No topics found'"
                                    [panelWidth]="'auto'"
+                                   [class]="'autocomplete-panel-min-width'"
                                    (selectedValueEvent)="updateTopics($event)"></app-common-autocomplete>
 
           <button mat-button class="action-button-black" (click)="search()">
