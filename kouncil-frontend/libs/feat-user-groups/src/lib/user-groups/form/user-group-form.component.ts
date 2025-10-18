@@ -1,8 +1,8 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ServersService } from '@app/common-servers';
-import { first } from 'rxjs/operators';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ServersService} from '@app/common-servers';
+import {first} from 'rxjs/operators';
+import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -11,10 +11,10 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { map, Observable, of, Subscription } from 'rxjs';
-import { SnackBarComponent, SnackBarData, ViewMode } from '@app/common-utils';
-import { UserGroupService } from './user-group.service';
-import { UserGroup } from '../../user-groups-functions-matrix/user-groups.model';
+import {map, Observable, of, Subscription} from 'rxjs';
+import {SnackBarComponent, SnackBarData, SnackBarType, ViewMode} from '@app/common-utils';
+import {UserGroupService} from './user-group.service';
+import {UserGroup} from '../../user-groups-functions-matrix/user-groups.model';
 
 @Component({
   selector: 'app-user-group-form',
@@ -122,15 +122,15 @@ export class UserGroupFormComponent implements OnInit, OnDestroy {
           }
         });
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(successMsg, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(successMsg, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000,
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(errorMsg, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(errorMsg, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000,
         });
       }

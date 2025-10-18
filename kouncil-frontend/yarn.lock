@@ -1637,6 +1637,16 @@
   resolved "https://registry.yarnpkg.com/@consdata/eslint-config/-/eslint-config-0.21.0.tgz#67610384af577860477f8403e4a939c745e1958f"
   integrity sha512-Kc0oUL9HjKloDyZSbXuHJmtvKGtg+Y1StrXlplZvWIeBgbH2u6ir8MsXR1Ymn/CL+BX9wM58Ny99j2p+GQP4Yg==
 
+"@consdata/logger-api@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@consdata/logger-api/-/logger-api-0.15.0.tgz#f3c28f484ebe7b199c87a988c1ebfd6fa42282f1"
+  integrity sha512-CzurbRYuxNViKUawrKDVHAa+EfK/Cyd8W/nWhL9BTT75A0gu+gL+gB8pNc9eVbmUAHxc0QkUrZGbpXYyeSrbKg==
+
+"@consdata/logger-console@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@consdata/logger-console/-/logger-console-0.15.0.tgz#2b7ea2933e7b31ac28c959f3d3177f742fe1312e"
+  integrity sha512-UDytdadGhDei8flysjr9sLf/YZDY3MmNDcFPwLpoBNckCT/13nBmSP+RLixNnG1hFOZNQLdAYpfQSbX4YvkjSQ==
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"

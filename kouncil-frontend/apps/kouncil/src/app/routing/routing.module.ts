@@ -1,5 +1,5 @@
-import { inject, Injectable, NgModule } from '@angular/core';
-import { TopicComponent } from '../topic/topic.component';
+import {inject, Injectable, NgModule} from '@angular/core';
+import {TopicComponent} from '../topic/topic.component';
 import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
@@ -7,32 +7,39 @@ import {
   RouterModule,
   Routes
 } from '@angular/router';
-import { TrackComponent } from '../track/track.component';
-import { BrokersComponent } from '../brokers/brokers.component';
-import { ConsumerGroupsComponent } from '../consumers/consumer-groups/consumer-groups.component';
-import { ConsumerGroupComponent } from '../consumers/consumer-group/consumer-group.component';
-import { TopicsComponent } from '@app/feat-topics';
-import { LoginComponent } from '../login/login.component';
-import { AuthGuard } from './auth.guard';
-import { MainComponent } from '../main/main.component';
-import { ConfigResolver } from './config-resolver';
-import { ChangePasswordComponent } from '../login/change-password.component';
-import { MainLoginComponent } from '../login/main-login.component';
-import { OAuthRedirectComponent } from '../oauth/o-auth-redirect.component';
-import { SystemFunctionName } from '@app/common-auth';
-import { AccessDeniedComponent } from '../access-denied/access-denied.component';
-import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
-import { SchemasComponent } from '../schemas/list/schemas.component';
-import { SchemaEditComponent } from '../schemas/form/edit/schema-edit.component';
-import { SchemaCreateComponent } from '../schemas/form/create/schema-create.component';
-import { SchemaDetailsComponent } from '../schemas/form/details/schema-details.component';
+import {TrackComponent} from '../track/track.component';
+import {BrokersComponent} from '../brokers/brokers.component';
+import {ConsumerGroupsComponent} from '../consumers/consumer-groups/consumer-groups.component';
+import {ConsumerGroupComponent} from '../consumers/consumer-group/consumer-group.component';
+import {TopicsComponent} from '@app/feat-topics';
+import {LoginComponent} from '../login/login.component';
+import {AuthGuard} from './auth.guard';
+import {MainComponent} from '../main/main.component';
+import {ConfigResolver} from './config-resolver';
+import {ChangePasswordComponent} from '../login/change-password.component';
+import {MainLoginComponent} from '../login/main-login.component';
+import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
+import {SystemFunctionName} from '@app/common-auth';
+import {AccessDeniedComponent} from '../access-denied/access-denied.component';
+import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
+import {SchemasComponent} from '../schemas/list/schemas.component';
+import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
+import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
 import {
   ClusterFormCreateComponent,
   ClusterFormEditComponent,
   ClusterFormViewComponent,
   ClustersComponent
 } from '@app/feat-clusters';
-import { UserGroupsComponent, UserGroupsFunctionsMatrixComponent } from '@app/feat-user-groups';
+import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
+import {
+  PoliciesComponent,
+  PolicyFormCreateComponent,
+  PolicyFormEditComponent,
+  PolicyFormViewComponent
+} from '@app/feat-data-masking';
+import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -123,7 +130,10 @@ const routes: Routes = [
       {
         path: 'access-denied',
         component: AccessDeniedComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          hideClusterContext: true
+        }
       },
       {
         path: 'schemas',
@@ -162,7 +172,8 @@ const routes: Routes = [
         component: ClustersComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_LIST]
+          roles: [SystemFunctionName.CLUSTER_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -170,7 +181,8 @@ const routes: Routes = [
         component: ClusterFormCreateComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_CREATE]
+          roles: [SystemFunctionName.CLUSTER_CREATE],
+          hideClusterContext: true
         }
       },
       {
@@ -178,7 +190,8 @@ const routes: Routes = [
         component: ClusterFormViewComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_DETAILS]
+          roles: [SystemFunctionName.CLUSTER_DETAILS],
+          hideClusterContext: true
         }
       },
       {
@@ -186,7 +199,8 @@ const routes: Routes = [
         component: ClusterFormEditComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_UPDATE]
+          roles: [SystemFunctionName.CLUSTER_UPDATE],
+          hideClusterContext: true
         }
       },
       {
@@ -194,7 +208,8 @@ const routes: Routes = [
         component: UserGroupsComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS_LIST]
+          roles: [SystemFunctionName.USER_GROUPS_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -202,26 +217,65 @@ const routes: Routes = [
         component: UserGroupsFunctionsMatrixComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS]
+          roles: [SystemFunctionName.USER_GROUPS],
+          hideClusterContext: true
+        }
+      },
+      {
+        path: 'data-masking-policies',
+        component: PoliciesComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_LIST]
+        }
+      },
+      {
+        path: 'data-masking-policy',
+        component: PolicyFormCreateComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_CREATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id/edit',
+        component: PolicyFormEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_UPDATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id',
+        component: PolicyFormViewComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_DETAILS]
         }
       }
     ]
   },
   {
     path: '', component: MainLoginComponent,
+    resolve: {
+      config: PermissionsConfigResolver
+    },
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard] }
+      {path: 'login', component: LoginComponent},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}
     ]
   },
-  { path: 'oauth', component: OAuthRedirectComponent },
+  {path: 'oauth', component: OAuthRedirectComponent},
   {
     path: '', component: MainComponent,
     children: [
       {
         path: '**',
         pathMatch: 'full',
-        component: PageNotFoundComponent
+        component: PageNotFoundComponent,
+        data: {
+          hideClusterContext: true
+        }
       }
     ]
   }

@@ -1,0 +1,61 @@
+@use '../../../../styles/buttons';
+@import "../../../../styles/palette";
+@import "../../../../styles/spaces";
+
+.actions {
+  float: right;
+  margin-top: $space-5;
+
+  .action-button-white {
+    margin-right: $space-5;
+
+    .test-compatibility-btn-content {
+      display: flex;
+      place-items: center;
+      gap: 12px;
+
+      .small-spinner {
+        width: 24px !important;
+        height: 24px !important;
+      }
+
+      .test-compatibility-icon {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .test-connection-button {
+    width: 250px;
+  }
+
+  .valid {
+    @include buttons.button-green;
+  }
+
+  .invalid {
+    @include buttons.button-red;
+  }
+
+  .action-button-white:disabled, .action-button-blue:disabled {
+    @include buttons.button-disabled;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.action-button-blue {
+  @include buttons.button-blue;
+}
+
+.action-button-white {
+  @include buttons.button-white;
+  height: 40px !important;
+}
+
+.mat-icon {
+  margin: $space-0 !important;
+  color: inherit;
+}

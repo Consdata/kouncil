@@ -18,7 +18,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {Observable, Subscription} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 
 @Component({
   standalone: true,
@@ -97,8 +97,8 @@ export class SurveyComponent implements OnInit, OnDestroy {
       this.surveyService.answerSurvey$(this.questionComponents, this.router.url);
     } else {
       this.snackbar.openFromComponent(SnackBarComponent, {
-        data: new SnackBarData(`Answer required questions`, 'snackbar-error', 'Close'),
-        panelClass: ['snackbar'],
+        data: new SnackBarData(`Answer required questions`, SnackBarType.ERROR),
+        panelClass: ['snackbar', 'snackbar-container-error'],
         duration: 5000
       });
     }

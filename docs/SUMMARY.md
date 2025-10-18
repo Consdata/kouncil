@@ -4,7 +4,6 @@
 ## Getting started
 * Installation
   * [Deployment](installation/DEPLOYMENT.md)
-  * [Development](installation/DEVELOPMENT.md)
 * Configuration
   * [Authentication](configuration/security/AUTHENTICATION.md)
     * [Local authentication](configuration/security/LOCAL_AUTHENTICATION.md)
@@ -30,6 +29,8 @@
 
 
 * [Features](FEATURES.md)
+  * [Data masking](features/DATA_MASKING.md)
+  * [Onboarding](features/ONBOARDING.md)
 
 
 * [FAQ](FAQ.md)

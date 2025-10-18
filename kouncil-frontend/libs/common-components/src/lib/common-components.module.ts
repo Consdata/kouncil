@@ -23,6 +23,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {RadioFieldComponent} from './radio-field/radio-field.component';
 import {NumberFieldComponent} from './number-field/number-field.component';
 import {MatButtonModule} from '@angular/material/button';
+import {CheckboxFieldComponent} from './checkbox-field/checkbox-field.component';
 import {DateTimeFieldComponent} from './date-time-field/date-time-field.component';
 
 @NgModule({
@@ -54,6 +55,7 @@ import {DateTimeFieldComponent} from './date-time-field/date-time-field.componen
     SelectFieldComponent,
     RadioFieldComponent,
     NumberFieldComponent,
+    CheckboxFieldComponent,
     DateTimeFieldComponent
   ],
   exports: [
@@ -66,6 +68,7 @@ import {DateTimeFieldComponent} from './date-time-field/date-time-field.componen
     SelectFieldComponent,
     RadioFieldComponent,
     NumberFieldComponent,
+    CheckboxFieldComponent,
     DateTimeFieldComponent
   ]
 })

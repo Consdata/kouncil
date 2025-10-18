@@ -13,4 +13,5 @@ export {PasswordFieldComponent} from './lib/password-field/password-field.compon
 export {SelectFieldComponent} from './lib/select-field/select-field.component';
 export {RadioFieldComponent} from './lib/radio-field/radio-field.component';
 export {NumberFieldComponent} from './lib/number-field/number-field.component';
+export {CheckboxFieldComponent} from './lib/checkbox-field/checkbox-field.component';
 export {DateTimeFieldComponent} from './lib/date-time-field/date-time-field.component';

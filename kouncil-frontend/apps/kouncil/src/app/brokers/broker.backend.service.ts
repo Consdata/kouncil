@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BrokerService} from './broker.service';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {BrokerConfig} from './broker';
 import {Brokers} from './brokers';
 import {HttpClient, HttpParams} from '@angular/common/http';
@@ -10,7 +10,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 })
 export class BrokerBackendService implements BrokerService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getBrokerConfig$(serverId: string, id: string): Observable<BrokerConfig[]> {
     const params = new HttpParams().set('serverId', serverId);
@@ -18,7 +19,10 @@ export class BrokerBackendService implements BrokerService {
   }
 
   getBrokers$(serverId: string): Observable<Brokers> {
-    const params = new HttpParams().set('serverId', serverId);
-    return this.http.get<Brokers>(`/api/brokers`, {params});
+    if (serverId) {
+      const params = new HttpParams().set('serverId', serverId);
+      return this.http.get<Brokers>(`/api/brokers`, {params});
+    }
+    return of({brokers: []});
   }
 }
