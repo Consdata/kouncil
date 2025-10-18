@@ -128,6 +128,9 @@ import {Router} from '@angular/router';
 import {SchemaFormActionsComponent} from './schemas/form/form/schema-form-actions.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {
+  ConsumerGroupResetOffsetComponent
+} from './consumers/consumer-group/consumer-group-reset-offset.component';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -203,7 +206,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SchemaFormComponent,
     SchemaFormActionsComponent,
     SidebarMenuItemComponent,
-    BannerComponent
+    BannerComponent,
+    ConsumerGroupResetOffsetComponent
   ],
   imports: [
     BrowserModule,

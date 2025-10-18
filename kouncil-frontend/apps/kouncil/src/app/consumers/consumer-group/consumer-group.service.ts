@@ -6,11 +6,13 @@ import {environment} from '../../../environments/environment';
 import {ConsumerGroupBackendService} from './consumer-group.backend.service';
 import {ConsumerGroupDemoService} from './consumer-group.demo.service';
 import {Backend, ConsumerGroupResponse} from '@app/common-model';
+import {ConsumerGroupResetOffset} from './consumer-group-reset-offset.model';
 
 @Injectable()
 export abstract class ConsumerGroupService {
 
   abstract getConsumerGroup$(serverId: string, groupId: string): Observable<ConsumerGroupResponse>;
+  abstract resetOffset$(data: ConsumerGroupResetOffset): Observable<void>;
 }
 
 export function consumerGroupServiceFactory(http: HttpClient): ConsumerGroupService {

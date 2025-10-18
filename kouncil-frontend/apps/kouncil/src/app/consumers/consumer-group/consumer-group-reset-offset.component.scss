@@ -1,0 +1,29 @@
+@use '../../../../../../apps/kouncil/src/styles/buttons';
+@use '../../../../../../apps/kouncil/src/styles/spaces';
+
+:host {
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .close-icon {
+      display: flex;
+    }
+  }
+
+  mat-dialog-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .action-button-white {
+      @include buttons.button-white;
+    }
+
+    .action-button-blue {
+      @include buttons.button-blue;
+    }
+  }
+}
