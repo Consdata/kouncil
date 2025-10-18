@@ -49,7 +49,7 @@ export class TrackDemoService extends TrackService {
     traceId: string,
     userId: string
   ): MessageData {
-    const key = Crypto.uuidv4();
+    const key = trackFilter.value ? trackFilter.value : Crypto.uuidv4();
     const event = RandomUtils.createRandomEvent();
     const offset = RandomUtils.randomInt(100000000, 200000000);
     let topic;
@@ -91,7 +91,7 @@ export class TrackDemoService extends TrackService {
       partition: partition,
       timestamp: date,
       headers: headers,
-      topicName: topic.name
+      topic: topic.name
     } as MessageData;
   }
 }
