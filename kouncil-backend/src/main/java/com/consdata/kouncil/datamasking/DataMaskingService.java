@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @Slf4j
@@ -21,16 +22,16 @@ public class DataMaskingService {
     private final PolicyRepository repository;
     private final ClusterRepository clusterRepository;
 
-    public String maskTopicMessage(String message, String topic, String clusterId) {
-        List<Policy> list = getPoliciesForClusterAndTopic(topic, clusterId);
-
-        for (Policy policy : list) {
-            message = PolicyApplier.apply(policy, message);
+    public String maskTopicMessage(String message, List<Policy> policies) {
+        if (StringUtils.hasLength(message)) {
+            for (Policy policy : policies) {
+                message = PolicyApplier.apply(policy, message);
+            }
         }
         return message;
     }
 
-    private List<Policy> getPoliciesForClusterAndTopic(String topic, String clusterId) {
+    public List<Policy> getPoliciesForClusterAndTopic(String topic, String clusterId) {
         Map<Long, Cluster> clusters = StreamSupport.stream(clusterRepository.findAll().spliterator(), false)
                 .collect(Collectors.toMap(Cluster::getId, cluster -> cluster));
         Set<Policy> policies = StreamSupport.stream(repository.findAll().spliterator(), false)

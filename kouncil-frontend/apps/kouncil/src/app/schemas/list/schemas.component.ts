@@ -6,7 +6,7 @@ import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-u
 import {first} from 'rxjs/operators';
 import {ConfirmService} from '@app/feat-confirm';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {Router} from '@angular/router';
@@ -18,7 +18,8 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
     <div class="main-container">
       <div class="toolbar-container">
         <div class="toolbar">
-          <app-common-autocomplete [control]="topicFilterControl"
+          <app-common-autocomplete [form]="topicFilterForm"
+                                   [controlName]="'topicFilterControl'"
                                    [data]="topicList"
                                    [placeholder]="'Topics'"
                                    [emptyFilteredMsg]="'No topics found'"
@@ -142,7 +143,10 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
 
   topicList: SelectableItem[] = [];
   selectedTopics: string[] = [];
-  topicFilterControl: FormControl = new FormControl();
+
+  topicFilterForm: FormGroup = new FormGroup({
+    topicFilterControl: new FormControl()
+  });
 
   constructor(private progressBarService: ProgressBarService,
               private schemaRegistry: SchemaRegistryService,
@@ -190,7 +194,7 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
 
   clearFilters(): void {
     this.selectedTopics = [];
-    this.topicFilterControl.setValue([]);
+    this.topicFilterForm.controls['topicFilterControl'].setValue([]);
     this.topicList.forEach(topic => topic.selected = false);
   }
 

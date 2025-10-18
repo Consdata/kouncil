@@ -24,6 +24,15 @@ create table policy_resource
         constraint fkltj5s392jlbr2mshmoyn3vd2a references policy
 );
 
+create table policy_user_groups
+(
+    policy_id     bigint not null
+        constraint fk686dk5bktf9hn4f706ffv9f6 references policy,
+    user_group_id bigint not null
+        constraint fkaust33y812ppy3a44csmvggyr references user_group,
+    primary key (policy_id, user_group_id)
+);
+
 CREATE SEQUENCE SEQ_POLICY MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
 CREATE SEQUENCE SEQ_POLICY_RESOURCE MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
 CREATE SEQUENCE SEQ_POLICY_FIELD MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
