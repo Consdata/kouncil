@@ -7,7 +7,7 @@ import {
 } from './consumer-group-reset-offset.model';
 import {SelectableItem} from '@app/common-components';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
@@ -88,8 +88,8 @@ export class ConsumerGroupResetOffsetComponent {
       next: () => {
         this.dialog.closeAll();
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`The offsets for consumer group ${this.data.groupId} have been successfully reset.`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`The offsets for consumer group ${this.data.groupId} have been successfully reset.`, SnackBarType.SUCCESS, ''),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000,
         });
       }
