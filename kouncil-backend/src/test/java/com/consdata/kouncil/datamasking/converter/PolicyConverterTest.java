@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.consdata.kouncil.datamasking.dto.PolicyDto;
 import com.consdata.kouncil.datamasking.dto.PolicyFieldDto;
 import com.consdata.kouncil.datamasking.dto.PolicyResourceDto;
-import com.consdata.kouncil.model.datamasking.MaskingType;
 import com.consdata.kouncil.model.datamasking.Policy;
 import java.util.HashSet;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ class PolicyConverterTest {
         policyDto.setId(1L);
         policyDto.setName("test");
         policyDto.setApplyToAllResources(false);
-        policyDto.setMaskingType(MaskingType.ALL);
         policyDto.setFields(new HashSet<>());
         policyDto.getFields().add(createField(1L));
         policyDto.getFields().add(createField(2L));
@@ -35,7 +33,6 @@ class PolicyConverterTest {
                 () -> assertThat(policy.getId()).isEqualTo(policyDto.getId()),
                 () -> assertThat(policy.getName()).isEqualTo(policyDto.getName()),
                 () -> assertThat(policy.getApplyToAllResources()).isEqualTo(policyDto.getApplyToAllResources()),
-                () -> assertThat(policy.getMaskingType()).isEqualTo(policyDto.getMaskingType()),
                 () -> assertThat(policy.getFields()).hasSize(policyDto.getFields().size()),
                 () -> assertThat(policy.getResources()).hasSize(policyDto.getResources().size())
         );

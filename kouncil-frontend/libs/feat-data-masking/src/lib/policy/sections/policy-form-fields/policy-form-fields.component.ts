@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
 import {ViewMode} from '@app/common-utils';
-import {FindRule} from '../../../policy.model';
+import {MaskingType} from '../../../policy.model';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {SelectableItem} from '@app/common-components';
 
@@ -28,10 +28,10 @@ import {SelectableItem} from '@app/common-components';
                                  [placeholder]="'Regex or full field name. Use dot (.) as field separator if need path to access your field.'">
           </app-common-text-field>
 
-
-          <app-common-select-field [form]="fieldForm" class="full-width"
-                                   [options]="findRuleOptions"
-                                   [controlName]="'findRule'"></app-common-select-field>
+          <app-common-select-field [form]="fieldForm"
+                                   [placeholder]="'Masking type'"
+                                   class="full-width" [options]="maskingTypeOptions"
+                                   [controlName]="'maskingType'"></app-common-select-field>
 
           <button class="action-button-white" type="button" mat-button [disableRipple]="true"
                   (click)="removeField(i)" *ngIf="viewMode !== ViewMode.VIEW">
@@ -52,8 +52,8 @@ export class PolicyFormFieldsComponent implements AfterViewInit{
   @Input() policyForm: FormGroup;
   ViewMode: typeof ViewMode = ViewMode;
 
-  findRuleOptions: Array<SelectableItem> = Object.keys(FindRule)
-  .map(findRule => new SelectableItem(FindRule[findRule], findRule, false));
+  maskingTypeOptions: Array<SelectableItem> = Object.keys(MaskingType)
+  .map(maskingType => new SelectableItem(MaskingType[maskingType], maskingType, false));
 
   constructor() {
   }
@@ -71,7 +71,7 @@ export class PolicyFormFieldsComponent implements AfterViewInit{
   addField(): void {
     this.fields.push(new FormGroup({
       field: new FormControl(),
-      findRule: new FormControl()
+      maskingType: new FormControl()
     }));
   }
 
