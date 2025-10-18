@@ -25,6 +25,16 @@
 
 .cdk-overlay-pane {
   animation: slideFromRight pallete.$default-transition-time forwards 0s ease-in;
+
+  .autocomplete-panel-min-width {
+    min-width: 212px;
+  }
+
+  @media screen and (max-width: 1500px) {
+    .autocomplete-panel-min-width {
+      min-width: 180px;
+    }
+  }
 }
 
 .cdk-overlay-container > * {
