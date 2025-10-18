@@ -30,7 +30,7 @@
 
 
 * [Features](FEATURES.md)
-
+  * [Data masking](features/DATA_MASKING.md)
 
 * [FAQ](FAQ.md)
 
