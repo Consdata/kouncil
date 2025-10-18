@@ -25,9 +25,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -38,15 +40,11 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Ssl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-/**
- * @deprecated will be removed in the future.
- */
-@Deprecated
-@Component
 @Data
+@Slf4j
+@Component
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix = "kouncil")
-@Slf4j
 public class ClusterConfigReader {
 
     protected static final String SPECIAL_CHARS = "[^a-zA-Z0-9\\s]";
@@ -66,74 +64,97 @@ public class ClusterConfigReader {
     public void init() {
         List<Cluster> clustersToSave = new ArrayList<>();
         Iterable<Cluster> all = repository.findAll();
-        //get saved cluster names to check if some clusters are not saved already
-        List<String> clusterNames = StreamSupport.stream(all.spliterator(), false).map(Cluster::getName).toList();
+        //get saved cluster names to check if some clusters are saved already
+        Map<String, Cluster> clustersMap = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toMap(Cluster::getName, cluster -> cluster));
 
         if (clusters != null) {
-            initializeAdvancedConfig(clustersToSave, clusterNames);
+            initializeAdvancedConfig(clustersToSave, clustersMap);
         } else {
-            initializeSimpleConfig(clustersToSave, clusterNames);
+            initializeSimpleConfig(clustersToSave, clustersMap);
         }
 
         repository.saveAll(clustersToSave);
     }
 
-    private void initializeAdvancedConfig(List<Cluster> clustersToSave, List<String> clusterNames) {
-        clusters.forEach(clusterConfig -> {
-            if (!clusterNames.contains(clusterConfig.getName())) {
-                Cluster cluster = new Cluster();
-                cluster.setName(clusterConfig.getName());
+    private void initializeAdvancedConfig(List<Cluster> clustersToSave, Map<String, Cluster> clustersMap) {
+        this.clusters.forEach(clusterConfig -> {
+            Cluster cluster = new Cluster();
+            String clusterName = clusterConfig.getName();
+            cluster.setName(clusterName);
 
-                //Global JMX properties
-                cluster.setGlobalJmxPort(clusterConfig.getJmxPort());
-                cluster.setGlobalJmxUser(clusterConfig.getJmxUser());
-                cluster.setGlobalJmxPassword(clusterConfig.getJmxPassword());
+            //Global JMX properties
+            cluster.setGlobalJmxPort(clusterConfig.getJmxPort());
+            cluster.setGlobalJmxUser(clusterConfig.getJmxUser());
+            cluster.setGlobalJmxPassword(clusterConfig.getJmxPassword());
 
-                cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
-                cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
-                KafkaProperties kafkaProperties = clusterConfig.getKafka();
+            cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
+            cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
+            KafkaProperties kafkaProperties = clusterConfig.getKafka();
 
-                if (kafkaProperties.getSecurity().getProtocol() != null) {
-                    setClusterSSLConfig(cluster.getClusterSecurityConfig(), kafkaProperties.getSsl(), kafkaProperties.getSecurity().getProtocol());
-                }
-                setClusterSASLConfig(cluster.getClusterSecurityConfig(), clusterConfig.getBrokers());
-                setBrokers(cluster, clusterConfig);
-                setClusterSchemaRegistry(cluster, clusterConfig);
+            if (kafkaProperties.getSecurity().getProtocol() != null) {
+                setClusterSSLConfig(cluster.getClusterSecurityConfig(), kafkaProperties.getSsl(), kafkaProperties.getSecurity().getProtocol());
+            }
+            setClusterSASLConfig(cluster.getClusterSecurityConfig(), clusterConfig.getBrokers());
+            setBrokers(cluster, clusterConfig);
+            setClusterSchemaRegistry(cluster, clusterConfig);
 
+            if (!clustersMap.containsKey(clusterName)) {
                 clustersToSave.add(cluster);
             } else {
-                log.warn("Cluster with name={} already exists", clusterConfig.getName());
+                log.warn("Cluster with name={} already exists", clusterName);
+                if (!cluster.equals(clustersMap.get(clusterName))) {
+                    log.warn("Cluster config changed");
+
+                    cluster.setId(clustersMap.get(clusterName).getId());
+                    if (cluster.getSchemaRegistry() != null && clustersMap.get(clusterName).getSchemaRegistry() != null) {
+                        cluster.getSchemaRegistry().setId(clustersMap.get(clusterName).getSchemaRegistry().getId());
+                    }
+
+                    clustersToSave.add(cluster);
+                }
             }
         });
     }
 
-    private void initializeSimpleConfig(List<Cluster> clustersToSave, List<String> clusterNames) {
+    private void initializeSimpleConfig(List<Cluster> clustersToSave, Map<String, Cluster> clustersMap) {
         for (String initialBootstrapServer : initialBootstrapServers) {
             String clusterId = sanitizeClusterId(initialBootstrapServer);
-            if (!clusterNames.contains(clusterId)) {
-                if (initialBootstrapServer.contains(HOST_PORT_SEPARATOR)) {
-                    Cluster cluster = new Cluster();
-                    cluster.setName(clusterId);
-                    cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
-                    cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
-                    cluster.setBrokers(new HashSet<>());
 
-                    Broker broker = new Broker();
-                    broker.setBootstrapServer(initialBootstrapServer);
-                    cluster.getBrokers().add(broker);
+            Cluster cluster = new Cluster();
+            if (initialBootstrapServer.contains(HOST_PORT_SEPARATOR)) {
+                cluster.setName(clusterId);
+                cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
+                cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
+                cluster.setBrokers(new HashSet<>());
 
-                    if (isNotBlank(schemaRegistryUrl)) {
-                        SchemaRegistry schemaRegistry = new SchemaRegistry();
-                        schemaRegistry.setUrl(schemaRegistryUrl);
-                        cluster.setSchemaRegistry(schemaRegistry);
-                    }
+                Broker broker = new Broker();
+                broker.setBootstrapServer(initialBootstrapServer);
+                cluster.getBrokers().add(broker);
 
-                    clustersToSave.add(cluster);
-                } else {
-                    throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
+                if (isNotBlank(schemaRegistryUrl)) {
+                    SchemaRegistry schemaRegistry = new SchemaRegistry();
+                    schemaRegistry.setUrl(schemaRegistryUrl);
+                    cluster.setSchemaRegistry(schemaRegistry);
                 }
+
+            } else {
+                throw new KouncilRuntimeException(format("Could not parse bootstrap server %s", initialBootstrapServer));
+            }
+
+            if (!clustersMap.containsKey(clusterId)) {
+                log.info("Adding cluster with name={}", clusterId);
+                clustersToSave.add(cluster);
             } else {
                 log.warn("Cluster with name={} already exists", clusterId);
+                if (cluster.equals(clustersMap.get(clusterId))) {
+                    log.warn("Cluster config changed");
+
+                    cluster.setId(clustersMap.get(clusterId).getId());
+                    if (cluster.getSchemaRegistry() != null && clustersMap.get(clusterId).getSchemaRegistry() != null) {
+                        cluster.getSchemaRegistry().setId(clustersMap.get(clusterId).getSchemaRegistry().getId());
+                    }
+                    clustersToSave.add(cluster);
+                }
             }
         }
     }

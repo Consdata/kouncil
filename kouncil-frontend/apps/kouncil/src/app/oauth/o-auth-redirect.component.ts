@@ -2,7 +2,8 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
-import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {AuthService} from '@app/common-auth';
+import {LoginUtil} from '../login/login-util';
 
 @Component({
   selector: 'app-oauth-redirect',
@@ -23,21 +24,15 @@ export class OAuthRedirectComponent implements OnInit {
     });
   }
 
-  private fetchToken(params: Params) {
+  private fetchToken(params: Params): void {
     this.service.fetchToken$(params['code'], params['state'], localStorage.getItem('selectedProvider')).subscribe(() => {
       this.fetchUserRoles();
     });
   }
 
-  private fetchUserRoles() {
+  private fetchUserRoles(): void {
     this.service.getUserRoles$().subscribe(() => {
-      if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
-        this.router.navigate(['/topics']);
-      } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
-        this.router.navigate(['/brokers']);
-      } else {
-        this.router.navigate(['/access-denied']);
-      }
+      LoginUtil.redirectUserAfterLogin(this.service, this.router);
     });
   }
 }

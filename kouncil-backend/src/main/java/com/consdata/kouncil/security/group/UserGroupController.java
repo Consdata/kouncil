@@ -45,7 +45,7 @@ public class UserGroupController {
     }
 
     @RolesAllowed({SystemFunctionNameConstants.USER_GROUP_CREATE, SystemFunctionNameConstants.USER_GROUP_UPDATE})
-    @PostMapping(path = "/isUserGroupCodeUnique")
+    @PostMapping(path = "/is-user-group-code-unique")
     public boolean isUserGroupCodeUnique(@RequestBody UserGroupDto userGroupDto) {
         return userGroupService.isUserGroupCodeUnique(userGroupDto.getId(), userGroupDto.getCode());
     }

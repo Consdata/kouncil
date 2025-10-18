@@ -1,16 +1,14 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {AuthService} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {LoginUtil} from './login-util';
 
 @Component({
   selector: 'app-change-password',
   template: `
-    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
-                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
-    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
-                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+    <app-common-login-icon></app-common-login-icon>
 
     <app-common-change-password (changePasswordEvent)="changePassword($event)"
                                 (skipChangeEvent)="skipChange()"></app-common-change-password>
@@ -37,11 +35,7 @@ export class ChangePasswordComponent {
     });
   }
 
-  private navigateToDefaultPage() {
-    if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
-      this.router.navigate(['/topics']);
-    } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
-      this.router.navigate(['/brokers']);
-    }
+  private navigateToDefaultPage(): void {
+    LoginUtil.redirectUserAfterLogin(this.service, this.router);
   }
 }
