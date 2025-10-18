@@ -506,3 +506,7 @@ mat-option > span {
   border: 1px solid pallete.$main-20;
   border-radius: 8px !important;
 }
+
+.multiline-tooltip {
+  white-space: pre-line;
+}
