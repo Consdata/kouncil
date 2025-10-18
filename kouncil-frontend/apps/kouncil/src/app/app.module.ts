@@ -35,7 +35,6 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
@@ -65,6 +64,8 @@ import {
   clustersServiceFactory,
   firstTimeAppLaunchServiceFactory,
   functionsServiceFactory,
+  policiesServiceFactory,
+  policyServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
   sendServiceFactory,
@@ -116,6 +117,8 @@ import {
 } from '@app/feat-user-groups';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
+import {FeatDataMaskingModule, PoliciesService, PolicyService} from '@app/feat-data-masking';
+import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
 import {BannerComponent} from './banner/banner.component';
 import {
   FeatFirstTimeAppLaunchModule,
@@ -176,7 +179,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     ConsumerGroupComponent,
     TopicPartitionsComponent,
     TopicPaginationComponent,
-    BreadcrumbComponent,
     BrokerComponent,
     MessageViewComponent,
     FileSizePipe,
@@ -239,6 +241,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatClustersModule,
     FeatUserGroupsModule,
     FeatNotificationsModule,
+    FeatDataMaskingModule,
+    FeatBreadcrumbModule,
     FeatFirstTimeAppLaunchModule
   ],
   providers: [
@@ -345,6 +349,16 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     {
       provide: UserGroupService,
       useFactory: userGroupServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: PoliciesService,
+      useFactory: policiesServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: PolicyService,
+      useFactory: policyServiceFactory,
       deps: [HttpClient]
     },
     {

@@ -1,6 +1,7 @@
 package com.consdata.kouncil.config.security.ad;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -35,7 +35,7 @@ public class ActiveDirectoryWebSecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();

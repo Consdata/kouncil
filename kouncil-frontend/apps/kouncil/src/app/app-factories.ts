@@ -33,6 +33,14 @@ import {
   UserGroupsService
 } from '@app/feat-user-groups';
 import {
+  PoliciesBackendService,
+  PoliciesDemoService,
+  PoliciesService,
+  PolicyBackendService,
+  PolicyDemoService,
+  PolicyService
+} from '@app/feat-data-masking';
+import {
   FirstTimeAppLaunchBackendService,
   FirstTimeAppLaunchDemoService,
   FirstTimeAppLaunchService
@@ -159,6 +167,28 @@ export function userGroupServiceFactory(http: HttpClient): UserGroupService {
     case Backend.DEMO:
     default:
       return new UserGroupDemoService();
+  }
+}
+
+export function policiesServiceFactory(http: HttpClient): PoliciesService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new PoliciesBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new PoliciesDemoService();
+  }
+}
+
+export function policyServiceFactory(http: HttpClient): PolicyService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new PolicyBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new PolicyDemoService();
   }
 }
 

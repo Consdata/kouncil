@@ -33,6 +33,12 @@ import {
   ClustersComponent
 } from '@app/feat-clusters';
 import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
+import {
+  PoliciesComponent,
+  PolicyFormCreateComponent,
+  PolicyFormEditComponent,
+  PolicyFormViewComponent
+} from '@app/feat-data-masking';
 import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
@@ -124,7 +130,10 @@ const routes: Routes = [
       {
         path: 'access-denied',
         component: AccessDeniedComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          hideClusterContext: true
+        }
       },
       {
         path: 'schemas',
@@ -163,7 +172,8 @@ const routes: Routes = [
         component: ClustersComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_LIST]
+          roles: [SystemFunctionName.CLUSTER_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -171,7 +181,8 @@ const routes: Routes = [
         component: ClusterFormCreateComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_CREATE]
+          roles: [SystemFunctionName.CLUSTER_CREATE],
+          hideClusterContext: true
         }
       },
       {
@@ -179,7 +190,8 @@ const routes: Routes = [
         component: ClusterFormViewComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_DETAILS]
+          roles: [SystemFunctionName.CLUSTER_DETAILS],
+          hideClusterContext: true
         }
       },
       {
@@ -187,7 +199,8 @@ const routes: Routes = [
         component: ClusterFormEditComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_UPDATE]
+          roles: [SystemFunctionName.CLUSTER_UPDATE],
+          hideClusterContext: true
         }
       },
       {
@@ -195,7 +208,8 @@ const routes: Routes = [
         component: UserGroupsComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS_LIST]
+          roles: [SystemFunctionName.USER_GROUPS_LIST],
+          hideClusterContext: true
         }
       },
       {
@@ -203,7 +217,40 @@ const routes: Routes = [
         component: UserGroupsFunctionsMatrixComponent,
         canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS]
+          roles: [SystemFunctionName.USER_GROUPS],
+          hideClusterContext: true
+        }
+      },
+      {
+        path: 'data-masking-policies',
+        component: PoliciesComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_LIST]
+        }
+      },
+      {
+        path: 'data-masking-policy',
+        component: PolicyFormCreateComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_CREATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id/edit',
+        component: PolicyFormEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_UPDATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id',
+        component: PolicyFormViewComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_DETAILS]
         }
       }
     ]
@@ -214,18 +261,21 @@ const routes: Routes = [
       config: PermissionsConfigResolver
     },
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard] }
+      {path: 'login', component: LoginComponent},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}
     ]
   },
-  { path: 'oauth', component: OAuthRedirectComponent },
+  {path: 'oauth', component: OAuthRedirectComponent},
   {
     path: '', component: MainComponent,
     children: [
       {
         path: '**',
         pathMatch: 'full',
-        component: PageNotFoundComponent
+        component: PageNotFoundComponent,
+        data: {
+          hideClusterContext: true
+        }
       }
     ]
   }
