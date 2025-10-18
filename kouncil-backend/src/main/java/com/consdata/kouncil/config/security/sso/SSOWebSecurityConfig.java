@@ -61,16 +61,15 @@ public class SSOWebSecurityConfig {
                     return configuration;
                 }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path",
+                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/sso-providers", "/api/active-provider", "/api/context-path",
                                 "/api/permissions-not-defined", "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
                         .userInfoEndpoint(userInfo -> userInfo.userService(customUserService).userAuthoritiesMapper(this.authoritiesMapper()))
-                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
                 )
-                .exceptionHandling(handling-> handling.authenticationEntryPoint(this::authenticationEntryPoint));
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 
         return http.build();
     }

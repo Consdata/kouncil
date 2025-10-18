@@ -24,7 +24,7 @@ public class AuthController {
     @Value("${kouncil.auth.active-provider}")
     private String activeProvider;
 
-    @GetMapping("/activeProvider")
+    @GetMapping("/active-provider")
     public String activeProvider() {
         return activeProvider;
     }
@@ -40,13 +40,13 @@ public class AuthController {
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
-    @GetMapping("/userRoles")
+    @GetMapping("/user-roles")
     public Set<String> getUserRoles() {
         return authService.getUserRoles();
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
-    @GetMapping("/installationId")
+    @GetMapping("/installation-id")
     public String getInstallationId() throws IOException {
         return authService.getInstallationId();
     }

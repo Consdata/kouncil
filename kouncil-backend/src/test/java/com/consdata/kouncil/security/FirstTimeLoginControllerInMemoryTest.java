@@ -52,14 +52,14 @@ class FirstTimeLoginControllerInMemoryTest {
             Files.delete(path);
         }
 
-        mockMvc.perform(get("/api/firstTimeLogin/admin"))
+        mockMvc.perform(get("/api/first-time-login/admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("true")));
 
-        mockMvc.perform(get("/api/skipChangeDefaultPassword"))
+        mockMvc.perform(get("/api/skip-change-default-password"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/firstTimeLogin/admin"))
+        mockMvc.perform(get("/api/first-time-login/admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("false")));
 
@@ -78,7 +78,7 @@ class FirstTimeLoginControllerInMemoryTest {
             Files.delete(path);
         }
 
-        mockMvc.perform(post("/api/changeDefaultPassword").content("newpassword").with(csrf()))
+        mockMvc.perform(post("/api/change-default-password").content("newpassword").with(csrf()))
                 .andExpect(status().isOk());
 
         assertAll(
