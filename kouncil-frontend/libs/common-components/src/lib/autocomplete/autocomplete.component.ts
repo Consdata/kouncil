@@ -9,37 +9,43 @@ import {
 import {SelectableItem} from '../selectable-item';
 import {map, Observable, startWith} from 'rxjs';
 import {MatCheckboxChange} from '@angular/material/checkbox';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-common-autocomplete',
   template: `
-    <mat-form-field [appearance]="'outline'" class="autocomplete-field">
-      <div class="autocomplete-input-container">
-        <mat-checkbox (change)="selectAll($event)">
-        </mat-checkbox>
-        <input matInput type="text" class="autocomplete-input"
-               [placeholder]="placeholder"
-               [formControl]="control"
-               [matAutocomplete]="autocomplete">
+    <div [formGroup]="form">
+      <div class="label" *ngIf="label">
+        {{ label }}
+        <span *ngIf="required && !readonly" class="requiredField">*</span>
       </div>
-    </mat-form-field>
-
-    <mat-autocomplete #autocomplete="matAutocomplete"
-                      [displayWith]="displayFn" [panelWidth]="panelWidth" (opened)="panelOpened()"
-                      (closed)="panelClosed()" [class]="class">
-      <mat-option disabled *ngIf="(filteredData$ | async)?.length === 0">
-        {{ emptyFilteredMsg }}
-      </mat-option>
-      <mat-option *ngFor="let item of filteredData$ | async" class="no-padding">
-        <div (click)="optionClicked($event, item)">
-          <mat-checkbox [checked]="item.selected" (change)="toggleSelection(item)"
-                        (click)="$event.stopPropagation()">
+      <mat-form-field [appearance]="'outline'" class="full-width">
+        <div class="autocomplete-input-container full-width">
+          <mat-checkbox (change)="selectAll($event)">
           </mat-checkbox>
-          {{ item.label }}
+          <input matInput type="text" class="autocomplete-input"
+                 [placeholder]="placeholder"
+                 [formControlName]="controlName"
+                 [matAutocomplete]="autocomplete">
         </div>
-      </mat-option>
-    </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-autocomplete #autocomplete="matAutocomplete"
+                        [displayWith]="displayFn" [panelWidth]="panelWidth" (opened)="panelOpened()"
+                        (closed)="panelClosed()" [class]="class">
+        <mat-option disabled *ngIf="(filteredData$ | async)?.length === 0">
+          {{ emptyFilteredMsg }}
+        </mat-option>
+        <mat-option *ngFor="let item of filteredData$ | async" class="no-padding">
+          <div (click)="optionClicked($event, item)">
+            <mat-checkbox [checked]="item.selected" (change)="toggleSelection(item)"
+                          (click)="$event.stopPropagation()">
+            </mat-checkbox>
+            {{ item.label }}
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./autocomplete.component.scss']
@@ -47,13 +53,17 @@ import {FormControl} from '@angular/forms';
 export class AutocompleteComponent implements OnInit {
 
   @Input() data: Array<SelectableItem> = [];
-  @Input() control: FormControl;
+  @Input() controlName: string;
+  @Input() form: FormGroup;
   @Input() placeholder: string;
+  @Input() label: string;
+  @Input() required: boolean;
+  @Input() readonly: boolean;
   @Input() emptyFilteredMsg: string;
   @Input() allElementsSelectedMsg: string = 'All selected';
   @Input() class: string;
   @Input() panelWidth: string | number;
-  @Output() selectedValueEvent: EventEmitter<Array<string>> = new EventEmitter();
+  @Output() selectedValueEvent: EventEmitter<Array<any>> = new EventEmitter();
 
   filteredData$: Observable<Array<SelectableItem>>;
   filterString: string = '';
@@ -62,17 +72,17 @@ export class AutocompleteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filteredData$ = this.control.valueChanges.pipe(
+    this.filteredData$ = this.getControl().valueChanges.pipe(
       startWith<string>(''),
       map(value => typeof value === 'string' ? value : this.filterString),
       map((filter: string) => this.filter(filter))
     );
   }
 
-  displayFn: () => string = (): string => this.control.getRawValue() != null
-    ? (this.data.length === this.control.getRawValue().filter(item => item.selected).length
-     ? this.allElementsSelectedMsg
-     : this.control.getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')) : '';
+  displayFn: () => string = (): string => this.getControl().getRawValue() != null
+    ? (this.data.length === this.getControl().getRawValue().filter(item => item.selected).length
+      ? this.allElementsSelectedMsg
+      : this.getControl().getRawValue().filter(item => item.selected).map((item: SelectableItem) => item.label).join(', ')) : '';
 
   filter: (filter: string) => Array<SelectableItem> = (filter: string): Array<SelectableItem> => {
     if (!this.data) {
@@ -105,11 +115,11 @@ export class AutocompleteComponent implements OnInit {
 
   panelOpened(): void {
     this.filterString = '';
-    this.control.setValue([]);
+    this.getControl().setValue([]);
   }
 
   panelClosed(): void {
-    this.control.setValue(this.data);
+    this.getControl().setValue(this.data);
     this.selectedValueEvent.emit(this.data.filter(item => item.selected).map(item => item.value));
   }
 
@@ -119,5 +129,9 @@ export class AutocompleteComponent implements OnInit {
         item.selected = $event.checked;
       }
     );
+  }
+
+  getControl(): FormControl {
+    return this.form.get(this.controlName) as FormControl;
   }
 }

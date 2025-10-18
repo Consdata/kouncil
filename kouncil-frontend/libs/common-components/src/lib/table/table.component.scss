@@ -1,5 +1,9 @@
-.cell{
+.cell {
   text-overflow: ellipsis;
   max-width: 300px;
   white-space: nowrap;
+}
+
+.datatable-group-cell {
+  padding: 0;
 }

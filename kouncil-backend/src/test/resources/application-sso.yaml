@@ -1,0 +1,10 @@
+kouncil:
+  auth:
+    active-provider: sso
+    ldap:
+      provider-url: "ldaps://kouncil.io"
+      search-base: "OU=Users,DC=kouncil,DC=io"
+      search-filter: "(&(objectClass=user)(uid={0})(memberOf=CN=KOUNCIL,CN=Users,DC=kouncil,DC=io))"
+      group-search-base: "ou=Groups,DC=kouncil,DC=io"
+      group-search-filter: "(memberuid={0})"
+      group-role-attribute: "cn"
