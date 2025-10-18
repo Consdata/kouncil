@@ -31,6 +31,10 @@ export abstract class AuthService {
   abstract getUserRoles$(): Observable<void>;
 
   abstract canAccess(roles: SystemFunctionName[]): boolean;
+
   abstract getInstallationId$(): void;
+
   abstract fetchContextPath$(): void;
+
+  abstract markUserAsLoggedIn(data: boolean): boolean;
 }

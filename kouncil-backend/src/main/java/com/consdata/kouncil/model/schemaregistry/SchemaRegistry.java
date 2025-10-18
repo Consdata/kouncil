@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Table(name="SCHEMA_REGISTRY")
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {"id", "cluster"})
 public class SchemaRegistry {
 
     @Id

@@ -26,6 +26,8 @@ public class UserRolesMapping {
         userRoles.forEach(userRole -> userGroups
                 .forEach(userGroup ->
                         collect.addAll(userGroup.getFunctions().stream().map(function -> new SimpleGrantedAuthority(function.getName().name())).toList())));
+        userRoles.forEach(role -> collect.add(new SimpleGrantedAuthority(SecurityConstants.ROLE_PREFIX + role)));
+
         log.info("User roles: {}", collect);
         return collect;
     }

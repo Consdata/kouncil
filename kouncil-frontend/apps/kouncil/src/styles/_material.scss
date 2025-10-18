@@ -155,30 +155,53 @@ app-message-view {
   }
 }
 
-snack-bar-container.snackbar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: pallete.$main-0;
-  font-size: 14px;
-  font-weight: 500;
+mat-snack-bar-container.snackbar {
   padding: 16px 24px;
 }
 
-.snackbar-success::before {
+.snackbar-label::before {
   font-family: 'Material Symbols Outlined';
-  content: '\ef76';
-  margin-right: 16px;
-  color: pallete.$blue-50;
+  margin-right: spaces.$space-5;
   font-size: 24px;
 }
 
-.snackbar-error::before {
-  font-family: 'Material Symbols Outlined';
+mat-snack-bar-container.snackbar-container-info > div {
+  background: pallete.$blue-10 !important;
+}
+
+.snackbar-info-label {
+  color: pallete.$blue-70;
+}
+
+.snackbar-info-label::before {
+  content: '\e88e';
+  color: pallete.$blue-70;
+}
+
+mat-snack-bar-container.snackbar-container-success > div {
+  background: pallete.$green-0 !important;
+}
+
+.snackbar-success-label {
+  color: pallete.$green-50;
+}
+
+.snackbar-success-label::before {
+  content: '\e86c';
+  color: pallete.$green-50;
+}
+
+mat-snack-bar-container.snackbar-container-error > div {
+  background: pallete.$red-10 !important;
+}
+
+.snackbar-error-label {
+  color: pallete.$red-70;
+}
+
+.snackbar-error-label::before {
   content: '\e000';
-  margin-right: 16px;
-  color: pallete.$red-50;
-  font-size: 24px;
+  color: pallete.$red-70;
 }
 
 app-custom-snack-bar {
@@ -478,7 +501,7 @@ mat-option > span {
   margin: 0 !important;
 }
 
-.mat-expansion-panel:not([class*=mat-elevation-z]){
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
   box-shadow: none !important;
   border: 1px solid pallete.$main-20;
   border-radius: 8px !important;

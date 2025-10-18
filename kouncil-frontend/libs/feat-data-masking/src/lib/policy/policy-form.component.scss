@@ -1,0 +1,35 @@
+@use '../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../apps/kouncil/src/styles/palette";
+
+.policy-form {
+  margin: $space-5;
+
+  .policy-form-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: $space-5;
+    line-height: 28px;
+  }
+
+  .policy-form-container {
+    background: $main-0;
+    padding: $space-5;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .action-button-blue {
+    @include buttons.button-blue;
+  }
+
+  .action-button-white {
+    @include buttons.button-white;
+    height: 40px !important;
+  }
+}
+
+

@@ -12,7 +12,10 @@ import {Injectable} from '@angular/core';
 import {ProgressBarService} from './progress-bar.service';
 import {Router} from '@angular/router';
 import {SnackBarComponent} from './snack-bar.component';
-import {SnackBarData} from './snack-bar-data';
+import {SnackBarData, SnackBarType} from './snack-bar-data';
+import {LoggerFactory} from '@consdata/logger-api';
+
+const log = LoggerFactory.getLogger('HttpClientInterceptor');
 
 @Injectable({
   providedIn: 'root'
@@ -32,11 +35,11 @@ export class HttpClientInterceptor implements HttpInterceptor {
           this.router.navigate(['/login']);
           return null;
         } else {
-          console.log(JSON.stringify(error));
+          log.error(JSON.stringify(error));
           const consoleErrorMessage = `Error Code: ${error.status}<br>Message: ${error.message}\nError message: ${error.error}`;
           this.snackBar.openFromComponent(SnackBarComponent, {
-            data: new SnackBarData(error.error, 'snackbar-error', 'Close'),
-            panelClass: ['snackbar'],
+            data: new SnackBarData(error.error, SnackBarType.ERROR),
+            panelClass: ['snackbar', 'snackbar-container-error'],
             duration: 5000
           });
           return throwError(new Error(consoleErrorMessage));

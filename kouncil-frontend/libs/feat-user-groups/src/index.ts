@@ -17,3 +17,4 @@ export {UserGroupsComponent} from './lib/user-groups/list/user-groups.component'
 export {
   UserGroupsFunctionsMatrixComponent
 } from './lib/user-groups-functions-matrix/user-groups-functions-matrix.component';
+export {UserGroup} from './lib/user-groups-functions-matrix/user-groups.model';

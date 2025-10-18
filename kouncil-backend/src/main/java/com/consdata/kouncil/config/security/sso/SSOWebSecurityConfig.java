@@ -1,6 +1,8 @@
 package com.consdata.kouncil.config.security.sso;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.notifications.NotificationService;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,21 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -42,14 +40,15 @@ public class SSOWebSecurityConfig {
 
     private final ObjectMapper mapper;
     private final UserRolesMapping userRolesMapping;
-    private final SimpMessagingTemplate eventSender;
+    private final NotificationService notificationService;
+    private final CustomOAuth2UserService customUserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
@@ -61,30 +60,23 @@ public class SSOWebSecurityConfig {
                     source.registerCorsConfiguration("/**", configuration);
                     return configuration;
                 }))
-
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path", "/*",
-                                "/assets/**").permitAll()
+                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/sso-providers", "/api/active-provider", "/api/context-path",
+                                "/api/permissions-not-defined", "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
-                        .userInfoEndpoint(userInfo -> userInfo.userAuthoritiesMapper(this.authoritiesMapper()))
-                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customUserService).userAuthoritiesMapper(this.authoritiesMapper()))
                 )
-                .exceptionHandling(handling-> handling.authenticationEntryPoint(this::authenticationEntryPoint));
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 
         return http.build();
     }
 
     @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
-
-    @Bean
     public DefaultUserPermissionsReloader userPermissionsReloader() {
-        return new DefaultUserPermissionsReloader(eventSender);
+        return new DefaultUserPermissionsReloader(notificationService);
     }
 
     private GrantedAuthoritiesMapper authoritiesMapper() {
@@ -96,6 +88,8 @@ public class SSOWebSecurityConfig {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(new HashSet<>(groups)));
                 } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
+                } else if (authority instanceof SimpleGrantedAuthority simpleGrantedAuthority) {
+                    mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(simpleGrantedAuthority.getAuthority())));
                 }
             });
             return mappedAuthorities;
@@ -106,11 +100,5 @@ public class SSOWebSecurityConfig {
             throws IOException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.getWriter().write(mapper.writeValueAsString(Collections.singletonMap("error", "Unauthenticated")));
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
     }
 }

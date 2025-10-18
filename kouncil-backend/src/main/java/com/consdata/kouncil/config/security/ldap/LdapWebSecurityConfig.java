@@ -1,6 +1,8 @@
 package com.consdata.kouncil.config.security.ldap;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
+import com.consdata.kouncil.notifications.NotificationService;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,20 +12,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import org.springframework.security.ldap.authentication.BindAuthenticator;
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -35,14 +32,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class LdapWebSecurityConfig {
 
     private final UserRolesMapping userRolesMapping;
-    private final SimpMessagingTemplate eventSender;
+    private final NotificationService notificationService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
@@ -55,26 +52,16 @@ public class LdapWebSecurityConfig {
                     return configuration;
                 }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/*", "/assets/**").permitAll()
+                        .requestMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/api/permissions-not-defined",
+                                "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
     }
 
     @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
-    }
-
-    @Bean
     public DefaultUserPermissionsReloader userPermissionsReloader() {
-        return new DefaultUserPermissionsReloader(eventSender);
+        return new DefaultUserPermissionsReloader(notificationService);
     }
 
     @Value("${kouncil.auth.ldap.provider-url:}")

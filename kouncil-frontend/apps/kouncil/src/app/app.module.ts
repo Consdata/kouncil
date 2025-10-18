@@ -35,7 +35,6 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrokerComponent} from './broker/broker.component';
@@ -57,13 +56,16 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
-import {ConfirmModule} from '@app/feat-confirm';
+import {ConfirmModule, ConfirmService} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   clusterServiceFactory,
   clustersServiceFactory,
+  firstTimeAppLaunchServiceFactory,
   functionsServiceFactory,
+  policiesServiceFactory,
+  policyServiceFactory,
   resendServiceFactory,
   schemaRegistryServiceFactory,
   sendServiceFactory,
@@ -115,6 +117,14 @@ import {
 } from '@app/feat-user-groups';
 import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
+import {FeatDataMaskingModule, PoliciesService, PolicyService} from '@app/feat-data-masking';
+import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
+import {BannerComponent} from './banner/banner.component';
+import {
+  FeatFirstTimeAppLaunchModule,
+  FirstTimeAppLaunchService
+} from '@app/feat-first-time-app-launch';
+import {Router} from '@angular/router';
 import {SchemaFormActionsComponent} from './schemas/form/form/schema-form-actions.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -172,7 +182,6 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     ConsumerGroupComponent,
     TopicPartitionsComponent,
     TopicPaginationComponent,
-    BreadcrumbComponent,
     BrokerComponent,
     MessageViewComponent,
     FileSizePipe,
@@ -193,7 +202,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SchemaDetailsComponent,
     SchemaFormComponent,
     SchemaFormActionsComponent,
-    SidebarMenuItemComponent
+    SidebarMenuItemComponent,
+    BannerComponent
   ],
   imports: [
     BrowserModule,
@@ -235,6 +245,9 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatClustersModule,
     FeatUserGroupsModule,
     FeatNotificationsModule,
+    FeatDataMaskingModule,
+    FeatBreadcrumbModule,
+    FeatFirstTimeAppLaunchModule,
     MatExpansionModule,
     MatProgressSpinnerModule
   ],
@@ -343,6 +356,21 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
       provide: UserGroupService,
       useFactory: userGroupServiceFactory,
       deps: [HttpClient]
+    },
+    {
+      provide: PoliciesService,
+      useFactory: policiesServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: PolicyService,
+      useFactory: policyServiceFactory,
+      deps: [HttpClient]
+    },
+    {
+      provide: FirstTimeAppLaunchService,
+      useFactory: firstTimeAppLaunchServiceFactory,
+      deps: [HttpClient, ConfirmService, AuthService, Router]
     },
     provideHttpClient(withInterceptorsFromDi())
   ],
