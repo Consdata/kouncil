@@ -1,0 +1,27 @@
+{
+  "name": "feat-breadcrumb",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-breadcrumb/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-breadcrumb"],
+      "options": {
+        "jestConfig": "libs/feat-breadcrumb/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/feat-breadcrumb/**/*.ts",
+          "libs/feat-breadcrumb/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

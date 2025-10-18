@@ -80,7 +80,9 @@ public final class UserGroupsConfigReader {
                 .stream()
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet())
-                .stream().filter(groupCode -> !groupCode.isEmpty() && !foundGroupCodes.contains(groupCode))
+                .stream()
+                .filter(groupCode -> !groupCode.isEmpty())
+                .filter(groupCode -> !foundGroupCodes.contains(groupCode))
                 .forEach(groupCode -> {
                     UserGroup group = new UserGroup();
                     group.setCode(groupCode);
