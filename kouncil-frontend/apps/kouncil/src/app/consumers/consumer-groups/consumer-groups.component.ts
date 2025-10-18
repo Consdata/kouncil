@@ -18,8 +18,10 @@ import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {MatSort} from '@angular/material/sort';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {LoggerFactory} from '@consdata/logger-api';
 
 const CONSUMER_GROUP_FAVOURITE_KEY = 'kouncil-consumer-groups-favourites';
+const log = LoggerFactory.getLogger('ConsumerGroupsComponent');
 
 @Component({
   selector: 'app-kafka-consumer-groups',
@@ -211,7 +213,7 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
             duration: 3000
           });
         }, error => {
-          console.error(error);
+          log.error(error);
           this.snackbar.openFromComponent(SnackBarComponent, {
             data: new SnackBarData(`Consumer group ${value} couldn't be deleted`, 'snackbar-error', ''),
             panelClass: ['snackbar'],

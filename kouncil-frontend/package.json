@@ -23,6 +23,8 @@
     "@angular/platform-browser": "18.2.13",
     "@angular/platform-browser-dynamic": "18.2.13",
     "@angular/router": "18.2.13",
+    "@consdata/logger-api": "0.15.0",
+    "@consdata/logger-console": "0.15.0",
     "@nx/angular": "20.5.1",
     "@stomp/rx-stomp": "2.0.0",
     "@stomp/stompjs": "7.0.0",
