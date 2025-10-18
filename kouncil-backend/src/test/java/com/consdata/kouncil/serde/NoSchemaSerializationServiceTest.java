@@ -1,5 +1,9 @@
 package com.consdata.kouncil.serde;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.serde.serialization.SerializationService;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -8,12 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -21,7 +21,7 @@ class NoSchemaSerializationServiceTest {
     private static final String LOREM = "lorem";
     private static final String IPSUM = "ipsum";
     private static final String CLUSTER_ID = "clusterId";
-    @MockBean
+    @MockitoBean
     private SchemaAwareClusterService schemaAwareClusterService;
     @Autowired
     private SerializationService serializationService;

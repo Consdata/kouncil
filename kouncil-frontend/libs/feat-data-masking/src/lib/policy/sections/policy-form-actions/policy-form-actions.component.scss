@@ -1,0 +1,25 @@
+@use '../../../../../../../apps/kouncil/src/styles/buttons';
+@import "../../../../../../../apps/kouncil/src/styles/spaces";
+@import "../../../../../../../apps/kouncil/src/styles/palette";
+
+.actions {
+  float: right;
+  margin-top: $space-5;
+
+  .action-button-white {
+    margin-right: $space-5;
+  }
+
+  .action-button-white:disabled, .action-button-blue:disabled {
+    @include buttons.button-disabled;
+  }
+}
+
+.action-button-blue {
+  @include buttons.button-blue;
+}
+
+.action-button-white {
+  @include buttons.button-white;
+  height: 40px !important;
+}

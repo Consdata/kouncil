@@ -5,11 +5,17 @@ import {environment} from './environments/environment';
 import {AppModule} from './app/app.module';
 import {APP_BASE_HREF} from '@angular/common';
 import {Backend} from '@app/common-model';
+import {LoggerFactory, LogLevel} from '@consdata/logger-api';
+import {ConsoleLogAppender} from '@consdata/logger-console';
+
+LoggerFactory.addAppender(ConsoleLogAppender.instance);
+LoggerFactory.setRootLogLevel(LogLevel.INFO);
+const log = LoggerFactory.getLogger('Main');
 
 function bootstrap(extraProviders?: StaticProvider[] | undefined) {
   platformBrowserDynamic(extraProviders)
   .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+  .catch((err) => log.error(err));
 }
 
 if (environment.production) {

@@ -1,15 +1,16 @@
 package com.consdata.kouncil.config.security.sso;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,6 +22,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
@@ -39,13 +41,16 @@ public class SSOWebSecurityConfig {
     private final ObjectMapper mapper;
     private final UserRolesMapping userRolesMapping;
     private final SimpMessagingTemplate eventSender;
+    private final CustomOAuth2UserService customUserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .cors().configurationSource(request -> {
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                )
+                .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("*"));
                     configuration.setAllowedMethods(List.of("*"));
@@ -54,27 +59,18 @@ public class SSOWebSecurityConfig {
                     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                     source.registerCorsConfiguration("/**", configuration);
                     return configuration;
-                })
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path",
-                        "/api/permissions-not-defined", "/api/create-temporary-admin", "/*", "/assets/**")
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .authorizationRequestRepository(new InMemoryAuthRepository())
-                .and()
-                .userInfoEndpoint(userInfo -> userInfo
-                        .userAuthoritiesMapper(this.authoritiesMapper())
-                        .and()
-                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {
-                        })
+                }))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/info/version", "/api/login", "/oauth2/**", "/api/ssoproviders", "/api/activeProvider", "/api/context-path",
+                                "/api/permissions-not-defined", "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(this::authenticationEntryPoint);
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authEndpoint -> authEndpoint.authorizationRequestRepository(new InMemoryAuthRepository()))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customUserService).userAuthoritiesMapper(this.authoritiesMapper()))
+                        .successHandler((HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) -> {})
+                )
+                .exceptionHandling(handling-> handling.authenticationEntryPoint(this::authenticationEntryPoint));
 
         return http.build();
     }
@@ -93,6 +89,8 @@ public class SSOWebSecurityConfig {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(new HashSet<>(groups)));
                 } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
                     mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(oauth2UserAuthority.getAuthority())));
+                } else if (authority instanceof SimpleGrantedAuthority simpleGrantedAuthority) {
+                    mappedAuthorities.addAll(userRolesMapping.mapToKouncilRoles(Set.of(simpleGrantedAuthority.getAuthority())));
                 }
             });
             return mappedAuthorities;
