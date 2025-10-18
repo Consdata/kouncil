@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.valves.rewrite.RewriteValve;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -11,6 +12,7 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CustomTomcatConfiguration implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
 
@@ -29,7 +31,7 @@ public class CustomTomcatConfiguration implements WebServerFactoryCustomizer<Tom
 
                     parse(buffer);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Rewrite config exception={}", e.getMessage(), e);
                 }
             }
         };

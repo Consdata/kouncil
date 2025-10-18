@@ -5,11 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.consdata.kouncil.config.security.UserGroupsConfigReader;
 import com.consdata.kouncil.config.security.inmemory.InMemoryUserManager;
 import com.consdata.kouncil.config.security.inmemory.InMemoryWebSecurityConfig;
-import com.consdata.kouncil.security.function.SystemFunctionsRepository;
-import com.consdata.kouncil.security.group.UserGroupRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = AuthController.class)
-@ContextConfiguration(classes = {AuthController.class, InMemoryWebSecurityConfig.class, UserGroupsConfigReader.class})
+@ContextConfiguration(classes = {AuthController.class, InMemoryWebSecurityConfig.class})
 class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockitoBean
-    private SystemFunctionsRepository systemFunctionsRepository;
-    @MockitoBean
-    private UserGroupRepository userGroupRepository;
     @MockitoBean
     private AuthService authService;
     @MockitoBean
