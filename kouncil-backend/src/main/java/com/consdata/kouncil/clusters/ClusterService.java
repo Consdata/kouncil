@@ -73,5 +73,6 @@ public class ClusterService {
     private void reloadConfig() {
         kouncilConfiguration.initializeClusters();
         schemaAwareClusterService.reloadSchemaConfiguration(kouncilConfiguration);
+        kafkaConnectionService.cleanAdminClients();
     }
 }

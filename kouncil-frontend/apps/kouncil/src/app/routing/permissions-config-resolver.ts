@@ -11,8 +11,8 @@ export class PermissionsConfigResolver implements Resolve<boolean> {
 
   resolve(): Observable<boolean> | Promise<boolean> | boolean {
     return new Promise<boolean>((resolve) => {
+      resolve(true);
       this.firstTimeAppLaunchService.arePermissionsNotDefined$().subscribe(result => {
-        resolve(true);
         if (result) {
           this.firstTimeAppLaunchService.confirmTemporaryAccessToApp();
         }

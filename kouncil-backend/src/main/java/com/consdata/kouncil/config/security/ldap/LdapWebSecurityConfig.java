@@ -2,6 +2,7 @@ package com.consdata.kouncil.config.security.ldap;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
 import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
+import com.consdata.kouncil.notifications.NotificationService;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,7 +32,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class LdapWebSecurityConfig {
 
     private final UserRolesMapping userRolesMapping;
-    private final SimpMessagingTemplate eventSender;
+    private final NotificationService notificationService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -61,7 +61,7 @@ public class LdapWebSecurityConfig {
 
     @Bean
     public DefaultUserPermissionsReloader userPermissionsReloader() {
-        return new DefaultUserPermissionsReloader(eventSender);
+        return new DefaultUserPermissionsReloader(notificationService);
     }
 
     @Value("${kouncil.auth.ldap.provider-url:}")

@@ -1,6 +1,7 @@
 package com.consdata.kouncil.config.security.sso;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.notifications.NotificationService;
 import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.security.UserRolesMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -40,7 +40,7 @@ public class SSOWebSecurityConfig {
 
     private final ObjectMapper mapper;
     private final UserRolesMapping userRolesMapping;
-    private final SimpMessagingTemplate eventSender;
+    private final NotificationService notificationService;
     private final CustomOAuth2UserService customUserService;
 
     @Bean
@@ -77,7 +77,7 @@ public class SSOWebSecurityConfig {
 
     @Bean
     public DefaultUserPermissionsReloader userPermissionsReloader() {
-        return new DefaultUserPermissionsReloader(eventSender);
+        return new DefaultUserPermissionsReloader(notificationService);
     }
 
     private GrantedAuthoritiesMapper authoritiesMapper() {
