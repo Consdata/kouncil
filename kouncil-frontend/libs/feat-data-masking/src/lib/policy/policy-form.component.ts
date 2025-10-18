@@ -21,6 +21,7 @@ import {
 } from './sections/policy-form-resources/policy-form-resources.component';
 import {first} from 'rxjs/operators';
 import {Clusters, ClustersService} from '@app/feat-clusters';
+import {UserGroup, UserGroupsService} from "@app/feat-user-groups";
 
 @Component({
   selector: 'app-policy',
@@ -44,6 +45,9 @@ import {Clusters, ClustersService} from '@app/feat-clusters';
                               [viewMode]="viewMode"
                               [clusters]="clusters"
         ></app-policy-resources>
+
+        <app-policy-user-groups [policyForm]="policyForm"
+                                [groups]="groups"></app-policy-user-groups>
       </div>
 
       <app-policy-actions [policyForm]="policyForm"
@@ -71,20 +75,21 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
     resources: new FormArray([], {
       validators: this.validateResources(),
       updateOn: 'change'
-    })
+    }),
+    userGroups: new FormControl()
   });
 
+  groups: Array<SelectableItem> = [];
   clusters: Array<SelectableItem> = [];
-
 
   @ViewChild(PolicyFormFieldsComponent) fields: PolicyFormFieldsComponent;
   @ViewChild(PolicyFormResourcesComponent) resources: PolicyFormResourcesComponent;
 
-
   constructor(private route: ActivatedRoute,
               private router: Router,
               private policyService: PolicyService,
-              private clustersService: ClustersService) {
+              private clustersService: ClustersService,
+              private userGroupsService: UserGroupsService) {
   }
 
   ngOnInit(): void {
@@ -97,6 +102,15 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
 
       this.processRouteParams();
     }));
+
+    this.subscriptions.add(this.userGroupsService.getUserGroups$()
+      .pipe(first())
+      .subscribe((groups: Array<UserGroup>) => {
+        groups.forEach(ug => {
+          this.groups.push(new SelectableItem(ug.name, ug.id, false));
+        });
+      })
+    )
   }
 
   ngOnDestroy(): void {
@@ -129,7 +143,9 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
       this.model = policy;
       this.model.fields.forEach(() => this.fields.addField());
       this.model.resources.forEach(() => this.resources.addResource());
-      this.policyForm.patchValue(this.model);
+      this.policyForm.patchValue(this.model, {emitEvent: false});
+      this.groups.forEach(group => group.selected = this.model.userGroups.includes(group.value));
+      this.policyForm.controls['userGroups'].patchValue(this.groups);
       this.defineDisabled(this.policyForm);
     }));
   }
@@ -154,6 +170,12 @@ export class PolicyFormComponent implements OnInit, OnDestroy {
   savePolicy(): void {
     if (this.policyForm.valid) {
       this.model = Object.assign({}, this.policyForm.getRawValue());
+
+      this.model.userGroups = this.policyForm.controls['userGroups']
+      .getRawValue()
+      .filter(group => group.selected)
+      .map(group => group.value);
+
       if (this.model.id) {
         this.subscriptions.add(this.policyService.updatePolicy$(this.model).subscribe(() => {
           this.navigateToList();
