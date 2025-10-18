@@ -71,4 +71,10 @@ public class SchemaRegistryController {
             throws RestClientException, IOException {
         schemaRegistryService.deleteSchema(serverId, subject, version);
     }
+
+    @RolesAllowed({SystemFunctionNameConstants.SCHEMA_CREATE, SystemFunctionNameConstants.SCHEMA_UPDATE})
+    @PostMapping("/api/schemas/test-compatibility/{serverId}")
+    public boolean testCompatibility(@PathVariable String serverId, @RequestBody SchemaDTO schema) throws RestClientException, IOException {
+        return schemaRegistryService.testCompatibility(serverId, schema);
+    }
 }

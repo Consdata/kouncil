@@ -125,6 +125,9 @@ import {
   FirstTimeAppLaunchService
 } from '@app/feat-first-time-app-launch';
 import {Router} from '@angular/router';
+import {SchemaFormActionsComponent} from './schemas/form/form/schema-form-actions.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -198,6 +201,7 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SchemaCreateComponent,
     SchemaDetailsComponent,
     SchemaFormComponent,
+    SchemaFormActionsComponent,
     SidebarMenuItemComponent,
     BannerComponent
   ],
@@ -243,7 +247,9 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatNotificationsModule,
     FeatDataMaskingModule,
     FeatBreadcrumbModule,
-    FeatFirstTimeAppLaunchModule
+    FeatFirstTimeAppLaunchModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {

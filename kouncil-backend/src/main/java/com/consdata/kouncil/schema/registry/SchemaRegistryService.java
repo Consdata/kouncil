@@ -127,4 +127,8 @@ public class SchemaRegistryService {
     public void deleteSchema(String serverId, String subject, String version) throws RestClientException, IOException {
         schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().deleteSchema(subject, version);
     }
+
+    public boolean testCompatibility(String serverId, SchemaDTO schema ) throws RestClientException, IOException {
+        return schemaAwareClusterService.getClusterSchema(serverId).getSchemaRegistryFacade().testCompatibility(schema);
+    }
 }

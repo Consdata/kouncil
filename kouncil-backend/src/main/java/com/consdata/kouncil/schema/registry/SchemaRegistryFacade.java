@@ -101,7 +101,7 @@ public class SchemaRegistryFacade {
             case JSON -> parsedSchema = new JsonSchema(schema);
             case AVRO -> parsedSchema = new AvroSchema(schema);
             case PROTOBUF -> parsedSchema = new ProtobufSchema(schema);
-             default -> throw new IllegalStateException("Unexpected value: " + messageFormat);
+            default -> throw new IllegalStateException("Unexpected value: " + messageFormat);
         }
         return parsedSchema;
     }
@@ -123,5 +123,19 @@ public class SchemaRegistryFacade {
             log.warn("Get compatibility for subject {} error", subject, e);
             return null;
         }
+    }
+
+    public boolean testCompatibility(SchemaDTO schema) throws RestClientException, IOException {
+        String subject = schema.getTopicName().concat(TopicUtils.getSubjectSuffix(schema.getSubjectType()));
+        schema.setSubjectName(subject);
+        String compatibility = schemaRegistryClient.getCompatibility(subject);
+
+        changeSubjectCompatibility(schema);
+        ParsedSchema parsedSchema = parseSchema(schema.getMessageFormat(), schema.getPlainTextSchema());
+        boolean isCompatibilityValid = schemaRegistryClient.testCompatibility(subject, parsedSchema);
+
+        //reverse compatibility to previous value
+        schemaRegistryClient.updateCompatibility(schema.getSubjectName(), compatibility);
+        return isCompatibilityValid;
     }
 }
