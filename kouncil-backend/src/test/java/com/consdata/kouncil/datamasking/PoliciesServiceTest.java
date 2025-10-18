@@ -14,7 +14,10 @@ import com.consdata.kouncil.model.datamasking.PolicyField;
 import com.consdata.kouncil.model.datamasking.PolicyResource;
 import com.consdata.kouncil.security.group.UserGroupRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,17 +44,21 @@ class PoliciesServiceTest {
         UserGroup viewerGroup = userGroupRepository.save(createUserGroup("VIEWER", "viewer"));
         UserGroup editorGroup = userGroupRepository.save(createUserGroup("EDITOR", "editor"));
 
-        clusterRepository.save(createCluster(1L, "cluster"));
-        clusterRepository.save(createCluster(2L, "cluster-test"));
-        clusterRepository.save(createCluster(3L, "cluster-non-usable"));
+        clusterRepository.save(createCluster("cluster"));
+        clusterRepository.save(createCluster("cluster-test"));
+        clusterRepository.save(createCluster("cluster-non-usable"));
+
+        Map<String, Cluster> clusters = StreamSupport.stream(clusterRepository.findAll().spliterator(), false)
+                .collect(Collectors.toMap(Cluster::getName, cluster -> cluster));
+
 
         repository.save(createPolicy("policy-all-resources", true, null, null, viewerGroup));
-        repository.save(createPolicy("policy-cluster-1-all-topics", false, 1L, ".*", viewerGroup));
-        repository.save(createPolicy("policy-cluster-1-test-topic-viewer-group", false, 1L, "test-topic", viewerGroup));
-        repository.save(createPolicy("policy-cluster-1-test-topic-editor-group", false, 1L, "test-topic", editorGroup));
-        repository.save(createPolicy("policy-cluster-1-kouncil-user-info-topic", false, 1L, "kouncil-user-info", viewerGroup));
-        repository.save(createPolicy("policy-cluster-2", false, 2L, "test-topic", viewerGroup));
-        repository.save(createPolicy("policy-cluster-3", false, 3L, "kouncil-user-info", editorGroup));
+        repository.save(createPolicy("policy-cluster-1-all-topics", false, clusters.get("cluster").getId(), ".*", viewerGroup));
+        repository.save(createPolicy("policy-cluster-1-test-topic-viewer-group", false, clusters.get("cluster").getId(), "test-topic", viewerGroup));
+        repository.save(createPolicy("policy-cluster-1-test-topic-editor-group", false, clusters.get("cluster").getId(), "test-topic", editorGroup));
+        repository.save(createPolicy("policy-cluster-1-kouncil-user-info-topic", false, clusters.get("cluster").getId(), "kouncil-user-info", viewerGroup));
+        repository.save(createPolicy("policy-cluster-2", false, clusters.get("cluster-test").getId(), "test-topic", viewerGroup));
+        repository.save(createPolicy("policy-cluster-3", false, clusters.get("cluster-non-usable").getId(), "kouncil-user-info", editorGroup));
 
         List<Policy> policies = uut.getPoliciesForClusterAndTopic("test-topic", "cluster");
         assertThat(policies).hasSize(3);
@@ -64,9 +71,8 @@ class PoliciesServiceTest {
         return userGroup;
     }
 
-    private Cluster createCluster(long clusterId, String clusterName) {
+    private Cluster createCluster(String clusterName) {
         Cluster cluster = new Cluster();
-        cluster.setId(clusterId);
         cluster.setName(clusterName);
         cluster.setClusterSecurityConfig(new ClusterSecurityConfig());
         cluster.getClusterSecurityConfig().setAuthenticationMethod(ClusterAuthenticationMethod.NONE);
