@@ -2,7 +2,7 @@ create table policy
 (
     id                     bigint not null primary key,
     apply_to_all_resources boolean,
-    name                   varchar(255)
+    name                   varchar(255) not null
 );
 
 create table policy_field
