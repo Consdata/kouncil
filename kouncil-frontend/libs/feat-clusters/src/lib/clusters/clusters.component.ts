@@ -8,7 +8,8 @@ import {
   ProgressBarService,
   SearchService,
   SnackBarComponent,
-  SnackBarData
+  SnackBarData,
+  SnackBarType
 } from '@app/common-utils';
 import {ClusterBroker, ClusterMetadata, Clusters} from '../cluster.model';
 import {Router} from '@angular/router';
@@ -23,7 +24,8 @@ import {ServersService} from '@app/common-servers';
     <div class="main-container">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-blue" (click)="createCluster()">
+          <button mat-button *ngIf="authService.canAccess([SystemFunctionName.CLUSTER_CREATE])"
+                  class="action-button-blue" (click)="createCluster()">
             Add new cluster
           </button>
         </div>
@@ -188,22 +190,29 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
     .subscribe({
       next: () => {
         this.loadClusters();
-        this.serversService.load().then(() => this.cdr.detectChanges());
 
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Cluster ${clusterName} deleted`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Cluster ${clusterName} deleted`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
+        this.reloadServers();
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Cluster ${clusterName} couldn't be deleted`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Cluster ${clusterName} couldn't be deleted`, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.progressBarService.setProgress(false);
+        this.reloadServers();
       }
+    }));
+  }
+
+  private reloadServers(): void {
+    this.subscription.add(this.snackbar._openedSnackBarRef.afterDismissed().subscribe(() => {
+      this.serversService.load().then(() => this.cdr.detectChanges());
     }));
   }
 }

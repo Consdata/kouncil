@@ -32,7 +32,7 @@ import {MatSort} from '@angular/material/sort';
       <!-- Group header -->
       <ng-container *ngIf="groupedTable">
         <ng-container matColumnDef="groupHeader">
-          <td mat-cell colspan="999" *matCellDef="let group">
+          <td mat-cell colspan="999" *matCellDef="let group" class="datatable-group-cell">
             <div class="datatable-group-header">
               <div class="group-header">{{ groupHeaderName(group) }}</div>
               <span class="datatable-header-divider"></span>

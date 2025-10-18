@@ -19,8 +19,9 @@ import {
 import {
   ClusterFormActionsComponent
 } from './sections/cluster-form-actions/cluster-form-actions.component';
-import {ViewMode} from '@app/common-utils';
+import {SnackBarComponent, SnackBarData, SnackBarType, ViewMode} from '@app/common-utils';
 import {ClusterFormUtil} from './cluster-form-util';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-cluster',
@@ -28,9 +29,9 @@ import {ClusterFormUtil} from './cluster-form-util';
     <form class="cluster-form" [formGroup]="clusterForm" (ngSubmit)="saveCluster()"
           autocomplete="off">
       <div class="cluster-form-header">
-        <div class="cluster-form-title">
-          {{ getHeaderMessage() }}
-        </div>
+
+        <app-breadcrumb [parentName]="'Clusters'" [parentLink]="'/clusters'"
+                        [name]="getHeaderMessage()"></app-breadcrumb>
       </div>
 
       <mat-accordion class="panels-container">
@@ -165,7 +166,8 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private clusterService: ClusterService,
               private route: ActivatedRoute,
               private router: Router,
-              private servers: ServersService) {
+              private servers: ServersService,
+              private snackbar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -232,6 +234,12 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private navigateToList(): void {
+    this.snackbar.openFromComponent(SnackBarComponent, {
+      data: new SnackBarData(`Cluster ${this.model.name} was successfully created.`, SnackBarType.SUCCESS),
+      panelClass: ['snackbar', 'snackbar-container-success'],
+      duration: 3000
+    });
+
     this.router.navigate(['/clusters']).then(() => {
       this.servers.load();
     });
@@ -240,11 +248,11 @@ export class ClusterFormComponent implements OnInit, OnDestroy, AfterViewInit {
   getHeaderMessage(): string {
     switch (this.viewMode) {
       case ViewMode.CREATE:
-        return `Create new cluster`;
+        return `Create a new cluster`;
       case ViewMode.EDIT:
-        return `Editing cluster ${this.model.name}`;
+        return `Edit ${this.model.name} cluster`;
       case ViewMode.VIEW:
-        return `Details of ${this.model.name} cluster`;
+        return `${this.model.name}`;
     }
     return '';
   }
