@@ -40,7 +40,12 @@ import {SidebarState} from './sidebar-state';
 
       <div
         *ngIf="(isAuthenticated$ | async)
-        && authService.canAccess([SystemFunctionName.CLUSTER_LIST, SystemFunctionName.USER_GROUPS_LIST, SystemFunctionName.USER_GROUPS])"
+        && authService.canAccess([
+        SystemFunctionName.CLUSTER_LIST,
+        SystemFunctionName.USER_GROUPS_LIST,
+        SystemFunctionName.USER_GROUPS,
+        SystemFunctionName.POLICY_LIST
+        ])"
         class="menu-grouping-separator"></div>
 
       <app-sidebar-menu-item [label]="'Clusters'" [icon]="'storage'" [routeLink]="'/clusters'"
@@ -54,6 +59,11 @@ import {SidebarState} from './sidebar-state';
       <app-sidebar-menu-item [label]="'User groups permissions'" [icon]="'verified_user'"
                              [routeLink]="'/user-groups-permissions'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.USER_GROUPS])">
+      </app-sidebar-menu-item>
+
+      <app-sidebar-menu-item [label]="'Data masking policies'" [icon]="'policy'"
+                             [routeLink]="'/data-masking-policies'"
+                             *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.POLICY_LIST])">
       </app-sidebar-menu-item>
 
       <div class="toggle-sidebar-container">

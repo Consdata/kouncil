@@ -1,5 +1,10 @@
 package com.consdata.kouncil.serde;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareCluster;
 import com.consdata.kouncil.schema.clusteraware.SchemaAwareClusterService;
 import com.consdata.kouncil.schema.registry.SchemaRegistryFacade;
@@ -7,20 +12,9 @@ import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.formatter.schema.MessageFormatter;
 import com.consdata.kouncil.serde.formatter.schema.ProtobufMessageFormatter;
+import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
-import lombok.SneakyThrows;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.record.TimestampType;
-import org.apache.kafka.common.utils.Bytes;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -28,10 +22,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import lombok.SneakyThrows;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.utils.Bytes;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -41,14 +41,13 @@ class ProtobufDeserializationServiceTest {
     private static final String CLUSTER_ID = "clusterId";
     private static ProtobufSchema PROTOBUF_SCHEMA;
     private static String SIMPLE_MESSAGE_JSON;
-    @MockBean
+    @MockitoBean
     private SchemaAwareClusterService schemaAwareClusterService;
 
-    @MockBean
+    @MockitoBean
     private SchemaRegistryFacade schemaRegistryFacade;
 
-    @MockBean
-    private SchemaRegistryClient schemaRegistryClient;
+    private final SchemaRegistryClient schemaRegistryClient = new MockSchemaRegistryClient();
 
     @Autowired
     private DeserializationService deserializationService;
@@ -65,8 +64,8 @@ class ProtobufDeserializationServiceTest {
                 )).trim();
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void should_deserialize_value_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
@@ -74,8 +73,9 @@ class ProtobufDeserializationServiceTest {
                 new Bytes(LOREM.getBytes(StandardCharsets.UTF_8)),
                 new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES)
         );
+        schemaRegistryClient.register("sometopic-value", PROTOBUF_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -93,8 +93,8 @@ class ProtobufDeserializationServiceTest {
         assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void should_deserialize_key_with_schema() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
@@ -102,8 +102,9 @@ class ProtobufDeserializationServiceTest {
                 new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES),
                 new Bytes(LOREM.getBytes(StandardCharsets.UTF_8))
         );
+        schemaRegistryClient.register("sometopic-value", PROTOBUF_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -121,8 +122,8 @@ class ProtobufDeserializationServiceTest {
         assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.STRING);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void should_deserialize_with_schema_key_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
@@ -130,8 +131,9 @@ class ProtobufDeserializationServiceTest {
                 null,
                 new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES)
         );
+        schemaRegistryClient.register("sometopic-value", PROTOBUF_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -149,8 +151,8 @@ class ProtobufDeserializationServiceTest {
         assertThat(deserializedMessage.getValueData().getMessageFormat()).isEqualTo(MessageFormat.PROTOBUF);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void should_deserialize_with_schema_value_null() {
         // given
         when(schemaAwareClusterService.clusterHasSchemaRegistry(anyString())).thenReturn(true);
@@ -158,8 +160,9 @@ class ProtobufDeserializationServiceTest {
                 new Bytes(PROTOBUF_SIMPLE_MESSAGE_BYTES),
                 null
         );
+        schemaRegistryClient.register("sometopic-value", PROTOBUF_SCHEMA, 0, 0);
+
         when(schemaRegistryFacade.getSchemaRegistryClient()).thenReturn(schemaRegistryClient);
-        when(schemaRegistryClient.getSchemaBySubjectAndId(any(), anyInt())).thenReturn(PROTOBUF_SCHEMA);
         when(schemaRegistryFacade.getSchemaFormat(any(KouncilSchemaMetadata.class))).thenReturn(MessageFormat.PROTOBUF);
         EnumMap<MessageFormat, MessageFormatter> formatters = new EnumMap<>(MessageFormat.class);
         formatters.put(MessageFormat.PROTOBUF, new ProtobufMessageFormatter(schemaRegistryFacade.getSchemaRegistryClient()));
@@ -179,11 +182,6 @@ class ProtobufDeserializationServiceTest {
 
     private ConsumerRecord<Bytes, Bytes> prepareConsumerRecord(Bytes key, Bytes value) {
         return new ConsumerRecord<>("sometopic",
-                0,
-                0,
-                0,
-                TimestampType.NO_TIMESTAMP_TYPE,
-                0L,
                 0,
                 0,
                 key,

@@ -1,11 +1,11 @@
-import {Injectable, NgModule} from '@angular/core';
+import {inject, Injectable, NgModule} from '@angular/core';
 import {TopicComponent} from '../topic/topic.component';
 import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
   RouteReuseStrategy,
   RouterModule,
-  Routes,
+  Routes
 } from '@angular/router';
 import {TrackComponent} from '../track/track.component';
 import {BrokersComponent} from '../brokers/brokers.component';
@@ -33,6 +33,12 @@ import {
   ClustersComponent
 } from '@app/feat-clusters';
 import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
+import {
+  PoliciesComponent,
+  PolicyFormCreateComponent,
+  PolicyFormEditComponent,
+  PolicyFormViewComponent
+} from '@app/feat-data-masking';
 import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
@@ -66,15 +72,17 @@ export class ReloadingRouterStrategy extends RouteReuseStrategy {
 
 const routes: Routes = [
   {
-    path: '', component: MainComponent, canActivate: [AuthGuard],
+    path: '',
+    component: MainComponent,
+    canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
     resolve: {
-      config: ConfigResolver
+      config: () => inject(ConfigResolver).resolve()
     },
     children: [
       {
         path: 'brokers',
         component: BrokersComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.BROKERS_LIST]
         }
@@ -82,7 +90,7 @@ const routes: Routes = [
       {
         path: 'topics',
         component: TopicsComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.TOPIC_LIST]
         }
@@ -90,7 +98,7 @@ const routes: Routes = [
       {
         path: 'topics/messages/:topic',
         component: TopicComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.TOPIC_MESSAGES]
         }
@@ -98,7 +106,7 @@ const routes: Routes = [
       {
         path: 'consumer-groups',
         component: ConsumerGroupsComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.CONSUMER_GROUP_LIST]
         }
@@ -106,7 +114,7 @@ const routes: Routes = [
       {
         path: 'consumer-groups/:groupId',
         component: ConsumerGroupComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.CONSUMER_GROUP_DETAILS]
         }
@@ -114,7 +122,7 @@ const routes: Routes = [
       {
         path: 'track',
         component: TrackComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.TRACK_LIST]
         }
@@ -122,12 +130,15 @@ const routes: Routes = [
       {
         path: 'access-denied',
         component: AccessDeniedComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {
+          hideClusterContext: true
+        }
       },
       {
         path: 'schemas',
         component: SchemasComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.SCHEMA_LIST]
         }
@@ -135,7 +146,7 @@ const routes: Routes = [
       {
         path: 'schemas/edit/:subjectName/:version',
         component: SchemaEditComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.SCHEMA_UPDATE]
         }
@@ -143,7 +154,7 @@ const routes: Routes = [
       {
         path: 'schemas/create',
         component: SchemaCreateComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.SCHEMA_CREATE]
         }
@@ -151,7 +162,7 @@ const routes: Routes = [
       {
         path: 'schemas/:subjectName/:version',
         component: SchemaDetailsComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
           roles: [SystemFunctionName.SCHEMA_DETAILS]
         }
@@ -159,49 +170,87 @@ const routes: Routes = [
       {
         path: 'clusters',
         component: ClustersComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_LIST]
+          roles: [SystemFunctionName.CLUSTER_LIST],
+          hideClusterContext: true
         }
       },
       {
         path: 'clusters/cluster',
         component: ClusterFormCreateComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_CREATE]
+          roles: [SystemFunctionName.CLUSTER_CREATE],
+          hideClusterContext: true
         }
       },
       {
         path: 'clusters/cluster/:clusterName',
         component: ClusterFormViewComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_DETAILS]
+          roles: [SystemFunctionName.CLUSTER_DETAILS],
+          hideClusterContext: true
         }
       },
       {
         path: 'clusters/cluster/:clusterName/edit',
         component: ClusterFormEditComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.CLUSTER_UPDATE]
+          roles: [SystemFunctionName.CLUSTER_UPDATE],
+          hideClusterContext: true
         }
       },
       {
         path: 'user-groups',
         component: UserGroupsComponent,
-        canActivate: [AuthGuard],
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS_LIST]
+          roles: [SystemFunctionName.USER_GROUPS_LIST],
+          hideClusterContext: true
         }
       },
       {
         path: 'user-groups-permissions',
         component: UserGroupsFunctionsMatrixComponent,
+        canActivate: [(route: ActivatedRouteSnapshot) => inject(AuthGuard).canActivate(route)],
+        data: {
+          roles: [SystemFunctionName.USER_GROUPS],
+          hideClusterContext: true
+        }
+      },
+      {
+        path: 'data-masking-policies',
+        component: PoliciesComponent,
         canActivate: [AuthGuard],
         data: {
-          roles: [SystemFunctionName.USER_GROUPS]
+          roles: [SystemFunctionName.POLICY_LIST]
+        }
+      },
+      {
+        path: 'data-masking-policy',
+        component: PolicyFormCreateComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_CREATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id/edit',
+        component: PolicyFormEditComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_UPDATE]
+        }
+      },
+      {
+        path: 'data-masking-policy/:id',
+        component: PolicyFormViewComponent,
+        canActivate: [AuthGuard],
+        data: {
+          roles: [SystemFunctionName.POLICY_DETAILS]
         }
       }
     ]
@@ -223,7 +272,10 @@ const routes: Routes = [
       {
         path: '**',
         pathMatch: 'full',
-        component: PageNotFoundComponent
+        component: PageNotFoundComponent,
+        data: {
+          hideClusterContext: true
+        }
       }
     ]
   }
@@ -233,16 +285,16 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: 'reload'
-    }),
+    })
   ],
   exports: [RouterModule],
   declarations: [],
   providers: [
     {
       provide: RouteReuseStrategy,
-      useClass: ReloadingRouterStrategy,
-    },
-  ],
+      useClass: ReloadingRouterStrategy
+    }
+  ]
 })
 export class RoutingModule {
 }

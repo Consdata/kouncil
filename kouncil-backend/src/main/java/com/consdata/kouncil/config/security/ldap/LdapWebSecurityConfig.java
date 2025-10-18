@@ -1,6 +1,7 @@
 package com.consdata.kouncil.config.security.ldap;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
+import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
 import com.consdata.kouncil.notifications.NotificationService;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
@@ -36,8 +37,11 @@ public class LdapWebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-                .cors().configurationSource(request -> {
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                )
+                .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("*"));
                     configuration.setAllowedMethods(List.of("*"));
@@ -46,12 +50,12 @@ public class LdapWebSecurityConfig {
                     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                     source.registerCorsConfiguration("/**", configuration);
                     return configuration;
-                })
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/api/permissions-not-defined",
-                        "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
-                .anyRequest().authenticated();
+                }))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/info/version", "/api/login", "/api/activeProvider", "/api/context-path", "/api/permissions-not-defined",
+                                "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
+                        .anyRequest().authenticated()
+                );
         return http.build();
     }
 

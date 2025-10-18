@@ -27,19 +27,37 @@ import {AuthService, SystemFunctionName} from '@app/common-auth';
         <div class="spacer"></div>
         <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
       </div>
-      <div class="headers" *ngIf="vm.messageData.headers.length > 0 && vm.isAnimationDone">
+      <div class="headers" *ngIf="vm.messageData.headers?.length > 0 && vm.isAnimationDone">
         <div class="label">Headers</div>
         <app-common-table [tableData]="vm.messageData.headers" [columns]="columns"
                           matSort [sort]="sort"
                           cdkDropList cdkDropListOrientation="horizontal"
                           (cdkDropListDropped)="drop($event)"
                           (rowClickedAction)="navigateToTrack($event, vm.messageData)"
-                          [headerClass]="'white-table-header'">
+                          [headerClass]="'white-table-header'"
+                          [actionColumns]="actionColumns">
 
           <ng-container *ngFor="let column of columns; let index = index">
             <app-common-table-column [column]="column" [index]="index"></app-common-table-column>
           </ng-container>
 
+          <ng-container *ngFor="let column of actionColumns; let index = index">
+            <app-common-table-column [column]="column"
+                                     [index]="index + columns.length"
+                                     [template]="cellTemplate">
+              <ng-template #cellTemplate let-element>
+                <div class="actions-column">
+
+                  <button mat-icon-button class="copy-btn" matTooltip="Copy header key and value to clipboard"
+                          (click)="$event.stopPropagation(); copyToClipboard(element)">
+                    <mat-icon class="material-symbols-outlined copy-icon">
+                      content_copy
+                    </mat-icon>
+                  </button>
+                </div>
+              </ng-template>
+            </app-common-table-column>
+          </ng-container>
         </app-common-table>
 
         <div *ngIf="!vm.isAnimationDone" class="kafka-progress"></div>
@@ -102,6 +120,18 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
       sortable: true,
       draggable: true
     },
+  ];
+
+  actionColumns: TableColumn[] = [
+    {
+      name: ' ',
+      prop: 'actions',
+      sticky: false,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      width: 150
+    }
   ];
 
   vm$: Observable<{

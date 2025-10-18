@@ -2,20 +2,21 @@ package com.consdata.kouncil.model.cluster;
 
 import com.consdata.kouncil.model.Broker;
 import com.consdata.kouncil.model.schemaregistry.SchemaRegistry;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Table(name = "CLUSTER")
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = "id")
 public class Cluster {
 
     @Id
@@ -50,7 +52,7 @@ public class Cluster {
     @Embedded
     private ClusterSecurityConfig clusterSecurityConfig;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "SCHEMA_REGISTRY_ID", referencedColumnName = "ID")
     private SchemaRegistry schemaRegistry;
 }
