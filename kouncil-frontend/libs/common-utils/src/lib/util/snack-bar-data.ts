@@ -1,12 +1,18 @@
 export class SnackBarData {
 
   message: string;
-  iconClass: string;
   action: string;
+  snackbarType: SnackBarType;
 
-  constructor(message: string, iconClass: string, action: string) {
+  constructor(message: string, snackbarType: SnackBarType, action?: string) {
     this.message = message;
-    this.iconClass = iconClass;
     this.action = action;
+    this.snackbarType = snackbarType;
   }
+}
+
+export enum SnackBarType {
+  INFO = 'INFO',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
 }

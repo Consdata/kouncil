@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {ViewMode} from '@app/common-utils';
@@ -70,7 +70,6 @@ import {ClusterService} from '../../cluster.service';
 export class ClusterFormActionsComponent implements OnDestroy {
 
   @Input() clusterForm: FormGroup;
-  @Output() testConnectionEvent: EventEmitter<void> = new EventEmitter<void>();
   @Input() viewMode: ViewMode;
   @Input() clusterName: string;
 

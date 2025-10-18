@@ -19,14 +19,11 @@ export class AuthDemoService implements AuthService {
   }
 
   login$(_user: User): Observable<boolean> {
-    this.authenticated = true;
-    localStorage.setItem(this.IS_LOGGED_IN, 'true');
-    return of(true);
+    return of(this.markUserAsLoggedIn(true));
   }
 
   logout$(): Observable<void> {
-    this.authenticated = false;
-    localStorage.removeItem(this.IS_LOGGED_IN);
+    this.clearLoggedIn();
     return of(undefined);
   }
 
@@ -56,6 +53,7 @@ export class AuthDemoService implements AuthService {
 
   clearLoggedIn(): void {
     localStorage.removeItem(this.IS_LOGGED_IN);
+    localStorage.removeItem(this.USER_ROLES);
     this.authenticated = false;
   }
 
@@ -64,7 +62,11 @@ export class AuthDemoService implements AuthService {
   }
 
   getUserRoles$(): Observable<void> {
-    Object.keys(SystemFunctionName).forEach(role=>{
+    if (!this.userRoles) {
+      this.userRoles = [];
+    }
+
+    Object.keys(SystemFunctionName).forEach(role => {
       this.userRoles.push(SystemFunctionName[role]);
     });
     localStorage.setItem(this.USER_ROLES, JSON.stringify(this.userRoles));
@@ -80,9 +82,15 @@ export class AuthDemoService implements AuthService {
   }
 
   getInstallationId$(): void {
-    localStorage.setItem('installationId',uuidv4());
+    localStorage.setItem('installationId', uuidv4());
   }
 
   fetchContextPath$(): void {
+  }
+
+  markUserAsLoggedIn(_data: boolean): boolean {
+    this.authenticated = true;
+    localStorage.setItem(this.IS_LOGGED_IN, 'true');
+    return true;
   }
 }

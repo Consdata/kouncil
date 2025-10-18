@@ -1,0 +1,13 @@
+{
+  "firstName": "Jonathan",
+  "lastName": "Holloway",
+  "address": {
+    "street": "7361 Roehampton Ave.",
+    "streetNumber": 15
+  },
+  "longestTravels": [
+    12345.1234,
+    6547.123,
+    98712345.98989
+  ]
+}
