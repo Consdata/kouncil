@@ -12,7 +12,8 @@ import {
   ProgressBarService,
   SearchService,
   SnackBarComponent,
-  SnackBarData
+  SnackBarData,
+  SnackBarType
 } from '@app/common-utils';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
@@ -208,15 +209,15 @@ export class ConsumerGroupsComponent extends AbstractTableComponent implements O
           this.loadConsumerGroups();
 
           this.snackbar.openFromComponent(SnackBarComponent, {
-            data: new SnackBarData(`Consumer group ${value} deleted`, 'snackbar-success', ''),
-            panelClass: ['snackbar'],
+            data: new SnackBarData(`Consumer group ${value} deleted`, SnackBarType.SUCCESS),
+            panelClass: ['snackbar', 'snackbar-container-success'],
             duration: 3000
           });
         }, error => {
           log.error(error);
           this.snackbar.openFromComponent(SnackBarComponent, {
-            data: new SnackBarData(`Consumer group ${value} couldn't be deleted`, 'snackbar-error', ''),
-            panelClass: ['snackbar'],
+            data: new SnackBarData(`Consumer group ${value} couldn't be deleted`, SnackBarType.ERROR),
+            panelClass: ['snackbar', 'snackbar-container-error'],
             duration: 3000
           });
           this.progressBarService.setProgress(false);

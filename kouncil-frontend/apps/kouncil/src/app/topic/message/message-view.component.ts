@@ -7,7 +7,13 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {DrawerService, ObjectUtils, SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {
+  DrawerService,
+  ObjectUtils,
+  SnackBarComponent,
+  SnackBarData,
+  SnackBarType
+} from '@app/common-utils';
 import {SendComponent} from '@app/feat-send';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
@@ -156,8 +162,8 @@ export class MessageViewComponent extends AbstractTableComponent implements OnIn
   copyToClipboard(object: string): void {
     this.clipboard.copy(JSON.stringify(object, null, 2));
     this.snackBar.openFromComponent(SnackBarComponent, {
-      data: new SnackBarData(`Copied successfully`, 'snackbar-info', ''),
-      panelClass: ['snackbar'],
+      data: new SnackBarData(`Copied successfully`, SnackBarType.INFO),
+      panelClass: ['snackbar', 'snackbar-container-info'],
       duration: 1000
     });
   }

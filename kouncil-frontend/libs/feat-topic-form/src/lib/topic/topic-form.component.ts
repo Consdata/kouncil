@@ -1,13 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { TopicData } from './topic-data';
-import { ServersService } from '@app/common-servers';
-import { first } from 'rxjs/operators';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { TopicService } from './topic.service';
-import { SnackBarComponent, SnackBarData, ViewMode } from '@app/common-utils';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {TopicData} from './topic-data';
+import {ServersService} from '@app/common-servers';
+import {first} from 'rxjs/operators';
+import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Observable, Subscription} from 'rxjs';
+import {TopicService} from './topic.service';
+import {SnackBarComponent, SnackBarData, SnackBarType, ViewMode} from '@app/common-utils';
 
 @Component({
   selector: 'app-topic-form',
@@ -119,15 +119,15 @@ export class TopicFormComponent implements OnInit, OnDestroy {
       next: () => {
         this.dialog.closeAll();
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(successMsg, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(successMsg, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000,
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(errorMsg, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(errorMsg, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000,
         });
       }

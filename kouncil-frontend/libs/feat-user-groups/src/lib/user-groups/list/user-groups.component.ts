@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ProgressBarService, SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {ProgressBarService, SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {UserGroupsService} from './user-groups.service';
@@ -164,15 +164,15 @@ export class UserGroupsComponent extends AbstractTableComponent implements OnIni
       next: () => {
         this.progressBarService.setProgress(false);
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`User group ${userGroupName} deleted`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`User group ${userGroupName} deleted`, SnackBarType.SUCCESS),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`User group ${userGroupName} couldn't be deleted`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`User group ${userGroupName} couldn't be deleted`, SnackBarType.ERROR),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.progressBarService.setProgress(false);

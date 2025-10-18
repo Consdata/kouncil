@@ -8,7 +8,8 @@ import {
   ProgressBarService,
   SearchService,
   SnackBarComponent,
-  SnackBarData
+  SnackBarData,
+  SnackBarType
 } from '@app/common-utils';
 import {Policy, PolicyField} from '../policy.model';
 import {ConfirmService} from '@app/feat-confirm';
@@ -180,15 +181,15 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
         this.loadPolicies();
 
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Policy ${name} deleted`, 'snackbar-success', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Policy ${name} deleted`, SnackBarType.SUCCESS, ''),
+          panelClass: ['snackbar', 'snackbar-container-success'],
           duration: 3000
         });
       },
       error: () => {
         this.snackbar.openFromComponent(SnackBarComponent, {
-          data: new SnackBarData(`Policy ${name} couldn't be deleted`, 'snackbar-error', ''),
-          panelClass: ['snackbar'],
+          data: new SnackBarData(`Policy ${name} couldn't be deleted`, SnackBarType.ERROR, ''),
+          panelClass: ['snackbar', 'snackbar-container-error'],
           duration: 3000
         });
         this.progressBarService.setProgress(false);
