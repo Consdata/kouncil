@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Schema, SchemaRegistryService} from '@app/schema-registry';
+import {Schema, SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, SelectableItem, TableColumn} from '@app/common-components';
 import {ProgressBarService, SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
@@ -39,7 +39,7 @@ const log = LoggerFactory.getLogger('SchemasComponent');
             Clear filters
           </button>
 
-          <button mat-button *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_CREATE])"
+          <button mat-button *ngIf="authService.canAccess([SystemFunctionName.SCHEMA_CREATE]) && serverHasSchemaConnected"
                   class="action-button-blue" [routerLink]="['/schemas/create']">
             Add new schema
           </button>
@@ -151,6 +151,7 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
   topicFilterForm: FormGroup = new FormGroup({
     topicFilterControl: new FormControl()
   });
+  serverHasSchemaConnected: boolean = false;
 
   constructor(private progressBarService: ProgressBarService,
               private schemaRegistry: SchemaRegistryService,
@@ -159,7 +160,8 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
               private snackbar: MatSnackBar,
               protected authService: AuthService,
               private topicsService: TopicsService,
-              private router: Router) {
+              private router: Router,
+              private schemaStateService: SchemaStateService) {
     super();
   }
 
@@ -178,6 +180,10 @@ export class SchemasComponent extends AbstractTableComponent implements OnInit {
     .subscribe((data: Schema[]) => {
       this.filtered = data;
       this.progressBarService.setProgress(false);
+    });
+
+    this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId()).subscribe(hasSchemaConnected=>{
+      this.serverHasSchemaConnected = hasSchemaConnected;
     });
   }
 

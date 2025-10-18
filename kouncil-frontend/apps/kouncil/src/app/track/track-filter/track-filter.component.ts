@@ -1,4 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {TrackService} from '../track.service';
 import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {TrackFilter, TrackOperator} from './track-filter';
@@ -6,6 +11,7 @@ import {TopicsService} from '@app/feat-topics';
 import {Topics} from '@app/common-model';
 import {ServersService} from '@app/common-servers';
 import {SelectableItem} from '@app/common-components';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-track-filter',
@@ -109,7 +115,7 @@ import {SelectableItem} from '@app/common-components';
   `,
   styleUrls: ['./track-filter.component.scss'],
 })
-export class TrackFilterComponent implements OnInit {
+export class TrackFilterComponent implements OnInit, OnDestroy {
   @ViewChild('filtersForm', {static: false}) filtersForm?: NgForm;
 
   operators: { name: string; index: number }[] = Object.keys(TrackOperator)
@@ -136,11 +142,11 @@ export class TrackFilterComponent implements OnInit {
   correlationTooltip: string = 'Filter messages by specifying the name and value of a message header.\nYou can select the matching method:\n' +
     '~ - contains value\n!~ - does not contain value\nis - exact match\nis not - does not match\nregex - regular expression match ';
 
-  constructor(
-    private trackService: TrackService,
-    private topicsService: TopicsService,
-    private servers: ServersService
-  ) {
+  private readonly subscription: Subscription = new Subscription();
+
+  constructor(private readonly trackService: TrackService,
+              private readonly topicsService: TopicsService,
+              private readonly servers: ServersService) {
     this.trackFilter = this.trackService.getStoredTrackFilter();
   }
 
@@ -153,9 +159,17 @@ export class TrackFilterComponent implements OnInit {
     });
     this.trackFilter = this.trackService.getStoredTrackFilter();
 
-    this.trackService.trackFinished.subscribe(() => {
+    this.subscription.add(this.trackService.trackFinished.subscribe(() => {
       this.loading = false;
-    });
+    }));
+
+    this.subscription.add(this.servers.selectedServerChanged$.subscribe(() => {
+      this.trackService.resetStoredTrackFilter();
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   toggleAsyncMode(): void {

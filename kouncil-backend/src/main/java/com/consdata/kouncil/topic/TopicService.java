@@ -50,8 +50,6 @@ import org.apache.kafka.common.utils.Bytes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Service
@@ -69,14 +67,14 @@ public class TopicService {
     @Value("${resendHeadersToKeep:}")
     private String[] resendHeadersToKeep;
 
-    TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
-            @PathVariable("partition") String partitions,
-            @RequestParam("page") String pageParam,
-            @RequestParam("limit") String limitParam,
-            @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
-            @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
-            @RequestParam(value = "offset", required = false) Long offset,
-            @RequestParam("serverId") String serverId) {
+    TopicMessagesDto getTopicMessages(String topicName,
+                                      String partitions,
+                                      String pageParam,
+                                      String limitParam,
+                                      Long beginningTimestampMillis,
+                                      Long endTimestampMillis,
+                                      Long offset,
+                                      String serverId) {
         messagesHelper.validateTopics(serverId, singletonList(topicName));
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
@@ -367,5 +365,9 @@ public class TopicService {
             Thread.currentThread().interrupt();
             throw new KouncilRuntimeException(e.getMessage());
         }
+    }
+
+    public void isTopicExist(String topicName, String serverId) {
+        messagesHelper.validateTopics(serverId, List.of(topicName));
     }
 }

@@ -1,20 +1,29 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { ProgressBarService, ViewMode } from '@app/common-utils';
 import {
   Compatibility,
   MessageFormat,
   Schema,
-  SchemaRegistryService,
+  SchemaRegistryService, SchemaStateService,
   SubjectType
 } from '@app/schema-registry';
 import { ServersService } from '@app/common-servers';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { TopicsService } from '@app/feat-topics';
 import { SelectableItem } from '@app/common-components';
 import { Topics } from '@app/common-model';
 import { first } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material/select';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-schema-form',
@@ -83,7 +92,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   `,
   styleUrls: ['./schema-form.component.scss']
 })
-export class SchemaFormComponent implements OnInit {
+export class SchemaFormComponent implements OnInit, OnDestroy {
 
   model: Schema;
   subjectTypes: SelectableItem[] = Object.keys(SubjectType).map(format => new SelectableItem(format, format, false));
@@ -109,13 +118,16 @@ export class SchemaFormComponent implements OnInit {
     compatibility: new FormControl(),
     plainTextSchema: new FormControl('')
   });
+  private readonly subscription: Subscription = new Subscription();
 
   constructor(private schemaRegistry: SchemaRegistryService,
               private servers: ServersService,
               private progressBarService: ProgressBarService,
               private route: ActivatedRoute,
               private topicsService: TopicsService,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private schemaStateService: SchemaStateService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -142,6 +154,16 @@ export class SchemaFormComponent implements OnInit {
       this.topics = topics.topics.map((tm) => new SelectableItem(tm.name, tm.name, false));
       this.progressBarService.setProgress(false);
     });
+
+    this.subscription.add(this.schemaStateService.isSchemaConfigured$(this.servers.getSelectedServerId()).subscribe((hasSchemaConnected) => {
+        if (!hasSchemaConnected) {
+          this.router.navigate(['/schemas']);
+        }
+      }));
+  }
+
+  ngOnDestroy(): void  {
+    this.subscription.unsubscribe();
   }
 
   private defineDisabled() {
