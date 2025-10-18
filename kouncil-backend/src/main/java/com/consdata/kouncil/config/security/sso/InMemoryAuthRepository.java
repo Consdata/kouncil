@@ -1,9 +1,9 @@
 package com.consdata.kouncil.config.security.sso;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
@@ -15,7 +15,7 @@ public class InMemoryAuthRepository implements AuthorizationRequestRepository<OA
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
         String state = request.getParameter("state");
         if (state != null) {
-            return removeAuthorizationRequest(request);
+            return removeAuthorizationRequest(request, null);
         }
         return null;
     }
@@ -27,7 +27,7 @@ public class InMemoryAuthRepository implements AuthorizationRequestRepository<OA
     }
 
     @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
+    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         String state = request.getParameter("state");
         if (state != null) {
             return cache.remove(state);

@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ProgressBarService, ViewMode} from '@app/common-utils';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ProgressBarService, ViewMode } from '@app/common-utils';
 import {
   Compatibility,
   MessageFormat,
@@ -7,14 +7,14 @@ import {
   SchemaRegistryService,
   SubjectType
 } from '@app/schema-registry';
-import {ServersService} from '@app/common-servers';
-import {ActivatedRoute} from '@angular/router';
-import {TopicsService} from '@app/feat-topics';
-import {SelectableItem} from '@app/common-components';
-import {Topics} from '@app/common-model';
-import {first} from 'rxjs/operators';
-import {MatSelectChange} from '@angular/material/select';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { ServersService } from '@app/common-servers';
+import { ActivatedRoute } from '@angular/router';
+import { TopicsService } from '@app/feat-topics';
+import { SelectableItem } from '@app/common-components';
+import { Topics } from '@app/common-model';
+import { first } from 'rxjs/operators';
+import { MatSelectChange } from '@angular/material/select';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-schema-form',
@@ -31,14 +31,15 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
         <div>
           <app-common-select-field [form]="schemaForm" [controlName]="'topicName'"
                                    [label]="'Topic'"
-                                   [options]="topics" [required]="true"></app-common-select-field>
+                                   [options]="topics"
+                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
         </div>
 
         <div>
           <app-common-select-field [form]="schemaForm" [controlName]="'subjectType'"
                                    [label]="'Subject type'"
                                    [options]="subjectTypes"
-                                   [required]="true"></app-common-select-field>
+                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
         </div>
 
         <div *ngIf="isVisible([ViewMode.VIEW]) && model">
@@ -54,7 +55,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
           <app-common-select-field [form]="schemaForm" [controlName]="'messageFormat'"
                                    [label]="'Message format'"
                                    [options]="messageFormats"
-                                   [required]="true"></app-common-select-field>
+                                   [required]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
         </div>
 
         <div>
@@ -62,14 +63,14 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
                                    [label]="'Compatibility'"
                                    [options]="compatibilities" class="compatibilityInput"
                                    [readonly]="isDisabled([ViewMode.VIEW])"
-                                   [clearValueBtn]="true"></app-common-select-field>
+                                   [clearValueBtn]="!isVisible([ViewMode.VIEW])"></app-common-select-field>
         </div>
       </div>
 
       <div>
         <div class="label">
           Schema
-          <span class="required-field">*</span>
+          <span class="required-field" *ngIf="!isVisible([ViewMode.VIEW])">*</span>
         </div>
         <app-common-editor [schemaType]="getControl('messageFormat').value"
                            [editorHeight]="400"
@@ -82,7 +83,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
           Cancel
         </button>
         <button mat-button [disableRipple]="true" class="action-button-blue"
-                *ngIf="isVisible([ViewMode.VIEW])"
+                *ngIf="isVisible([ViewMode.VIEW]) && model"
                 [routerLink]="['/schemas/edit/', model.subjectName, model.version]">
           Edit
         </button>
@@ -213,13 +214,15 @@ export class SchemaFormComponent implements OnInit {
   }
 
   getHeaderMessage(): string {
-    switch (this.viewMode) {
-      case ViewMode.CREATE:
-        return `Add new schema`;
-      case ViewMode.EDIT:
-        return `Editing schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
-      case ViewMode.VIEW:
-        return `Details of schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
+    if (this.model) {
+      switch (this.viewMode) {
+        case ViewMode.CREATE:
+          return `Add new schema`;
+        case ViewMode.EDIT:
+          return `Editing schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
+        case ViewMode.VIEW:
+          return `Details of schema for ${this.model.topicName}-${this.model.subjectType.toLowerCase()}`;
+      }
     }
     return '';
   }

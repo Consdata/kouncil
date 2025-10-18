@@ -301,7 +301,8 @@ app-custom-snack-bar {
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading {
   border-color: pallete.$main-20 !important;
-  border-radius: pallete.$default-border-radius;
+  border-top-left-radius: pallete.$default-border-radius;
+  border-bottom-left-radius: pallete.$default-border-radius;
   border-left: 1px solid;
   border-top: 1px solid;
   border-bottom: 1px solid;
@@ -309,7 +310,8 @@ app-custom-snack-bar {
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
   border-color: pallete.$main-20 !important;
-  border-radius: pallete.$default-border-radius;
+  border-top-right-radius: pallete.$default-border-radius;
+  border-bottom-right-radius: pallete.$default-border-radius;
   border-right: 1px solid;
   border-top: 1px solid;
   border-bottom: 1px solid;
