@@ -1,0 +1,20 @@
+{
+  "name": "feat-first-time-app-launch",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/feat-first-time-app-launch/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/feat-first-time-app-launch"],
+      "options": {
+        "jestConfig": "libs/feat-first-time-app-launch/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  },
+  "tags": []
+}

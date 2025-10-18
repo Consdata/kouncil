@@ -56,12 +56,13 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
-import {ConfirmModule} from '@app/feat-confirm';
+import {ConfirmModule, ConfirmService} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {
   clusterServiceFactory,
   clustersServiceFactory,
+  firstTimeAppLaunchServiceFactory,
   functionsServiceFactory,
   policiesServiceFactory,
   policyServiceFactory,
@@ -118,6 +119,12 @@ import {RX_STOMP_CONFIG} from './rx-stomp.config';
 import {FeatNotificationsModule, RxStompService} from '@app/feat-notifications';
 import {FeatDataMaskingModule, PoliciesService, PolicyService} from '@app/feat-data-masking';
 import {FeatBreadcrumbModule} from '@app/feat-breadcrumb';
+import {BannerComponent} from './banner/banner.component';
+import {
+  FeatFirstTimeAppLaunchModule,
+  FirstTimeAppLaunchService
+} from '@app/feat-first-time-app-launch';
+import {Router} from '@angular/router';
 
 export const BASE_URL = new InjectionToken('BASE_URL');
 
@@ -191,7 +198,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     SchemaCreateComponent,
     SchemaDetailsComponent,
     SchemaFormComponent,
-    SidebarMenuItemComponent
+    SidebarMenuItemComponent,
+    BannerComponent
   ],
   imports: [
     BrowserModule,
@@ -234,7 +242,8 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
     FeatUserGroupsModule,
     FeatNotificationsModule,
     FeatDataMaskingModule,
-    FeatBreadcrumbModule
+    FeatBreadcrumbModule,
+    FeatFirstTimeAppLaunchModule
   ],
   providers: [
     {
@@ -351,6 +360,11 @@ export function authServiceFactory(http: HttpClient, baseUrl: string): AuthServi
       provide: PolicyService,
       useFactory: policyServiceFactory,
       deps: [HttpClient]
+    },
+    {
+      provide: FirstTimeAppLaunchService,
+      useFactory: firstTimeAppLaunchServiceFactory,
+      deps: [HttpClient, ConfirmService, AuthService, Router]
     },
     provideHttpClient(withInterceptorsFromDi())
   ],

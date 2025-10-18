@@ -1,5 +1,5 @@
-import { inject, Injectable, NgModule } from '@angular/core';
-import { TopicComponent } from '../topic/topic.component';
+import {inject, Injectable, NgModule} from '@angular/core';
+import {TopicComponent} from '../topic/topic.component';
 import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
@@ -7,38 +7,39 @@ import {
   RouterModule,
   Routes
 } from '@angular/router';
-import { TrackComponent } from '../track/track.component';
-import { BrokersComponent } from '../brokers/brokers.component';
-import { ConsumerGroupsComponent } from '../consumers/consumer-groups/consumer-groups.component';
-import { ConsumerGroupComponent } from '../consumers/consumer-group/consumer-group.component';
-import { TopicsComponent } from '@app/feat-topics';
-import { LoginComponent } from '../login/login.component';
-import { AuthGuard } from './auth.guard';
-import { MainComponent } from '../main/main.component';
-import { ConfigResolver } from './config-resolver';
-import { ChangePasswordComponent } from '../login/change-password.component';
-import { MainLoginComponent } from '../login/main-login.component';
-import { OAuthRedirectComponent } from '../oauth/o-auth-redirect.component';
-import { SystemFunctionName } from '@app/common-auth';
-import { AccessDeniedComponent } from '../access-denied/access-denied.component';
-import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
-import { SchemasComponent } from '../schemas/list/schemas.component';
-import { SchemaEditComponent } from '../schemas/form/edit/schema-edit.component';
-import { SchemaCreateComponent } from '../schemas/form/create/schema-create.component';
-import { SchemaDetailsComponent } from '../schemas/form/details/schema-details.component';
+import {TrackComponent} from '../track/track.component';
+import {BrokersComponent} from '../brokers/brokers.component';
+import {ConsumerGroupsComponent} from '../consumers/consumer-groups/consumer-groups.component';
+import {ConsumerGroupComponent} from '../consumers/consumer-group/consumer-group.component';
+import {TopicsComponent} from '@app/feat-topics';
+import {LoginComponent} from '../login/login.component';
+import {AuthGuard} from './auth.guard';
+import {MainComponent} from '../main/main.component';
+import {ConfigResolver} from './config-resolver';
+import {ChangePasswordComponent} from '../login/change-password.component';
+import {MainLoginComponent} from '../login/main-login.component';
+import {OAuthRedirectComponent} from '../oauth/o-auth-redirect.component';
+import {SystemFunctionName} from '@app/common-auth';
+import {AccessDeniedComponent} from '../access-denied/access-denied.component';
+import {PageNotFoundComponent} from '../page-not-found/page-not-found.component';
+import {SchemasComponent} from '../schemas/list/schemas.component';
+import {SchemaEditComponent} from '../schemas/form/edit/schema-edit.component';
+import {SchemaCreateComponent} from '../schemas/form/create/schema-create.component';
+import {SchemaDetailsComponent} from '../schemas/form/details/schema-details.component';
 import {
   ClusterFormCreateComponent,
   ClusterFormEditComponent,
   ClusterFormViewComponent,
   ClustersComponent
 } from '@app/feat-clusters';
-import { UserGroupsComponent, UserGroupsFunctionsMatrixComponent } from '@app/feat-user-groups';
+import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
 import {
   PoliciesComponent,
   PolicyFormCreateComponent,
   PolicyFormEditComponent,
   PolicyFormViewComponent
 } from '@app/feat-data-masking';
+import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
 export class ReloadingRouterStrategy extends RouteReuseStrategy {
@@ -256,12 +257,15 @@ const routes: Routes = [
   },
   {
     path: '', component: MainLoginComponent,
+    resolve: {
+      config: PermissionsConfigResolver
+    },
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard] }
+      {path: 'login', component: LoginComponent},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}
     ]
   },
-  { path: 'oauth', component: OAuthRedirectComponent },
+  {path: 'oauth', component: OAuthRedirectComponent},
   {
     path: '', component: MainComponent,
     children: [

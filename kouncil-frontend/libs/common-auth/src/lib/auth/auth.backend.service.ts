@@ -6,6 +6,7 @@ import {User} from '@app/common-login';
 import {AuthService} from './auth.service';
 import {SystemFunctionName} from './system-function-name';
 import {v4 as uuidv4} from 'uuid';
+import {LoggedInUserUtil} from './logged-in-user-util';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthBackendService implements AuthService {
 
   private readonly IS_LOGGED_IN: string = 'isLoggedIn';
   private readonly USER_ROLES: string = 'userRoles';
+  private readonly TEMPORARY_ADMIN: string = 'temporaryAdmin';
   private userRoles: Array<SystemFunctionName> = [];
 
   private readonly baseUrl: string;
@@ -35,19 +37,22 @@ export class AuthBackendService implements AuthService {
 
   login$(user: User): Observable<boolean> {
     return this.http.post<boolean>('/api/login', user).pipe(map(data => {
-      this.setAuthenticated(data);
-      localStorage.setItem(this.IS_LOGGED_IN, data.toString());
       this.generateUserId();
-      return data;
+      return this.markUserAsLoggedIn(data);
     }));
   }
 
   logout$(): Observable<void> {
-    return this.http.get<void>('/api/logout').pipe(map(() => {
-      localStorage.removeItem(this.IS_LOGGED_IN);
-      localStorage.removeItem(this.USER_ROLES);
-      this.setAuthenticated(false);
-    }));
+    if (LoggedInUserUtil.isTemporaryAdminLoggedIn()) {
+      return this.http.delete<void>('/api/delete-temporary-admin').pipe(map(() => {
+        localStorage.removeItem(this.TEMPORARY_ADMIN);
+        this.clearLoggedIn();
+      }));
+    } else {
+      return this.http.get<void>('/api/logout').pipe(map(() => {
+        this.clearLoggedIn();
+      }));
+    }
   }
 
   sso$(provider: string): Observable<void> {
@@ -58,8 +63,7 @@ export class AuthBackendService implements AuthService {
 
   fetchToken$(code: string, state: string, provider: string): Observable<void> {
     return this.http.get<void>(`/login/oauth2/code/${provider}?code=${code}&state=${state}`).pipe(map(() => {
-      this.setAuthenticated(true);
-      localStorage.setItem(this.IS_LOGGED_IN, 'true');
+      this.markUserAsLoggedIn(true);
       localStorage.removeItem('selectedProvider');
     }));
   }
@@ -80,6 +84,7 @@ export class AuthBackendService implements AuthService {
 
   clearLoggedIn(): void {
     localStorage.removeItem(this.IS_LOGGED_IN);
+    localStorage.removeItem(this.USER_ROLES);
     this.setAuthenticated(false);
   }
 
@@ -126,5 +131,11 @@ export class AuthBackendService implements AuthService {
     this.http.get('/api/context-path', {responseType: 'text'}).subscribe((contextPath) => {
       this.contextPath = contextPath;
     });
+  }
+
+  markUserAsLoggedIn(data: boolean): boolean {
+    this.setAuthenticated(data);
+    localStorage.setItem(this.IS_LOGGED_IN, data.toString());
+    return data;
   }
 }

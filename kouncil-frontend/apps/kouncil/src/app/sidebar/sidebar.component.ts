@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {Observable} from 'rxjs';
-import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {AuthService, LoggedInUserUtil, SystemFunctionName} from '@app/common-auth';
 import {SidebarService} from './sidebar.service';
 import {environment} from '../../environments/environment';
 import {Backend} from '@app/common-model';
@@ -10,7 +10,12 @@ import {SidebarState} from './sidebar-state';
   selector: 'app-sidebar',
   template: `
     <div class="sidenav"
-         [ngClass]="{'opened': (currentState$ | async), 'closed': (currentState$| async) === false, 'sidenav-demo': backend === 'DEMO'}">
+         [ngClass]="{
+         'opened': (currentState$ | async),
+         'closed': (currentState$| async) === false,
+         'sidenav-demo': backend === 'DEMO',
+         'sidenav-banner': isTemporaryAdminLoggedIn()
+         }">
 
       <app-sidebar-menu-item [label]="'Topics'" [icon]="'topic'" [routeLink]="'/topics'"
                              *ngIf="(isAuthenticated$ | async) && authService.canAccess([SystemFunctionName.TOPIC_LIST])">
@@ -95,5 +100,9 @@ export class SidebarComponent {
 
   changeState(): void {
     this.sidebarService.changeState();
+  }
+
+  isTemporaryAdminLoggedIn(): boolean {
+    return LoggedInUserUtil.isTemporaryAdminLoggedIn();
   }
 }
