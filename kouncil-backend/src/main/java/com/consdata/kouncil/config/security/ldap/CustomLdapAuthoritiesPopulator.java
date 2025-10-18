@@ -14,9 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
-import org.springframework.stereotype.Component;
 
-@Component
 @Data
 public class CustomLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
 

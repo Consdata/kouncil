@@ -31,7 +31,8 @@ const TOPICS_FAVOURITE_KEY = 'kouncil-topics-favourites';
     <div class="main-container" *ngIf="authService.canAccess([SystemFunctionName.TOPIC_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
-          <button mat-button class="action-button-blue" (click)="createTopic()">
+          <button mat-button class="action-button-blue" (click)="createTopic()"
+                  [disabled]="serverNotSelected()">
             Create topic
           </button>
         </div>
@@ -284,5 +285,9 @@ export class TopicsComponent extends AbstractTableComponent implements OnInit, O
         this.progressBarService.setProgress(false);
       }
     }));
+  }
+
+  serverNotSelected(): boolean {
+    return this.servers.getSelectedServerId() === null;
   }
 }

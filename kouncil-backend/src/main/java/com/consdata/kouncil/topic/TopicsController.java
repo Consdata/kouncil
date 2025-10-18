@@ -1,5 +1,6 @@
 package com.consdata.kouncil.topic;
 
+import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.logging.EntryExitLogger;
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import jakarta.annotation.security.RolesAllowed;
@@ -19,6 +20,9 @@ public class TopicsController {
     @GetMapping("/api/topics")
     @EntryExitLogger
     public TopicsDto getTopics(@RequestParam("serverId") String serverId) {
-        return topicsService.getTopics(serverId);
+        if (serverId != null && !serverId.isBlank()) {
+            return topicsService.getTopics(serverId);
+        }
+        throw new KouncilRuntimeException("Clusters are not defined. Please register new clusters or reach out to your administrator for further information.");
     }
 }

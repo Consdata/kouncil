@@ -194,7 +194,7 @@ export class ClustersComponent extends AbstractTableComponent implements OnInit,
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`Cluster ${clusterName} deleted`, SnackBarType.SUCCESS),
           panelClass: ['snackbar', 'snackbar-container-success'],
-          duration: 3000
+          duration: 1000
         });
         this.reloadServers();
       },

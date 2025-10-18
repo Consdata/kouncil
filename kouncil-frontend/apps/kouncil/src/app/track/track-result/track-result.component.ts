@@ -9,13 +9,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
-import {Title} from '@angular/platform-browser';
 import {MessageViewComponent} from '../../topic/message/message-view.component';
 import {TrackService} from '../track.service';
 import {TrackFilter} from '../track-filter/track-filter';
 import {MessageData, MessageDataService} from '@app/message-data';
-import {Crypto, DrawerService, ProgressBarService, SearchService} from '@app/common-utils';
+import {Crypto, DrawerService, SearchService} from '@app/common-utils';
 import {NoDataPlaceholderComponent} from '@app/feat-no-data';
 import {ServersService} from '@app/common-servers';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
@@ -112,10 +110,7 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
   ];
 
   constructor(
-    private route: ActivatedRoute,
     private searchService: SearchService,
-    private titleService: Title,
-    private progressBarService: ProgressBarService,
     private trackService: TrackService,
     private drawerService: DrawerService,
     private servers: ServersService,
@@ -300,8 +295,8 @@ export class TrackResultComponent extends AbstractTableComponent implements OnIn
           });
         });
 
-        this.parseObjectValues(items);
       }
+      this.parseObjectValues(items);
 
       let columns: TableColumn[] = [...this.commonColumns];
       if (gridColumns) {
