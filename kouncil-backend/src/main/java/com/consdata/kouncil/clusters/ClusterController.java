@@ -2,7 +2,7 @@ package com.consdata.kouncil.clusters;
 
 import com.consdata.kouncil.clusters.dto.ClusterDto;
 import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
