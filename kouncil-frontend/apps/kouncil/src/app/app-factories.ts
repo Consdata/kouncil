@@ -32,6 +32,7 @@ import {
   UserGroupService,
   UserGroupsService
 } from '@app/feat-user-groups';
+import {PoliciesBackendService, PoliciesDemoService, PoliciesService} from '@app/feat-data-masking';
 
 export function topicsServiceFactory(http: HttpClient): TopicsService {
   switch (environment.backend) {
@@ -151,5 +152,16 @@ export function userGroupServiceFactory(http: HttpClient): UserGroupService {
     case Backend.DEMO:
     default:
       return new UserGroupDemoService();
+  }
+}
+
+export function policiesServiceFactory(http: HttpClient): PoliciesService {
+  switch (environment.backend) {
+    case Backend.SERVER: {
+      return new PoliciesBackendService(http);
+    }
+    case Backend.DEMO:
+    default:
+      return new PoliciesDemoService();
   }
 }
