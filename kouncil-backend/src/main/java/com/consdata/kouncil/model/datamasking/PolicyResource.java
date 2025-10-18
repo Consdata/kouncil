@@ -26,9 +26,8 @@ public class PolicyResource {
     @SequenceGenerator(name = "SEQ_POLICY_RESOURCE_GEN", sequenceName = "SEQ_POLICY_RESOURCE", initialValue = 1, allocationSize = 1)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "CLUSTER_ID", insertable = false, updatable = false)
-    private Cluster cluster;
+    @Column(name = "CLUSTER_ID")
+    private Long cluster;
 
     @Column(name = "TOPIC")
     private String topic;

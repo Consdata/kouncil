@@ -34,14 +34,9 @@ public class Policy {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "MASKING_TYPE")
-    @Enumerated(EnumType.STRING)
-    private MaskingType type;
-
-    @ElementCollection
-    @CollectionTable(name = "POLICY_FIELDS", joinColumns = @JoinColumn(name = "POLICY_ID"))
-    @Column(name = "FIELD")
-    private Set<String> fields;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "POLICY_ID")
+    private Set<PolicyField> fields;
 
     @Column(name = "APPLY_TO_ALL_RESOURCES")
     private Boolean applyToAllResources;

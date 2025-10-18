@@ -6,6 +6,7 @@ import static java.util.Collections.singletonList;
 import com.consdata.kouncil.KafkaConnectionService;
 import com.consdata.kouncil.KouncilRuntimeException;
 import com.consdata.kouncil.MessagesHelper;
+import com.consdata.kouncil.datamasking.DataMaskingService;
 import com.consdata.kouncil.serde.deserialization.DeserializationService;
 import com.consdata.kouncil.serde.deserialization.DeserializedMessage;
 import com.consdata.kouncil.serde.serialization.SerializationService;
@@ -58,6 +59,7 @@ public class TopicService {
     private final KafkaConnectionService kafkaConnectionService;
     private final SerializationService serializationService;
     private final DeserializationService deserializationService;
+    private final DataMaskingService dataMaskingService;
     private final MessagesHelper messagesHelper;
     private static final int RESEND_MAX_POLL_RECORDS = 100;
 
@@ -65,13 +67,13 @@ public class TopicService {
     private String[] resendHeadersToKeep;
 
     TopicMessagesDto getTopicMessages(@PathVariable("topicName") String topicName,
-                                      @PathVariable("partition") String partitions,
-                                      @RequestParam("page") String pageParam,
-                                      @RequestParam("limit") String limitParam,
-                                      @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
-                                      @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
-                                      @RequestParam(value = "offset", required = false) Long offset,
-                                      @RequestParam("serverId") String serverId) {
+            @PathVariable("partition") String partitions,
+            @RequestParam("page") String pageParam,
+            @RequestParam("limit") String limitParam,
+            @RequestParam(value = "beginningTimestampMillis", required = false) Long beginningTimestampMillis,
+            @RequestParam(value = "endTimestampMillis", required = false) Long endTimestampMillis,
+            @RequestParam(value = "offset", required = false) Long offset,
+            @RequestParam("serverId") String serverId) {
         messagesHelper.validateTopics(serverId, singletonList(topicName));
         int limit = Integer.parseInt(limitParam); // per partition!
         long page = Long.parseLong(pageParam); // per partition!
@@ -191,12 +193,13 @@ public class TopicService {
                 DeserializedMessage deserializedMessage = deserializationService.deserialize(clusterId, consumerRecord);
                 if (messagesCount < limit) {
                     messagesCount += 1;
+
                     messages.add(TopicMessage
                             .builder()
-                            .key(deserializedMessage.getKeyData().getDeserialized())
+                            .key(dataMaskingService.maskTopicMessage(deserializedMessage.getKeyData().getDeserialized(), partition.topic(), clusterId))
                             .keyFormat(deserializedMessage.getKeyData().getMessageFormat())
-                            .value(deserializedMessage.getValueData().getDeserialized())
-                            .originalValue(deserializedMessage.getValueData().getOriginalValue())
+                            .value(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getDeserialized(), partition.topic(), clusterId))
+                            .originalValue(dataMaskingService.maskTopicMessage(deserializedMessage.getValueData().getOriginalValue(), partition.topic(), clusterId))
                             .valueFormat(deserializedMessage.getValueData().getMessageFormat())
                             .offset(consumerRecord.offset())
                             .partition(consumerRecord.partition())

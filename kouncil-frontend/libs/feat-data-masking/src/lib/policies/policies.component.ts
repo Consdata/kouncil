@@ -1,18 +1,31 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PoliciesService} from './policies.service';
-import {SystemFunctionName} from '@app/common-auth';
+import {AuthService, SystemFunctionName} from '@app/common-auth';
 import {AbstractTableComponent, TableColumn} from '@app/common-components';
 import {first} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
-import {ProgressBarService, SearchService} from '@app/common-utils';
-import {MaskingType, Policy} from "../policy.model";
+import {
+  ProgressBarService,
+  SearchService,
+  SnackBarComponent,
+  SnackBarData
+} from '@app/common-utils';
+import {Policy, PolicyField} from '../policy.model';
+import {ConfirmService} from '@app/feat-confirm';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {PolicyService} from '../policy/policy.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-data-masking-policies',
   template: `
-    <div class="main-container">
+    <div class="main-container" *ngIf="authService.canAccess([SystemFunctionName.POLICY_CREATE])">
       <div class="toolbar-container">
         <div class="toolbar">
+          <button mat-button class="action-button-blue"
+                  (click)="createPolicy()">
+            Add new policy
+          </button>
         </div>
       </div>
     </div>
@@ -27,7 +40,8 @@ import {MaskingType, Policy} from "../policy.model";
                         [actionColumns]="actionColumns"
                         matSort [sort]="sort"
                         cdkDropList cdkDropListOrientation="horizontal"
-                        (cdkDropListDropped)="drop($event)">
+                        (cdkDropListDropped)="drop($event)"
+                        (rowClickedAction)="navigateToDetails($event)">
 
         <ng-container *ngFor="let column of columns; let index = index">
           <app-common-table-column [column]="column"
@@ -40,6 +54,12 @@ import {MaskingType, Policy} from "../policy.model";
                                    [template]="cellTemplate">
             <ng-template #cellTemplate let-element>
               <div class="actions-column">
+                <button
+                  *ngIf="authService.canAccess([SystemFunctionName.POLICY_DELETE])"
+                  mat-button class="action-button-red"
+                  (click)="$event.stopPropagation(); confirmDeletePolicy(element.id, element.name)">
+                  Delete
+                </button>
               </div>
             </ng-template>
           </app-common-table-column>
@@ -67,16 +87,6 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       width: 300
     },
     {
-      name: 'Masking type',
-      prop: 'type',
-      sticky: false,
-      resizeable: true,
-      sortable: true,
-      draggable: true,
-      width: 300,
-      valueFormatter: (value: MaskingType): string => MaskingType[value]
-    },
-    {
       name: 'Fields',
       prop: 'fields',
       sticky: false,
@@ -84,7 +94,7 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
       sortable: true,
       draggable: true,
       width: 300,
-      valueFormatter: (value: Array<string>) => value.join(", ")
+      valueFormatter: (value: Array<PolicyField>): string => value.map(field => field.field).join(', ')
     },
   ];
 
@@ -104,7 +114,12 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
 
   constructor(private dataMaskingPoliciesService: PoliciesService,
               private progressBarService: ProgressBarService,
-              private searchService: SearchService) {
+              private searchService: SearchService,
+              private confirmService: ConfirmService,
+              private snackbar: MatSnackBar,
+              private policyService: PolicyService,
+              private router: Router,
+              protected authService: AuthService) {
     super();
   }
 
@@ -121,11 +136,10 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
     }));
   }
 
-
   private loadPolicies(): void {
     this.subscription.add(this.dataMaskingPoliciesService.getPolicies$()
     .pipe(first())
-    .subscribe((data: any) => {
+    .subscribe((data: Array<Policy>) => {
       this.policies = data;
       this.filter(this.searchService.currentPhrase);
       this.progressBarService.setProgress(false);
@@ -138,4 +152,50 @@ export class PoliciesComponent extends AbstractTableComponent implements OnInit,
     });
   }
 
+  confirmDeletePolicy(id: number, name: string): void {
+    this.subscription.add(this.confirmService.openConfirmDialog$({
+      title: 'Delete policy',
+      subtitle: 'Are you sure you want to delete:',
+      sectionLine1: `Policy ${name}`
+    })
+    .pipe(first())
+    .subscribe((confirmed) => {
+      if (confirmed) {
+        this.progressBarService.setProgress(true);
+        this.deletePolicy(id, name);
+      }
+    }));
+  }
+
+  private deletePolicy(id: number, name: string): void {
+    this.subscription.add(this.policyService.deletePolicy$(id)
+    .pipe(first())
+    .subscribe({
+      next: () => {
+        this.loadPolicies();
+
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Policy ${name} deleted`, 'snackbar-success', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+      },
+      error: () => {
+        this.snackbar.openFromComponent(SnackBarComponent, {
+          data: new SnackBarData(`Policy ${name} couldn't be deleted`, 'snackbar-error', ''),
+          panelClass: ['snackbar'],
+          duration: 3000
+        });
+        this.progressBarService.setProgress(false);
+      }
+    }));
+  }
+
+  createPolicy(): void {
+    this.router.navigate([`/data-masking-policy`]);
+  }
+
+  navigateToDetails(policy: Policy): void {
+    this.router.navigate([`data-masking-policy/${policy.id}`]);
+  }
 }
