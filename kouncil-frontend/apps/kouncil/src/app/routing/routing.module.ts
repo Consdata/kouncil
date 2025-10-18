@@ -32,14 +32,13 @@ import {
   ClusterFormViewComponent,
   ClustersComponent
 } from '@app/feat-clusters';
-import { UserGroupsComponent, UserGroupsFunctionsMatrixComponent } from '@app/feat-user-groups';
+import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
 import {
   PoliciesComponent,
   PolicyFormCreateComponent,
   PolicyFormEditComponent,
   PolicyFormViewComponent
 } from '@app/feat-data-masking';
-import {UserGroupsComponent, UserGroupsFunctionsMatrixComponent} from '@app/feat-user-groups';
 import {PermissionsConfigResolver} from './permissions-config-resolver';
 
 @Injectable()
@@ -262,11 +261,11 @@ const routes: Routes = [
       config: PermissionsConfigResolver
     },
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard] }
+      {path: 'login', component: LoginComponent},
+      {path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}
     ]
   },
-  { path: 'oauth', component: OAuthRedirectComponent },
+  {path: 'oauth', component: OAuthRedirectComponent},
   {
     path: '', component: MainComponent,
     children: [

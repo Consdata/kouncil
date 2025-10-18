@@ -56,7 +56,7 @@ import {BrokerService, brokerServiceFactory} from './brokers/broker.service';
 import {SchemaRegistryService, SchemaStateService} from '@app/schema-registry';
 import {ResendModule, ResendService} from '@app/resend-events';
 import {Backend} from '@app/common-model';
-import {ConfirmModule} from '@app/feat-confirm';
+import {ConfirmModule, ConfirmService} from '@app/feat-confirm';
 import {CommonUtilsModule, HttpClientInterceptor, SearchService} from '@app/common-utils';
 import {FeatTopicsModule, TopicsService} from '@app/feat-topics';
 import {

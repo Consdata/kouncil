@@ -50,7 +50,7 @@ public class AuthService {
 
     public Set<String> getUserRoles() {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+        return authorities.stream().map(GrantedAuthority::getAuthority).filter(fn -> !fn.startsWith(SecurityConstants.ROLE_PREFIX)).collect(Collectors.toSet());
     }
 
     public String getInstallationId() throws IOException {

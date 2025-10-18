@@ -43,8 +43,6 @@ public class AuthController {
     @GetMapping("/userRoles")
     public Set<String> getUserRoles() {
         return authService.getUserRoles();
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return authorities.stream().map(GrantedAuthority::getAuthority).filter(fn -> !fn.startsWith(SecurityConstants.ROLE_PREFIX)).collect(Collectors.toSet());
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
