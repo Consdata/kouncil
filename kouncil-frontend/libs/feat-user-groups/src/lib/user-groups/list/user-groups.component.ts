@@ -138,9 +138,7 @@ export class UserGroupsComponent extends AbstractTableComponent implements OnIni
     const matDialogRef = this.dialog.open(UserGroupFormComponent, config);
 
     this.subscription.add(matDialogRef.afterClosed().subscribe(() => {
-      if (!id) {
-        this.loadGroups();
-      }
+      this.loadGroups();
     }));
   }
 

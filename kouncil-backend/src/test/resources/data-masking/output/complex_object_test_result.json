@@ -1,0 +1,13 @@
+{
+  "firstName": "Jon*****",
+  "lastName": "*****way",
+  "address": {
+    "street": "********************",
+    "streetNumber": 15
+  },
+  "longestTravels": [
+    "*****.1234",
+    "*****123",
+    "*****345.98989"
+  ]
+}

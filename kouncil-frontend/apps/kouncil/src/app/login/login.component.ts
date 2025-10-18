@@ -1,17 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService, SystemFunctionName} from '@app/common-auth';
+import {AuthService} from '@app/common-auth';
 import {Router} from '@angular/router';
 import {User} from '@app/common-login';
 import {Backend} from '@app/common-model';
 import {environment} from '../../environments/environment';
+import {LoginUtil} from './login-util';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   template: `
-    <app-common-login-icon *ngIf="this.backend === 'SERVER'"
-                           [iconContainerClass]="'icon-login-container-desktop'"></app-common-login-icon>
-    <app-common-login-icon *ngIf="this.backend === 'DEMO'"
-                           [iconContainerClass]="'icon-login-container-demo'"></app-common-login-icon>
+    <app-common-login-icon></app-common-login-icon>
 
     <app-common-login (loginUser)="login($event)">
 
@@ -35,7 +34,7 @@ export class LoginComponent implements OnInit {
   providers: Array<string> = [];
   public backend: Backend = environment.backend;
 
-  constructor(private service: AuthService, private router: Router) {
+  constructor(private service: AuthService, private router: Router, private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -67,10 +66,6 @@ export class LoginComponent implements OnInit {
     this.service.sso$(provider).subscribe();
   }
 
-  getIconContainerClass(): string {
-    return this.backend === 'SERVER' ? 'icon-login-container-desktop' : 'icon-login-container-demo';
-  }
-
   private fetchSsoProviders() {
     this.service.ssoProviders$().subscribe(providers => this.providers = providers);
   }
@@ -80,11 +75,7 @@ export class LoginComponent implements OnInit {
       if (this.firstTimeLogin) {
         this.router.navigate(['/changePassword']);
       } else {
-        if (this.service.canAccess([SystemFunctionName.TOPIC_LIST])) {
-          this.router.navigate(['/topics']);
-        } else if (this.service.canAccess([SystemFunctionName.BROKERS_LIST])) {
-          this.router.navigate(['/brokers']);
-        }
+        LoginUtil.redirectUserAfterLogin(this.service, this.router, this.snackBar);
       }
     });
   }

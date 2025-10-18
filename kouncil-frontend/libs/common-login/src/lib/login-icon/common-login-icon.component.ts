@@ -1,10 +1,12 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'app-common-login-icon',
   template: `
-    <div class="icon-login-container" [ngClass]="iconContainerClass">
-      <mat-icon aria-hidden="false" class="material-symbols-outlined icon-login">person</mat-icon>
+    <div class="icon-login-main-container">
+      <div class="icon-login-container">
+        <mat-icon aria-hidden="false" class="material-symbols-outlined icon-login">person</mat-icon>
+      </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,9 +14,6 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 })
 export class CommonLoginIconComponent {
 
-  @Input() iconContainerClass: string;
-
   constructor() {
   }
-
 }

@@ -1,28 +1,13 @@
 package com.consdata.kouncil.security;
 
-import static com.consdata.kouncil.config.KouncilConfiguration.INSTALLATION_ID_FILE;
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
-import jakarta.annotation.Resource;
+import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import com.consdata.kouncil.model.admin.SystemFunctionNameConstants;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class AuthController {
 
-    @Resource(name = "authenticationManager")
-    private AuthenticationManager authManager;
+    private final AuthService authService;
 
     @Value("${kouncil.auth.active-provider}")
     private String activeProvider;
@@ -47,34 +31,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public boolean login(HttpServletRequest req, @RequestBody User user) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        Authentication auth = authManager.authenticate(authReq);
-
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-
-        return currentPrincipalName != null && !currentPrincipalName.isEmpty();
+        return authService.login(req, user);
     }
 
     @GetMapping("/logout")
     public void logout(HttpServletRequest req) throws ServletException {
-        req.logout();
+        authService.logout(req);
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
     @GetMapping("/user-roles")
     public Set<String> getUserRoles() {
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+        return authService.getUserRoles();
     }
 
     @RolesAllowed(SystemFunctionNameConstants.LOGIN)
     @GetMapping("/installation-id")
     public String getInstallationId() throws IOException {
-        return Files.readString(Path.of(INSTALLATION_ID_FILE));
+        return authService.getInstallationId();
     }
 }

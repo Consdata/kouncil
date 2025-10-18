@@ -2,6 +2,7 @@ package com.consdata.kouncil.config.security.ad;
 
 import com.consdata.kouncil.config.security.DefaultUserPermissionsReloader;
 import com.consdata.kouncil.config.security.SpaCsrfTokenRequestHandler;
+import com.consdata.kouncil.notifications.NotificationService;
 import com.consdata.kouncil.security.UserRolesMapping;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -31,7 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class ActiveDirectoryWebSecurityConfig {
 
     private final UserRolesMapping userRolesMapping;
-    private final SimpMessagingTemplate eventSender;
+    private final NotificationService notificationService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -51,20 +48,16 @@ public class ActiveDirectoryWebSecurityConfig {
                     return configuration;
                 }))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/*", "/assets/**").permitAll()
+                        .requestMatchers("/api/info/version", "/api/login", "/api/active-provider", "/api/context-path", "/api/permissions-not-defined",
+                                "/api/create-temporary-admin", "/*", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
     }
 
     @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
-
-    @Bean
     public DefaultUserPermissionsReloader userPermissionsReloader() {
-        return new DefaultUserPermissionsReloader(eventSender);
+        return new DefaultUserPermissionsReloader(notificationService);
     }
 
     @Value("${kouncil.auth.ad.domain:}")
@@ -86,11 +79,5 @@ public class ActiveDirectoryWebSecurityConfig {
         provider.setSearchFilter(searchFilter);
         provider.setUserDetailsContextMapper(new ActiveDirectoryUserDetailsMapper(userRolesMapping));
         return provider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .build();
     }
 }

@@ -1,24 +1,26 @@
-import { Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormControl, NgForm, Validators } from '@angular/forms';
-import { SendService } from './send.service';
-import { first, map, switchMap } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MessageData, MessageDataHeader, MessageDataService } from '@app/message-data';
-import { combineLatest, iif, Observable, of } from 'rxjs';
+import {Component, OnDestroy, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {FormControl, NgForm, Validators} from '@angular/forms';
+import {SendService} from './send.service';
+import {first, map, switchMap} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MessageData, MessageDataHeader, MessageDataService} from '@app/message-data';
+import {combineLatest, iif, Observable, of} from 'rxjs';
 import {
   MessageFormat,
   SchemaFacadeService,
   SchemaRegistryService,
   SchemaStateService
 } from '@app/schema-registry';
-import { ServersService } from '@app/common-servers';
-import { EditorComponent, MonacoEditorService } from '@app/common-components';
-import { SnackBarComponent, SnackBarData } from '@app/common-utils';
+import {ServersService} from '@app/common-servers';
+import {EditorComponent, MonacoEditorService} from '@app/common-components';
+import {SnackBarComponent, SnackBarData} from '@app/common-utils';
+import {LoggerFactory} from '@consdata/logger-api';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let monaco: any;
+const log = LoggerFactory.getLogger('SendComponent');
 
 @Component({
   selector: 'app-send',
@@ -224,7 +226,7 @@ export class SendComponent implements OnDestroy {
           duration: 3000
         });
       }, error => {
-        console.error(error);
+        log.error(error);
         this.snackbar.openFromComponent(SnackBarComponent, {
           data: new SnackBarData(`Error occurred while sending events to ${messageData.topicName}`, 'snackbar-error', ''),
           panelClass: ['snackbar'],

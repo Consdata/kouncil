@@ -6,17 +6,17 @@ import {ConfirmModel} from './confirm.model';
   selector: 'app-confirm',
   template: `
     <div mat-dialog-title class="header">
-      <div class="title">{{data.title}}</div>
+      <div class="title">{{ data.title }}</div>
       <div class="spacer"></div>
       <mat-icon mat-dialog-close class="material-symbols-outlined close">close</mat-icon>
     </div>
 
     <mat-dialog-content class="mat-typography">
-      <div class="subtitle">{{data.subtitle}}</div>
+      <div class="subtitle">{{ data.subtitle }}</div>
 
-      <div class="section">
-        <div>{{data.sectionLine1}}</div>
-        <div *ngIf="data.sectionLine2">{{data.sectionLine2}}</div>
+      <div class="section" *ngIf="data.sectionLine1 || data.sectionLine2">
+        <div *ngIf="data.sectionLine1">{{ data.sectionLine1 }}</div>
+        <div *ngIf="data.sectionLine2">{{ data.sectionLine2 }}</div>
       </div>
     </mat-dialog-content>
 

@@ -9,5 +9,6 @@ export enum NotificationType {
 }
 
 export enum NotificationAction {
-  LOGOUT = 'LOGOUT'
+  LOGOUT = 'LOGOUT',
+  CLUSTERS_NOT_DEFINED = 'CLUSTERS_NOT_DEFINED'
 }
