@@ -1,15 +1,18 @@
 create table policy
 (
-    id           bigint not null primary key,
-    name         varchar(255),
-    masking_type varchar(255),
-    apply_to_all_resources boolean
+    id                     bigint not null primary key,
+    apply_to_all_resources boolean,
+    name                   varchar(255),
+    masking_type           varchar(255)
 );
-create table policy_fields
+
+create table policy_field
 (
-    policy_id bigint not null
-        constraint fkq4ltt72s1qqgpolry1fnmy67b references policy,
-    field     varchar(255)
+    id        bigint not null primary key,
+    field     varchar(255),
+    find_rule varchar(255),
+    policy_id bigint
+        constraint fkppv2kuelp29jag142kqgvober references policy
 );
 
 create table policy_resource
@@ -24,6 +27,7 @@ create table policy_resource
 
 CREATE SEQUENCE SEQ_POLICY MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
 CREATE SEQUENCE SEQ_POLICY_RESOURCE MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
+CREATE SEQUENCE SEQ_POLICY_FIELD MINVALUE 1 START WITH 1 INCREMENT BY 1 CACHE 10;
 
 insert into system_function(id, name, label, function_group)
 VALUES (nextval('SEQ_SYSTEM_FUNCTION'), 'POLICY_LIST', 'Policies list', 'DATA_MASKING'),
