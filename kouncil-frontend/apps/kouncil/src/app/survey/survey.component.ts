@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
-  OnInit,
   QueryList,
   ViewChildren,
   ViewEncapsulation
@@ -54,7 +53,7 @@ import {SnackBarComponent, SnackBarData, SnackBarType} from '@app/common-utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class SurveyComponent implements OnInit, OnDestroy {
+export class SurveyComponent implements OnDestroy {
 
   showPanel$: Observable<boolean> = this.surveyService.showPanelObservable$;
   hidePanel: boolean = false;
@@ -73,9 +72,6 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.surveyService.getQuestionsChanged$().subscribe(value => {
       this.questions = value;
     }));
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
