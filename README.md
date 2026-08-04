@@ -1,4 +1,7 @@
 # Kouncil for Apache Kafka
+
+> **⚠️ Please note:** Active development of Kouncil has come to an end. To support your transition to another tool, we’ve prepared a [Migration Guide](https://github.com/Consdata/kouncil/blob/master/docs/MIGRATION.md). Thank you for testing with us! The source code remains available on GitHub.
+
 [![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/consdata/kouncil/blob/master/LICENSE)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/consdata/kouncil/blob/master/LICENSE)
 [![Build Status](https://github.com/Consdata/kouncil/actions/workflows/build.yml/badge.svg)](https://github.com/Consdata/kouncil/actions/workflows/build.yml)

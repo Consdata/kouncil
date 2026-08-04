@@ -3,6 +3,19 @@
 :host {
   width: 100%;
 
+  .archived-notice {
+    color: #b71c1c;
+    background: #fdecea;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+    width: 400px;
+    margin: 0 auto 16px;
+    padding: 10px 16px;
+    box-sizing: border-box;
+  }
+
   .first-time-login {
     color: $main-60;
     font-size: 12px;

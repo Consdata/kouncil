@@ -10,6 +10,12 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   template: `
+    <div class="archived-notice">
+      ⚠️ Please note: Active development of Kouncil has come to an end. To support your transition to another tool,
+      we’ve prepared a <a href="https://github.com/Consdata/kouncil/blob/master/docs/MIGRATION.md">Migration Guide.</a>
+      Thank you for testing with us! The source code remains available on GitHub.
+    </div>
+
     <app-common-login-icon></app-common-login-icon>
 
     <app-common-login (loginUser)="login($event)">
