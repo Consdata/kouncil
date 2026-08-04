@@ -1,3 +1,5 @@
+> **⚠️ Please note:** Active development of Kouncil has come to an end. To support your transition to another tool, we’ve prepared a [Migration Guide](MIGRATION.md). Thank you for testing with us! The source code remains available on GitHub.
+> 
 # Kouncil for Apache Kafka
 
 Kouncil lets you monitor and manage your Apache Kafka clusters using a modern web interface.It's
